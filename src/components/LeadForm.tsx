@@ -96,6 +96,42 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
   const [photoCount, setPhotoCount] = useState(0);
   const birthDateLimits = useMemo(getBirthDateLimits, []);
   const fields = useMemo<Field[]>(() => [...generalFields, ...(config.fields as readonly Field[])], [config.fields]);
+  const projectFields = useMemo<Field[]>(() => [...(config.fields as readonly Field[])], [config.fields]);
+
+  function renderField(field: Field) {
+    const required = ["name", "email", "phone"].includes(field.name) || (isOnzeFuturo && onzeFuturoRequiredFields.has(field.name));
+    const isTextarea = field.type === "textarea";
+
+    return (
+      <label key={field.name} className={isTextarea || field.name === "address" ? "full" : ""}>
+        <span>{field.label}</span>
+        {field.type === "select" ? (
+          <select name={field.name} required={required || field.name === "profile_type"}>
+            <option value="">Selecione</option>
+            {field.options?.map((option) => (
+              <option value={option} key={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        ) : isTextarea ? (
+          <textarea name={field.name} rows={5} placeholder={field.placeholder} required={required} />
+        ) : (
+          <input
+            name={field.name}
+            type={field.type ?? "text"}
+            placeholder={field.placeholder}
+            required={required}
+            min={isOnzeFuturo && field.name === "birth_date" ? birthDateLimits.min : undefined}
+            max={isOnzeFuturo && field.name === "birth_date" ? birthDateLimits.max : undefined}
+          />
+        )}
+        {isOnzeFuturo && field.name === "birth_date" ? (
+          <small>Permitido apenas para atletas com idade entre 9 e 13 anos.</small>
+        ) : null}
+      </label>
+    );
+  }
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -148,42 +184,74 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
       <input type="hidden" name="project_interest" value={config.label} />
       <input type="hidden" name="project_type" value={config.projectType} />
 
-      <div className="form-grid">
-        {fields.map((field) => {
-          const required = ["name", "email", "phone"].includes(field.name) || (isOnzeFuturo && onzeFuturoRequiredFields.has(field.name));
-          const isTextarea = field.type === "textarea";
+      {isOnzeFuturo ? (
+        <>
+          <section className="form-section">
+            <div className="form-section-head">
+              <span className="eyebrow">dados do cadastrante</span>
+              <h3>Quem está preenchendo</h3>
+              <p>Use estes campos para identificar a pessoa responsável por enviar o cadastro e receber o contato da equipe.</p>
+            </div>
+            <div className="form-grid">{generalFields.map(renderField)}</div>
+          </section>
 
-          return (
-            <label key={field.name} className={isTextarea || field.name === "address" ? "full" : ""}>
-              <span>{field.label}</span>
-              {field.type === "select" ? (
-                <select name={field.name} required={required || field.name === "profile_type"}>
-                  <option value="">Selecione</option>
-                  {field.options?.map((option) => (
-                    <option value={option} key={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              ) : isTextarea ? (
-                <textarea name={field.name} rows={5} placeholder={field.placeholder} required={required} />
-              ) : (
-                <input
-                  name={field.name}
-                  type={field.type ?? "text"}
-                  placeholder={field.placeholder}
-                  required={required}
-                  min={isOnzeFuturo && field.name === "birth_date" ? birthDateLimits.min : undefined}
-                  max={isOnzeFuturo && field.name === "birth_date" ? birthDateLimits.max : undefined}
-                />
-              )}
-              {isOnzeFuturo && field.name === "birth_date" ? (
-                <small>Permitido apenas para atletas com idade entre 9 e 13 anos.</small>
-              ) : null}
-            </label>
-          );
-        })}
-      </div>
+          <section className="form-section">
+            <div className="form-section-head">
+              <span className="eyebrow">dados do atleta</span>
+              <h3>Atleta e responsáveis</h3>
+              <p>Informações pessoais, familiares e medidas do atleta para análise do projeto Onze Futuro.</p>
+            </div>
+            <div className="form-grid">
+              {projectFields
+                .filter((field) =>
+                  [
+                    "athlete_name",
+                    "birth_date",
+                    "father_name",
+                    "mother_name",
+                    "guardian",
+                    "guardian_rg",
+                    "guardian_cpf",
+                    "athlete_rg",
+                    "athlete_cpf",
+                    "address",
+                    "shoe_size",
+                    "height_cm",
+                    "weight_kg",
+                    "athlete_dream"
+                  ].includes(field.name)
+                )
+                .map(renderField)}
+            </div>
+          </section>
+
+          <section className="form-section">
+            <div className="form-section-head">
+              <span className="eyebrow">treinador e histórico</span>
+              <h3>Contexto esportivo</h3>
+              <p>Dados do treinador, escola, modalidades, marcas e histórico competitivo do atleta.</p>
+            </div>
+            <div className="form-grid">
+              {projectFields
+                .filter((field) =>
+                  [
+                    "coach_name",
+                    "coach_phone",
+                    "coach_cref",
+                    "school",
+                    "sports",
+                    "best_marks",
+                    "competitions",
+                    "social_link"
+                  ].includes(field.name)
+                )
+                .map(renderField)}
+            </div>
+          </section>
+        </>
+      ) : (
+        <div className="form-grid">{fields.map(renderField)}</div>
+      )}
 
       {isOnzeFuturo ? (
         <>
