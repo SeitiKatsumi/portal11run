@@ -1,17 +1,18 @@
 :root {
-  --bg: #050506;
-  --bg-soft: #0d0e10;
-  --panel: rgba(255, 255, 255, 0.07);
-  --panel-strong: rgba(255, 255, 255, 0.11);
-  --text: #f7f7f2;
-  --muted: #b8b8ad;
-  --line: rgba(255, 255, 255, 0.14);
-  --orange: #ff6a00;
-  --orange-soft: #ff9b36;
-  --lime: #d7ff49;
-  --cyan: #4fe7ff;
+  --bg: #050505;
+  --bg-soft: #0a0a0a;
+  --panel: rgba(255, 255, 255, 0.035);
+  --panel-strong: rgba(255, 255, 255, 0.065);
+  --text: #f3f1ec;
+  --muted: #aaa6a0;
+  --soft: #d8d4cc;
+  --line: rgba(255, 255, 255, 0.11);
+  --orange: #ff5b14;
+  --orange-soft: #ff7a2f;
+  --lime: #f08b45;
+  --cyan: #a49b91;
   --danger: #ff6b6b;
-  --radius: 8px;
+  --radius: 6px;
   --max: 1180px;
 }
 
@@ -25,13 +26,11 @@ html {
 
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at 18% 4%, rgba(255, 106, 0, 0.2), transparent 28rem),
-    radial-gradient(circle at 84% 10%, rgba(79, 231, 255, 0.12), transparent 24rem),
-    linear-gradient(180deg, #050506 0%, #090a0b 48%, #050506 100%);
+  background: linear-gradient(180deg, #050505 0%, #0b0b0b 42%, #050505 100%);
   color: var(--text);
-  font-family: var(--font-body), Arial, sans-serif;
+  font-family: var(--font-sans), Arial, sans-serif;
   letter-spacing: 0;
+  font-weight: 300;
 }
 
 body::before {
@@ -39,11 +38,11 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
-  background-size: 72px 72px;
-  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent 70%);
+  background:
+    linear-gradient(90deg, transparent 0, rgba(255, 255, 255, 0.035) 50%, transparent 100%),
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 100% 1px, 100% 92px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent 68%);
 }
 
 a {
@@ -68,17 +67,16 @@ textarea {
   top: 0;
   z-index: 50;
   width: min(calc(100% - 32px), var(--max));
-  min-height: 72px;
-  margin: 18px auto 0;
-  padding: 10px 12px 10px 18px;
+  min-height: 64px;
+  margin: 16px auto 0;
+  padding: 8px 10px 8px 16px;
   display: grid;
   grid-template-columns: auto 1fr auto auto;
   gap: 18px;
   align-items: center;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: rgba(5, 5, 6, 0.78);
-  backdrop-filter: blur(18px);
+  background: rgba(5, 5, 5, 0.72);
+  backdrop-filter: blur(22px);
 }
 
 .brand img {
@@ -92,7 +90,8 @@ textarea {
   justify-content: center;
   gap: 18px;
   color: var(--muted);
-  font-size: 0.88rem;
+  font-size: 0.82rem;
+  font-weight: 400;
 }
 
 .desktop-nav a,
@@ -113,7 +112,8 @@ textarea {
   justify-content: center;
   gap: 8px;
   border-radius: var(--radius);
-  font-weight: 760;
+  font-weight: 500;
+  font-size: 0.88rem;
   letter-spacing: 0;
   transition:
     transform 180ms ease,
@@ -124,15 +124,15 @@ textarea {
 .header-cta,
 .button.primary {
   padding: 0 18px;
-  color: #140d05;
-  background: linear-gradient(135deg, var(--orange), var(--orange-soft));
-  box-shadow: 0 18px 45px rgba(255, 106, 0, 0.28);
+  color: #080706;
+  background: var(--orange-soft);
+  box-shadow: none;
 }
 
 .button.ghost {
   padding: 0 18px;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.025);
   color: var(--text);
 }
 
@@ -164,7 +164,7 @@ textarea {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: rgba(8, 8, 9, 0.96);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
 }
 
 .mobile-nav a {
@@ -189,10 +189,10 @@ textarea {
 
 .hero-section {
   position: relative;
-  padding: 88px 0 54px;
+  padding: 96px 0 64px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.78fr);
-  gap: 44px;
+  grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.76fr);
+  gap: 56px;
   align-items: center;
 }
 
@@ -204,32 +204,34 @@ textarea {
 .thanks-page h1,
 .highlight-band h2 {
   margin: 0;
-  font-family: var(--font-display), Arial, sans-serif;
-  font-weight: 760;
-  line-height: 0.96;
+  font-family: var(--font-sans), Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.02;
   letter-spacing: 0;
 }
 
 .hero-copy h1 {
   max-width: 840px;
-  font-size: clamp(4.3rem, 10vw, 9.8rem);
+  font-size: clamp(4rem, 9vw, 8.8rem);
+  letter-spacing: -0.035em;
 }
 
 .hero-copy p {
   max-width: 710px;
   margin: 24px 0 0;
   color: var(--muted);
-  font-size: clamp(1.06rem, 2vw, 1.42rem);
-  line-height: 1.55;
+  font-size: clamp(1rem, 1.7vw, 1.28rem);
+  line-height: 1.7;
+  font-weight: 300;
 }
 
 .eyebrow {
   display: inline-flex;
   margin-bottom: 14px;
   color: var(--orange-soft);
-  font-size: 0.78rem;
-  font-weight: 820;
-  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
@@ -246,11 +248,8 @@ textarea {
   min-height: 480px;
   overflow: hidden;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
-    #0c0d0e;
-  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.36);
+  background: #0d0d0c;
+  box-shadow: none;
 }
 
 .hero-visual::after {
@@ -279,10 +278,10 @@ textarea {
   padding: 12px 14px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: rgba(7, 7, 8, 0.78);
+  background: rgba(7, 7, 7, 0.72);
   backdrop-filter: blur(16px);
   color: var(--text);
-  font-weight: 720;
+  font-weight: 400;
 }
 
 .floating-card.top {
@@ -310,7 +309,7 @@ textarea {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--panel);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(18px);
 }
 
 .metric-card {
@@ -322,8 +321,9 @@ textarea {
 
 .metric-card strong {
   color: var(--text);
-  font-family: var(--font-display), Arial, sans-serif;
-  font-size: clamp(1.9rem, 4vw, 3.1rem);
+  font-family: var(--font-sans), Arial, sans-serif;
+  font-size: clamp(1.7rem, 3.6vw, 2.75rem);
+  font-weight: 400;
   line-height: 1;
 }
 
@@ -333,7 +333,7 @@ textarea {
 }
 
 .section {
-  padding: 82px 0;
+  padding: 96px 0;
 }
 
 .section.split {
@@ -349,15 +349,17 @@ textarea {
 .form-intro h1,
 .thanks-page h1,
 .highlight-band h2 {
-  font-size: clamp(2.1rem, 5vw, 5.1rem);
+  font-size: clamp(2rem, 4.5vw, 4.8rem);
+  letter-spacing: -0.035em;
 }
 
 .section-title p {
   max-width: 720px;
   margin: 18px 0 0;
   color: var(--muted);
-  font-size: 1.08rem;
-  line-height: 1.7;
+  font-size: 1rem;
+  line-height: 1.8;
+  font-weight: 300;
 }
 
 .editorial-block {
@@ -366,9 +368,10 @@ textarea {
 
 .editorial-block p {
   margin: 0;
-  color: #dfdfd7;
-  font-size: 1.07rem;
-  line-height: 1.8;
+  color: var(--soft);
+  font-size: 1rem;
+  line-height: 1.9;
+  font-weight: 300;
 }
 
 .editorial-block p + p {
@@ -390,8 +393,8 @@ textarea {
 }
 
 .project-card {
-  min-height: 330px;
-  padding: 22px;
+  min-height: 320px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   transition:
@@ -403,8 +406,8 @@ textarea {
 .project-card:hover,
 .feature-card:hover,
 .comparison-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(255, 106, 0, 0.42);
+  transform: translateY(-3px);
+  border-color: rgba(255, 122, 47, 0.34);
   background: var(--panel-strong);
 }
 
@@ -412,9 +415,10 @@ textarea {
 .feature-card h3,
 .comparison-card h3 {
   margin: 18px 0 0;
-  font-family: var(--font-display), Arial, sans-serif;
-  font-size: 1.28rem;
-  line-height: 1.15;
+  font-family: var(--font-sans), Arial, sans-serif;
+  font-size: 1.18rem;
+  font-weight: 400;
+  line-height: 1.25;
 }
 
 .project-card p,
@@ -422,7 +426,8 @@ textarea {
 .comparison-card p {
   margin: 12px 0 0;
   color: var(--muted);
-  line-height: 1.6;
+  line-height: 1.75;
+  font-weight: 300;
 }
 
 .project-card a {
@@ -431,7 +436,7 @@ textarea {
   gap: 8px;
   margin-top: auto;
   color: var(--orange-soft);
-  font-weight: 780;
+  font-weight: 500;
 }
 
 .icon-badge {
@@ -440,28 +445,27 @@ textarea {
   height: 42px;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgba(255, 106, 0, 0.38);
+  border: 1px solid rgba(255, 122, 47, 0.28);
   border-radius: var(--radius);
   color: var(--orange-soft);
-  background: rgba(255, 106, 0, 0.1);
+  background: rgba(255, 122, 47, 0.06);
 }
 
 .manifesto {
   margin-top: 32px;
   margin-bottom: 32px;
   padding: clamp(36px, 8vw, 86px);
-  border: 1px solid rgba(255, 106, 0, 0.26);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
-  background:
-    linear-gradient(135deg, rgba(255, 106, 0, 0.15), transparent 40%),
-    rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .manifesto p {
   max-width: 900px;
-  color: #dfdfd7;
-  font-size: 1.14rem;
-  line-height: 1.75;
+  color: var(--soft);
+  font-size: 1.04rem;
+  line-height: 1.9;
+  font-weight: 300;
 }
 
 .feature-grid {
@@ -492,11 +496,9 @@ textarea {
   margin-top: 60px;
   margin-bottom: 80px;
   padding: clamp(28px, 5vw, 56px);
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 122, 47, 0.2);
   border-radius: var(--radius);
-  background:
-    linear-gradient(135deg, rgba(255, 106, 0, 0.2), rgba(79, 231, 255, 0.08)),
-    rgba(255, 255, 255, 0.07);
+  background: linear-gradient(135deg, rgba(255, 122, 47, 0.12), rgba(255, 255, 255, 0.025));
 }
 
 .cta-section p {
@@ -525,9 +527,9 @@ textarea {
   gap: 22px;
   align-items: center;
   padding: clamp(24px, 5vw, 48px);
-  border: 1px solid rgba(255, 106, 0, 0.26);
+  border: 1px solid rgba(255, 122, 47, 0.2);
   border-radius: var(--radius);
-  background: rgba(255, 106, 0, 0.09);
+  background: rgba(255, 122, 47, 0.055);
 }
 
 .highlight-band p {
@@ -552,8 +554,9 @@ textarea {
 
 .timeline-item > span {
   color: var(--orange-soft);
-  font-family: var(--font-display), Arial, sans-serif;
+  font-family: var(--font-sans), Arial, sans-serif;
   font-size: 1.6rem;
+  font-weight: 300;
 }
 
 .timeline-item strong {
@@ -640,7 +643,7 @@ textarea {
 .lead-form span {
   color: #e8e8e2;
   font-size: 0.92rem;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .lead-form input,
@@ -664,7 +667,7 @@ textarea {
 .lead-form select:focus,
 .lead-form textarea:focus {
   border-color: var(--orange-soft);
-  box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.12);
+  box-shadow: 0 0 0 2px rgba(255, 122, 47, 0.12);
 }
 
 .accept {

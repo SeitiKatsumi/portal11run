@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-body" });
-const space = Space_Grotesk({ subsets: ["latin"], variable: "--font-display" });
+const geist = Geist({
+  subsets: ["latin"],
+  variable: "--font-sans",
+  weight: ["300", "400", "500", "600", "700"]
+});
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +25,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="pt-BR">
-      <body className={`${inter.variable} ${space.variable}`}>
+      <body className={geist.variable}>
         <Header />
         <main>{children}</main>
         <Footer />
