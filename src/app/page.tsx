@@ -19,7 +19,7 @@ export default function Home() {
             <div className="home-hero-copy">
               <span className="eyebrow">portal oficial 11RUN</span>
               <img className="home-hero-logo" src="/assets/logos/11run-branding.png" alt="11RUN" />
-              <h1>Uma nova estrutura para revelar, formar e levar corredores mais longe.</h1>
+              <h1>Uma estrutura para revelar, formar e levar corredores mais longe.</h1>
               <p>
                 A 11RUN organiza base, circuito, projetos regionais e caminhos internacionais em uma plataforma viva para
                 atletas, famílias, treinadores e parceiros.

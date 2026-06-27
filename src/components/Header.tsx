@@ -32,9 +32,6 @@ export function Header() {
 
       {open ? (
         <div className="mobile-nav">
-          <Link href="/" onClick={() => setOpen(false)}>
-            Portal 11RUN
-          </Link>
           {navItems.map((item) => (
             <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
               {item.label}

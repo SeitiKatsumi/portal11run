@@ -2,7 +2,6 @@ import {
   Activity,
   Award,
   BarChart3,
-  Bot,
   CalendarDays,
   CircleDollarSign,
   Dumbbell,
@@ -53,6 +52,7 @@ export type ProjectPage = {
 };
 
 export const navItems = [
+  { label: "Início", href: "/" },
   { label: "ONZERUN", href: "/onzerun" },
   { label: "Base Mundial", href: "/base-mundial" },
   { label: "Master Regional", href: "/master-regional" },
@@ -70,46 +70,46 @@ export const metrics = [
 export const projects: ProjectPage[] = [
   {
     key: "onzerun",
-    eyebrow: "IA para alto rendimento",
+    eyebrow: "performance orientada por dados",
     title: "ONZERUN",
-    subtitle: "Existe uma diferença entre treinar muito e treinar com inteligência.",
+    subtitle: "Uma plataforma para organizar treino, leitura de desempenho e evolução esportiva com mais clareza.",
     body: [
-      "O ONZERUN nasce para atletas, treinadores e projetos que querem ir além da planilha, além do achismo e além da leitura superficial do desempenho.",
-      "Um ecossistema com IA para alto rendimento, criado para transformar dados em direção, rotina em evolução e objetivos em decisões mais inteligentes.",
-      "No app, cada treino ganha contexto. Cada carga passa a ter leitura. Cada meta se transforma em rota. Cada atleta passa a ser acompanhado com mais profundidade."
+      "O ONZERUN nasce para atletas, treinadores e projetos que querem ir além da planilha e transformar rotina esportiva em acompanhamento consistente.",
+      "A plataforma reúne histórico, metas, cargas, indicadores e conexões para que cada decisão tenha contexto e continuidade.",
+      "Cada atleta passa a ser acompanhado com mais profundidade, do treino diário ao planejamento de longo prazo."
     ],
     href: "/onzerun",
     formHref: "/cadastro/onzerun",
     cta: "Quero participar do ONZERUN",
-    icon: Bot,
+    icon: BarChart3,
     metrics: ["14 mil usuários", "14 países", "+300 atletas Sub-14 nos 5000m"],
     features: [
-      "IA conversacional",
+      "Acompanhamento esportivo",
       "Centro de performance",
       "Análise de volume",
-      "11TSS",
-      "VO2",
-      "Objetivos preditivos",
+      "Indicadores de carga",
+      "Objetivos esportivos",
       "Histórico cronológico",
-      "Conexões com Strava e Garmin"
+      "Conexões com Strava e Garmin",
+      "Relatórios para treinadores"
     ],
     highlight: {
       title: "Lançamento global: 01/07/2026",
-      text: "Uma camada inteligente para organizar o que antes ficava espalhado e entregar uma visão clara do caminho."
+      text: "Uma camada de organização para transformar dados, rotina e calendário em uma visão clara de evolução."
     },
     metadata: {
-      title: "ONZERUN - IA para alto rendimento",
+      title: "ONZERUN - Performance para corredores",
       description:
-        "Aplicativo com inteligência artificial para análise de treinos, performance, histórico, metas e evolução de atletas."
+        "Plataforma para análise de treinos, performance, histórico, metas e evolução de atletas."
     }
   },
   {
     key: "base-mundial",
-    eyebrow: "Formação de base",
+    eyebrow: "formação de base",
     title: "Projeto Base Mundial 11RUN",
     subtitle: "O Brasil tem talento. O que falta, muitas vezes, é estrutura, continuidade e oportunidade no momento certo.",
     body: [
-      "O Projeto Base Mundial 11RUN nasce para acompanhar jovens atletas entre 10 e 13 anos, oferecendo suporte, orientação, convivência esportiva, ajuda de custo, materiais e integração ao Circuito 11RUN.",
+      "O Projeto Base Mundial 11RUN acompanha jovens atletas entre 10 e 13 anos, oferecendo suporte, orientação, convivência esportiva, ajuda de custo, materiais e integração ao Circuito 11RUN.",
       "Mais do que correr provas, queremos formar atletas. Mais do que buscar medalhas agora, queremos construir base para o futuro."
     ],
     href: "/base-mundial",
@@ -141,7 +141,7 @@ export const projects: ProjectPage[] = [
     title: "Master Itatiba e Região",
     subtitle: "Performance não tem idade.",
     body: [
-      "11RUN é global no alcance. Mas em Itatiba, o compromisso é local.",
+      "A 11RUN é global no alcance. Mas em Itatiba, o compromisso é local.",
       "O projeto Master Itatiba e Região nasce para atletas que continuam levando o esporte a sério, independentemente da idade.",
       "Atletas que treinam, competem, representam, buscam evolução e querem estar cercados por uma estrutura real de alto rendimento."
     ],
@@ -171,7 +171,7 @@ export const projects: ProjectPage[] = [
   },
   {
     key: "circuito-infantil",
-    eyebrow: "Circuito infantil",
+    eyebrow: "circuito infantil",
     title: "Caminho de um Campeão 2027",
     subtitle: "Da primeira volta na pista ao sonho de chegar mais longe.",
     body: [
@@ -204,7 +204,7 @@ export const projects: ProjectPage[] = [
   },
   {
     key: "bolsas",
-    eyebrow: "Oportunidades internacionais",
+    eyebrow: "oportunidades internacionais",
     title: "Portal de Oportunidades 11RUN",
     subtitle: "Bolsas universitárias para jovens fundistas: o caminho que muitos talentos ainda não sabem que existe.",
     body: [
@@ -249,10 +249,10 @@ export const projects: ProjectPage[] = [
 export const ecosystemCards = [
   {
     title: "ONZERUN",
-    text: "IA para alto rendimento. Um aplicativo que transforma dados, treinos e histórico em decisões mais inteligentes.",
+    text: "Plataforma de performance para transformar dados, treinos e histórico em acompanhamento esportivo claro.",
     href: "/onzerun",
     cta: "Conhecer o ONZERUN",
-    icon: Bot
+    icon: BarChart3
   },
   {
     title: "Projeto Base Mundial",
@@ -284,7 +284,18 @@ export const ecosystemCards = [
   }
 ];
 
-export const sportIcons = [Activity, BarChart3, Dumbbell, HeartPulse, CalendarDays, Award, Network, Map, CircleDollarSign, Timer];
+export const sportIcons = [
+  Activity,
+  BarChart3,
+  Dumbbell,
+  HeartPulse,
+  CalendarDays,
+  Award,
+  Network,
+  Map,
+  CircleDollarSign,
+  Timer
+];
 
 export const projectByRoute: Record<string, ProjectPage> = {
   onzerun: projects[0],
