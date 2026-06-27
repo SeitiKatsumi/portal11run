@@ -46,11 +46,15 @@ export function Header() {
 
       {open ? (
         <div className="mobile-nav">
-          {navItems.map((item) => (
-            <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
-              {item.label}
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            const Icon = navIcons[item.href];
+            return (
+              <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
+                {Icon ? <Icon size={16} strokeWidth={1.7} /> : null}
+                <span>{item.label}</span>
+              </Link>
+            );
+          })}
           <Link href="/cadastro/onzerun" onClick={() => setOpen(false)}>
             Participar
           </Link>

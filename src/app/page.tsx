@@ -13,8 +13,6 @@ export default function Home() {
         <div className="home-hero-inner">
           <Reveal>
             <div className="home-hero-copy">
-              <span className="eyebrow">portal oficial 11RUN</span>
-              <img className="home-hero-logo" src="/assets/logos/11run-branding.png" alt="11RUN" />
               <h1>Uma estrutura para revelar, formar e levar corredores mais longe.</h1>
               <p>
                 A 11RUN organiza base, circuito, projetos regionais e caminhos internacionais em uma plataforma viva para
@@ -34,7 +32,7 @@ export default function Home() {
 
           <Reveal delay={0.08}>
             <div className="home-hero-visual">
-              <img src="/assets/equipe.png" alt="Atletas do ecossistema 11RUN em treino" />
+              <img src="/assets/11run.png" alt="Corredora em movimento 11RUN" />
             </div>
           </Reveal>
         </div>
@@ -54,7 +52,7 @@ export default function Home() {
           <span className="eyebrow">comunidade</span>
           <h2>Atletas, famílias e treinadores dentro da mesma estrutura.</h2>
         </div>
-        <img src="/assets/equipe.png" alt="Equipe de corredores 11RUN" />
+        <img src="/assets/11run.png" alt="Corredora em movimento 11RUN" />
       </section>
 
       <section className="home-statement">
@@ -131,7 +129,7 @@ export default function Home() {
           <span className="eyebrow">base e futuro</span>
           <h2>O caminho começa na base e ganha escala com continuidade.</h2>
         </div>
-        <img src="/assets/equipe.png" alt="Atletas do ecossistema 11RUN" />
+        <img src="/assets/11run.png" alt="Corredora em movimento 11RUN" />
       </section>
 
       <section className="section">

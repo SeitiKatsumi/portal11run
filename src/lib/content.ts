@@ -112,8 +112,8 @@ export const projects: ProjectPage[] = [
     eyebrow: "formação de base",
     title: "Projeto Base Mundial 11RUN",
     subtitle: "O Brasil tem talento. O que falta, muitas vezes, é estrutura, continuidade e oportunidade no momento certo.",
-    imageSrc: "/assets/equipe.png",
-    imageAlt: "Jovens atletas reunidos em treino 11RUN",
+    imageSrc: "/assets/11run.png",
+    imageAlt: "Corredora em movimento 11RUN",
     body: [
       "O Projeto Base Mundial 11RUN acompanha jovens atletas entre 10 e 13 anos, oferecendo suporte, orientação, convivência esportiva, ajuda de custo, materiais e integração ao Circuito 11RUN.",
       "Mais do que correr provas, queremos formar atletas. Mais do que buscar medalhas agora, queremos construir base para o futuro."
@@ -146,8 +146,8 @@ export const projects: ProjectPage[] = [
     eyebrow: "Itatiba e região",
     title: "Master Itatiba e Região",
     subtitle: "Performance não tem idade.",
-    imageSrc: "/assets/equipe.png",
-    imageAlt: "Equipe de corredores em ambiente de preparação esportiva",
+    imageSrc: "/assets/11run.png",
+    imageAlt: "Corredora em movimento 11RUN",
     body: [
       "A 11RUN é global no alcance. Mas em Itatiba, o compromisso é local.",
       "O projeto Master Itatiba e Região nasce para atletas que continuam levando o esporte a sério, independentemente da idade.",
@@ -182,8 +182,8 @@ export const projects: ProjectPage[] = [
     eyebrow: "circuito infantil",
     title: "Caminho de um Campeão 2027",
     subtitle: "Da primeira volta na pista ao sonho de chegar mais longe.",
-    imageSrc: "/assets/equipe.png",
-    imageAlt: "Atletas de base em contexto de desenvolvimento esportivo",
+    imageSrc: "/assets/11run.png",
+    imageAlt: "Corredora em movimento 11RUN",
     body: [
       "O futuro do meio-fundo e fundo começa na pista.",
       "Vem aí o Caminho de um Campeão 2027, o primeiro circuito de desenvolvimento competitivo em pista para crianças e pré-adolescentes de 10 a 13 anos."

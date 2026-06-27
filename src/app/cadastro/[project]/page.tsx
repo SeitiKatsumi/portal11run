@@ -28,7 +28,7 @@ export default async function Page({ params }: PageProps) {
     notFound();
   }
 
-  const formImage = project === "onzerun" || project === "bolsas" ? "/assets/11run.png" : "/assets/equipe.png";
+  const formImage = "/assets/11run.png";
 
   return (
     <>
