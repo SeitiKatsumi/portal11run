@@ -6,11 +6,12 @@
   --text: #211f1b;
   --muted: #746d63;
   --soft: #4b463f;
-  --line: rgba(33, 31, 27, 0.14);
+  --line: #d8d0c5;
   --accent: #9a6a43;
   --accent-strong: #6f4a2f;
   --danger: #9f3f34;
-  --radius: 4px;
+  --radius: 18px;
+  --radius-sm: 12px;
   --max: 1280px;
 }
 
@@ -54,19 +55,21 @@ main {
 
 .site-header {
   position: fixed;
-  top: 0;
+  top: 18px;
   left: 0;
   right: 0;
   z-index: 50;
-  width: 100%;
-  min-height: 84px;
-  padding: 0 clamp(28px, 5vw, 76px);
+  width: min(calc(100% - 48px), 1240px);
+  min-height: 68px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 3vw, 34px);
   display: grid;
   grid-template-columns: auto 1fr auto auto;
   gap: clamp(34px, 4vw, 64px);
   align-items: center;
-  background: var(--bg);
-  border: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
 }
 
 .brand img,
@@ -125,6 +128,7 @@ main {
   min-height: auto;
   padding: 0;
   color: var(--text);
+  background: var(--surface);
 }
 
 .header-cta::after {
@@ -146,7 +150,7 @@ main {
   padding: 0 20px;
   border: 1px solid var(--line);
   color: var(--text);
-  background: transparent;
+  background: var(--surface);
 }
 
 .header-cta:hover,
@@ -162,7 +166,7 @@ main {
   justify-content: center;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: transparent;
+  background: var(--surface);
   color: var(--text);
 }
 
@@ -175,8 +179,8 @@ main {
   gap: 2px;
   padding: 12px;
   border: 1px solid var(--line);
+  border-radius: var(--radius);
   background: var(--surface);
-  box-shadow: 0 24px 60px rgba(33, 31, 27, 0.12);
 }
 
 .mobile-nav a {
@@ -203,31 +207,6 @@ main {
   min-height: 100svh;
   overflow: hidden;
   background: var(--bg);
-  border-bottom: 1px solid var(--line);
-}
-
-.home-hero-media {
-  position: absolute;
-  inset: 84px 0 auto;
-  height: min(62vw, 720px);
-  z-index: 0;
-}
-
-.home-hero-media::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgba(244, 239, 232, 0.96) 0%, rgba(244, 239, 232, 0.72) 42%, rgba(244, 239, 232, 0.16) 100%),
-    linear-gradient(180deg, rgba(244, 239, 232, 0) 55%, var(--bg) 100%);
-}
-
-.home-hero-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  filter: saturate(0.88) contrast(1.02);
 }
 
 .home-hero-inner {
@@ -236,8 +215,10 @@ main {
   width: min(calc(100% - 48px), var(--max));
   min-height: 100svh;
   margin: 0 auto;
-  padding: clamp(160px, 19vh, 220px) 0 clamp(170px, 18vh, 230px);
+  padding: clamp(150px, 18vh, 210px) 0 clamp(170px, 18vh, 230px);
   display: grid;
+  grid-template-columns: minmax(0, 0.94fr) minmax(360px, 0.76fr);
+  gap: clamp(48px, 7vw, 92px);
   align-items: center;
 }
 
@@ -268,6 +249,24 @@ main {
   line-height: 1.82;
 }
 
+.home-hero-visual {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  padding: clamp(24px, 4vw, 46px);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.home-hero-visual img {
+  width: min(100%, 620px);
+  height: 100%;
+  object-fit: contain;
+}
+
 .hero-actions,
 .cta-actions {
   display: flex;
@@ -284,9 +283,7 @@ main {
   left: clamp(24px, 5vw, 76px);
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-top: 1px solid var(--line);
-  border-left: 1px solid var(--line);
-  background: var(--surface);
+  gap: 18px;
 }
 
 .home-metric {
@@ -294,8 +291,8 @@ main {
   padding: 24px;
   display: grid;
   align-content: end;
-  border-right: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
   background: var(--surface);
 }
 
@@ -387,11 +384,8 @@ main {
 .project-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 1px;
+  gap: 18px;
   margin-top: 58px;
-  border-top: 1px solid var(--line);
-  border-left: 1px solid var(--line);
-  background: var(--line);
 }
 
 .project-lanes > div {
@@ -411,7 +405,7 @@ main {
 .highlight-band,
 .notice-block {
   border: 1px solid var(--line);
-  border-radius: 0;
+  border-radius: var(--radius);
   background: var(--surface);
 }
 
@@ -422,8 +416,6 @@ main {
   display: grid;
   grid-template-rows: auto auto 1fr auto;
   gap: 24px;
-  border-top: 0;
-  border-left: 0;
   transition:
     transform 180ms ease,
     background 180ms ease;
@@ -485,8 +477,7 @@ main {
 
 .system-panel {
   display: grid;
-  gap: 0;
-  border-bottom: 0;
+  gap: 16px;
 }
 
 .system-panel div {
@@ -494,9 +485,6 @@ main {
   padding: 32px;
   display: grid;
   align-content: end;
-  border-top: 0;
-  border-right: 0;
-  border-left: 0;
 }
 
 .system-panel strong {
@@ -539,25 +527,22 @@ main {
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  border: 0;
-  background: var(--bg-soft);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
 }
 
 .hero-visual img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  filter: saturate(0.92) contrast(1.02);
+  object-fit: contain;
 }
 
 .hero-metrics {
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1px;
-  border-top: 1px solid var(--line);
-  border-left: 1px solid var(--line);
-  background: var(--line);
+  gap: 18px;
 }
 
 .metric-card {
@@ -565,8 +550,6 @@ main {
   padding: 24px;
   display: grid;
   align-content: end;
-  border-top: 0;
-  border-left: 0;
 }
 
 .editorial-block,
@@ -589,19 +572,14 @@ main {
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1px;
+  gap: 18px;
   margin-top: 58px;
-  border-top: 1px solid var(--line);
-  border-left: 1px solid var(--line);
-  background: var(--line);
 }
 
 .feature-card,
 .project-card {
   min-height: 214px;
   padding: 30px;
-  border-top: 0;
-  border-left: 0;
   transition:
     transform 180ms ease,
     background 180ms ease;
@@ -629,6 +607,7 @@ main {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
   color: var(--accent-strong);
   background: var(--surface-muted);
 }
@@ -672,9 +651,7 @@ main {
 
 .timeline {
   display: grid;
-  gap: 0;
-  border-top: 1px solid var(--line);
-  border-left: 1px solid var(--line);
+  gap: 14px;
 }
 
 .timeline-item {
@@ -682,8 +659,8 @@ main {
   grid-template-columns: 70px 1fr;
   gap: 16px;
   padding: 22px;
-  border-right: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
   background: var(--surface);
 }
 
@@ -704,17 +681,12 @@ main {
 .comparison-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
+  gap: 18px;
   margin-top: 34px;
-  border-top: 1px solid var(--line);
-  border-left: 1px solid var(--line);
-  background: var(--line);
 }
 
 .comparison-card {
   padding: 30px;
-  border-top: 0;
-  border-left: 0;
 }
 
 .notice-block {
@@ -768,7 +740,7 @@ main {
   width: 100%;
   min-height: 48px;
   border: 1px solid var(--line);
-  border-radius: 0;
+  border-radius: var(--radius-sm);
   background: var(--surface-muted);
   color: var(--text);
   padding: 12px 13px;
@@ -783,7 +755,8 @@ main {
 .lead-form select:focus,
 .lead-form textarea:focus {
   border-color: var(--accent-strong);
-  box-shadow: 0 0 0 2px rgba(111, 74, 47, 0.12);
+  outline: 2px solid #e4d7ca;
+  outline-offset: 1px;
 }
 
 .accept {
@@ -881,11 +854,8 @@ main {
     justify-self: end;
   }
 
-  .home-hero-media {
-    height: 72vh;
-  }
-
   .home-hero-inner {
+    grid-template-columns: 1fr;
     padding-bottom: 272px;
   }
 
@@ -933,6 +903,8 @@ main {
   }
 
   .site-header {
+    top: 12px;
+    width: min(calc(100% - 28px), var(--max));
     min-height: 74px;
     padding: 0 18px;
   }
@@ -941,21 +913,14 @@ main {
     width: 124px;
   }
 
-  .home-hero-media {
-    top: 74px;
-    height: 78vh;
-  }
-
-  .home-hero-media::after {
-    background:
-      linear-gradient(180deg, rgba(244, 239, 232, 0.62) 0%, rgba(244, 239, 232, 0.28) 42%, var(--bg) 100%),
-      linear-gradient(90deg, rgba(244, 239, 232, 0.78), rgba(244, 239, 232, 0.18));
-  }
-
   .home-hero-inner {
     width: min(calc(100% - 28px), var(--max));
-    padding-top: 126px;
-    padding-bottom: 354px;
+    padding-top: 118px;
+    padding-bottom: 320px;
+  }
+
+  .home-hero-visual {
+    padding: 18px;
   }
 
   .home-hero-logo {

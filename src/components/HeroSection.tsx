@@ -51,7 +51,7 @@ export function HeroSection({
 
       <Reveal delay={0.12}>
         <div className="hero-visual">
-          <img src="/assets/11run.png" alt="Atleta 11RUN em movimento" />
+          <img src="/assets/logos/uniforme.png" alt="Identidade ONZERUN" />
         </div>
       </Reveal>
 

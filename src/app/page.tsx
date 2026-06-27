@@ -10,10 +10,6 @@ export default function Home() {
   return (
     <>
       <section className="home-hero">
-        <div className="home-hero-media" aria-hidden="true">
-          <img src="/assets/equipe.png" alt="" />
-        </div>
-
         <div className="home-hero-inner">
           <Reveal>
             <div className="home-hero-copy">
@@ -33,6 +29,12 @@ export default function Home() {
                   Participar da 11RUN
                 </Link>
               </div>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.08}>
+            <div className="home-hero-visual">
+              <img src="/assets/logos/uniforme.png" alt="Identidade ONZERUN" />
             </div>
           </Reveal>
         </div>
