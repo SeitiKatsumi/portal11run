@@ -23,7 +23,7 @@ const generalFields: Field[] = [
     name: "profile_type",
     label: "Perfil",
     type: "select",
-    options: ["atleta", "pai/mae/responsavel", "treinador", "projeto", "escola", "universidade", "parceiro"]
+    options: ["atleta", "pai/mãe/responsável", "treinador", "projeto", "escola", "universidade", "parceiro"]
   },
   { name: "message", label: "Mensagem", type: "textarea" }
 ];

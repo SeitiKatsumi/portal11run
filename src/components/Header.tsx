@@ -14,7 +14,7 @@ export function Header() {
         <img src="/assets/logos/11run-white.png" alt="11RUN" />
       </Link>
 
-      <nav className="desktop-nav" aria-label="Navegacao principal">
+      <nav className="desktop-nav" aria-label="Navegação principal">
         {navItems.map((item) => (
           <Link key={item.href} href={item.href}>
             {item.label}

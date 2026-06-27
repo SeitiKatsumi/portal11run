@@ -13,6 +13,6 @@ export async function POST(request: Request) {
     const lead = saveLead(payload);
     return NextResponse.json({ ok: true, id: lead.id });
   } catch {
-    return NextResponse.json({ ok: false, error: "Nao foi possivel salvar o cadastro." }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "Não foi possível salvar o cadastro." }, { status: 500 });
   }
 }

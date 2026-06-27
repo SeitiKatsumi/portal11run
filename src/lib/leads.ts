@@ -13,12 +13,12 @@ export function validateLead(payload: LeadPayload) {
   });
 
   if (missing.length > 0) {
-    return { ok: false, error: `Campos obrigatorios ausentes: ${missing.join(", ")}` };
+    return { ok: false, error: `Campos obrigatórios ausentes: ${missing.join(", ")}` };
   }
 
   const email = String(payload.email);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return { ok: false, error: "E-mail invalido." };
+    return { ok: false, error: "E-mail inválido." };
   }
 
   return { ok: true };

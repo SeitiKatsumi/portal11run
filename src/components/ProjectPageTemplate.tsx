@@ -35,7 +35,7 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
       />
 
       <section className="section split">
-        <SectionTitle eyebrow="visao institucional" title="Estrutura real para evolucao esportiva." />
+        <SectionTitle eyebrow="visão institucional" title="Estrutura real para evolução esportiva." />
         <Reveal>
           <div className="editorial-block">
             {project.body.map((paragraph) => (
@@ -56,7 +56,7 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
       ) : null}
 
       <section className="section">
-        <SectionTitle eyebrow="beneficios e criterios" title="O que esta frente entrega." />
+        <SectionTitle eyebrow="benefícios e critérios" title="O que esta frente entrega." />
         <div className="feature-grid">
           {project.features.map((feature, index) => (
             <Reveal key={feature} delay={index * 0.03}>
@@ -68,14 +68,14 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
 
       {project.timeline ? (
         <section className="section split">
-          <SectionTitle eyebrow="calendario" title="Etapas planejadas para o circuito." />
+          <SectionTitle eyebrow="calendário" title="Etapas planejadas para o circuito." />
           <Timeline items={project.timeline} />
         </section>
       ) : null}
 
       {project.comparison ? (
         <section className="section">
-          <SectionTitle eyebrow="rotas internacionais" title="EUA e Japao como caminhos possiveis." />
+          <SectionTitle eyebrow="rotas internacionais" title="EUA e Japão como caminhos possíveis." />
           <div className="comparison-grid">
             {project.comparison.map((item) => (
               <article key={item.title} className="comparison-card">
@@ -92,7 +92,7 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
 
       <CTASection
         title={project.cta}
-        text="Preencha o formulario especifico para esta frente e a equipe 11RUN podera entrar em contato com os proximos passos."
+        text="Preencha o formulário específico para esta frente e a equipe 11RUN poderá entrar em contato com os próximos passos."
         actions={[
           { label: "Abrir cadastro", href: project.formHref },
           { label: "Voltar ao portal", href: "/" }

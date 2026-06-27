@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     template: "%s | 11RUN"
   },
   description:
-    "Portal oficial da 11RUN, conectando tecnologia, formacao de base, alto rendimento, circuito infantil e oportunidades internacionais para corredores.",
+    "Portal oficial da 11RUN, conectando tecnologia, formação de base, alto rendimento, circuito infantil e oportunidades internacionais para corredores.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://portal11run.com.br")
 };
 

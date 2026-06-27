@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   return {
     title: `${config.title} - 11RUN`,
-    description: `Formulario de interesse para ${config.label} no ecossistema 11RUN.`
+    description: `Formulário de interesse para ${config.label} no ecossistema 11RUN.`
   };
 }
 
@@ -38,8 +38,8 @@ export default async function Page({ params }: PageProps) {
         <span className="eyebrow">cadastro</span>
         <h1>{config.title}</h1>
         <p>
-          Envie suas informacoes para a equipe 11RUN. Os dados ficam registrados localmente e podem ser integrados a CRM,
-          banco SQL ou automacoes futuras.
+          Envie suas informações para a equipe 11RUN. Os dados ficam registrados localmente e podem ser integrados a CRM,
+          banco SQL ou automações futuras.
         </p>
       </div>
       <LeadForm project={project as FormProjectSlug} />

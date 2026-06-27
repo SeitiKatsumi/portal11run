@@ -4,7 +4,7 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Cadastro recebido - 11RUN",
-  description: "Confirmacao de cadastro recebido pela equipe 11RUN."
+  description: "Confirmação de cadastro recebido pela equipe 11RUN."
 };
 
 export default function ObrigadoPage() {
@@ -14,7 +14,7 @@ export default function ObrigadoPage() {
       <span className="eyebrow">cadastro recebido</span>
       <h1>Cadastro recebido com sucesso.</h1>
       <p>
-        A equipe 11RUN recebeu suas informacoes e podera entrar em contato para os proximos passos. Enquanto isso,
+        A equipe 11RUN recebeu suas informações e poderá entrar em contato para os próximos passos. Enquanto isso,
         continue acompanhando os projetos e oportunidades do ecossistema 11RUN.
       </p>
       <div className="hero-actions">
