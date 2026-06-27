@@ -21,6 +21,13 @@ CREATE TABLE IF NOT EXISTS leads (
   country_interest TEXT,
   message TEXT,
   accepted_contact INTEGER NOT NULL DEFAULT 0,
+  accepted_terms INTEGER NOT NULL DEFAULT 0,
+  term_acceptor_name TEXT,
+  term_acceptor_cpf TEXT,
+  photos_json TEXT,
+  pipeline_status TEXT NOT NULL DEFAULT 'Cadastro recebido',
+  receipts_json TEXT,
   payload_json TEXT NOT NULL,
-  created_at TEXT NOT NULL
+  created_at TEXT NOT NULL,
+  updated_at TEXT
 );

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import {
   Activity,
-  ArrowRight,
   BarChart3,
   Brain,
   CalendarDays,
@@ -27,6 +26,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { FeatureBanner } from "@/components/FeatureBanner";
+import { OnzeFuturoModal } from "@/components/OnzeFuturoModal";
 import { Reveal } from "@/components/Reveal";
 
 export const metadata: Metadata = {
@@ -238,10 +238,7 @@ export default function Page() {
               apoio emocional e uma base mais sólida para o futuro do atletismo de fundo.
             </p>
             <div className="hero-actions">
-              <Link className="button primary" href="/cadastro/onze-futuro">
-                Cadastrar atleta
-                <ArrowRight size={18} />
-              </Link>
+              <OnzeFuturoModal label="Cadastrar atleta" />
               <Link className="button ghost" href="#entender">
                 Entender o projeto
               </Link>
@@ -504,10 +501,7 @@ export default function Page() {
           </p>
         </div>
         <div className="cta-actions">
-          <Link className="button primary" href="/cadastro/onze-futuro">
-            Cadastrar atleta
-            <ArrowRight size={18} />
-          </Link>
+          <OnzeFuturoModal label="Cadastrar atleta" />
           <Link className="button ghost" href="/cadastro/app-11run">
             Falar com a 11RUN
           </Link>

@@ -371,13 +371,26 @@ export const formProjects = {
     fields: [
       { name: "athlete_name", label: "Nome do atleta" },
       { name: "birth_date", label: "Data de nascimento", type: "date" },
-      { name: "age", label: "Idade", type: "number" },
-      { name: "guardian", label: "Responsável" },
+      { name: "father_name", label: "Nome do pai" },
+      { name: "mother_name", label: "Nome da mãe" },
+      { name: "guardian", label: "Responsável legal" },
+      { name: "guardian_rg", label: "RG do responsável" },
+      { name: "guardian_cpf", label: "CPF do responsável" },
+      { name: "athlete_rg", label: "RG do atleta" },
+      { name: "athlete_cpf", label: "CPF do atleta" },
+      { name: "address", label: "Endereço completo" },
+      { name: "shoe_size", label: "Tamanho do calçado" },
+      { name: "height_cm", label: "Altura em cm", type: "number" },
+      { name: "weight_kg", label: "Peso em kg", type: "number" },
+      { name: "coach_name", label: "Nome do treinador" },
+      { name: "coach_phone", label: "Contato do treinador" },
+      { name: "coach_cref", label: "CREF do treinador" },
       { name: "school", label: "Escola" },
       { name: "sports", label: "Modalidades praticadas" },
       { name: "best_marks", label: "Melhores marcas" },
       { name: "competitions", label: "Provas disputadas" },
-      { name: "social_link", label: "Link de vídeo ou Instagram" }
+      { name: "social_link", label: "Link de vídeo ou Instagram" },
+      { name: "athlete_dream", label: "Maior sonho do atleta", type: "textarea" }
     ]
   },
   "11-regional": {
