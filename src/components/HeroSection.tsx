@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { MetricCard } from "./MetricCard";
 import { Reveal } from "./Reveal";
 
@@ -23,7 +23,13 @@ export function HeroSection({
       <div className="hero-copy">
         {eyebrow ? <span className="eyebrow">{eyebrow}</span> : null}
         <Reveal>
-          <h1>{title}</h1>
+          {title === "11RUN" ? (
+            <h1 className="hero-logo-heading" aria-label="11RUN">
+              <img src="/assets/logos/11run-white.png" alt="" aria-hidden="true" />
+            </h1>
+          ) : (
+            <h1>{title}</h1>
+          )}
         </Reveal>
         <Reveal delay={0.08}>
           <p>{subtitle}</p>
@@ -46,13 +52,6 @@ export function HeroSection({
       <Reveal delay={0.12}>
         <div className="hero-visual">
           <img src="/assets/11run.png" alt="Atleta 11RUN em movimento" />
-          <div className="floating-card top">
-            <Sparkles size={18} />
-            <span>IA + dados + performance</span>
-          </div>
-          <div className="floating-card bottom">
-            <span>Base, pista e oportunidade global</span>
-          </div>
         </div>
       </Reveal>
 

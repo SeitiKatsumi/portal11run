@@ -11,7 +11,7 @@ export function Header() {
   return (
     <header className="site-header">
       <Link href="/" className="brand" aria-label="11RUN Home">
-        <img src="/assets/logos/11run-branding.png" alt="11RUN" />
+        <img src="/assets/logos/11run-white.png" alt="11RUN" />
       </Link>
 
       <nav className="desktop-nav" aria-label="Navegacao principal">
@@ -33,7 +33,7 @@ export function Header() {
       {open ? (
         <div className="mobile-nav">
           <Link href="/" onClick={() => setOpen(false)}>
-            11RUN
+            Portal 11RUN
           </Link>
           {navItems.map((item) => (
             <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
