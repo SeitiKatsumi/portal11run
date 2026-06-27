@@ -49,6 +49,14 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="photo-hero photo-hero-wide">
+        <div>
+          <span className="eyebrow">comunidade</span>
+          <h2>Atletas, famílias e treinadores dentro da mesma estrutura.</h2>
+        </div>
+        <img src="/assets/equipe.png" alt="Equipe de corredores 11RUN" />
+      </section>
+
       <section className="home-statement">
         <span>11RUN</span>
         <h2>
@@ -80,6 +88,15 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="photo-hero photo-hero-split">
+        <img src="/assets/11run.png" alt="Corredora em movimento ONZERUN" />
+        <div>
+          <span className="eyebrow">performance</span>
+          <h2>Da rotina de treino ao próximo salto competitivo.</h2>
+          <p>Uma operação pensada para organizar acompanhamento, calendário, orientação e oportunidade.</p>
+        </div>
+      </section>
+
       <section className="section split home-system">
         <SectionTitle
           eyebrow="o sistema"
@@ -105,6 +122,14 @@ export default function Home() {
             </div>
           </div>
         </Reveal>
+      </section>
+
+      <section className="photo-hero photo-hero-wide">
+        <div>
+          <span className="eyebrow">base e futuro</span>
+          <h2>O caminho começa na base e ganha escala com continuidade.</h2>
+        </div>
+        <img src="/assets/equipe.png" alt="Atletas do ecossistema 11RUN" />
       </section>
 
       <section className="section">
