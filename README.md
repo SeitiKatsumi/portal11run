@@ -45,10 +45,10 @@ O arquivo `data/schema.sql` contém a estrutura da tabela `leads`.
 
 ## Formulários
 
-- `/cadastro/onzerun`
-- `/cadastro/base-mundial`
-- `/cadastro/master-regional`
-- `/cadastro/circuito-infantil`
+- `/cadastro/app-11run`
+- `/cadastro/onze-futuro`
+- `/cadastro/11-regional`
+- `/cadastro/circuito-futuro-11`
 - `/cadastro/bolsas`
 
 Após envio com sucesso, o usuário é redirecionado para `/obrigado`.

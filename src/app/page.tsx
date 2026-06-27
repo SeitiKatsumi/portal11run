@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Flag, Globe2, Trophy, Users } from "lucide-react";
 import { CTASection } from "@/components/CTASection";
+import { FeatureBanner } from "@/components/FeatureBanner";
 import { FeatureCard } from "@/components/FeatureCard";
 import { Reveal } from "@/components/Reveal";
 import { SectionTitle } from "@/components/SectionTitle";
@@ -43,6 +44,12 @@ export default function Home() {
           ))}
         </div>
       </section>
+
+      <FeatureBanner
+        eyebrow="ecossistema 11RUN"
+        title="Mais cedo no movimento. Mais futuro no fundismo."
+        text="Uma plataforma viva para conectar formação, performance, circuito e oportunidades em um mesmo caminho."
+      />
 
       <section className="photo-hero photo-hero-wide">
         <div>
@@ -140,9 +147,9 @@ export default function Home() {
       <CTASection
         title="Escolha uma frente da 11RUN e faça parte do movimento."
         actions={[
-          { label: "Cadastrar no Onze Futuro", href: "/cadastro/base-mundial" },
-          { label: "Cadastrar no App 11Run", href: "/cadastro/onzerun" },
-          { label: "Conhecer oportunidades", href: "/bolsas-e-oportunidades" }
+          { label: "Cadastrar no Onze Futuro", href: "/cadastro/onze-futuro" },
+          { label: "Cadastrar no App 11Run", href: "/cadastro/app-11run" },
+          { label: "Conhecer oportunidades", href: "/bolsas" }
         ]}
       />
     </>

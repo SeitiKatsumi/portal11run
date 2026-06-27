@@ -44,6 +44,11 @@ export type ProjectPage = {
     title: string;
     text: string;
   };
+  banner?: {
+    eyebrow: string;
+    title: string;
+    text: string;
+  };
   timeline?: { label: string; detail: string }[];
   comparison?: { title: string; text: string }[];
   notice?: string;
@@ -55,11 +60,11 @@ export type ProjectPage = {
 
 export const navItems = [
   { label: "Início", href: "/" },
-  { label: "App 11Run", href: "/onzerun" },
-  { label: "Onze Futuro", href: "/base-mundial" },
-  { label: "11 Regional", href: "/master-regional" },
-  { label: "Circuito Futuro 11", href: "/caminho-de-um-campeao" },
-  { label: "Bolsas", href: "/bolsas-e-oportunidades" }
+  { label: "App 11Run", href: "/app-11run" },
+  { label: "Onze Futuro", href: "/onze-futuro" },
+  { label: "11 Regional", href: "/11-regional" },
+  { label: "Circuito Futuro 11", href: "/circuito-futuro-11" },
+  { label: "Bolsas", href: "/bolsas" }
 ];
 
 export const metrics = [
@@ -82,8 +87,8 @@ export const projects: ProjectPage[] = [
       "A plataforma reúne histórico, metas, cargas, indicadores e conexões para que cada decisão tenha contexto e continuidade.",
       "Cada atleta passa a ser acompanhado com mais profundidade, do treino diário ao planejamento de longo prazo."
     ],
-    href: "/onzerun",
-    formHref: "/cadastro/onzerun",
+    href: "/app-11run",
+    formHref: "/cadastro/app-11run",
     cta: "Quero participar do App 11Run",
     icon: BarChart3,
     metrics: ["14 mil usuários", "14 países", "+300 atletas Sub-14 nos 5000m"],
@@ -100,6 +105,11 @@ export const projects: ProjectPage[] = [
     highlight: {
       title: "Lançamento global: 01/07/2026",
       text: "Uma camada de organização para transformar dados, rotina e calendário em uma visão clara de evolução."
+    },
+    banner: {
+      eyebrow: "App 11Run",
+      title: "Dados que transformam rotina em evolução.",
+      text: "Um app para organizar treino, leitura de desempenho e decisões com contexto real."
     },
     metadata: {
       title: "App 11Run - Performance para corredores",
@@ -118,8 +128,8 @@ export const projects: ProjectPage[] = [
       "O Onze Futuro acompanha jovens atletas entre 10 e 13 anos, oferecendo suporte, orientação, convivência esportiva, ajuda de custo, materiais e integração ao ecossistema 11RUN.",
       "Mais do que correr provas, queremos formar atletas. Mais do que buscar medalhas agora, queremos construir base para o futuro."
     ],
-    href: "/base-mundial",
-    formHref: "/cadastro/base-mundial",
+    href: "/onze-futuro",
+    formHref: "/cadastro/onze-futuro",
     cta: "Cadastrar atleta para o Onze Futuro",
     icon: Users,
     metrics: ["4 atletas", "1 missão", "cultura esportiva", "disciplina"],
@@ -134,6 +144,11 @@ export const projects: ProjectPage[] = [
     highlight: {
       title: "Onze Futuro para chegar longe",
       text: "Suporte, oportunidade e convivência esportiva no período em que a cultura de treino começa a ser formada."
+    },
+    banner: {
+      eyebrow: "Onze Futuro",
+      title: "Mais cedo no movimento. Mais futuro no fundismo.",
+      text: "Uma frente de base para criar repertório, continuidade e cultura esportiva desde a infância."
     },
     metadata: {
       title: "Onze Futuro - 11RUN",
@@ -153,8 +168,8 @@ export const projects: ProjectPage[] = [
       "O 11 Regional nasce para atletas que continuam levando o esporte a sério, independentemente da idade.",
       "Atletas que treinam, competem, representam, buscam evolução e querem estar cercados por uma estrutura real de alto rendimento."
     ],
-    href: "/master-regional",
-    formHref: "/cadastro/master-regional",
+    href: "/11-regional",
+    formHref: "/cadastro/11-regional",
     cta: "Cadastrar interesse no 11 Regional",
     icon: Trophy,
     features: [
@@ -171,6 +186,11 @@ export const projects: ProjectPage[] = [
     },
     notice:
       "Importante: o 11 Regional é uma iniciativa 100% privada da 11RUN, sem apoio, vínculo institucional ou qualquer relação com a Prefeitura de Itatiba ou com o Departamento de Esportes de Itatiba.",
+    banner: {
+      eyebrow: "11 Regional",
+      title: "Performance local com ambição de alto rendimento.",
+      text: "Uma estrutura para atletas que continuam competindo, evoluindo e representando sua região."
+    },
     metadata: {
       title: "11 Regional - 11RUN",
       description:
@@ -188,8 +208,8 @@ export const projects: ProjectPage[] = [
       "O futuro do meio-fundo e fundo começa na pista.",
       "Vem aí o Circuito Futuro 11, o primeiro circuito de desenvolvimento competitivo em pista para crianças e pré-adolescentes de 10 a 13 anos."
     ],
-    href: "/caminho-de-um-campeao",
-    formHref: "/cadastro/circuito-infantil",
+    href: "/circuito-futuro-11",
+    formHref: "/cadastro/circuito-futuro-11",
     cta: "Cadastrar atleta no circuito",
     icon: Route,
     features: [
@@ -206,6 +226,11 @@ export const projects: ProjectPage[] = [
       { label: "Etapa 3", detail: "setembro de 2027" },
       { label: "Etapa 4", detail: "novembro de 2027" }
     ],
+    banner: {
+      eyebrow: "Circuito Futuro 11",
+      title: "Primeira pista, primeiro ritmo, futuro competitivo.",
+      text: "Um circuito para transformar a infância ativa em experiência esportiva segura e progressiva."
+    },
     metadata: {
       title: "Circuito Futuro 11",
       description:
@@ -224,7 +249,7 @@ export const projects: ProjectPage[] = [
       "O Portal de Oportunidades 11RUN nasce para organizar esse caminho.",
       "Uma ponte entre atletas, famílias, treinadores e universidades que oferecem programas de estudo, formação esportiva e desenvolvimento para corredores de fundo."
     ],
-    href: "/bolsas-e-oportunidades",
+    href: "/bolsas",
     formHref: "/cadastro/bolsas",
     cta: "Cadastrar interesse em bolsas e oportunidades",
     icon: GraduationCap,
@@ -250,6 +275,11 @@ export const projects: ProjectPage[] = [
     ],
     notice:
       "Índices e critérios são aproximados. Verifique sempre os dados atualizados nos sites oficiais das ligas, universidades, consulados e programas de bolsa.",
+    banner: {
+      eyebrow: "Bolsas",
+      title: "O caminho internacional precisa começar com clareza.",
+      text: "Uma ponte entre desempenho, documentação, universidades e oportunidades fora do Brasil."
+    },
     metadata: {
       title: "Portal de Oportunidades 11RUN",
       description:
@@ -262,35 +292,35 @@ export const ecosystemCards = [
   {
     title: "App 11Run",
     text: "Plataforma de performance para transformar dados, treinos e histórico em acompanhamento esportivo claro.",
-    href: "/onzerun",
+    href: "/app-11run",
     cta: "Conhecer o App 11Run",
     icon: BarChart3
   },
   {
     title: "Onze Futuro",
     text: "Formação de jovens atletas entre 10 e 13 anos com suporte, orientação, materiais e convivência esportiva.",
-    href: "/base-mundial",
+    href: "/onze-futuro",
     cta: "Conhecer o Onze Futuro",
     icon: Medal
   },
   {
     title: "11 Regional",
     text: "Projeto competitivo para atletas master com potencial real de destaque regional e nacional.",
-    href: "/master-regional",
+    href: "/11-regional",
     cta: "Conhecer o 11 Regional",
     icon: Trophy
   },
   {
     title: "Circuito Futuro 11",
     text: "Circuito infantil de meio-fundo em pista para crianças e pré-adolescentes de 10 a 13 anos.",
-    href: "/caminho-de-um-campeao",
+    href: "/circuito-futuro-11",
     cta: "Conhecer o Circuito Futuro 11",
     icon: Flag
   },
   {
     title: "Bolsas e Oportunidades",
     text: "Ponte entre atletas, famílias, treinadores e oportunidades universitárias nos EUA, Japão e outros centros esportivos.",
-    href: "/bolsas-e-oportunidades",
+    href: "/bolsas",
     cta: "Ver oportunidades",
     icon: Globe2
   }
@@ -310,6 +340,11 @@ export const sportIcons = [
 ];
 
 export const projectByRoute: Record<string, ProjectPage> = {
+  "app-11run": projects[0],
+  "onze-futuro": projects[1],
+  "11-regional": projects[2],
+  "circuito-futuro-11": projects[3],
+  bolsas: projects[4],
   onzerun: projects[0],
   "base-mundial": projects[1],
   "master-regional": projects[2],
@@ -318,7 +353,7 @@ export const projectByRoute: Record<string, ProjectPage> = {
 };
 
 export const formProjects = {
-  onzerun: {
+  "app-11run": {
     label: "App 11Run",
     projectType: "onzerun",
     title: "Cadastro App 11Run",
@@ -329,7 +364,7 @@ export const formProjects = {
       { name: "athletes_count", label: "Número aproximado de atletas acompanhados" }
     ]
   },
-  "base-mundial": {
+  "onze-futuro": {
     label: "Onze Futuro",
     projectType: "base-mundial",
     title: "Cadastro Onze Futuro",
@@ -345,7 +380,7 @@ export const formProjects = {
       { name: "social_link", label: "Link de vídeo ou Instagram" }
     ]
   },
-  "master-regional": {
+  "11-regional": {
     label: "11 Regional",
     projectType: "master-regional",
     title: "Cadastro 11 Regional",
@@ -360,7 +395,7 @@ export const formProjects = {
       { name: "competitive_goal", label: "Objetivo competitivo" }
     ]
   },
-  "circuito-infantil": {
+  "circuito-futuro-11": {
     label: "Circuito Futuro 11",
     projectType: "circuito-infantil",
     title: "Cadastro Circuito Futuro 11",

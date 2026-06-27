@@ -8,11 +8,11 @@ import { navItems } from "@/lib/content";
 
 const navIcons: Record<string, LucideIcon> = {
   "/": Home,
-  "/onzerun": BarChart3,
-  "/base-mundial": Medal,
-  "/master-regional": Trophy,
-  "/caminho-de-um-campeao": Flag,
-  "/bolsas-e-oportunidades": Globe2
+  "/app-11run": BarChart3,
+  "/onze-futuro": Medal,
+  "/11-regional": Trophy,
+  "/circuito-futuro-11": Flag,
+  "/bolsas": Globe2
 };
 
 export function Header() {

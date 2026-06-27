@@ -1,8 +1,5 @@
-import { createProjectMetadata, ProjectPageTemplate } from "@/components/ProjectPageTemplate";
-import { projectByRoute } from "@/lib/content";
-
-export const metadata = createProjectMetadata(projectByRoute["master-regional"]);
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <ProjectPageTemplate project={projectByRoute["master-regional"]} />;
+  redirect("/11-regional");
 }

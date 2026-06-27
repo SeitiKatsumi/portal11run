@@ -1,8 +1,5 @@
-import { createProjectMetadata, ProjectPageTemplate } from "@/components/ProjectPageTemplate";
-import { projectByRoute } from "@/lib/content";
-
-export const metadata = createProjectMetadata(projectByRoute["caminho-de-um-campeao"]);
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  return <ProjectPageTemplate project={projectByRoute["caminho-de-um-campeao"]} />;
+  redirect("/circuito-futuro-11");
 }

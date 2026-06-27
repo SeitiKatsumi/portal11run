@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import { CTASection } from "./CTASection";
+import { FeatureBanner } from "./FeatureBanner";
 import { FeatureCard } from "./FeatureCard";
 import { HeroSection } from "./HeroSection";
 import { IconBadge } from "./IconBadge";
@@ -35,6 +36,16 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
         imageSrc={project.imageSrc}
         imageAlt={project.imageAlt}
       />
+
+      {project.banner ? (
+        <FeatureBanner
+          eyebrow={project.banner.eyebrow}
+          title={project.banner.title}
+          text={project.banner.text}
+          imageSrc={project.imageSrc}
+          imageAlt={project.imageAlt}
+        />
+      ) : null}
 
       <section className="section split">
         <SectionTitle eyebrow="visão institucional" title="Estrutura real para evolução esportiva." />
