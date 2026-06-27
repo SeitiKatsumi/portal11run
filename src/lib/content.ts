@@ -20,10 +20,10 @@ import {
 import type { LucideIcon } from "lucide-react";
 
 export type ProjectKey =
-  | "onzerun"
-  | "base-mundial"
-  | "master-regional"
-  | "circuito-infantil"
+  | "app-11run"
+  | "onze-futuro"
+  | "11-regional"
+  | "circuito-futuro-11"
   | "bolsas";
 
 export type ProjectPage = {
@@ -76,7 +76,7 @@ export const metrics = [
 
 export const projects: ProjectPage[] = [
   {
-    key: "onzerun",
+    key: "app-11run",
     eyebrow: "performance orientada por dados",
     title: "App 11Run",
     subtitle: "Uma plataforma para organizar treino, leitura de desempenho e evolução esportiva com mais clareza.",
@@ -118,7 +118,7 @@ export const projects: ProjectPage[] = [
     }
   },
   {
-    key: "base-mundial",
+    key: "onze-futuro",
     eyebrow: "Onze Futuro",
     title: "Onze Futuro",
     subtitle: "O Brasil tem talento. O que falta, muitas vezes, é estrutura, continuidade e oportunidade no momento certo.",
@@ -157,7 +157,7 @@ export const projects: ProjectPage[] = [
     }
   },
   {
-    key: "master-regional",
+    key: "11-regional",
     eyebrow: "Itatiba e região",
     title: "11 Regional",
     subtitle: "Performance não tem idade.",
@@ -198,7 +198,7 @@ export const projects: ProjectPage[] = [
     }
   },
   {
-    key: "circuito-infantil",
+    key: "circuito-futuro-11",
     eyebrow: "circuito infantil",
     title: "Circuito Futuro 11",
     subtitle: "Da primeira volta na pista ao sonho de chegar mais longe.",
@@ -355,7 +355,7 @@ export const projectByRoute: Record<string, ProjectPage> = {
 export const formProjects = {
   "app-11run": {
     label: "App 11Run",
-    projectType: "onzerun",
+    projectType: "app-11run",
     title: "Cadastro App 11Run",
     fields: [
       { name: "usage_profile", label: "Perfil de uso", type: "select", options: ["atleta", "treinador", "projeto", "assessoria", "clube"] },
@@ -366,7 +366,7 @@ export const formProjects = {
   },
   "onze-futuro": {
     label: "Onze Futuro",
-    projectType: "base-mundial",
+    projectType: "onze-futuro",
     title: "Cadastro Onze Futuro",
     fields: [
       { name: "athlete_name", label: "Nome do atleta" },
@@ -382,7 +382,7 @@ export const formProjects = {
   },
   "11-regional": {
     label: "11 Regional",
-    projectType: "master-regional",
+    projectType: "11-regional",
     title: "Cadastro 11 Regional",
     fields: [
       { name: "athlete_name", label: "Nome do atleta" },
@@ -397,7 +397,7 @@ export const formProjects = {
   },
   "circuito-futuro-11": {
     label: "Circuito Futuro 11",
-    projectType: "circuito-infantil",
+    projectType: "circuito-futuro-11",
     title: "Cadastro Circuito Futuro 11",
     fields: [
       { name: "athlete_name", label: "Nome do atleta" },

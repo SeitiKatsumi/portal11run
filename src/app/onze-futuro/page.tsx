@@ -30,7 +30,7 @@ import { FeatureBanner } from "@/components/FeatureBanner";
 import { Reveal } from "@/components/Reveal";
 
 export const metadata: Metadata = {
-  title: "Onze Futuro | Projeto Base Mundial 11RUN",
+  title: "Onze Futuro | 11RUN",
   description:
     "O Onze Futuro é a frente de base da 11RUN para jovens atletas de 10 a 13 anos, com projeto piloto de 2026 a 2029, apoio técnico, psicológico, materiais, ajuda de custo e integração ao Circuito 11RUN."
 };
@@ -225,7 +225,7 @@ export default function Page() {
       <section className="futuro-hero">
         <div className="futuro-hero-copy">
           <Reveal>
-            <span className="eyebrow">Projeto Base Mundial 11RUN</span>
+            <span className="eyebrow">Onze Futuro 11RUN</span>
             <h1>Onze Futuro</h1>
             <strong>Mais cedo no movimento. Mais futuro no fundismo.</strong>
             <p>
