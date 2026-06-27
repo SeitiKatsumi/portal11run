@@ -77,7 +77,7 @@ No CapRover, crie o app, conecte o repositório e faça deploy usando o `captain
 Configurações importantes no CapRover:
 
 ```txt
-Porta HTTP do Container: 3000
+Porta HTTP do Container: 80
 Diretório Persistente - Caminho no App: /data
 Variável de ambiente: SQLITE_PATH=/data/portal11run.sqlite
 ```
