@@ -13,6 +13,7 @@
   --radius: 18px;
   --radius-sm: 12px;
   --max: 1280px;
+  --asset-revision: 202606271;
 }
 
 * {
@@ -62,10 +63,10 @@ main {
   width: min(calc(100% - 48px), 1240px);
   min-height: 68px;
   margin: 0 auto;
-  padding: 0 clamp(20px, 3vw, 34px);
+  padding: 0 clamp(18px, 2.5vw, 30px);
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  gap: clamp(34px, 4vw, 64px);
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  gap: clamp(20px, 2.6vw, 42px);
   align-items: center;
   background: var(--surface);
   border: 1px solid var(--line);
@@ -80,7 +81,7 @@ main {
 }
 
 .brand img {
-  width: 138px;
+  width: 126px;
   max-height: 42px;
   object-fit: contain;
 }
@@ -88,19 +89,34 @@ main {
 .desktop-nav {
   display: flex;
   justify-content: center;
-  gap: clamp(22px, 2.6vw, 38px);
+  gap: clamp(14px, 1.75vw, 26px);
   color: var(--muted);
-  font-size: 0.76rem;
+  font-size: 0.7rem;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.075em;
   text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.desktop-nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.desktop-nav svg {
+  flex: 0 0 auto;
+  color: var(--accent-strong);
 }
 
 .header-cta {
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.075em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
 .desktop-nav a,
@@ -142,7 +158,7 @@ main {
 
 .header-cta::after {
   content: "";
-  width: 32px;
+  width: 24px;
   height: 1px;
   margin-left: 10px;
   background: currentColor;
@@ -205,6 +221,7 @@ main {
 .section,
 .cta-section,
 .manifesto,
+.form-hero,
 .form-page,
 .thanks-page,
 .highlight-band,
@@ -266,7 +283,6 @@ main {
 .home-hero-visual {
   aspect-ratio: 16 / 9;
   width: 100%;
-  padding: clamp(24px, 4vw, 46px);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -276,9 +292,9 @@ main {
 }
 
 .home-hero-visual img {
-  width: min(100%, 620px);
+  width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .hero-actions,
@@ -457,6 +473,8 @@ main {
 .metric-card,
 .editorial-block,
 .comparison-card,
+.form-hero img,
+.thanks-page img,
 .system-panel div,
 .lead-form,
 .site-footer,
@@ -495,6 +513,19 @@ main {
 .timeline-item svg,
 .thanks-page svg {
   color: var(--accent-strong);
+}
+
+.project-lane > svg {
+  width: 42px;
+  height: 42px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-muted);
+}
+
+.section-title .icon-badge {
+  margin-bottom: 18px;
 }
 
 .project-lane h3,
@@ -594,7 +625,7 @@ main {
 .hero-visual img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .hero-metrics {
@@ -755,17 +786,37 @@ main {
   line-height: 1.7;
 }
 
-.form-page {
+.form-hero {
   display: grid;
-  grid-template-columns: 0.72fr 1.28fr;
-  gap: 42px;
-  padding: 150px 0 92px;
+  grid-template-columns: 0.82fr 1.18fr;
+  gap: clamp(34px, 6vw, 78px);
+  align-items: center;
+  padding: 150px 0 44px;
 }
 
-.form-intro {
+.form-hero img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
+.form-page {
+  display: grid;
+  grid-template-columns: 0.52fr 1.48fr;
+  gap: 42px;
+  padding: 40px 0 92px;
+}
+
+.form-side-note {
   position: sticky;
   top: 120px;
   align-self: start;
+  padding-top: 8px;
+}
+
+.form-side-note p {
+  color: var(--muted);
+  line-height: 1.8;
 }
 
 .lead-form {
@@ -861,8 +912,15 @@ main {
   min-height: 62vh;
   padding: 150px 0 110px;
   display: grid;
-  justify-items: start;
-  align-content: center;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: clamp(34px, 6vw, 78px);
+  align-items: center;
+}
+
+.thanks-page img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
 }
 
 .footer-logo {
@@ -927,7 +985,9 @@ main {
   .photo-hero-split,
   .hero-section,
   .section.split,
+  .form-hero,
   .form-page,
+  .thanks-page,
   .cta-section {
     grid-template-columns: 1fr;
   }
@@ -942,7 +1002,7 @@ main {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .form-intro,
+  .form-side-note,
   .home-system .section-title {
     position: static;
   }
@@ -953,6 +1013,7 @@ main {
   .section,
   .cta-section,
   .manifesto,
+  .form-hero,
   .form-page,
   .thanks-page,
   .highlight-band,
@@ -979,10 +1040,6 @@ main {
     width: min(calc(100% - 28px), var(--max));
     padding-top: 118px;
     padding-bottom: 320px;
-  }
-
-  .home-hero-visual {
-    padding: 18px;
   }
 
   .home-hero-logo {

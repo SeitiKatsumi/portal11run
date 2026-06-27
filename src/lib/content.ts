@@ -31,6 +31,8 @@ export type ProjectPage = {
   eyebrow: string;
   title: string;
   subtitle: string;
+  imageSrc: string;
+  imageAlt: string;
   body: string[];
   href: string;
   formHref: string;
@@ -73,6 +75,8 @@ export const projects: ProjectPage[] = [
     eyebrow: "performance orientada por dados",
     title: "ONZERUN",
     subtitle: "Uma plataforma para organizar treino, leitura de desempenho e evolução esportiva com mais clareza.",
+    imageSrc: "/assets/11run.png",
+    imageAlt: "Corredora em movimento representando performance e tecnologia",
     body: [
       "O ONZERUN nasce para atletas, treinadores e projetos que querem ir além da planilha e transformar rotina esportiva em acompanhamento consistente.",
       "A plataforma reúne histórico, metas, cargas, indicadores e conexões para que cada decisão tenha contexto e continuidade.",
@@ -108,6 +112,8 @@ export const projects: ProjectPage[] = [
     eyebrow: "formação de base",
     title: "Projeto Base Mundial 11RUN",
     subtitle: "O Brasil tem talento. O que falta, muitas vezes, é estrutura, continuidade e oportunidade no momento certo.",
+    imageSrc: "/assets/equipe.png",
+    imageAlt: "Jovens atletas reunidos em treino 11RUN",
     body: [
       "O Projeto Base Mundial 11RUN acompanha jovens atletas entre 10 e 13 anos, oferecendo suporte, orientação, convivência esportiva, ajuda de custo, materiais e integração ao Circuito 11RUN.",
       "Mais do que correr provas, queremos formar atletas. Mais do que buscar medalhas agora, queremos construir base para o futuro."
@@ -140,6 +146,8 @@ export const projects: ProjectPage[] = [
     eyebrow: "Itatiba e região",
     title: "Master Itatiba e Região",
     subtitle: "Performance não tem idade.",
+    imageSrc: "/assets/equipe.png",
+    imageAlt: "Equipe de corredores em ambiente de preparação esportiva",
     body: [
       "A 11RUN é global no alcance. Mas em Itatiba, o compromisso é local.",
       "O projeto Master Itatiba e Região nasce para atletas que continuam levando o esporte a sério, independentemente da idade.",
@@ -174,6 +182,8 @@ export const projects: ProjectPage[] = [
     eyebrow: "circuito infantil",
     title: "Caminho de um Campeão 2027",
     subtitle: "Da primeira volta na pista ao sonho de chegar mais longe.",
+    imageSrc: "/assets/equipe.png",
+    imageAlt: "Atletas de base em contexto de desenvolvimento esportivo",
     body: [
       "O futuro do meio-fundo e fundo começa na pista.",
       "Vem aí o Caminho de um Campeão 2027, o primeiro circuito de desenvolvimento competitivo em pista para crianças e pré-adolescentes de 10 a 13 anos."
@@ -207,6 +217,8 @@ export const projects: ProjectPage[] = [
     eyebrow: "oportunidades internacionais",
     title: "Portal de Oportunidades 11RUN",
     subtitle: "Bolsas universitárias para jovens fundistas: o caminho que muitos talentos ainda não sabem que existe.",
+    imageSrc: "/assets/11run.png",
+    imageAlt: "Corredora de alta performance em movimento",
     body: [
       "No Brasil, existem atletas jovens com disciplina, potencial e sonhos grandes. Mas entre correr bem e conquistar uma oportunidade internacional, existe uma jornada que quase ninguém explica com clareza.",
       "O Portal de Oportunidades 11RUN nasce para organizar esse caminho.",

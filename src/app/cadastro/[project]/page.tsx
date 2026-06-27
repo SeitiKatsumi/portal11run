@@ -28,21 +28,36 @@ export default async function Page({ params }: PageProps) {
     notFound();
   }
 
+  const formImage = project === "onzerun" || project === "bolsas" ? "/assets/11run.png" : "/assets/equipe.png";
+
   return (
-    <section className="form-page">
-      <div className="form-intro">
-        <Link href="/" className="back-link">
-          <ArrowLeft size={18} />
-          Portal 11RUN
-        </Link>
-        <span className="eyebrow">cadastro</span>
-        <h1>{config.title}</h1>
-        <p>
-          Envie suas informações para a equipe 11RUN. Os dados ficam registrados localmente e podem ser integrados a CRM,
-          banco SQL ou automações futuras.
-        </p>
-      </div>
-      <LeadForm project={project as FormProjectSlug} />
-    </section>
+    <>
+      <section className="form-hero">
+        <div className="form-intro">
+          <Link href="/" className="back-link">
+            <ArrowLeft size={18} />
+            Portal 11RUN
+          </Link>
+          <span className="eyebrow">cadastro</span>
+          <h1>{config.title}</h1>
+          <p>
+            Envie suas informações para a equipe 11RUN. Os dados ficam registrados localmente e podem ser integrados a
+            CRM, banco SQL ou automações futuras.
+          </p>
+        </div>
+        <img src={formImage} alt={`Cadastro ${config.label}`} />
+      </section>
+
+      <section className="form-page">
+        <div className="form-side-note">
+          <span className="eyebrow">participação</span>
+          <p>
+            Preencha os dados com atenção para que a equipe consiga avaliar o perfil, o momento esportivo e a melhor
+            frente de entrada no ecossistema 11RUN.
+          </p>
+        </div>
+        <LeadForm project={project as FormProjectSlug} />
+      </section>
+    </>
   );
 }

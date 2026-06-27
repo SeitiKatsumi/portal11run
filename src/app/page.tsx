@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Flag, Globe2, Medal, Trophy } from "lucide-react";
+import { ArrowRight, Flag, Globe2, Network, Route, Target, Trophy, Users } from "lucide-react";
 import { CTASection } from "@/components/CTASection";
 import { FeatureCard } from "@/components/FeatureCard";
 import { Reveal } from "@/components/Reveal";
@@ -34,7 +34,7 @@ export default function Home() {
 
           <Reveal delay={0.08}>
             <div className="home-hero-visual">
-              <img src="/assets/logos/uniforme.png" alt="Identidade ONZERUN" />
+              <img src="/assets/equipe.png" alt="Atletas do ecossistema 11RUN em treino" />
             </div>
           </Reveal>
         </div>
@@ -67,6 +67,7 @@ export default function Home() {
 
       <section className="section home-projects" id="projetos">
         <SectionTitle
+          icon={Route}
           eyebrow="frentes do ecossistema"
           title="Cinco frentes, uma mesma esteira de evolução."
           text="Cada iniciativa funciona como uma trilha independente, mas todas alimentam o mesmo sistema de formação, performance e oportunidade."
@@ -99,6 +100,7 @@ export default function Home() {
 
       <section className="section split home-system">
         <SectionTitle
+          icon={Network}
           eyebrow="o sistema"
           title="Da descoberta do talento ao contexto que sustenta a performance."
           text="A 11RUN conecta tecnologia, base, circuito, projetos regionais e oportunidades internacionais em uma experiência única."
@@ -133,10 +135,10 @@ export default function Home() {
       </section>
 
       <section className="section">
-        <SectionTitle eyebrow="impacto" title="Uma operação para levar a pista local ao mapa global." />
+        <SectionTitle icon={Target} eyebrow="impacto" title="Uma operação para levar a pista local ao mapa global." />
         <div className="feature-grid compact">
           <FeatureCard title="Alto rendimento" icon={Trophy} />
-          <FeatureCard title="Base mundial" icon={Medal} />
+          <FeatureCard title="Base mundial" icon={Users} />
           <FeatureCard title="Circuito infantil" icon={Flag} />
           <FeatureCard title="Oportunidade internacional" icon={Globe2} />
         </div>

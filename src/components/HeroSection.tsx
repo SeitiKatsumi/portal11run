@@ -9,7 +9,9 @@ export function HeroSection({
   subtitle,
   primaryCta,
   secondaryCta,
-  metrics
+  metrics,
+  imageSrc,
+  imageAlt
 }: {
   eyebrow?: string;
   title: string;
@@ -17,6 +19,8 @@ export function HeroSection({
   primaryCta: { label: string; href: string };
   secondaryCta?: { label: string; href: string };
   metrics?: { value: string; label: string }[];
+  imageSrc?: string;
+  imageAlt?: string;
 }) {
   return (
     <section className="hero-section">
@@ -51,7 +55,7 @@ export function HeroSection({
 
       <Reveal delay={0.12}>
         <div className="hero-visual">
-          <img src="/assets/logos/uniforme.png" alt="Identidade ONZERUN" />
+          <img src={imageSrc ?? "/assets/equipe.png"} alt={imageAlt ?? "Atletas do ecossistema 11RUN"} />
         </div>
       </Reveal>
 
