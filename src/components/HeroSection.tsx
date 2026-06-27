@@ -27,13 +27,7 @@ export function HeroSection({
       <div className="hero-copy">
         {eyebrow ? <span className="eyebrow">{eyebrow}</span> : null}
         <Reveal>
-          {title === "11RUN" ? (
-            <h1 className="hero-logo-heading" aria-label="11RUN">
-              <img src="/assets/logos/11run-white.png" alt="" aria-hidden="true" />
-            </h1>
-          ) : (
-            <h1>{title}</h1>
-          )}
+          <h1>{title}</h1>
         </Reveal>
         <Reveal delay={0.08}>
           <p>{subtitle}</p>

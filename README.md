@@ -1,6 +1,6 @@
 # Portal 11RUN
 
-Portal institucional oficial do ecossistema 11RUN Brazil, com páginas internas para ONZERUN, Projeto Base Mundial, Master Itatiba e Região, Caminho de um Campeão 2027 e Bolsas/Oportunidades.
+Portal institucional oficial do ecossistema 11RUN Brazil, com páginas internas para App 11Run, Onze Futuro, 11 Regional, Circuito Futuro 11 e Bolsas/Oportunidades.
 
 ## Stack
 

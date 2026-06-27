@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, CheckCircle2, ClipboardCheck, GalleryHorizontalEnd, ListChecks } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
 import { CTASection } from "./CTASection";
 import { FeatureCard } from "./FeatureCard";
 import { HeroSection } from "./HeroSection";
@@ -37,7 +37,7 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
       />
 
       <section className="section split">
-        <SectionTitle icon={GalleryHorizontalEnd} eyebrow="visão institucional" title="Estrutura real para evolução esportiva." />
+        <SectionTitle eyebrow="visão institucional" title="Estrutura real para evolução esportiva." />
         <Reveal>
           <div className="editorial-block">
             {project.body.map((paragraph) => (
@@ -58,7 +58,7 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
       ) : null}
 
       <section className="section">
-        <SectionTitle icon={ListChecks} eyebrow="benefícios e critérios" title="O que esta frente entrega." />
+        <SectionTitle eyebrow="benefícios e critérios" title="O que esta frente entrega." />
         <div className="feature-grid">
           {project.features.map((feature, index) => (
             <Reveal key={feature} delay={index * 0.03}>
@@ -70,14 +70,14 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
 
       {project.timeline ? (
         <section className="section split">
-          <SectionTitle icon={ClipboardCheck} eyebrow="calendário" title="Etapas planejadas para o circuito." />
+          <SectionTitle eyebrow="calendário" title="Etapas planejadas para o circuito." />
           <Timeline items={project.timeline} />
         </section>
       ) : null}
 
       {project.comparison ? (
         <section className="section">
-          <SectionTitle icon={project.icon} eyebrow="rotas internacionais" title="EUA e Japão como caminhos possíveis." />
+          <SectionTitle eyebrow="rotas internacionais" title="EUA e Japão como caminhos possíveis." />
           <div className="comparison-grid">
             {project.comparison.map((item) => (
               <article key={item.title} className="comparison-card">

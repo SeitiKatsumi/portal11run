@@ -21,7 +21,7 @@ export function Header() {
   return (
     <header className="site-header">
       <Link href="/" className="brand" aria-label="11RUN Home">
-        <img src="/assets/logos/11run-branding.png" alt="11RUN" />
+        <img src="/assets/logos/onzerun-menu.png" alt="11RUN" />
       </Link>
 
       <nav className="desktop-nav" aria-label="Navegação principal">
@@ -35,10 +35,6 @@ export function Header() {
           );
         })}
       </nav>
-
-      <Link className="header-cta" href="/cadastro/onzerun">
-        Participar
-      </Link>
 
       <button className="menu-button" type="button" onClick={() => setOpen((value) => !value)} aria-label="Abrir menu">
         {open ? <X size={22} /> : <Menu size={22} />}
@@ -55,9 +51,6 @@ export function Header() {
               </Link>
             );
           })}
-          <Link href="/cadastro/onzerun" onClick={() => setOpen(false)}>
-            Participar
-          </Link>
         </div>
       ) : null}
     </header>

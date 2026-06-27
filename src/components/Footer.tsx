@@ -5,7 +5,7 @@ export function Footer() {
   return (
     <footer className="site-footer">
       <div>
-        <img src="/assets/logos/11run-branding-alt.png" alt="11RUN" className="footer-logo" />
+        <img src="/assets/logos/onzerun-menu.png" alt="11RUN" className="footer-logo" />
         <p>Ecossistema de desenvolvimento esportivo, alto rendimento e oportunidades para corredores.</p>
       </div>
       <div>
