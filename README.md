@@ -82,6 +82,14 @@ Diretório Persistente - Caminho no App: /data
 Variável de ambiente: SQLITE_PATH=/data/portal11run.sqlite
 ```
 
+Healthcheck do app:
+
+```txt
+/api/health
+```
+
+Se `11run.com.br` mostrar `Nothing here yet`, o domínio ainda está no placeholder/default do CapRover ou não foi salvo no app correto. A porta do container deste projeto é sempre `80`.
+
 Para persistir leads em produção no CapRover, configure um diretório persistente com:
 
 ```txt
