@@ -10,6 +10,13 @@ import { ecosystemCards, metrics } from "@/lib/content";
 export default function Home() {
   return (
     <>
+      <FeatureBanner
+        eyebrow="ecossistema 11RUN"
+        title="Mais cedo no movimento. Mais futuro no fundismo."
+        text="Uma plataforma viva para conectar formação, performance, circuito e oportunidades em um mesmo caminho."
+        cta={{ label: "Cadastrar na 11RUN", href: "/cadastro/app-11run" }}
+      />
+
       <section className="home-hero">
         <div className="home-hero-inner">
           <Reveal>
@@ -22,6 +29,10 @@ export default function Home() {
               <div className="hero-actions">
                 <Link className="button primary" href="#projetos">
                   Conhecer os projetos
+                  <ArrowRight size={18} />
+                </Link>
+                <Link className="button ghost" href="/cadastro/app-11run">
+                  Cadastrar na 11RUN
                   <ArrowRight size={18} />
                 </Link>
               </div>
@@ -44,12 +55,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      <FeatureBanner
-        eyebrow="ecossistema 11RUN"
-        title="Mais cedo no movimento. Mais futuro no fundismo."
-        text="Uma plataforma viva para conectar formação, performance, circuito e oportunidades em um mesmo caminho."
-      />
 
       <section className="photo-hero photo-hero-wide">
         <div>

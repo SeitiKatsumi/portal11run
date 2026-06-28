@@ -408,6 +408,21 @@ function DataPanel() {
 export function AppPerformanceLanding() {
   return (
     <div className="ai-page">
+      <section className="ai-photo-banner">
+        <img src="/assets/11run.png" alt="Corredora em movimento representando performance com inteligência artificial" />
+        <div>
+          <span>Inteligência aplicada</span>
+          <h2>Dados brutos entram. Decisão esportiva sai.</h2>
+          <p>
+            O 11RUN transforma treino, prova, corpo, recuperação e contexto em leitura prática para atletas,
+            treinadores e projetos de base.
+          </p>
+          <Link className="ai-button primary ai-photo-cta" href="/cadastro/app-11run">
+            Abrir cadastro <ArrowRight size={18} />
+          </Link>
+        </div>
+      </section>
+
       <section className="ai-hero">
         <div className="ai-hero-copy">
           <span className="ai-eyebrow">11RUN AI Performance OS</span>
@@ -459,18 +474,6 @@ export function AppPerformanceLanding() {
             percepção de esforço, sono, dor, exames, imagens, histórico, metas e contexto individual.
           </p>
           <strong>Não é só registrar dados. É entender o que eles significam.</strong>
-        </div>
-      </section>
-
-      <section className="ai-photo-banner">
-        <img src="/assets/11run.png" alt="Corredora em movimento representando performance com inteligência artificial" />
-        <div>
-          <span>Inteligência aplicada</span>
-          <h2>Dados brutos entram. Decisão esportiva sai.</h2>
-          <p>
-            O 11RUN transforma treino, prova, corpo, recuperação e contexto em leitura prática para atletas,
-            treinadores e projetos de base.
-          </p>
         </div>
       </section>
 

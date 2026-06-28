@@ -187,6 +187,15 @@ function Checklist({ items }: { items: string[] }) {
 export default function Page() {
   return (
     <main className="regional-page">
+      <FeatureBanner
+        eyebrow="11 Regional"
+        title="Performance não nasce do improviso. Nasce de direção."
+        text="Uma frente master com estrutura, regularização, equipamentos, calendário competitivo e comando técnico de alto rendimento."
+        imageSrc={image}
+        imageAlt="Corredora em movimento no banner do 11 Regional"
+        cta={{ label: "Cadastrar interesse", href: "/cadastro/11-regional" }}
+      />
+
       <section className="regional-hero" id="topo">
         <div className="regional-hero-copy">
           <span className="eyebrow">Itatiba e região</span>
@@ -221,6 +230,10 @@ export default function Page() {
               Participar dos treinos
               <ArrowRight size={18} />
             </Link>
+            <Link className="button ghost" href="/cadastro/11-regional">
+              Cadastrar interesse
+              <ArrowRight size={18} />
+            </Link>
           </div>
         </div>
 
@@ -243,14 +256,6 @@ export default function Page() {
           ))}
         </div>
       </section>
-
-      <FeatureBanner
-        eyebrow="11 Regional"
-        title="Performance não nasce do improviso. Nasce de direção."
-        text="Uma frente master com estrutura, regularização, equipamentos, calendário competitivo e comando técnico de alto rendimento."
-        imageSrc={image}
-        imageAlt="Corredora em movimento no banner do 11 Regional"
-      />
 
       <section className="regional-section split" id="projeto">
         <div>

@@ -26,6 +26,17 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
 
   return (
     <>
+      {project.banner ? (
+        <FeatureBanner
+          eyebrow={project.banner.eyebrow}
+          title={project.banner.title}
+          text={project.banner.text}
+          imageSrc={project.imageSrc}
+          imageAlt={project.imageAlt}
+          cta={{ label: project.cta, href: project.formHref }}
+        />
+      ) : null}
+
       <HeroSection
         eyebrow={project.eyebrow}
         title={project.title}
@@ -36,16 +47,6 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
         imageSrc={project.imageSrc}
         imageAlt={project.imageAlt}
       />
-
-      {project.banner ? (
-        <FeatureBanner
-          eyebrow={project.banner.eyebrow}
-          title={project.banner.title}
-          text={project.banner.text}
-          imageSrc={project.imageSrc}
-          imageAlt={project.imageAlt}
-        />
-      ) : null}
 
       <section className="section split">
         <SectionTitle eyebrow="visão institucional" title="Estrutura real para evolução esportiva." />

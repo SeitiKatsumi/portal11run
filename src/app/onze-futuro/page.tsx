@@ -222,6 +222,13 @@ function SectionHeader({ eyebrow, title, text }: { eyebrow: string; title: strin
 export default function Page() {
   return (
     <div className="futuro-landing">
+      <FeatureBanner
+        eyebrow="Onze Futuro"
+        title="Mais cedo no movimento. Mais futuro no fundismo."
+        text="Uma frente de base para transformar talento, rotina e continuidade em um caminho real para jovens corredores."
+        cta={{ label: "Cadastrar atleta", href: "/cadastro/onze-futuro" }}
+      />
+
       <section className="futuro-hero">
         <div className="futuro-hero-copy">
           <Reveal>
@@ -258,12 +265,6 @@ export default function Page() {
           ))}
         </div>
       </section>
-
-      <FeatureBanner
-        eyebrow="Onze Futuro"
-        title="Mais cedo no movimento. Mais futuro no fundismo."
-        text="Uma frente de base para transformar talento, rotina e continuidade em um caminho real para jovens corredores."
-      />
 
       <section className="futuro-section futuro-scenario" id="entender">
         <SectionHeader
