@@ -38,7 +38,23 @@ export type LeadRecord = {
   updated_at: string | null;
 };
 
-export const pipelineStatuses = ["Cadastro recebido", "Em análise", "Aceitos", "Declinados", "Outros"] as const;
+export const pipelineStatuses = [
+  "Cadastro recebido",
+  "Em análise",
+  "Aceitos",
+  "Aceitas",
+  "Declinados",
+  "Outros",
+  "Perfil redes sociais",
+  "Inscrições solicitadas",
+  "Aguardando pagamento"
+] as const;
+
+const initialPipelineStatusByProject: Record<string, string> = {
+  "circuito-futuro-11": "Inscrições solicitadas",
+  "11-regional": "Cadastro recebido",
+  "onze-futuro": "Cadastro recebido"
+};
 
 export const receiptItems = [
   "Uniforme",
@@ -127,7 +143,7 @@ function getDatabase() {
   return database;
 }
 
-export function validateLead(payload: LeadPayload, options?: { photoCount?: number }) {
+export function validateLead(payload: LeadPayload, options?: { photoCount?: number; paymentReceiptCount?: number }) {
   const missing = requiredFields.filter((field) => {
     const value = payload[field];
     return value === undefined || value === "" || value === false;
@@ -159,6 +175,7 @@ export function validateLead(payload: LeadPayload, options?: { photoCount?: numb
       "athlete_cpf",
       "guardian_rg",
       "guardian_cpf",
+      "guardian_pix",
       "athlete_dream",
       "term_acceptor_name",
       "term_acceptor_cpf"
@@ -193,6 +210,62 @@ export function validateLead(payload: LeadPayload, options?: { photoCount?: numb
     if (options?.photoCount !== 5) {
       return { ok: false, error: "Envie exatamente 5 fotos do atleta." };
     }
+  }
+
+  if (payload.project_type === "circuito-futuro-11") {
+    const requiredCircuitoFields = [
+      "guardian_name",
+      "guardian_cpf",
+      "guardian_rg",
+      "guardian_email",
+      "guardian_phone",
+      "athlete_name",
+      "athlete_cpf",
+      "athlete_rg",
+      "birth_date",
+      "race_event",
+      "payment_plan",
+      "term_acceptor_name",
+      "term_acceptor_cpf"
+    ];
+
+    const missingProjectFields = requiredCircuitoFields.filter((field) => !payload[field]);
+    if (missingProjectFields.length > 0) {
+      return { ok: false, error: `Campos obrigatórios do Circuito Futuro 11 ausentes: ${missingProjectFields.join(", ")}` };
+    }
+
+    if (!isValidCpf(String(payload.athlete_cpf))) return { ok: false, error: "CPF do atleta inválido." };
+    if (!isValidCpf(String(payload.guardian_cpf))) return { ok: false, error: "CPF do responsável inválido." };
+    if (!isValidCpf(String(payload.term_acceptor_cpf))) return { ok: false, error: "CPF de quem aceitou o termo inválido." };
+    if (payload.accepted_terms !== true) return { ok: false, error: "O termo de autorização precisa ser aceito." };
+    if (options?.paymentReceiptCount !== 1) return { ok: false, error: "Envie o comprovante de pagamento da inscrição." };
+  }
+
+  if (payload.project_type === "11-regional") {
+    const requiredRegionalFields = [
+      "cpf",
+      "rg",
+      "address",
+      "social_link",
+      "best_marks",
+      "competitions",
+      "within_itatiba_radius",
+      "term_acceptor_name",
+      "term_acceptor_cpf"
+    ];
+
+    const missingProjectFields = requiredRegionalFields.filter((field) => !payload[field]);
+    if (missingProjectFields.length > 0) {
+      return { ok: false, error: `Campos obrigatórios do 11 Regional ausentes: ${missingProjectFields.join(", ")}` };
+    }
+
+    if (String(payload.within_itatiba_radius) !== "sim") {
+      return { ok: false, error: "O atleta precisa morar em Itatiba ou em raio de até 40 km." };
+    }
+
+    if (!isValidCpf(String(payload.cpf))) return { ok: false, error: "CPF do atleta inválido." };
+    if (!isValidCpf(String(payload.term_acceptor_cpf))) return { ok: false, error: "CPF de quem aceitou o termo inválido." };
+    if (payload.accepted_terms !== true) return { ok: false, error: "O termo de inscrição precisa ser aceito." };
   }
 
   return { ok: true };
@@ -302,7 +375,7 @@ export function saveLead(payload: LeadPayload, photos: string[] = []) {
       $term_acceptor_name: String(payload.term_acceptor_name ?? ""),
       $term_acceptor_cpf: cleanCpf(String(payload.term_acceptor_cpf ?? "")),
       $photos_json: JSON.stringify(photos),
-      $pipeline_status: "Cadastro recebido",
+      $pipeline_status: initialPipelineStatusByProject[String(payload.project_type ?? "")] ?? "Cadastro recebido",
       $receipts_json: JSON.stringify({}),
       $payload_json: JSON.stringify(record),
       $created_at: record.created_at,

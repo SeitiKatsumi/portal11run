@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import type { ReactNode } from "react";
 import { MetricCard } from "./MetricCard";
 import { Reveal } from "./Reveal";
 
@@ -8,6 +9,7 @@ export function HeroSection({
   title,
   subtitle,
   primaryCta,
+  primaryCtaSlot,
   secondaryCta,
   metrics,
   imageSrc,
@@ -16,7 +18,8 @@ export function HeroSection({
   eyebrow?: string;
   title: string;
   subtitle: string;
-  primaryCta: { label: string; href: string };
+  primaryCta?: { label: string; href: string };
+  primaryCtaSlot?: ReactNode;
   secondaryCta?: { label: string; href: string };
   metrics?: { value: string; label: string }[];
   imageSrc?: string;
@@ -34,10 +37,13 @@ export function HeroSection({
         </Reveal>
         <Reveal delay={0.14}>
           <div className="hero-actions">
-            <Link className="button primary" href={primaryCta.href}>
-              {primaryCta.label}
-              <ArrowRight size={18} />
-            </Link>
+            {primaryCtaSlot ?? null}
+            {!primaryCtaSlot && primaryCta ? (
+              <Link className="button primary" href={primaryCta.href}>
+                {primaryCta.label}
+                <ArrowRight size={18} />
+              </Link>
+            ) : null}
             {secondaryCta ? (
               <Link className="button ghost" href={secondaryCta.href}>
                 {secondaryCta.label}

@@ -26,13 +26,13 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { FeatureBanner } from "@/components/FeatureBanner";
-import { OnzeFuturoModal } from "@/components/OnzeFuturoModal";
+import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { Reveal } from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "Onze Futuro | 11RUN",
   description:
-    "O Onze Futuro é a frente de base da 11RUN para jovens atletas de 10 a 13 anos, com projeto piloto de 2026 a 2029, apoio técnico, psicológico, materiais, ajuda de custo e integração ao Circuito 11RUN."
+    "O Onze Futuro  a frente de base da 11RUN para jovens atletas de 10 a 13 anos, com projeto piloto de 2026 a 2029, apoio técnico, psicológico, materiais, ajuda de custo e integraçãno ano Circuito 11RUN."
 };
 
 const image = "/assets/11run.png";
@@ -52,7 +52,7 @@ const problemCards = [
   { icon: Route, title: "Pouco acesso a estrutura esportiva" },
   { icon: Brain, title: "Falta de apoio técnico e psicológico" },
   { icon: LineChart, title: "Descontinuidade na formação" },
-  { icon: HeartHandshake, title: "Desigualdade de oportunidades" },
+  { icon: HeartHandshake, title: "DesiÁgualdade de oportunidades" },
   { icon: Activity, title: "Pouca cultura de movimento" },
   { icon: Target, title: "Falta de perspectiva para jovens atletas" }
 ];
@@ -61,7 +61,7 @@ const objectiveCards = [
   { icon: Activity, title: "Desenvolver cultura de movimento desde cedo" },
   { icon: Dumbbell, title: "Criar repertório motor e esportivo" },
   { icon: Flag, title: "Inserir atletas no ambiente competitivo com segurança" },
-  { icon: HeartHandshake, title: "Apoiar famílias que já vivem a cultura esportiva" },
+  { icon: HeartHandshake, title: "Apoiar famílias que j vivem a cultura esportiva" },
   { icon: CircleDollarSign, title: "Reduzir barreiras de acesso e permanência" },
   { icon: Brain, title: "Oferecer acompanhamento técnico e emocional" },
   { icon: Trophy, title: "Preparar para fases futuras do atletismo" },
@@ -73,32 +73,32 @@ const differentials = [
   {
     icon: CalendarDays,
     title: "Projeto piloto com visão de longo prazo",
-    text: "A primeira fase acontecerá de 2026 a 2029, permitindo acompanhamento real, estudo de evolução e validação do modelo."
+    text: "A primeira fase acontecer de 2026 a 2029, permitindo acompanhamento real, estudo de evolução e validação do modelo."
   },
   {
     icon: Users,
     title: "Amostragem inicial com profundidade",
-    text: "A fase inicial começa com 4 atletas para permitir acompanhamento próximo, coleta de dados, análise individual e refinamento da metodologia."
+    text: "A fase inicial começa com 4 atletas para permitir acompanhamento prximo, coleta de dados, análise individual e refinamento da metodologia."
   },
   {
     icon: Network,
     title: "Corpo técnico, docente e multidisciplinar",
-    text: "Profissionais capacitados atuarão para apoiar o desenvolvimento esportivo, emocional, familiar e educacional."
+    text: "Profissionais capacitados atuaro para apoiar o desenvolvimento esportivo, emocional, familiar e educacional."
   },
   {
     icon: HeartHandshake,
     title: "Famílias com cultura alinhada",
-    text: "Os pais compartilham uma visão comum: esporte como formação, e não como pressão precoce."
+    text: "Os pais compartilham uma visão comum: esporte como formação, e não como presso precoce."
   },
   {
     icon: Flag,
-    title: "Integração ao Circuito 11RUN",
-    text: "O circuito será usado como ambiente preparatório, educativo e competitivo, adequado às fases de desenvolvimento."
+    title: "Integrano ano Circuito 11RUN",
+    text: "O circuito ser usado comno ambiente preparatório, educativo e competitivo, adequado às fases de desenvolvimento."
   },
   {
     icon: BarChart3,
     title: "Expansão baseada em análise",
-    text: "O crescimento acontecerá conforme dados, resultados, viabilidade, estrutura e capacidade de preservar qualidade."
+    text: "O crescimento acontecer conforme dados, resultados, viabilidade, estrutura e capacidade de preservar qualidade."
   }
 ];
 
@@ -111,7 +111,7 @@ const offers = [
   {
     icon: Dumbbell,
     title: "Apoio técnico",
-    text: "Orientação esportiva, acompanhamento de evolução, organização de rotina e desenvolvimento progressivo das capacidades físicas e técnicas."
+    text: "Orientação esportiva, acompanhamento de evolução, organização de rotina e desenvolvimento progressivo das capacidades fsicas e técnicas."
   },
   {
     icon: Brain,
@@ -131,7 +131,7 @@ const offers = [
   {
     icon: Sparkles,
     title: "Materiais esportivos",
-    text: "Fornecimento de materiais de treino, equipamentos básicos e recursos necessários para melhores condições de evolução."
+    text: "Fornecimento de materiais de treino, equipamentos básicos e recursos necessérios para melhores condições de evolução."
   },
   {
     icon: Flag,
@@ -141,12 +141,12 @@ const offers = [
   {
     icon: HeartHandshake,
     title: "Orientação para famílias",
-    text: "Apoio aos responsáveis na compreensão das etapas de desenvolvimento, rotina esportiva e importância da continuidade."
+    text: "Apoio aos responsáveis na compreenso das etapas de desenvolvimento, rotina esportiva e importância da continuidade."
   },
   {
     icon: Trophy,
     title: "Referências mundiais adaptadas",
-    text: "Inserção gradual inspirada em grandes culturas esportivas, com adaptação à infância e à realidade brasileira."
+    text: "Inserção gradual inspirada em grandes culturas esportivas, com adaptação  infância e  realidade brasileira."
   }
 ];
 
@@ -154,7 +154,7 @@ const timeline = [
   {
     year: "2026",
     title: "Início da fase piloto",
-    text: "Seleção da primeira turma, estruturação do acompanhamento, integração ao ambiente 11RUN e início da metodologia."
+    text: "Seleção da primeira turma, estruturao do acompanhamento, integraçãno ano ambiente 11RUN e início da metodologia."
   },
   {
     year: "2027",
@@ -163,20 +163,20 @@ const timeline = [
   },
   {
     year: "2028",
-    title: "Consolidação da base",
-    text: "Observação de maturidade esportiva, disciplina, progressão técnica, adaptação competitiva e fortalecimento do modelo."
+    title: "Consolidao da base",
+    text: "Observação de maturidade esportiva, disciplina, progresso técnica, adaptação competitiva e fortalecimento do modelo."
   },
   {
     year: "2029",
     title: "Análise e expansão",
-    text: "Avaliação dos resultados, aprendizados, viabilidade, impacto e possibilidades de ampliação do projeto."
+    text: "Avaliao dos resultados, aprendizados, viabilidade, impacto e possibilidades de ampliao do projeto."
   }
 ];
 
 const practice = [
   "Primeira turma de amostragem",
   "Acompanhamento contínuo",
-  "Vivência competitiva",
+  "Vivncia competitiva",
   "Desenvolvimento por fases",
   "Análise e aprendizado",
   "Expansão responsável"
@@ -226,7 +226,7 @@ export default function Page() {
         eyebrow="Onze Futuro"
         title="Mais cedo no movimento. Mais futuro no fundismo."
         text="Uma frente de base para transformar talento, rotina e continuidade em um caminho real para jovens corredores."
-        cta={{ label: "Cadastrar atleta", href: "/cadastro/onze-futuro" }}
+        ctaSlot={<ProjectFormModal project="onze-futuro" label="Cadastrar atleta" className="button white feature-banner-cta" />}
       />
 
       <section className="futuro-hero">
@@ -236,16 +236,16 @@ export default function Page() {
             <h1>Onze Futuro</h1>
             <strong>Mais cedo no movimento. Mais futuro no fundismo.</strong>
             <p>
-              O Brasil tem talento. O que falta, muitas vezes, é estrutura, continuidade, cultura esportiva e
+              O Brasil tem talento. O que falta, muitas vezes,  estrutura, continuidade, cultura esportiva e
               oportunidade no momento certo.
             </p>
             <p>
               O Onze Futuro nasce como uma frente de desenvolvimento de base da 11RUN para acompanhar jovens atletas
               entre 10 e 13 anos, ajudando a construir repertório, disciplina, ambiente competitivo, suporte técnico,
-              apoio emocional e uma base mais sólida para o futuro do atletismo de fundo.
+              apoio emocional e uma base mais slida para o futuro do atletismo de fundo.
             </p>
             <div className="hero-actions">
-              <OnzeFuturoModal label="Cadastrar atleta" />
+              <ProjectFormModal project="onze-futuro" label="Cadastrar atleta" className="button white" />
               <Link className="button ghost" href="#entender">
                 Entender o projeto
               </Link>
@@ -268,21 +268,21 @@ export default function Page() {
 
       <section className="futuro-section futuro-scenario" id="entender">
         <SectionHeader
-          eyebrow="cenário atual"
-          title="O Brasil não começa tarde por falta de talento. Começa tarde porque falta caminho."
-          text="O problema não nasce no cronômetro. Nasce antes: no acesso, no calendário, na rotina escolar, na ausência de pistas, no apoio às famílias e na falta de perspectiva."
+          eyebrow="cenrio atual"
+          title="O Brasil não começa tarde por falta de talento. Comea tarde porque falta caminho."
+          text="O problema não nasce não cronmetro. Nasce antes: não acesso, não calendário, na rotina escolar, na ausncia de pistas, não apoio às famílias e na falta de perspectiva."
         />
         <div className="futuro-two-col">
           <Reveal>
             <div className="futuro-text-block">
               <p>
                 O atletismo de fundo brasileiro revela talentos todos os anos, mas muitos jovens chegam tarde ao
-                processo de formação. Em vários casos, a criança só descobre a corrida de fundo quando já perdeu uma
-                fase preciosa de desenvolvimento motor, coordenação, ritmo, resistência lúdica, disciplina esportiva e
-                convivência com o ambiente competitivo.
+                processo de formação. Em vários casos, a criança às descobre a corrida de fundo quando já perdeu uma
+                fase preciosa de desenvolvimento motor, coordenao, ritmo, resistncia ldica, disciplina esportiva e
+                convivência com no ambiente competitivo.
               </p>
               <p>
-                Enquanto em países como Japão, Estados Unidos, Quênia, Uganda, Etiópia e Noruega muitas crianças
+                Enquanto em paàses como Japão, Estados Unidos, Quênia, Uganda, Etiópia e Noruega muitas crianças
                 crescem em ambientes onde o movimento faz parte da rotina, no Brasil a formação de base ainda depende
                 mais do acaso do que de um caminho estruturado.
               </p>
@@ -304,18 +304,18 @@ export default function Page() {
       <section className="futuro-section futuro-origin">
         <div className="futuro-two-col reverse">
           <Reveal>
-            <img className="futuro-image-square" src={image} alt="Corredora simbolizando vivência esportiva e competição" />
+            <img className="futuro-image-square" src={image} alt="Corredora simbolizando vivncia esportiva e competição" />
           </Reveal>
           <Reveal delay={0.08}>
             <div>
               <SectionHeader
                 eyebrow="origem"
-                title="Um projeto que nasce da vivência real com crianças, famílias e competição."
+                title="Um projeto que nasce da vivncia real com crianças, famílias e competição."
               />
               <div className="futuro-text-block">
                 <p>
                   O Onze Futuro nasce da observação prática da 11RUN dentro do ambiente das corridas, da convivência com
-                  jovens atletas, do contato com famílias envolvidas no esporte e da percepção de que existe um espaço
+                  jovens atletas, do contato com famílias envolvidas não esporte e da percepção de que existe um espaço
                   importante entre a infância ativa e a formação competitiva.
                 </p>
                 <p>
@@ -336,17 +336,17 @@ export default function Page() {
       <section className="futuro-section futuro-age">
         <SectionHeader
           eyebrow="10 a 13 anos"
-          title="Dos 10 aos 13 anos, a base ainda está sendo escrita."
+          title="Dos 10 aos 13 anos, a base ainda est sendo escrita."
           text="Antes da performance, existe base. Antes do treino forte, existe movimento. Antes do atleta maduro, existe uma infância ativa."
         />
         <div className="futuro-manifest-card">
-          <p>Começar cedo não é forçar cedo.</p>
+          <p>Começar cedo não  forçar cedo.</p>
           <div>
-            {["brincar mais", "variar estímulos", "criar coordenação", "aprender ritmo", "desenvolver resistência de forma lúdica", "construir prazer pelo movimento"].map((item) => (
+            {["brincar mais", "variar estmulos", "criar coordenao", "aprender ritmo", "desenvolver resistncia de forma ldica", "construir prazer pelo movimento"].map((item) => (
               <span key={item}>{item}</span>
             ))}
           </div>
-          <strong>O Onze Futuro não antecipa pressão. Ele antecipa base.</strong>
+          <strong>O Onze Futuro não antecipa presso. Ele antecipa base.</strong>
         </div>
       </section>
 
@@ -368,7 +368,7 @@ export default function Page() {
       <section className="futuro-section">
         <SectionHeader
           eyebrow="diferenciais"
-          title="Não é apenas apoio. É ecossistema."
+          title="No  apenas apoio.  ecossistema."
           text="O projeto entende que o desenvolvimento esportivo depende de criança, família, orientação técnica, apoio psicológico, ambiente competitivo, rotina, materiais, calendário, convivência e continuidade."
         />
         <div className="futuro-card-grid three">
@@ -402,15 +402,15 @@ export default function Page() {
               <SectionHeader
                 eyebrow="piloto 2026-2029"
                 title="Um projeto piloto para estudar, validar e crescer."
-                text="A proposta não é limitar o projeto a 4 atletas. A proposta é começar com responsabilidade."
+                text="A proposta não  limitar o projeto a 4 atletas. A proposta é começar com responsabilidade."
               />
               <div className="futuro-text-block">
                 <p>
-                  O Onze Futuro começará com uma primeira turma de amostragem formada por 4 atletas, acompanhados
+                  O Onze Futuro começar com uma primeira turma de amostragem formada por 4 atletas, acompanhados
                   durante o ciclo inicial de 2026 a 2029.
                 </p>
                 <p>
-                  Essa fase permitirá estudar e aprimorar a metodologia, observando evolução esportiva, adaptação
+                  Essa fase permitir estudar e aprimorar a metodologia, observando evolução esportiva, adaptação
                   competitiva, permanência, maturidade emocional, rotina, desenvolvimento motor, apoio familiar, impacto
                   dos materiais, ajuda de custo e viabilidade de expansão.
                 </p>
@@ -447,9 +447,9 @@ export default function Page() {
                     : index === 2
                       ? "A participação no Circuito 11RUN servirá como ambiente preparatório, educativo e progressivo."
                       : index === 3
-                        ? "A evolução será conduzida com respeito à idade, maturação, adaptação, segurança e individualidade."
+                        ? "A evolução será conduzida com respeito ? idade, maturação, adaptação, segurança e individualidade."
                         : index === 4
-                          ? "O projeto acompanhará dados, evolução, comportamento, permanência, rotina e impacto do suporte oferecido."
+                          ? "O projeto acompanhar? dados, evolução, comportamento, permanência, rotina e impacto do suporte oferecido."
                           : "A ampliação acontecerá de acordo com resultados, viabilidade, capacidade técnica e preservação da qualidade."}
               </p>
             </article>
@@ -460,7 +460,7 @@ export default function Page() {
       <section className="futuro-section">
         <SectionHeader
           eyebrow="benefícios"
-          title="Benefícios para atletas, famílias e para o futuro do fundismo"
+          title="Benefcios para atletas, famílias e para o futuro do fundismo"
         />
         <div className="futuro-benefits">
           {benefits.map((group) => (
@@ -487,7 +487,7 @@ export default function Page() {
           precisamos de base. Se queremos futuro, precisamos de ecossistema.
         </p>
         <p>
-          Começaremos com 4 atletas. Mas a missão é maior: criar cultura, desenvolver disciplina, abrir caminhos,
+          Começaremos com 4 atletas. Mas a missão  maior: criar cultura, desenvolver disciplina, abrir caminhos,
           estudar a base, validar um modelo e construir um futuro possível para mais jovens corredores.
         </p>
       </section>
@@ -497,13 +497,13 @@ export default function Page() {
           <span className="eyebrow">participação</span>
           <h2>Faça parte do Onze Futuro</h2>
           <p>
-            Se você conhece uma criança entre 10 e 13 anos com interesse, potencial, disciplina ou paixão pela corrida,
+            Se você conhece uma criança entre 10 e 13 anos com interesse, potencial, disciplina ou paixo pela corrida,
             cadastre para avaliação da equipe 11RUN.
           </p>
         </div>
         <div className="cta-actions">
-          <OnzeFuturoModal label="Cadastrar atleta" />
-          <Link className="button ghost" href="/cadastro/app-11run">
+          <ProjectFormModal project="onze-futuro" label="Cadastrar atleta" className="button white" />
+          <Link className="button ghost" href="https://app.11run.com.br/">
             Falar com a 11RUN
           </Link>
         </div>

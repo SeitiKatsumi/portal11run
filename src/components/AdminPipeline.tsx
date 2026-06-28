@@ -21,7 +21,11 @@ type AdminLead = {
   created_at: string;
 };
 
-const statuses = ["Cadastro recebido", "Em análise", "Aceitos", "Declinados", "Outros"];
+const defaultStatuses = ["Cadastro recebido", "Em análise", "Aceitos", "Declinados", "Outros"];
+const circuitoStatuses = ["Perfil redes sociais", "Inscrições solicitadas", "Aguardando pagamento", "Aceitas", "Declinados"];
+const statusesByProject: Record<string, string[]> = {
+  "circuito-futuro-11": circuitoStatuses
+};
 const receiptItems = ["Uniforme", "Material esportivo", "Ajuda de custo", "Inscrição ou evento", "Outro recebimento"];
 
 const projectLabels: Record<string, string> = {
@@ -60,6 +64,11 @@ export function AdminPipeline({ initialLeads }: { initialLeads: AdminLead[] }) {
   const filteredLeads = useMemo(() => {
     if (projectFilter === "todos") return leads;
     return leads.filter((lead) => lead.project_type === projectFilter);
+  }, [leads, projectFilter]);
+
+  const activeStatuses = useMemo(() => {
+    if (projectFilter !== "todos") return statusesByProject[projectFilter] ?? defaultStatuses;
+    return Array.from(new Set([...defaultStatuses, ...circuitoStatuses, ...leads.map((lead) => lead.pipeline_status)]));
   }, [leads, projectFilter]);
 
   async function patchLead(id: string, body: Record<string, unknown>) {
@@ -101,7 +110,7 @@ export function AdminPipeline({ initialLeads }: { initialLeads: AdminLead[] }) {
       </div>
 
       <div className="pipeline-board">
-        {statuses.map((status) => {
+        {activeStatuses.map((status) => {
           const columnLeads = filteredLeads.filter((lead) => lead.pipeline_status === status);
 
           return (
@@ -141,7 +150,7 @@ export function AdminPipeline({ initialLeads }: { initialLeads: AdminLead[] }) {
                         value={lead.pipeline_status}
                         onChange={(event) => patchLead(lead.id, { pipeline_status: event.target.value })}
                       >
-                        {statuses.map((option) => (
+                        {(statusesByProject[lead.project_type] ?? defaultStatuses).map((option) => (
                           <option key={option} value={option}>
                             {option}
                           </option>

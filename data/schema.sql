@@ -31,3 +31,42 @@ CREATE TABLE IF NOT EXISTS leads (
   created_at TEXT NOT NULL,
   updated_at TEXT
 );
+
+CREATE TABLE IF NOT EXISTS rankings (
+  id TEXT PRIMARY KEY,
+  age_group TEXT NOT NULL,
+  event TEXT NOT NULL,
+  athlete_name TEXT NOT NULL,
+  time TEXT NOT NULL,
+  date TEXT NOT NULL,
+  location TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_rankings_event_age ON rankings(event, age_group);
+
+CREATE TABLE IF NOT EXISTS chat_leads (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  whatsapp TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'em_atendimento_ia',
+  ai_enabled INTEGER NOT NULL DEFAULT 1,
+  summary TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS chat_messages (
+  id TEXT PRIMARY KEY,
+  lead_id TEXT NOT NULL,
+  role TEXT NOT NULL,
+  content TEXT NOT NULL,
+  sender_name TEXT,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (lead_id) REFERENCES chat_leads(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_chat_messages_lead_created_at ON chat_messages(lead_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_chat_leads_status_updated_at ON chat_leads(status, updated_at);

@@ -3,12 +3,9 @@ import {
   Activity,
   ArrowRight,
   BarChart3,
-  Bot,
   Brain,
-  CalendarDays,
   CheckCircle2,
   ClipboardList,
-  Eye,
   FileHeart,
   Gauge,
   HeartPulse,
@@ -17,9 +14,7 @@ import {
   Network,
   ScanLine,
   ShieldCheck,
-  Sparkles,
   Target,
-  Timer,
   Trophy,
   Users,
   Watch,
@@ -33,6 +28,8 @@ type Card = {
   text: string;
   icon: LucideIcon;
 };
+
+const appUrl = "https://app.11run.com.br/";
 
 const heroIndicators: Card[] = [
   { title: "IA de prova", text: "Ritmo, splits e pontos críticos.", icon: Trophy },
@@ -77,8 +74,8 @@ const differentiators: Card[] = [
     icon: ShieldCheck
   },
   {
-    title: "Treinador no centro",
-    text: "A IA funciona como copiloto técnico: alerta, compara, recomenda e deixa a decisão final com o treinador.",
+    title: "Copiloto técnico",
+    text: "A IA alerta, compara, recomenda e mantém a decisão final com treinador, atleta e equipe.",
     icon: Users
   },
   {
@@ -336,15 +333,7 @@ const ethics = [
   "IA respeita a segurança emocional de jovens atletas."
 ];
 
-function SectionIntro({
-  eyebrow,
-  title,
-  text
-}: {
-  eyebrow: string;
-  title: string;
-  text?: string;
-}) {
+function SectionIntro({ eyebrow, title, text }: { eyebrow: string; title: string; text?: string }) {
   return (
     <div className="ai-section-intro">
       <span>{eyebrow}</span>
@@ -405,6 +394,14 @@ function DataPanel() {
   );
 }
 
+function AppCta({ children = "Acessar App 11Run" }: { children?: string }) {
+  return (
+    <Link className="ai-button primary" href={appUrl}>
+      {children} <ArrowRight size={18} />
+    </Link>
+  );
+}
+
 export function AppPerformanceLanding() {
   return (
     <div className="ai-page">
@@ -417,9 +414,7 @@ export function AppPerformanceLanding() {
             O 11RUN transforma treino, prova, corpo, recuperação e contexto em leitura prática para atletas,
             treinadores e projetos de base.
           </p>
-          <Link className="ai-button primary ai-photo-cta" href="/cadastro/app-11run">
-            Abrir cadastro <ArrowRight size={18} />
-          </Link>
+          <AppCta />
         </div>
       </section>
 
@@ -437,11 +432,9 @@ export function AppPerformanceLanding() {
             Não é um app de treino comum. É um sistema operacional de performance com IA.
           </p>
           <div className="ai-actions">
-            <Link className="ai-button primary" href="/cadastro/app-11run">
-              Abrir Analisador IA <ArrowRight size={18} />
-            </Link>
-            <Link className="ai-button ghost" href="/admin">
-              Ver Painel
+            <AppCta />
+            <Link className="ai-button ghost" href={appUrl}>
+              Entrar na plataforma
             </Link>
             <Link className="ai-button ghost" href="#modulos">
               Conhecer módulos
@@ -498,16 +491,14 @@ export function AppPerformanceLanding() {
         />
         <div>
           <div className="ai-race-panel">
-            <span>Prova 5000 m · exemplo</span>
+            <span>Prova 5000 m - exemplo</span>
             <strong>Quebra crítica no km 3.8</strong>
             <div className="ai-race-line" />
             <p>Ritmo inicial agressivo, deriva cardíaca progressiva e sprint final com baixa resposta.</p>
           </div>
           <PillList items={raceAnalyzerItems} />
           <div className="ai-actions compact">
-            <Link className="ai-button primary" href="/cadastro/app-11run">
-              Abrir Analisador de Provas <ArrowRight size={18} />
-            </Link>
+            <AppCta />
           </div>
         </div>
       </section>
@@ -615,7 +606,7 @@ export function AppPerformanceLanding() {
 
       <section className="ai-section">
         <SectionIntro
-          eyebrow="para quem é"
+          eyebrow="para quem"
           title="Uma plataforma para atletas, treinadores, pais e equipes"
         />
         <div className="ai-grid three">
@@ -690,14 +681,9 @@ export function AppPerformanceLanding() {
           e evoluir com inteligência.
         </p>
         <div className="ai-actions">
-          <Link className="ai-button primary" href="/cadastro/app-11run">
-            Abrir Analisador IA <ArrowRight size={18} />
-          </Link>
-          <Link className="ai-button ghost" href="/admin">
-            Ver Painel
-          </Link>
-          <Link className="ai-button ghost" href="/cadastro/app-11run">
-            Falar com a 11RUN
+          <AppCta />
+          <Link className="ai-button ghost" href={appUrl}>
+            Entrar na plataforma
           </Link>
         </div>
       </section>

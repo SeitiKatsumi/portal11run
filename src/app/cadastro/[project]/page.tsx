@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { redirect } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { FeatureBanner } from "@/components/FeatureBanner";
 import { LeadForm } from "@/components/LeadForm";
@@ -11,17 +10,9 @@ type PageProps = {
   params: Promise<{ project: string }>;
 };
 
-const legacyFormSlugs: Record<string, FormProjectSlug> = {
-  onzerun: "app-11run",
-  "base-mundial": "onze-futuro",
-  "master-regional": "11-regional",
-  "circuito-infantil": "circuito-futuro-11"
-};
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { project } = await params;
-  const slug = legacyFormSlugs[project] ?? (project as FormProjectSlug);
-  const config = formProjects[slug];
+  const config = formProjects[project as FormProjectSlug];
   if (!config) return {};
 
   return {
@@ -32,11 +23,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function Page({ params }: PageProps) {
   const { project } = await params;
-  const legacyTarget = legacyFormSlugs[project];
-  if (legacyTarget) {
-    redirect(`/cadastro/${legacyTarget}`);
-  }
-
   const config = formProjects[project as FormProjectSlug];
 
   if (!config) {

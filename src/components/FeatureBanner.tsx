@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import type { ReactNode } from "react";
 import { Reveal } from "./Reveal";
 
 export function FeatureBanner({
@@ -8,7 +9,8 @@ export function FeatureBanner({
   text,
   imageSrc = "/assets/11run.png",
   imageAlt = "Corredora em movimento 11RUN",
-  cta
+  cta,
+  ctaSlot
 }: {
   eyebrow: string;
   title: string;
@@ -19,6 +21,7 @@ export function FeatureBanner({
     label: string;
     href: string;
   };
+  ctaSlot?: ReactNode;
 }) {
   return (
     <Reveal>
@@ -28,7 +31,8 @@ export function FeatureBanner({
           <span>{eyebrow}</span>
           <h2>{title}</h2>
           <p>{text}</p>
-          {cta ? (
+          {ctaSlot ?? null}
+          {!ctaSlot && cta ? (
             <Link className="button primary feature-banner-cta" href={cta.href}>
               {cta.label}
               <ArrowRight size={18} />

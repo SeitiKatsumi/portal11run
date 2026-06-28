@@ -3,6 +3,7 @@ import { ArrowRight, Flag, Globe2, Trophy, Users } from "lucide-react";
 import { CTASection } from "@/components/CTASection";
 import { FeatureBanner } from "@/components/FeatureBanner";
 import { FeatureCard } from "@/components/FeatureCard";
+import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { Reveal } from "@/components/Reveal";
 import { SectionTitle } from "@/components/SectionTitle";
 import { ecosystemCards, metrics } from "@/lib/content";
@@ -14,7 +15,7 @@ export default function Home() {
         eyebrow="ecossistema 11RUN"
         title="Mais cedo no movimento. Mais futuro no fundismo."
         text="Uma plataforma viva para conectar formação, performance, circuito e oportunidades em um mesmo caminho."
-        cta={{ label: "Cadastrar na 11RUN", href: "/cadastro/app-11run" }}
+        ctaSlot={<ProjectFormModal project="onze-futuro" label="Cadastrar atleta" />}
       />
 
       <section className="home-hero">
@@ -31,8 +32,8 @@ export default function Home() {
                   Conhecer os projetos
                   <ArrowRight size={18} />
                 </Link>
-                <Link className="button ghost" href="/cadastro/app-11run">
-                  Cadastrar na 11RUN
+                <Link className="button ghost" href="https://app.11run.com.br/">
+                  Acessar App 11Run
                   <ArrowRight size={18} />
                 </Link>
               </div>
@@ -152,8 +153,8 @@ export default function Home() {
       <CTASection
         title="Escolha uma frente da 11RUN e faça parte do movimento."
         actions={[
-          { label: "Cadastrar no Onze Futuro", href: "/cadastro/onze-futuro" },
-          { label: "Cadastrar no App 11Run", href: "/cadastro/app-11run" },
+          { label: "Cadastrar no Onze Futuro", modalProject: "onze-futuro" },
+          { label: "Acessar App 11Run", href: "https://app.11run.com.br/" },
           { label: "Conhecer oportunidades", href: "/bolsas" }
         ]}
       />

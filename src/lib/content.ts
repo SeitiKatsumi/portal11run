@@ -19,12 +19,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-export type ProjectKey =
-  | "app-11run"
-  | "onze-futuro"
-  | "11-regional"
-  | "circuito-futuro-11"
-  | "bolsas";
+export type ProjectKey = "app-11run" | "onze-futuro" | "11-regional" | "circuito-futuro-11" | "bolsas";
 
 export type ProjectPage = {
   key: ProjectKey;
@@ -88,8 +83,8 @@ export const projects: ProjectPage[] = [
       "Cada atleta passa a ser acompanhado com mais profundidade, do treino diário ao planejamento de longo prazo."
     ],
     href: "/app-11run",
-    formHref: "/cadastro/app-11run",
-    cta: "Quero participar do App 11Run",
+    formHref: "https://app.11run.com.br/",
+    cta: "Acessar App 11Run",
     icon: BarChart3,
     metrics: ["14 mil usuários", "14 países", "+300 atletas Sub-14 nos 5000m"],
     features: [
@@ -113,8 +108,7 @@ export const projects: ProjectPage[] = [
     },
     metadata: {
       title: "App 11Run - Performance para corredores",
-      description:
-        "Plataforma para análise de treinos, performance, histórico, metas e evolução de atletas."
+      description: "Plataforma para análise de treinos, performance, histórico, metas e evolução de atletas."
     }
   },
   {
@@ -125,19 +119,20 @@ export const projects: ProjectPage[] = [
     imageSrc: "/assets/11run.png",
     imageAlt: "Corredora em movimento 11RUN",
     body: [
-      "O Onze Futuro acompanha jovens atletas entre 10 e 13 anos, oferecendo suporte, orientação, convivência esportiva, ajuda de custo, materiais e integração ao ecossistema 11RUN.",
+      "O Onze Futuro acompanha jovens atletas entre 10 e 13 anos, oferecendo suporte, orientação, convivência esportiva, ajuda de custo, materiais, inscrições gratuitas no Circuito 11RUN e assessoria de publicidade ao longo do processo.",
       "Mais do que correr provas, queremos formar atletas. Mais do que buscar medalhas agora, queremos construir base para o futuro."
     ],
     href: "/onze-futuro",
     formHref: "/cadastro/onze-futuro",
-    cta: "Cadastrar atleta para o Onze Futuro",
+    cta: "Cadastrar atleta",
     icon: Users,
     metrics: ["4 atletas", "1 missão", "cultura esportiva", "disciplina"],
     features: [
       "Acompanhamento esportivo",
       "Ajuda de custo",
       "Materiais",
-      "Integração ao Circuito 11RUN",
+      "Inscrições gratuitas no Circuito 11RUN",
+      "Assessoria de publicidade",
       "Convivência com atletas",
       "Orientação para famílias"
     ],
@@ -153,7 +148,7 @@ export const projects: ProjectPage[] = [
     metadata: {
       title: "Onze Futuro - 11RUN",
       description:
-        "Frente de formação para jovens atletas de 10 a 13 anos com suporte, orientação, materiais e integração ao ecossistema 11RUN."
+        "Frente de formação para jovens atletas de 10 a 13 anos com suporte, orientação, materiais, inscrições gratuitas no Circuito 11RUN e assessoria de publicidade."
     }
   },
   {
@@ -170,7 +165,7 @@ export const projects: ProjectPage[] = [
     ],
     href: "/11-regional",
     formHref: "/cadastro/11-regional",
-    cta: "Cadastrar interesse no 11 Regional",
+    cta: "Inscrever atleta master",
     icon: Trophy,
     features: [
       "Suporte federativo",
@@ -193,8 +188,7 @@ export const projects: ProjectPage[] = [
     },
     metadata: {
       title: "11 Regional - 11RUN",
-      description:
-        "Projeto competitivo privado para atletas master de Itatiba e região com potencial real de destaque."
+      description: "Projeto competitivo privado para atletas master de Itatiba e região com potencial real de destaque."
     }
   },
   {
@@ -210,13 +204,17 @@ export const projects: ProjectPage[] = [
     ],
     href: "/circuito-futuro-11",
     formHref: "/cadastro/circuito-futuro-11",
-    cta: "Cadastrar atleta no circuito",
+    cta: "Inscreva-se",
     icon: Route,
     features: [
       "4 etapas na região de Campinas",
-      "Provas de 800m, 1000m, 1200m e 1500m",
+      "10 anos - 800m",
+      "11 anos - 1000m",
+      "12 anos - 1500m",
+      "13 anos - 2000m",
       "Categorias masculino e feminino",
-      "Ranking nacional",
+      "Ranking por prova e idade",
+      "Limite de 20 atletas por prova",
       "Premiação para os 3 primeiros de cada categoria"
     ],
     timeline: [
@@ -234,7 +232,7 @@ export const projects: ProjectPage[] = [
     metadata: {
       title: "Circuito Futuro 11",
       description:
-        "Circuito infantil de meio-fundo em pista para crianças e pré-adolescentes de 10 a 13 anos."
+        "Circuito infantil de meio-fundo e fundo em pista. A categoria considera a idade que o atleta completa no ano da competição."
     }
   },
   {
@@ -282,8 +280,7 @@ export const projects: ProjectPage[] = [
     },
     metadata: {
       title: "Portal de Oportunidades 11RUN",
-      description:
-        "Ponte entre jovens fundistas, famílias, treinadores e oportunidades universitárias no exterior."
+      description: "Ponte entre jovens fundistas, famílias, treinadores e oportunidades universitárias no exterior."
     }
   }
 ];
@@ -344,12 +341,7 @@ export const projectByRoute: Record<string, ProjectPage> = {
   "onze-futuro": projects[1],
   "11-regional": projects[2],
   "circuito-futuro-11": projects[3],
-  bolsas: projects[4],
-  onzerun: projects[0],
-  "base-mundial": projects[1],
-  "master-regional": projects[2],
-  "caminho-de-um-campeao": projects[3],
-  "bolsas-e-oportunidades": projects[4]
+  bolsas: projects[4]
 };
 
 export const formProjects = {
@@ -376,6 +368,7 @@ export const formProjects = {
       { name: "guardian", label: "Responsável legal" },
       { name: "guardian_rg", label: "RG do responsável" },
       { name: "guardian_cpf", label: "CPF do responsável" },
+      { name: "guardian_pix", label: "Conta bancária ou chave PIX do responsável" },
       { name: "athlete_rg", label: "RG do atleta" },
       { name: "athlete_cpf", label: "CPF do atleta" },
       { name: "address", label: "Endereço completo" },
@@ -396,30 +389,50 @@ export const formProjects = {
   "11-regional": {
     label: "11 Regional",
     projectType: "11-regional",
-    title: "Cadastro 11 Regional",
+    title: "Inscrição 11 Regional",
     fields: [
-      { name: "athlete_name", label: "Nome do atleta" },
-      { name: "age", label: "Idade", type: "number" },
-      { name: "category", label: "Categoria" },
-      { name: "main_events", label: "Provas principais" },
-      { name: "best_marks", label: "Melhores marcas" },
-      { name: "competitive_history", label: "Histórico competitivo" },
-      { name: "federation_id", label: "Registro federativo, se houver" },
-      { name: "competitive_goal", label: "Objetivo competitivo" }
+      { name: "cpf", label: "CPF" },
+      { name: "rg", label: "RG" },
+      { name: "address", label: "Endereço completo" },
+      { name: "social_link", label: "Perfil de redes sociais" },
+      { name: "best_marks", label: "Melhores provas e resultados", type: "textarea" },
+      { name: "competitions", label: "Histórico competitivo", type: "textarea" },
+      {
+        name: "within_itatiba_radius",
+        label: "Mora em Itatiba ou em raio de até 40 km",
+        type: "select",
+        options: ["sim", "não"]
+      }
     ]
   },
   "circuito-futuro-11": {
     label: "Circuito Futuro 11",
     projectType: "circuito-futuro-11",
-    title: "Cadastro Circuito Futuro 11",
+    title: "Inscrição Circuito Futuro 11",
     fields: [
+      { name: "guardian_name", label: "Nome do responsável" },
+      { name: "guardian_cpf", label: "CPF do responsável" },
+      { name: "guardian_rg", label: "RG do responsável" },
+      { name: "guardian_email", label: "E-mail do responsável", type: "email" },
+      { name: "guardian_phone", label: "WhatsApp do responsável" },
       { name: "athlete_name", label: "Nome do atleta" },
+      { name: "athlete_cpf", label: "CPF do atleta" },
+      { name: "athlete_rg", label: "RG do atleta" },
       { name: "birth_date", label: "Data de nascimento", type: "date" },
-      { name: "age", label: "Idade", type: "number" },
-      { name: "guardian", label: "Responsável" },
-      { name: "category", label: "Categoria" },
-      { name: "events_interest", label: "Provas de interesse", placeholder: "800m, 1000m, 1200m, 1500m" },
-      { name: "team", label: "Equipe ou escola" }
+      {
+        name: "race_event",
+        label: "Prova / faixa etária",
+        type: "select",
+        options: ["10 anos - 800m", "11 anos - 1000m", "12 anos - 1500m", "13 anos - 2000m"]
+      },
+      {
+        name: "payment_plan",
+        label: "Plano de inscrição",
+        type: "select",
+        options: ["R$ 50,00 por etapa", "R$ 150,00 para as 4 etapas"]
+      },
+      { name: "team", label: "Equipe ou escola" },
+      { name: "social_link", label: "Perfil de redes sociais" }
     ]
   },
   bolsas: {
