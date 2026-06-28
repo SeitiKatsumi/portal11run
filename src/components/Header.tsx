@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { BarChart3, Flag, Globe2, Home, Medal, Menu, Trophy, X } from "lucide-react";
+import { BarChart3, Flag, Globe2, Home, Medal, Menu, Trophy, UserRound, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { navItems } from "@/lib/content";
 
 const navIcons: Record<string, LucideIcon> = {
@@ -17,6 +17,22 @@ const navIcons: Record<string, LucideIcon> = {
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [memberLoggedIn, setMemberLoggedIn] = useState(false);
+  const accountHref = memberLoggedIn ? "/meu-painel" : "/login";
+  const accountLabel = memberLoggedIn ? "Meu Painel" : "Login";
+
+  useEffect(() => {
+    let mounted = true;
+    fetch("/api/members/session")
+      .then((response) => response.json())
+      .then((result) => {
+        if (mounted) setMemberLoggedIn(Boolean(result.loggedIn));
+      })
+      .catch(() => undefined);
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <header className="site-header">
@@ -34,6 +50,10 @@ export function Header() {
             </Link>
           );
         })}
+        <Link className="member-nav-link" href={accountHref}>
+          <UserRound size={15} strokeWidth={1.7} />
+          <span>{accountLabel}</span>
+        </Link>
       </nav>
 
       <button className="menu-button" type="button" onClick={() => setOpen((value) => !value)} aria-label="Abrir menu">
@@ -51,6 +71,10 @@ export function Header() {
               </Link>
             );
           })}
+          <Link href={accountHref} onClick={() => setOpen(false)}>
+            <UserRound size={16} strokeWidth={1.7} />
+            <span>{accountLabel}</span>
+          </Link>
         </div>
       ) : null}
     </header>

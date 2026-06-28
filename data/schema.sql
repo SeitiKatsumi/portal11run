@@ -79,3 +79,82 @@ CREATE TABLE IF NOT EXISTS chat_settings (
   ai_enabled INTEGER NOT NULL DEFAULT 1,
   updated_at TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS member_accounts (
+  id TEXT PRIMARY KEY,
+  lead_id TEXT NOT NULL UNIQUE,
+  role TEXT NOT NULL,
+  username TEXT NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  password_salt TEXT NOT NULL,
+  active INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_member_accounts_role ON member_accounts(role);
+CREATE INDEX IF NOT EXISTS idx_member_accounts_username ON member_accounts(username);
+
+CREATE TABLE IF NOT EXISTS member_sessions (
+  id TEXT PRIMARY KEY,
+  account_id TEXT NOT NULL,
+  token_hash TEXT NOT NULL UNIQUE,
+  expires_at TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (account_id) REFERENCES member_accounts(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_member_sessions_token_hash ON member_sessions(token_hash);
+
+CREATE TABLE IF NOT EXISTS financial_records (
+  id TEXT PRIMARY KEY,
+  lead_id TEXT NOT NULL,
+  project_type TEXT,
+  athlete_name TEXT,
+  direction TEXT NOT NULL DEFAULT 'saida',
+  type TEXT NOT NULL,
+  description TEXT NOT NULL,
+  amount_cents INTEGER NOT NULL DEFAULT 0,
+  sponsor_name TEXT,
+  due_date TEXT,
+  paid_date TEXT,
+  status TEXT NOT NULL DEFAULT 'Previsto',
+  transparency_notes TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_financial_records_lead_id ON financial_records(lead_id);
+
+CREATE TABLE IF NOT EXISTS creative_assets (
+  id TEXT PRIMARY KEY,
+  project_type TEXT NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT,
+  file_url TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_creative_assets_project_type ON creative_assets(project_type);
+
+CREATE TABLE IF NOT EXISTS member_marks (
+  id TEXT PRIMARY KEY,
+  account_id TEXT NOT NULL,
+  lead_id TEXT NOT NULL,
+  age_group TEXT NOT NULL,
+  event TEXT NOT NULL,
+  time TEXT NOT NULL,
+  date TEXT NOT NULL,
+  location TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'Pendente de validação',
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (account_id) REFERENCES member_accounts(id) ON DELETE CASCADE,
+  FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_member_marks_account_id ON member_marks(account_id);
+CREATE INDEX IF NOT EXISTS idx_member_marks_lead_id ON member_marks(lead_id);

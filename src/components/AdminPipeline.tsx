@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { CheckCircle2, ImageIcon, RefreshCw } from "lucide-react";
+import { useMemo, useState, type FormEvent } from "react";
+import { CheckCircle2, ImageIcon, KeyRound, RefreshCw } from "lucide-react";
 
 type AdminLead = {
   id: string;
@@ -21,6 +21,18 @@ type AdminLead = {
   created_at: string;
 };
 
+type MemberRole = "atleta_onze_futuro" | "atleta_11_regional" | "atleta_11_bolsista" | "atleta_circuito_futuro";
+
+type MemberAccount = {
+  id: string;
+  lead_id: string;
+  role: MemberRole;
+  username: string;
+  active: number;
+  created_at: string;
+  updated_at: string;
+};
+
 const defaultStatuses = ["Cadastro recebido", "Em análise", "Aceitos", "Declinados", "Outros"];
 const circuitoStatuses = ["Perfil redes sociais", "Inscrições solicitadas", "Aguardando pagamento", "Aceitas", "Declinados"];
 const statusesByProject: Record<string, string[]> = {
@@ -34,6 +46,18 @@ const projectLabels: Record<string, string> = {
   "11-regional": "11 Regional",
   "circuito-futuro-11": "Circuito Futuro 11",
   bolsas: "Bolsas"
+};
+
+const memberRolesByProject: Record<string, MemberRole | undefined> = {
+  "onze-futuro": "atleta_onze_futuro",
+  "11-regional": "atleta_11_regional"
+};
+
+const memberRoleLabels: Record<MemberRole, string> = {
+  atleta_onze_futuro: "Atleta 11 Futuro",
+  atleta_11_regional: "Atleta 11 Regional",
+  atleta_11_bolsista: "Atleta 11 Bolsista",
+  atleta_circuito_futuro: "Atleta Circuito do Futuro"
 };
 
 function parseJson<T>(value: string | null | undefined, fallback: T): T {
@@ -52,10 +76,13 @@ function formatDate(value: string) {
   }).format(new Date(value));
 }
 
-export function AdminPipeline({ initialLeads }: { initialLeads: AdminLead[] }) {
+export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initialLeads: AdminLead[]; initialMemberAccounts: MemberAccount[] }) {
   const [leads, setLeads] = useState(initialLeads);
+  const [memberAccounts, setMemberAccounts] = useState(initialMemberAccounts);
   const [projectFilter, setProjectFilter] = useState("todos");
   const [updating, setUpdating] = useState("");
+  const [memberError, setMemberError] = useState("");
+  const [memberErrorLead, setMemberErrorLead] = useState("");
 
   const projects = useMemo(() => {
     return Array.from(new Set(leads.map((lead) => lead.project_type))).sort();
@@ -86,6 +113,35 @@ export function AdminPipeline({ initialLeads }: { initialLeads: AdminLead[] }) {
     }
 
     setLeads((current) => current.map((lead) => (lead.id === id ? result.lead : lead)));
+  }
+
+  async function saveMemberAccess(event: FormEvent<HTMLFormElement>, lead: AdminLead) {
+    event.preventDefault();
+    setMemberError("");
+    setMemberErrorLead("");
+    setUpdating(lead.id);
+    const formData = new FormData(event.currentTarget);
+    const response = await fetch("/api/admin/members", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        leadId: lead.id,
+        role: formData.get("role"),
+        username: formData.get("username"),
+        password: formData.get("password"),
+        active: formData.get("active") === "on"
+      })
+    });
+    const result = await response.json();
+    setUpdating("");
+
+    if (!response.ok) {
+      setMemberError(result.error ?? "Erro ao salvar acesso.");
+      setMemberErrorLead(lead.id);
+      return;
+    }
+
+    setMemberAccounts((current) => [result.account, ...current.filter((account) => account.lead_id !== lead.id)]);
   }
 
   return (
@@ -127,6 +183,9 @@ export function AdminPipeline({ initialLeads }: { initialLeads: AdminLead[] }) {
                 const photos = parseJson<string[]>(lead.photos_json, []);
                 const receipts = parseJson<Record<string, boolean>>(lead.receipts_json, {});
                 const projectLabel = projectLabels[lead.project_type] ?? lead.project_type;
+                const memberRole = memberRolesByProject[lead.project_type];
+                const memberAccount = memberAccounts.find((account) => account.lead_id === lead.id);
+                const canCreateMember = memberRole && ["Aceitos", "Aceitas"].includes(lead.pipeline_status);
 
                 return (
                   <article className="admin-card" key={lead.id}>
@@ -199,6 +258,42 @@ export function AdminPipeline({ initialLeads }: { initialLeads: AdminLead[] }) {
                         </label>
                       ))}
                     </div>
+
+                    {memberRole ? (
+                      <form className="member-access-card" onSubmit={(event) => saveMemberAccess(event, lead)}>
+                        <div>
+                          <KeyRound size={17} />
+                          <strong>Acesso de membro</strong>
+                        </div>
+                        {!canCreateMember ? (
+                          <p>O acesso abre quando o cadastro estiver na etapa Aceitos.</p>
+                        ) : (
+                          <>
+                            <input type="hidden" name="role" value={memberAccount?.role ?? memberRole} />
+                            <label>
+                              <span>Perfil</span>
+                              <input value={memberRoleLabels[memberAccount?.role ?? memberRole]} disabled />
+                            </label>
+                            <label>
+                              <span>Usuário</span>
+                              <input name="username" defaultValue={memberAccount?.username ?? lead.email} required />
+                            </label>
+                            <label>
+                              <span>{memberAccount ? "Nova senha (opcional)" : "Senha inicial"}</span>
+                              <input name="password" type="password" minLength={6} required={!memberAccount} />
+                            </label>
+                            <label className="member-active-check">
+                              <input name="active" type="checkbox" defaultChecked={memberAccount ? memberAccount.active === 1 : true} />
+                              <span>Acesso ativo</span>
+                            </label>
+                            {memberError && memberErrorLead === lead.id ? <p className="form-error">{memberError}</p> : null}
+                            <button className="button primary" type="submit" disabled={updating === lead.id}>
+                              {memberAccount ? "Atualizar acesso" : "Liberar dashboard"}
+                            </button>
+                          </>
+                        )}
+                      </form>
+                    ) : null}
                   </article>
                 );
               })}
