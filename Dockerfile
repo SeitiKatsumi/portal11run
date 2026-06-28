@@ -1,18 +1,15 @@
 FROM node:24-alpine AS deps
 WORKDIR /app
-RUN corepack enable
-COPY package.json pnpm-lock.yaml* ./
-COPY pnpm-workspace.yaml* ./
-RUN pnpm install --frozen-lockfile=false
+COPY package.json ./
+RUN npm install --include=dev
 
 FROM node:24-alpine AS builder
 WORKDIR /app
 ARG CAPROVER_GIT_COMMIT_SHA
 ENV CAPROVER_GIT_COMMIT_SHA=${CAPROVER_GIT_COMMIT_SHA}
-RUN corepack enable
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN pnpm build
+RUN npm run build
 
 FROM node:24-alpine AS runner
 WORKDIR /app
