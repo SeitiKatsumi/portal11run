@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     "Projeto local da 11RUN para atletas master de Itatiba e região, com comando técnico do Professor Alex Lopes, suporte federativo, financeiro e preparação para Campeonato Paulista e Brasileiro Master."
 };
 
-const image = "/assets/11run.png";
+const image = "/assets/11run-reference.jpg";
 
 const heroMetrics = [
   { value: "11 e 12", label: "de julho de 2026" },

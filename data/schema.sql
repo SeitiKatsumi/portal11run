@@ -70,3 +70,12 @@ CREATE TABLE IF NOT EXISTS chat_messages (
 
 CREATE INDEX IF NOT EXISTS idx_chat_messages_lead_created_at ON chat_messages(lead_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_chat_leads_status_updated_at ON chat_leads(status, updated_at);
+
+CREATE TABLE IF NOT EXISTS chat_settings (
+  id TEXT PRIMARY KEY CHECK (id = 'default'),
+  openai_api_key TEXT,
+  openai_model TEXT NOT NULL DEFAULT 'gpt-4.1-mini',
+  additional_prompt TEXT NOT NULL DEFAULT '',
+  ai_enabled INTEGER NOT NULL DEFAULT 0,
+  updated_at TEXT NOT NULL
+);

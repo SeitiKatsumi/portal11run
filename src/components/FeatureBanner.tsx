@@ -7,7 +7,8 @@ export function FeatureBanner({
   eyebrow,
   title,
   text,
-  imageSrc = "/assets/11run.png",
+  imageSrc = "/assets/11run-reference.jpg",
+  videoSrc,
   imageAlt = "Corredora em movimento 11RUN",
   cta,
   ctaSlot
@@ -16,6 +17,7 @@ export function FeatureBanner({
   title: string;
   text: string;
   imageSrc?: string;
+  videoSrc?: string;
   imageAlt?: string;
   cta?: {
     label: string;
@@ -26,7 +28,13 @@ export function FeatureBanner({
   return (
     <Reveal>
       <section className="feature-banner" aria-label={title}>
-        <img src={imageSrc} alt={imageAlt} />
+        {videoSrc ? (
+          <video autoPlay muted loop playsInline poster={imageSrc} aria-label={imageAlt}>
+            <source src={videoSrc} type="video/mp4" />
+          </video>
+        ) : (
+          <img src={imageSrc} alt={imageAlt} />
+        )}
         <div>
           <span>{eyebrow}</span>
           <h2>{title}</h2>

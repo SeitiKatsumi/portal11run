@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Send } from "lucide-react";
-import type { ChatLeadWithStats, ChatMessage, ChatStatus } from "@/lib/assistantStore";
+import type { ChatLeadWithStats, ChatMessage, ChatStatus, PublicChatSettings } from "@/lib/assistantStore";
 
 const chatStatuses: ChatStatus[] = [
   "em_atendimento_ia",
@@ -26,10 +26,18 @@ const chatStatusLabels: Record<ChatStatus, string> = {
   improdutivos: "Improdutivos"
 };
 
-export function ChatAdminPanel({ initialChats }: { initialChats: ChatLeadWithStats[] }) {
+export function ChatAdminPanel({
+  initialChats,
+  initialSettings
+}: {
+  initialChats: ChatLeadWithStats[];
+  initialSettings: PublicChatSettings;
+}) {
   const [chats, setChats] = useState(initialChats);
+  const [settings, setSettings] = useState(initialSettings);
   const [activeId, setActiveId] = useState(initialChats[0]?.id ?? "");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [settingsMessage, setSettingsMessage] = useState("");
   const active = useMemo(() => chats.find((chat) => chat.id === activeId), [activeId, chats]);
 
   useEffect(() => {
@@ -50,6 +58,31 @@ export function ChatAdminPanel({ initialChats }: { initialChats: ChatLeadWithSta
     const result = await response.json();
     if (response.ok && result.lead) {
       setChats((current) => current.map((chat) => (chat.id === id ? { ...chat, ...result.lead } : chat)));
+    }
+  }
+
+  async function saveSettings(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSettingsMessage("");
+    const form = new FormData(event.currentTarget);
+    const response = await fetch("/api/admin/chat-settings", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ai_enabled: form.get("ai_enabled") === "on",
+        openai_model: form.get("openai_model"),
+        openai_api_key: form.get("openai_api_key"),
+        clear_openai_api_key: form.get("clear_openai_api_key") === "on",
+        additional_prompt: form.get("additional_prompt")
+      })
+    });
+    const result = await response.json();
+    if (response.ok && result.settings) {
+      setSettings(result.settings);
+      setSettingsMessage("Configuração salva.");
+      event.currentTarget.reset();
+    } else {
+      setSettingsMessage(result.error ?? "Não foi possível salvar.");
     }
   }
 
@@ -77,9 +110,54 @@ export function ChatAdminPanel({ initialChats }: { initialChats: ChatLeadWithSta
         <div>
           <span className="eyebrow">atendimento ia</span>
           <h1>Conversas do assistente</h1>
-          <p>Leads do chat 11RUN com histórico, status e resposta manual da equipe.</p>
+          <p>Configure a IA real da 11RUN, acompanhe conversas e assuma manualmente quando necessário.</p>
         </div>
       </div>
+
+      <form className="chat-settings" onSubmit={saveSettings}>
+        <div>
+          <span className="eyebrow">openai</span>
+          <h2>Configuração do agente</h2>
+          <p>
+            A IA só responde quando a chave está configurada, a IA global está ligada e a conversa também está com IA
+            ligada.
+          </p>
+        </div>
+        <label className="chat-toggle">
+          <input name="ai_enabled" type="checkbox" defaultChecked={settings.ai_enabled} />
+          IA global ligada
+        </label>
+        <label>
+          <span>OpenAI API key</span>
+          <input
+            name="openai_api_key"
+            type="password"
+            placeholder={settings.has_openai_api_key ? "Chave configurada. Preencha para substituir." : "Cole a chave da OpenAI"}
+            autoComplete="off"
+          />
+        </label>
+        <label>
+          <span>Modelo</span>
+          <input name="openai_model" defaultValue={settings.openai_model} placeholder="gpt-4.1-mini" />
+        </label>
+        <label className="full">
+          <span>Prompt adicional</span>
+          <textarea
+            name="additional_prompt"
+            rows={5}
+            defaultValue={settings.additional_prompt}
+            placeholder="Instruções extras além do conteúdo do site."
+          />
+        </label>
+        <label className="chat-toggle">
+          <input name="clear_openai_api_key" type="checkbox" />
+          Apagar chave salva
+        </label>
+        <button className="button primary" type="submit">
+          Salvar agente
+        </button>
+        {settingsMessage ? <p className="settings-message">{settingsMessage}</p> : null}
+      </form>
 
       <div className="chat-admin">
         <aside>
@@ -119,8 +197,11 @@ export function ChatAdminPanel({ initialChats }: { initialChats: ChatLeadWithSta
                     checked={Boolean(active.ai_enabled)}
                     onChange={(event) => patch(active.id, { ai_enabled: event.target.checked })}
                   />
-                  IA ligada
+                  IA nesta conversa
                 </label>
+                <button className="button ghost" type="button" onClick={() => patch(active.id, { ai_enabled: false, status: "atendidos" })}>
+                  Assumir conversa
+                </button>
               </div>
 
               <div className="chat-messages">

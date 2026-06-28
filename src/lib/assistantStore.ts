@@ -53,6 +53,23 @@ export type ChatMessage = {
   created_at: string;
 };
 
+export type ChatSettings = {
+  id: "default";
+  openai_api_key: string | null;
+  openai_model: string;
+  additional_prompt: string;
+  ai_enabled: number;
+  updated_at: string;
+};
+
+export type PublicChatSettings = {
+  openai_model: string;
+  additional_prompt: string;
+  ai_enabled: boolean;
+  has_openai_api_key: boolean;
+  updated_at: string;
+};
+
 let database: DatabaseSync | undefined;
 
 function now() {
@@ -87,7 +104,20 @@ function getDb() {
     );
     CREATE INDEX IF NOT EXISTS idx_chat_messages_lead_created_at ON chat_messages(lead_id, created_at);
     CREATE INDEX IF NOT EXISTS idx_chat_leads_status_updated_at ON chat_leads(status, updated_at);
+    CREATE TABLE IF NOT EXISTS chat_settings (
+      id TEXT PRIMARY KEY CHECK (id = 'default'),
+      openai_api_key TEXT,
+      openai_model TEXT NOT NULL DEFAULT 'gpt-4.1-mini',
+      additional_prompt TEXT NOT NULL DEFAULT '',
+      ai_enabled INTEGER NOT NULL DEFAULT 0,
+      updated_at TEXT NOT NULL
+    );
   `);
+  database
+    .prepare(
+      "INSERT OR IGNORE INTO chat_settings (id, openai_api_key, openai_model, additional_prompt, ai_enabled, updated_at) VALUES ('default', NULL, 'gpt-4.1-mini', '', 0, ?)"
+    )
+    .run(now());
   return database;
 }
 
@@ -154,6 +184,44 @@ export function addChatMessage(input: { leadId: string; role: ChatMessage["role"
     .prepare("INSERT INTO chat_messages (id, lead_id, role, content, sender_name, created_at) VALUES (?, ?, ?, ?, ?, ?)")
     .run(crypto.randomUUID(), input.leadId, input.role, input.content, input.senderName?.trim() || null, createdAt);
   getDb().prepare("UPDATE chat_leads SET updated_at = ?, summary = ? WHERE id = ?").run(createdAt, input.content.slice(0, 500), input.leadId);
+}
+
+export function getChatSettings() {
+  return getDb().prepare("SELECT * FROM chat_settings WHERE id = 'default'").get() as ChatSettings;
+}
+
+export function getPublicChatSettings(): PublicChatSettings {
+  const settings = getChatSettings();
+  return {
+    openai_model: settings.openai_model,
+    additional_prompt: settings.additional_prompt,
+    ai_enabled: Boolean(settings.ai_enabled),
+    has_openai_api_key: Boolean(settings.openai_api_key?.trim()),
+    updated_at: settings.updated_at
+  };
+}
+
+export function updateChatSettings(input: {
+  openaiApiKey?: string;
+  clearOpenAiKey?: boolean;
+  openaiModel?: string;
+  additionalPrompt?: string;
+  aiEnabled?: boolean;
+}) {
+  const current = getChatSettings();
+  const nextKey = input.clearOpenAiKey ? null : input.openaiApiKey?.trim() ? input.openaiApiKey.trim() : current.openai_api_key;
+  const nextModel = input.openaiModel?.trim() || current.openai_model || "gpt-4.1-mini";
+  const nextPrompt = typeof input.additionalPrompt === "string" ? input.additionalPrompt.trim().slice(0, 6000) : current.additional_prompt;
+  const nextAiEnabled = typeof input.aiEnabled === "boolean" ? (input.aiEnabled ? 1 : 0) : current.ai_enabled;
+  const updatedAt = now();
+
+  getDb()
+    .prepare(
+      "UPDATE chat_settings SET openai_api_key = ?, openai_model = ?, additional_prompt = ?, ai_enabled = ?, updated_at = ? WHERE id = 'default'"
+    )
+    .run(nextKey, nextModel, nextPrompt, nextAiEnabled, updatedAt);
+
+  return getPublicChatSettings();
 }
 
 export function updateChatLeadStatus(id: string, status: ChatStatus) {

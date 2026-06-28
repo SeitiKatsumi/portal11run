@@ -75,7 +75,7 @@ export const projects: ProjectPage[] = [
     eyebrow: "performance orientada por dados",
     title: "App 11Run",
     subtitle: "Uma plataforma para organizar treino, leitura de desempenho e evolução esportiva com mais clareza.",
-    imageSrc: "/assets/11run.png",
+    imageSrc: "/assets/11run-reference.jpg",
     imageAlt: "Corredora em movimento representando performance e tecnologia",
     body: [
       "O App 11Run nasce para atletas, treinadores e projetos que querem ir além da planilha e transformar rotina esportiva em acompanhamento consistente.",
@@ -116,7 +116,7 @@ export const projects: ProjectPage[] = [
     eyebrow: "Onze Futuro",
     title: "Onze Futuro",
     subtitle: "O Brasil tem talento. O que falta, muitas vezes, é estrutura, continuidade e oportunidade no momento certo.",
-    imageSrc: "/assets/11run.png",
+    imageSrc: "/assets/11run-reference.jpg",
     imageAlt: "Corredora em movimento 11RUN",
     body: [
       "O Onze Futuro acompanha jovens atletas entre 10 e 13 anos, oferecendo suporte, orientação, convivência esportiva, ajuda de custo, materiais, inscrições gratuitas no Circuito 11RUN e assessoria de publicidade ao longo do processo.",
@@ -156,7 +156,7 @@ export const projects: ProjectPage[] = [
     eyebrow: "Itatiba e região",
     title: "11 Regional",
     subtitle: "Performance não tem idade.",
-    imageSrc: "/assets/11run.png",
+    imageSrc: "/assets/11run-reference.jpg",
     imageAlt: "Corredora em movimento 11RUN",
     body: [
       "A 11RUN é global no alcance. Mas em Itatiba, o compromisso é local.",
@@ -196,7 +196,7 @@ export const projects: ProjectPage[] = [
     eyebrow: "circuito infantil",
     title: "Circuito Futuro 11",
     subtitle: "Da primeira volta na pista ao sonho de chegar mais longe.",
-    imageSrc: "/assets/11run.png",
+    imageSrc: "/assets/11run-reference.jpg",
     imageAlt: "Corredora em movimento 11RUN",
     body: [
       "O futuro do meio-fundo e fundo começa na pista.",
@@ -240,7 +240,7 @@ export const projects: ProjectPage[] = [
     eyebrow: "oportunidades internacionais",
     title: "Portal de Oportunidades 11RUN",
     subtitle: "Bolsas universitárias para jovens fundistas: o caminho que muitos talentos ainda não sabem que existe.",
-    imageSrc: "/assets/11run.png",
+    imageSrc: "/assets/11run-reference.jpg",
     imageAlt: "Corredora de alta performance em movimento",
     body: [
       "No Brasil, existem atletas jovens com disciplina, potencial e sonhos grandes. Mas entre correr bem e conquistar uma oportunidade internacional, existe uma jornada que quase ninguém explica com clareza.",

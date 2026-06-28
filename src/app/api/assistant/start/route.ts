@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { addChatMessage, createChatLead } from "@/lib/assistantStore";
+import { createChatLead } from "@/lib/assistantStore";
 
 export const runtime = "nodejs";
 
@@ -24,8 +24,7 @@ export async function POST(request: Request) {
   const lead = createChatLead({ name, email, whatsapp });
   if (!lead) return NextResponse.json({ error: "Não foi possível iniciar o atendimento." }, { status: 500 });
 
-  const message = `Olá, ${lead.name}. Sou o assistente 11RUN. Posso ajudar com Onze Futuro, Circuito Futuro 11, 11 Regional, Bolsas ou App 11Run. Qual caminho você quer entender?`;
-  addChatMessage({ leadId: lead.id, role: "assistant", content: message });
+  const message = `Olá, ${lead.name}. Envie sua pergunta sobre Onze Futuro, Circuito Futuro 11, 11 Regional, Bolsas ou App 11Run. Se a IA estiver ligada no painel, ela responde com base no conteúdo do site; se não estiver, a equipe assume por aqui.`;
 
   return NextResponse.json({ lead, message });
 }

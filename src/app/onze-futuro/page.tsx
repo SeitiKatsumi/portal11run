@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     "O Onze Futuro  a frente de base da 11RUN para jovens atletas de 10 a 13 anos, com projeto piloto de 2026 a 2029, apoio técnico, psicológico, materiais, ajuda de custo e integraçãno ano Circuito 11RUN."
 };
 
-const image = "/assets/11run.png";
+const image = "/assets/11run-reference.jpg";
 
 const heroStats = [
   { icon: CalendarDays, title: "Projeto piloto", text: "2026 a 2029" },

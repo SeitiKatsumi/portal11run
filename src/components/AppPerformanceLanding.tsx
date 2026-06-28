@@ -406,7 +406,7 @@ export function AppPerformanceLanding() {
   return (
     <div className="ai-page">
       <section className="ai-photo-banner">
-        <img src="/assets/11run.png" alt="Corredora em movimento representando performance com inteligência artificial" />
+        <img src="/assets/11run-reference.jpg" alt="Corredora em movimento representando performance com inteligência artificial" />
         <div>
           <span>Inteligência aplicada</span>
           <h2>Dados brutos entram. Decisão esportiva sai.</h2>
@@ -583,7 +583,7 @@ export function AppPerformanceLanding() {
       </section>
 
       <section className="ai-photo-banner">
-        <img src="/assets/11run.png" alt="Atleta 11RUN em movimento em ambiente de performance" />
+        <img src="/assets/11run-reference.jpg" alt="Atleta 11RUN em movimento em ambiente de performance" />
         <div>
           <span>Ecossistema conectado</span>
           <h2>Strava, Garmin, wearables e novas fontes de dados.</h2>

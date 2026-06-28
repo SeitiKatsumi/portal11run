@@ -55,7 +55,7 @@ export function HeroSection({
 
       <Reveal delay={0.12}>
         <div className="hero-visual">
-          <img src={imageSrc ?? "/assets/11run.png"} alt={imageAlt ?? "Corredora em movimento 11RUN"} />
+          <img src={imageSrc ?? "/assets/11run-reference.jpg"} alt={imageAlt ?? "Corredora em movimento 11RUN"} />
         </div>
       </Reveal>
 

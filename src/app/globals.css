@@ -371,9 +371,11 @@ main > div:first-child > .feature-banner {
   margin-top: 0;
 }
 
-.feature-banner img {
+.feature-banner img,
+.feature-banner video {
   width: 100%;
   height: 100%;
+  display: block;
   object-fit: cover;
   object-position: center center;
   filter: brightness(0.56) saturate(0.82);
@@ -2647,6 +2649,7 @@ body.modal-open {
 }
 
 .ranking-form,
+.chat-settings,
 .chat-admin {
   width: min(calc(100% - 48px), 1560px);
   margin: 18px auto 0;
@@ -2674,6 +2677,8 @@ body.modal-open {
 
 .ranking-form input,
 .ranking-form select,
+.chat-settings input,
+.chat-settings textarea,
 .chat-detail select,
 .chat-reply input,
 .assistant-start input,
@@ -2684,6 +2689,51 @@ body.modal-open {
   background: var(--surface-muted);
   color: var(--text);
   padding: 0 12px;
+}
+
+.chat-settings {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(160px, auto) repeat(2, minmax(180px, 0.5fr)) auto;
+  gap: 14px;
+  align-items: end;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.chat-settings h2 {
+  margin: 8px 0 0;
+  font-size: clamp(1.7rem, 3vw, 3.2rem);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.028em;
+}
+
+.chat-settings p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.chat-settings label {
+  display: grid;
+  gap: 7px;
+}
+
+.chat-settings label.full {
+  grid-column: 1 / -1;
+}
+
+.chat-settings textarea {
+  min-height: 122px;
+  padding: 12px;
+  resize: vertical;
+}
+
+.settings-message {
+  margin: 0;
+  color: var(--accent-strong);
 }
 
 .ranking-table {
@@ -2820,7 +2870,7 @@ body.modal-open {
 
 .chat-detail-head {
   display: grid;
-  grid-template-columns: 1fr minmax(220px, 280px) auto;
+  grid-template-columns: minmax(220px, 1fr) minmax(190px, 260px) auto auto;
   gap: 14px;
   align-items: end;
 }
@@ -3069,6 +3119,7 @@ body.modal-open {
   }
 
   .ranking-form,
+  .chat-settings,
   .chat-admin,
   .chat-detail-head,
   .public-ranking {
@@ -3407,6 +3458,7 @@ body.modal-open {
   }
 
   .ranking-form,
+  .chat-settings,
   .ranking-table,
   .chat-admin {
     width: min(calc(100% - 28px), 1560px);

@@ -29,7 +29,7 @@ export default async function Page({ params }: PageProps) {
     notFound();
   }
 
-  const formImage = "/assets/11run.png";
+  const formImage = "/assets/11run-reference.jpg";
 
   return (
     <>

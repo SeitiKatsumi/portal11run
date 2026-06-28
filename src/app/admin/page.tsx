@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AdminPipeline } from "@/components/AdminPipeline";
 import { ChatAdminPanel } from "@/components/ChatAdminPanel";
 import { RankingAdmin } from "@/components/RankingAdmin";
-import { listChatLeads } from "@/lib/assistantStore";
+import { getPublicChatSettings, listChatLeads } from "@/lib/assistantStore";
 import { listLeads } from "@/lib/leads";
 import { listRankings } from "@/lib/rankings";
 
@@ -17,12 +17,13 @@ export default function AdminPage() {
   const leads = listLeads();
   const rankings = listRankings();
   const chats = listChatLeads();
+  const chatSettings = getPublicChatSettings();
 
   return (
     <div className="admin-page">
       <AdminPipeline initialLeads={JSON.parse(JSON.stringify(leads))} />
       <RankingAdmin initialRankings={JSON.parse(JSON.stringify(rankings))} />
-      <ChatAdminPanel initialChats={JSON.parse(JSON.stringify(chats))} />
+      <ChatAdminPanel initialChats={JSON.parse(JSON.stringify(chats))} initialSettings={JSON.parse(JSON.stringify(chatSettings))} />
     </div>
   );
 }

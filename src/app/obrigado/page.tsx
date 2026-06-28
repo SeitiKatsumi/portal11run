@@ -30,7 +30,7 @@ export default function ObrigadoPage() {
             </Link>
           </div>
         </div>
-        <img src="/assets/11run.png" alt="Corredora em movimento 11RUN" />
+        <img src="/assets/11run-reference.jpg" alt="Corredora em movimento 11RUN" />
       </section>
 
       <FeatureBanner

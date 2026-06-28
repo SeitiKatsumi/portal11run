@@ -4,6 +4,7 @@ import {
   classifyChatStatus,
   getChatLead,
   getChatMessages,
+  getChatSettings,
   updateChatLeadStatus,
   type ChatMessage
 } from "@/lib/assistantStore";
@@ -59,11 +60,12 @@ export async function POST(request: Request) {
   const detected = lead.status !== "atendidos" && lead.status !== "improdutivos" ? classifyChatStatus(userMessage) : null;
   const updatedLead = detected ? updateChatLeadStatus(leadId, detected) ?? lead : lead;
   const messages = getChatMessages(leadId);
-  const apiKey = process.env.OPENAI_API_KEY;
+  const settings = getChatSettings();
+  const apiKey = settings.openai_api_key?.trim() || process.env.OPENAI_API_KEY;
   let assistantMessage = "";
   let mode: "ai" | "waiting_human" | "disabled" | "error" = "waiting_human";
 
-  if (!updatedLead.ai_enabled) {
+  if (!settings.ai_enabled || !updatedLead.ai_enabled) {
     mode = "disabled";
   } else if (apiKey) {
     try {
@@ -74,9 +76,9 @@ export async function POST(request: Request) {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          model: process.env.OPENAI_MODEL || "gpt-4.1-mini",
+          model: settings.openai_model || process.env.OPENAI_MODEL || "gpt-4.1-mini",
           input: [
-            { role: "system", content: buildRunSystemPrompt() },
+            { role: "system", content: buildRunSystemPrompt(settings.additional_prompt) },
             { role: "system", content: buildLeadContext(updatedLead) },
             ...messages.slice(-14).map((message: ChatMessage) => ({ role: message.role, content: message.content }))
           ],
@@ -96,7 +98,7 @@ export async function POST(request: Request) {
   }
 
   if (!assistantMessage) assistantMessage = buildWaitingMessage();
-  if (mode !== "disabled" && mode !== "waiting_human") addChatMessage({ leadId, role: "assistant", content: assistantMessage });
+  if (mode === "ai") addChatMessage({ leadId, role: "assistant", content: assistantMessage });
 
   return noStore({ message: assistantMessage, mode, status: updatedLead.status });
 }
