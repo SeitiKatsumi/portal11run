@@ -2427,8 +2427,27 @@ body.modal-open {
 .ai-photo-banner img {
   height: 100%;
   object-fit: cover;
-  object-position: center;
+  object-position: center center;
   filter: brightness(0.48) saturate(0.85);
+}
+
+.home-hero-visual img,
+.hero-visual img,
+.feature-banner img,
+.feature-banner video,
+.futuro-hero-image img,
+.futuro-image-square,
+.futuro-two-col img,
+.regional-hero-visual img,
+.regional-section img,
+.ai-photo-banner img,
+.ai-photo-banner video,
+.ai-hero-visual img,
+.ai-section img,
+.form-hero img,
+.thanks-page img,
+.admin-photos img {
+  object-position: center center !important;
 }
 
 .ai-photo-banner > div {

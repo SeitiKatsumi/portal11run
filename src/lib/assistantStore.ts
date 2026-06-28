@@ -109,13 +109,13 @@ function getDb() {
       openai_api_key TEXT,
       openai_model TEXT NOT NULL DEFAULT 'gpt-4.1-mini',
       additional_prompt TEXT NOT NULL DEFAULT '',
-      ai_enabled INTEGER NOT NULL DEFAULT 0,
+      ai_enabled INTEGER NOT NULL DEFAULT 1,
       updated_at TEXT NOT NULL
     );
   `);
   database
     .prepare(
-      "INSERT OR IGNORE INTO chat_settings (id, openai_api_key, openai_model, additional_prompt, ai_enabled, updated_at) VALUES ('default', NULL, 'gpt-4.1-mini', '', 0, ?)"
+      "INSERT OR IGNORE INTO chat_settings (id, openai_api_key, openai_model, additional_prompt, ai_enabled, updated_at) VALUES ('default', NULL, 'gpt-4.1-mini', '', 1, ?)"
     )
     .run(now());
   return database;

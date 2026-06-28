@@ -76,6 +76,6 @@ CREATE TABLE IF NOT EXISTS chat_settings (
   openai_api_key TEXT,
   openai_model TEXT NOT NULL DEFAULT 'gpt-4.1-mini',
   additional_prompt TEXT NOT NULL DEFAULT '',
-  ai_enabled INTEGER NOT NULL DEFAULT 0,
+  ai_enabled INTEGER NOT NULL DEFAULT 1,
   updated_at TEXT NOT NULL
 );

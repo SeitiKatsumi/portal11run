@@ -29,7 +29,7 @@ export function FeatureBanner({
     <Reveal>
       <section className="feature-banner" aria-label={title}>
         {videoSrc ? (
-          <video autoPlay muted loop playsInline poster={imageSrc} aria-label={imageAlt}>
+          <video autoPlay muted loop playsInline preload="auto" poster={imageSrc} aria-label={imageAlt}>
             <source src={videoSrc} type="video/mp4" />
           </video>
         ) : (

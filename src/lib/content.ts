@@ -56,7 +56,7 @@ export type ProjectPage = {
 export const navItems = [
   { label: "Início", href: "/" },
   { label: "App 11Run", href: "/app-11run" },
-  { label: "Onze Futuro", href: "/onze-futuro" },
+  { label: "11 Futuro", href: "/onze-futuro" },
   { label: "11 Regional", href: "/11-regional" },
   { label: "Circuito Futuro 11", href: "/circuito-futuro-11" },
   { label: "Bolsas", href: "/bolsas" }
