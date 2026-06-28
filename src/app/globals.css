@@ -3208,7 +3208,7 @@ body.modal-open {
   }
 
   .feature-banner {
-    aspect-ratio: 16 / 9;
+    aspect-ratio: 1 / 1;
     margin-top: 24px;
     margin-bottom: 64px;
   }
@@ -3267,7 +3267,17 @@ body.modal-open {
   }
 
   .ai-photo-banner {
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 1 / 1;
+  }
+
+  .feature-banner img,
+  .feature-banner video,
+  .ai-photo-banner img,
+  .ai-photo-banner video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center !important;
   }
 
   .ai-photo-banner > div {
