@@ -14,18 +14,18 @@ type Field = {
 };
 
 const generalFields: Field[] = [
-  { name: "name", label: "Nome completo" },
-  { name: "email", label: "E-mail", type: "email" },
-  { name: "phone", label: "WhatsApp" },
-  { name: "city", label: "Cidade" },
-  { name: "state", label: "Estado" },
+  { name: "name", label: "Nome do cadastrante" },
+  { name: "email", label: "E-mail do cadastrante", type: "email" },
+  { name: "phone", label: "WhatsApp do cadastrante" },
+  { name: "city", label: "Cidade do cadastrante" },
+  { name: "state", label: "Estado do cadastrante" },
   {
     name: "profile_type",
-    label: "Perfil",
+    label: "Perfil do cadastrante",
     type: "select",
     options: ["atleta", "pai/mãe/responsável", "treinador", "projeto", "escola", "universidade", "parceiro"]
   },
-  { name: "message", label: "Mensagem", type: "textarea" }
+  { name: "message", label: "Mensagem do cadastrante", type: "textarea" }
 ];
 
 const onzeFuturoRequiredFields = new Set([
