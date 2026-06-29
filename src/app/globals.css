@@ -1302,6 +1302,19 @@ body.modal-open {
   background: var(--surface-muted);
 }
 
+.admin-card.clickable {
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+}
+
+.admin-card.clickable:hover,
+.admin-card.clickable:focus-visible {
+  border-color: var(--accent-strong);
+  background: var(--surface);
+  transform: translateY(-1px);
+  outline: none;
+}
+
 .admin-card-head {
   display: flex;
   justify-content: space-between;
@@ -1382,6 +1395,165 @@ body.modal-open {
   margin: 0;
   color: var(--soft);
   overflow-wrap: anywhere;
+}
+
+.admin-view-button {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lead-detail-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgb(33 31 27 / 0.52);
+}
+
+.lead-detail-modal {
+  position: relative;
+  width: min(1180px, 100%);
+  max-height: min(92vh, 980px);
+  overflow: auto;
+  padding: clamp(22px, 4vw, 44px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.lead-detail-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: start;
+  padding-right: 58px;
+}
+
+.lead-detail-head h2 {
+  margin: 8px 0 10px;
+  font-size: clamp(2rem, 4vw, 4.8rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.lead-detail-head p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.lead-detail-head .button {
+  white-space: nowrap;
+}
+
+.lead-photo-downloads {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.lead-photo-downloads figure {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.lead-photo-downloads img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  object-position: center center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+}
+
+.lead-photo-downloads a {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.lead-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.lead-detail-group {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+}
+
+.lead-detail-group h3 {
+  margin: 0 0 16px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.lead-detail-group dl {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.lead-detail-group dl div {
+  display: grid;
+  gap: 4px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgb(33 31 27 / 0.08);
+}
+
+.lead-detail-group dl div:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.lead-detail-group dt {
+  color: var(--accent-strong);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.lead-detail-group dd {
+  margin: 0;
+  color: var(--soft);
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.lead-detail-group dd a {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .receipt-list {
@@ -3988,6 +4160,34 @@ body.modal-open {
   .pipeline-board {
     grid-template-columns: 1fr;
     overflow: visible;
+  }
+
+  .lead-detail-backdrop {
+    padding: 12px;
+    align-items: end;
+  }
+
+  .lead-detail-modal {
+    max-height: 94vh;
+    padding: 20px;
+  }
+
+  .lead-detail-head {
+    grid-template-columns: 1fr;
+    padding-right: 0;
+  }
+
+  .lead-detail-head .button {
+    width: 100%;
+  }
+
+  .lead-photo-downloads,
+  .lead-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lead-photo-downloads {
+    gap: 14px;
   }
 
   .ranking-form,

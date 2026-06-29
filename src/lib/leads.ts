@@ -391,6 +391,10 @@ export function listLeads() {
     .all() as LeadRecord[];
 }
 
+export function getLeadById(id: string) {
+  return getDatabase().prepare("SELECT * FROM leads WHERE id = ?").get(id) as LeadRecord | undefined;
+}
+
 export function updateLead(id: string, updates: { pipeline_status?: string; receipts?: Record<string, boolean> }) {
   const current = getDatabase().prepare("SELECT receipts_json FROM leads WHERE id = ?").get(id) as
     | { receipts_json?: string }
