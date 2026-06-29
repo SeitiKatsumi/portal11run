@@ -1151,6 +1151,46 @@ body.modal-open {
   padding: 118px 0 54px;
 }
 
+.admin-nav {
+  width: min(calc(100% - 48px), 1560px);
+  margin: 0 auto 18px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  overflow-x: auto;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.admin-nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.admin-nav a.active {
+  border-color: var(--line);
+  background: var(--surface-muted);
+  color: var(--text);
+}
+
+.admin-nav svg {
+  flex: 0 0 auto;
+  color: var(--accent-strong);
+}
+
 .admin-panel {
   width: min(calc(100% - 48px), 1560px);
   margin-inline: auto;
@@ -3925,6 +3965,15 @@ body.modal-open {
 
   .admin-page {
     padding-top: 104px;
+  }
+
+  .admin-nav {
+    width: min(calc(100% - 28px), 1560px);
+    margin-bottom: 14px;
+  }
+
+  .admin-nav a {
+    flex: 0 0 auto;
   }
 
   .admin-panel {

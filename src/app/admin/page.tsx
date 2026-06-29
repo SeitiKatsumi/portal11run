@@ -1,35 +1,7 @@
-import type { Metadata } from "next";
-import { AdminPipeline } from "@/components/AdminPipeline";
-import { ChatAdminPanel } from "@/components/ChatAdminPanel";
-import { FinanceAdmin } from "@/components/FinanceAdmin";
-import { RankingAdmin } from "@/components/RankingAdmin";
-import { getPublicChatSettings, listChatLeads } from "@/lib/assistantStore";
-import { listFinancialRecords } from "@/lib/finance";
-import { listLeads } from "@/lib/leads";
-import { listMemberAccounts } from "@/lib/members";
-import { listRankings } from "@/lib/rankings";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Admin - Cadastros 11RUN",
-  description: "Painel administrativo para pipeline de cadastros do portal 11RUN."
-};
-
 export default function AdminPage() {
-  const leads = listLeads();
-  const memberAccounts = listMemberAccounts();
-  const financialRecords = listFinancialRecords();
-  const rankings = listRankings();
-  const chats = listChatLeads();
-  const chatSettings = getPublicChatSettings();
-
-  return (
-    <div className="admin-page">
-      <AdminPipeline initialLeads={JSON.parse(JSON.stringify(leads))} initialMemberAccounts={JSON.parse(JSON.stringify(memberAccounts))} />
-      <FinanceAdmin initialRecords={JSON.parse(JSON.stringify(financialRecords))} leads={JSON.parse(JSON.stringify(leads))} />
-      <RankingAdmin initialRankings={JSON.parse(JSON.stringify(rankings))} />
-      <ChatAdminPanel initialChats={JSON.parse(JSON.stringify(chats))} initialSettings={JSON.parse(JSON.stringify(chatSettings))} />
-    </div>
-  );
+  redirect("/admin/cadastros");
 }

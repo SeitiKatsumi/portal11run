@@ -89,7 +89,7 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
 
       {project.timeline ? (
         <section className="section split">
-          <SectionTitle eyebrow="calendário" title="Etapaàs planejadas para o circuito." />
+          <SectionTitle eyebrow="calendário" title="Etapas planejadas para o circuito." />
           <Timeline items={project.timeline} />
         </section>
       ) : null}
@@ -98,7 +98,7 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
 
       {project.comparison ? (
         <section className="section">
-          <SectionTitle eyebrow="rotas internacionais" title="EUA e Japão como caminhos possveis." />
+          <SectionTitle eyebrow="rotas internacionais" title="EUA e Japão como caminhos possíveis." />
           <div className="comparison-grid">
             {project.comparison.map((item) => (
               <article key={item.title} className="comparison-card">
@@ -167,7 +167,7 @@ function CircuitoDetails() {
         <SectionTitle
           eyebrow="regulamento técnico"
           title="Meio-fundo e fundo com regra clara desde a base."
-          text="O circuito usa como referência as regras oficiais do atletismo para provas de meio-fundo e fundo, inicialmente nas distâncias de 800m e 1500m, com adaptações por idade, segurança e logísética."
+          text="O circuito usa como referência as regras oficiais do atletismo para provas de meio-fundo e fundo, inicialmente nas distâncias de 800m e 1500m, com adaptações por idade, segurança e logística."
         />
         <div className="editorial-block">
           <p>As inscrições dependem de autorização do responsável, comprovante de pagamento e aceite do regulamento.</p>
@@ -177,7 +177,7 @@ function CircuitoDetails() {
       </section>
 
       <section className="section">
-        <SectionTitle eyebrow="ranking publicado" title="Resultados gerenciados pelno painel administrativo." />
+        <SectionTitle eyebrow="ranking publicado" title="Resultados gerenciados pelo painel administrativo." />
         <div className="public-ranking">
           {rankings.length === 0 ? <p>Ranking ainda sem resultados publicados.</p> : null}
           {rankings.map((item) => (
