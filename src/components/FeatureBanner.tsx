@@ -11,11 +11,13 @@ export function FeatureBanner({
   videoSrc,
   imageAlt = "Corredora em movimento 11RUN",
   cta,
-  ctaSlot
+  ctaSlot,
+  mediaOnly = false,
+  videoControls = false
 }: {
-  eyebrow: string;
-  title: string;
-  text: string;
+  eyebrow?: string;
+  title?: string;
+  text?: string;
   imageSrc?: string;
   videoSrc?: string;
   imageAlt?: string;
@@ -24,29 +26,35 @@ export function FeatureBanner({
     href: string;
   };
   ctaSlot?: ReactNode;
+  mediaOnly?: boolean;
+  videoControls?: boolean;
 }) {
+  const hasContent = !mediaOnly && (eyebrow || title || text || ctaSlot || cta);
+
   return (
     <Reveal>
-      <section className="feature-banner" aria-label={title}>
+      <section className={`feature-banner${mediaOnly ? " media-only" : ""}`} aria-label={title ?? imageAlt}>
         {videoSrc ? (
-          <video autoPlay muted loop playsInline preload="auto" poster={imageSrc} aria-label={imageAlt}>
+          <video autoPlay muted loop playsInline preload="auto" poster={imageSrc} controls={videoControls} aria-label={imageAlt}>
             <source src={videoSrc} type="video/mp4" />
           </video>
         ) : (
           <img src={imageSrc} alt={imageAlt} />
         )}
-        <div>
-          <span>{eyebrow}</span>
-          <h2>{title}</h2>
-          <p>{text}</p>
-          {ctaSlot ?? null}
-          {!ctaSlot && cta ? (
-            <Link className="button primary feature-banner-cta" href={cta.href}>
-              {cta.label}
-              <ArrowRight size={18} />
-            </Link>
-          ) : null}
-        </div>
+        {hasContent ? (
+          <div>
+            {eyebrow ? <span>{eyebrow}</span> : null}
+            {title ? <h2>{title}</h2> : null}
+            {text ? <p>{text}</p> : null}
+            {ctaSlot ?? null}
+            {!ctaSlot && cta ? (
+              <Link className="button primary feature-banner-cta" href={cta.href}>
+                {cta.label}
+                <ArrowRight size={18} />
+              </Link>
+            ) : null}
+          </div>
+        ) : null}
       </section>
     </Reveal>
   );

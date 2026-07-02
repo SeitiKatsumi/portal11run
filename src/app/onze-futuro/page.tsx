@@ -223,12 +223,10 @@ export default function Page() {
   return (
     <div className="futuro-landing">
       <FeatureBanner
-        eyebrow="Onze Futuro"
-        title="Mais cedo no movimento. Mais futuro no fundismo."
-        text="Uma frente de base para transformar talento, rotina e continuidade em um caminho real para jovens corredores."
         imageSrc="/assets/11run-reference.jpg"
-        videoSrc="/assets/homevideo.mp4"
-        ctaSlot={<ProjectFormModal project="onze-futuro" label="Cadastrar atleta" className="button white feature-banner-cta" />}
+        videoSrc="/assets/11run-video-base.mp4"
+        mediaOnly
+        videoControls
       />
 
       <section className="futuro-hero">

@@ -381,6 +381,11 @@ main > div:first-child > .feature-banner {
   filter: brightness(0.56) saturate(0.82);
 }
 
+.feature-banner.media-only img,
+.feature-banner.media-only video {
+  filter: none;
+}
+
 .feature-banner div {
   position: absolute;
   left: clamp(24px, 5vw, 72px);
