@@ -35,7 +35,10 @@ export const metadata: Metadata = {
     "O Onze Futuro  a frente de base da 11RUN para jovens atletas de 10 a 13 anos, com projeto piloto de 2026 a 2029, apoio técnico, psicológico, materiais, ajuda de custo e integraçãno ano Circuito 11RUN."
 };
 
-const image = "/assets/11run-reference.jpg";
+const heroImage = "/assets/onze-futuro-hero.jpg";
+const scenarioImage = "/assets/onze-futuro-cenario.jpg";
+const originImage = "/assets/onze-futuro-origem.jpg";
+const pilotImage = "/assets/onze-futuro-piloto.jpg";
 
 const heroStats = [
   { icon: CalendarDays, title: "Projeto piloto", text: "2026 a 2029" },
@@ -254,7 +257,7 @@ export default function Page() {
         </div>
         <Reveal delay={0.08}>
           <div className="futuro-hero-image">
-            <img src={image} alt="Corredora em movimento representando o Onze Futuro" />
+            <img src={heroImage} alt="Jovem atleta correndo na pista representando o Onze Futuro" />
           </div>
         </Reveal>
         <div className="futuro-kpis">
@@ -289,7 +292,7 @@ export default function Page() {
             </div>
           </Reveal>
           <Reveal delay={0.08}>
-            <img className="futuro-image-square" src={image} alt="Atleta em movimento em ambiente de performance" />
+            <img className="futuro-image-square" src={scenarioImage} alt="Jovem atleta em movimento durante treino de pista" />
           </Reveal>
         </div>
         <div className="futuro-card-grid four">
@@ -304,7 +307,7 @@ export default function Page() {
       <section className="futuro-section futuro-origin">
         <div className="futuro-two-col reverse">
           <Reveal>
-            <img className="futuro-image-square" src={image} alt="Corredora simbolizando vivência esportiva e competição" />
+            <img className="futuro-image-square" src={originImage} alt="Jovens atletas reunidas em ambiente esportivo" />
           </Reveal>
           <Reveal delay={0.08}>
             <div>
@@ -418,7 +421,7 @@ export default function Page() {
             </div>
           </Reveal>
           <Reveal delay={0.08}>
-            <img className="futuro-image-square" src={image} alt="Corredora simbolizando fase piloto do Onze Futuro" />
+            <img className="futuro-image-square" src={pilotImage} alt="Jovem atleta com medalha simbolizando desenvolvimento esportivo" />
           </Reveal>
         </div>
         <div className="futuro-timeline">
