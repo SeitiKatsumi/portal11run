@@ -10,6 +10,7 @@ const navIcons: Record<string, LucideIcon> = {
   "/": Home,
   "/app-11run": BarChart3,
   "/onze-futuro": Medal,
+  "/11-master": Trophy,
   "/11-regional": Trophy,
   "/circuito-futuro-11": Flag,
   "/bolsas": Globe2

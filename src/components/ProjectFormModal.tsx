@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
@@ -23,22 +23,22 @@ const modalCopy: Record<FormProjectSlug, { label: string; title: string; text: s
   "onze-futuro": {
     label: "Cadastrar atleta",
     title: "Cadastro Onze Futuro",
-    text: "Preencha dados do cadastrante, atleta, responsáveis, treinador, PIX, termo de aceite e as 5 fotos obrigatórias."
+    text: "Preencha dados do cadastrante, atleta, responsÃ¡veis, treinador, PIX, termo de aceite e as 5 fotos obrigatÃ³rias."
   },
   "11-regional": {
     label: "Inscrever atleta master",
-    title: "Inscrição 11 Regional",
-    text: "Informe dados do atleta master, documentos, endereço, redes sociais, provas, resultados e confirmação de raio de 40 km de Itatiba."
+    title: "InscriÃ§Ã£o 11 Master",
+    text: "Informe dados do atleta master, documentos, endereÃ§o, redes sociais, provas, resultados e confirmaÃ§Ã£o de raio de 40 km de Itatiba."
   },
   "circuito-futuro-11": {
     label: "Inscreva-se",
-    title: "Inscrição Circuito Futuro 11",
-    text: "Informe dados do responsável, atleta, prova, plano de inscrição, comprovante de pagamento e aceite do termo de autorização."
+    title: "InscriÃ§Ã£o Circuito Futuro 11",
+    text: "Informe dados do responsÃ¡vel, atleta, prova, plano de inscriÃ§Ã£o, comprovante de pagamento e aceite do termo de autorizaÃ§Ã£o."
   },
   bolsas: {
     label: "Cadastrar interesse",
     title: "Cadastro Bolsas e Oportunidades",
-    text: "Informe o perfil do atleta e os dados necessários para avaliação inicial da rota internacional."
+    text: "Informe o perfil do atleta e os dados necessÃ¡rios para avaliaÃ§Ã£o inicial da rota internacional."
   }
 };
 
@@ -59,7 +59,7 @@ export function ProjectFormModal({ project, label, className = "button primary",
   const modal = open ? (
     <div className="modal-backdrop" role="dialog" aria-modal="true" aria-label={title ?? copy.title}>
       <div className="registration-modal">
-        <button className="modal-close" type="button" onClick={() => setOpen(false)} aria-label="Fechar formulário">
+        <button className="modal-close" type="button" onClick={() => setOpen(false)} aria-label="Fechar formulÃ¡rio">
           <X size={20} />
         </button>
         <div className="modal-intro">

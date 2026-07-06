@@ -10,9 +10,16 @@ type PageProps = {
   params: Promise<{ project: string }>;
 };
 
+function resolveProjectSlug(project: string): FormProjectSlug | null {
+  if (project === "11-master") return "11-regional";
+  if (project in formProjects) return project as FormProjectSlug;
+  return null;
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { project } = await params;
-  const config = formProjects[project as FormProjectSlug];
+  const resolvedProject = resolveProjectSlug(project);
+  const config = resolvedProject ? formProjects[resolvedProject] : null;
   if (!config) return {};
 
   return {
@@ -23,9 +30,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function Page({ params }: PageProps) {
   const { project } = await params;
-  const config = formProjects[project as FormProjectSlug];
+  const resolvedProject = resolveProjectSlug(project);
+  const config = resolvedProject ? formProjects[resolvedProject] : null;
 
-  if (!config) {
+  if (!resolvedProject || !config) {
     notFound();
   }
 
@@ -63,7 +71,7 @@ export default async function Page({ params }: PageProps) {
             frente de entrada no ecossistema 11RUN.
           </p>
         </div>
-        <LeadForm project={project as FormProjectSlug} />
+        <LeadForm project={resolvedProject} />
       </section>
     </>
   );

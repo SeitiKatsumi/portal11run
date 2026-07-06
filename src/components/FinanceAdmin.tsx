@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState, type FormEvent } from "react";
 import { Banknote, Trash2 } from "lucide-react";
@@ -14,7 +14,7 @@ type AdminLead = {
 
 const projectLabels: Record<string, string> = {
   "onze-futuro": "11 Futuro",
-  "11-regional": "11 Regional",
+  "11-regional": "11 Master",
   "circuito-futuro-11": "Circuito Futuro 11",
   bolsas: "Bolsas",
   "app-11run": "App 11Run"
@@ -67,7 +67,7 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
     const result = await response.json();
     setLoading(false);
     if (!response.ok) {
-      setError(result.error ?? "Erro ao salvar lançamento.");
+      setError(result.error ?? "Erro ao salvar lanÃ§amento.");
       return;
     }
     setRecords((current) => [result.record, ...current]);
@@ -84,8 +84,8 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
       <div className="admin-toolbar">
         <div>
           <span className="eyebrow">financeiro</span>
-          <h1>Módulo financeiro</h1>
-          <p>Entradas, saídas, patrocinadores, projetos e atletas beneficiados com vínculo automático ao dashboard.</p>
+          <h1>MÃ³dulo financeiro</h1>
+          <p>Entradas, saÃ­das, patrocinadores, projetos e atletas beneficiados com vÃ­nculo automÃ¡tico ao dashboard.</p>
         </div>
       </div>
 
@@ -95,7 +95,7 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
           <strong>{formatMoney(totals.entries)}</strong>
         </article>
         <article>
-          <span>Total de saídas</span>
+          <span>Total de saÃ­das</span>
           <strong>{formatMoney(totals.expenses)}</strong>
         </article>
         <article>
@@ -118,10 +118,10 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
 
       <form className="finance-form" onSubmit={onSubmit}>
         <label>
-          <span>Entrada ou saída</span>
+          <span>Entrada ou saÃ­da</span>
           <select name="direction" required>
             <option value="entrada">Entrada</option>
-            <option value="saida">Saída / benefício</option>
+            <option value="saida">SaÃ­da / benefÃ­cio</option>
           </select>
         </label>
         <label>
@@ -130,7 +130,7 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
             <option value="">Selecione</option>
             {leads.map((lead) => (
               <option key={lead.id} value={lead.id}>
-                {(lead.athlete_name || lead.name)} · {projectLabels[lead.project_type] ?? lead.project_type}
+                {(lead.athlete_name || lead.name)} Â· {projectLabels[lead.project_type] ?? lead.project_type}
               </option>
             ))}
           </select>
@@ -164,26 +164,26 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
             <option>Pago</option>
             <option>Entregue</option>
             <option>Cancelada</option>
-            <option>Em análise</option>
+            <option>Em anÃ¡lise</option>
           </select>
         </label>
         <label className="finance-wide">
-          <span>Descrição / discriminação do item</span>
+          <span>DescriÃ§Ã£o / discriminaÃ§Ã£o do item</span>
           <textarea name="description" rows={3} required />
         </label>
         <label className="finance-wide">
-          <span>Observação de transparência</span>
-          <textarea name="transparency_notes" rows={2} placeholder="Resumo público sem dados sensíveis." />
+          <span>ObservaÃ§Ã£o de transparÃªncia</span>
+          <textarea name="transparency_notes" rows={2} placeholder="Resumo pÃºblico sem dados sensÃ­veis." />
         </label>
         {error ? <p className="form-error finance-wide">{error}</p> : null}
         <button className="button primary" type="submit" disabled={loading}>
           <Banknote size={17} />
-          {loading ? "Salvando..." : "Salvar lançamento"}
+          {loading ? "Salvando..." : "Salvar lanÃ§amento"}
         </button>
       </form>
 
       <div className="finance-table">
-        {records.length === 0 ? <p>Nenhum lançamento financeiro cadastrado.</p> : null}
+        {records.length === 0 ? <p>Nenhum lanÃ§amento financeiro cadastrado.</p> : null}
         {records.map((record) => (
           <article key={record.id}>
             <div>
@@ -197,11 +197,11 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
             </div>
             <div>
               <span>Atleta</span>
-              <strong>{record.athlete_name ?? "Não vinculado"}</strong>
+              <strong>{record.athlete_name ?? "NÃ£o vinculado"}</strong>
             </div>
             <div>
               <span>Patrocinador</span>
-              <strong>{record.sponsor_name ?? "Não informado"}</strong>
+              <strong>{record.sponsor_name ?? "NÃ£o informado"}</strong>
             </div>
             <div>
               <span>Valor</span>
@@ -211,7 +211,7 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
               <span>Status</span>
               <strong>{record.status}</strong>
             </div>
-            <button type="button" onClick={() => removeRecord(record.id)} aria-label="Excluir lançamento">
+            <button type="button" onClick={() => removeRecord(record.id)} aria-label="Excluir lanÃ§amento">
               <Trash2 size={16} />
             </button>
           </article>

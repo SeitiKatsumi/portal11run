@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync } from "fs";
+﻿import { mkdirSync, readFileSync } from "fs";
 import path from "path";
 import { createHash, pbkdf2Sync, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
@@ -9,7 +9,7 @@ export type MemberRole = "atleta_onze_futuro" | "atleta_11_regional" | "atleta_1
 
 export const memberRoleLabels: Record<MemberRole, string> = {
   atleta_onze_futuro: "Atleta 11 Futuro",
-  atleta_11_regional: "Atleta 11 Regional",
+  atleta_11_regional: "Atleta 11 Master",
   atleta_11_bolsista: "Atleta 11 Bolsista",
   atleta_circuito_futuro: "Atleta Circuito do Futuro"
 };
@@ -127,14 +127,14 @@ export function listMemberAccounts() {
 
 export function upsertMemberAccount(input: { leadId: string; role: MemberRole; username: string; password?: string; active?: boolean }) {
   const cleanUsername = input.username.trim();
-  if (!cleanUsername) throw new Error("Usuário obrigatório.");
-  if (!memberRoleLabels[input.role]) throw new Error("Perfil inválido.");
+  if (!cleanUsername) throw new Error("UsuÃ¡rio obrigatÃ³rio.");
+  if (!memberRoleLabels[input.role]) throw new Error("Perfil invÃ¡lido.");
 
   const db = getDatabase();
   const lead = db.prepare("SELECT * FROM leads WHERE id = ?").get(input.leadId) as LeadRecord | undefined;
-  if (!lead) throw new Error("Cadastro não encontrado.");
+  if (!lead) throw new Error("Cadastro nÃ£o encontrado.");
   if (!["Aceitos", "Aceitas"].includes(lead.pipeline_status)) throw new Error("O cadastro precisa estar aceito para liberar acesso.");
-  if (!eligibleMemberRolesByProject[lead.project_type]) throw new Error("Este projeto ainda não tem dashboard de membro ativo.");
+  if (!eligibleMemberRolesByProject[lead.project_type]) throw new Error("Este projeto ainda nÃ£o tem dashboard de membro ativo.");
 
   const existing = db.prepare("SELECT * FROM member_accounts WHERE lead_id = ?").get(input.leadId) as MemberAccount | undefined;
   const updatedAt = now();
@@ -160,7 +160,7 @@ export function upsertMemberAccount(input: { leadId: string; role: MemberRole; u
       $updated_at: updatedAt
     });
   } else {
-    if (!input.password || input.password.length < 6) throw new Error("Senha inicial obrigatória com pelo menos 6 caracteres.");
+    if (!input.password || input.password.length < 6) throw new Error("Senha inicial obrigatÃ³ria com pelo menos 6 caracteres.");
     const passwordParts = hashPassword(input.password);
     db.prepare(
       `INSERT INTO member_accounts (id, lead_id, role, username, password_hash, password_salt, active, created_at, updated_at)
@@ -236,7 +236,7 @@ export function getMemberDashboard(accountId: string): MemberDashboardData | nul
 export function createMemberMark(accountId: string, input: { age_group: string; event: string; time: string; date: string; location: string }) {
   const db = getDatabase();
   const account = db.prepare("SELECT * FROM member_accounts WHERE id = ? AND active = 1").get(accountId) as MemberAccount | undefined;
-  if (!account) throw new Error("Conta não encontrada.");
+  if (!account) throw new Error("Conta nÃ£o encontrada.");
   const clean = {
     age_group: input.age_group.trim(),
     event: input.event.trim(),
@@ -250,7 +250,7 @@ export function createMemberMark(accountId: string, input: { age_group: string; 
     id: randomUUID(),
     account_id: account.id,
     lead_id: account.lead_id,
-    status: "Pendente de validação",
+    status: "Pendente de validaÃ§Ã£o",
     created_at: createdAt,
     updated_at: createdAt,
     ...clean

@@ -19,7 +19,7 @@ export const chatStatusLabels: Record<ChatStatus, string> = {
   em_atendimento_ia: "Em atendimento IA",
   solicitou_onze_futuro: "Solicitou Onze Futuro",
   solicitou_circuito: "Solicitou Circuito 11",
-  solicitou_regional: "Solicitou 11 Regional",
+  solicitou_regional: "Solicitou 11 Master",
   solicitou_bolsas: "Solicitou Bolsas",
   solicitou_app: "Solicitou App 11Run",
   atendidos: "Atendidos",

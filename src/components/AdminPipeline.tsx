@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useState, type FormEvent, type MouseEvent } from "react";
 import { CheckCircle2, Download, Eye, ImageIcon, KeyRound, RefreshCw, X } from "lucide-react";
@@ -34,17 +34,17 @@ type MemberAccount = {
   updated_at: string;
 };
 
-const defaultStatuses = ["Cadastro recebido", "Em análise", "Aceitos", "Declinados", "Outros"];
-const circuitoStatuses = ["Perfil redes sociais", "Inscrições solicitadas", "Aguardando pagamento", "Aceitas", "Declinados"];
+const defaultStatuses = ["Cadastro recebido", "Em anÃ¡lise", "Aceitos", "Declinados", "Outros"];
+const circuitoStatuses = ["Perfil redes sociais", "InscriÃ§Ãµes solicitadas", "Aguardando pagamento", "Aceitas", "Declinados"];
 const statusesByProject: Record<string, string[]> = {
   "circuito-futuro-11": circuitoStatuses
 };
-const receiptItems = ["Uniforme", "Material esportivo", "Ajuda de custo", "Inscrição ou evento", "Outro recebimento"];
+const receiptItems = ["Uniforme", "Material esportivo", "Ajuda de custo", "InscriÃ§Ã£o ou evento", "Outro recebimento"];
 
 const projectLabels: Record<string, string> = {
   "app-11run": "App 11Run",
   "onze-futuro": "Onze Futuro",
-  "11-regional": "11 Regional",
+  "11-regional": "11 Master",
   "circuito-futuro-11": "Circuito Futuro 11",
   bolsas: "Bolsas"
 };
@@ -56,7 +56,7 @@ const memberRolesByProject: Record<string, MemberRole | undefined> = {
 
 const memberRoleLabels: Record<MemberRole, string> = {
   atleta_onze_futuro: "Atleta 11 Futuro",
-  atleta_11_regional: "Atleta 11 Regional",
+  atleta_11_regional: "Atleta 11 Master",
   atleta_11_bolsista: "Atleta 11 Bolsista",
   atleta_circuito_futuro: "Atleta Circuito do Futuro"
 };
@@ -77,9 +77,9 @@ const fieldLabels: Record<string, string> = {
   school: "Escola",
   team: "Equipe",
   father_name: "Nome do pai",
-  mother_name: "Nome da mãe",
-  address: "Endereço",
-  shoe_size: "Tamanho do calçado",
+  mother_name: "Nome da mÃ£e",
+  address: "EndereÃ§o",
+  shoe_size: "Tamanho do calÃ§ado",
   height_cm: "Altura",
   weight_kg: "Peso",
   coach_name: "Nome do treinador",
@@ -87,18 +87,18 @@ const fieldLabels: Record<string, string> = {
   coach_cref: "CREF do treinador",
   athlete_rg: "RG do atleta",
   athlete_cpf: "CPF do atleta",
-  guardian_name: "Nome do responsável",
-  guardian_email: "E-mail do responsável",
-  guardian_phone: "WhatsApp do responsável",
-  guardian_rg: "RG do responsável",
-  guardian_cpf: "CPF do responsável",
-  guardian_pix: "PIX do responsável",
+  guardian_name: "Nome do responsÃ¡vel",
+  guardian_email: "E-mail do responsÃ¡vel",
+  guardian_phone: "WhatsApp do responsÃ¡vel",
+  guardian_rg: "RG do responsÃ¡vel",
+  guardian_cpf: "CPF do responsÃ¡vel",
+  guardian_pix: "PIX do responsÃ¡vel",
   athlete_dream: "Maior sonho do atleta",
   cpf: "CPF",
   rg: "RG",
   social_link: "Perfil em redes sociais",
   best_marks: "Melhores marcas",
-  competitions: "Competições",
+  competitions: "CompetiÃ§Ãµes",
   within_itatiba_radius: "Raio de 40 km de Itatiba",
   race_event: "Prova",
   payment_plan: "Plano de pagamento",
@@ -142,7 +142,7 @@ const fieldGroups = [
     ]
   },
   {
-    title: "Treinador e responsáveis",
+    title: "Treinador e responsÃ¡veis",
     keys: ["coach_name", "coach_phone", "coach_cref", "guardian_name", "guardian_email", "guardian_phone", "guardian_rg", "guardian_cpf", "guardian_pix"]
   },
   {
@@ -173,8 +173,8 @@ function formatFieldName(key: string) {
 
 function formatFieldValue(value: unknown) {
   if (Array.isArray(value)) return value.join(", ");
-  if (typeof value === "boolean") return value ? "Sim" : "Não";
-  if (value === null || value === undefined || value === "") return "Não informado";
+  if (typeof value === "boolean") return value ? "Sim" : "NÃ£o";
+  if (value === null || value === undefined || value === "") return "NÃ£o informado";
   return String(value);
 }
 
@@ -280,13 +280,13 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
     : {};
   const groupedKeys = new Set(fieldGroups.flatMap((group) => group.keys));
   const remainingDetails = Object.entries(selectedDetails).filter(
-    ([key, value]) => !groupedKeys.has(key) && !["id", "photos", "receipts", "updated_at"].includes(key) && formatFieldValue(value) !== "Não informado"
+    ([key, value]) => !groupedKeys.has(key) && !["id", "photos", "receipts", "updated_at"].includes(key) && formatFieldValue(value) !== "NÃ£o informado"
   );
 
   function detailEntries(keys: string[]) {
     return keys
       .map((key) => [key, selectedDetails[key]] as const)
-      .filter(([, value]) => formatFieldValue(value) !== "Não informado");
+      .filter(([, value]) => formatFieldValue(value) !== "NÃ£o informado");
   }
 
   function renderDetailValue(key: string, value: unknown) {
@@ -313,7 +313,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
               <span className="eyebrow">{selectedProjectLabel}</span>
               <h2>{selectedLead.athlete_name || selectedLead.name}</h2>
               <p>
-                {selectedLead.name} · {selectedLead.email} · {selectedLead.phone}
+                {selectedLead.name} Â· {selectedLead.email} Â· {selectedLead.phone}
               </p>
             </div>
             {selectedPhotos.length > 0 ? (
@@ -365,7 +365,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
 
             {remainingDetails.length > 0 ? (
               <section className="lead-detail-group">
-                <h3>Outras informações</h3>
+                <h3>Outras informaÃ§Ãµes</h3>
                 <dl>
                   {remainingDetails.map(([key, value]) => (
                     <div key={key}>
@@ -387,7 +387,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
         <div>
           <span className="eyebrow">painel admin</span>
           <h1>Pipeline de cadastros</h1>
-          <p>Todos os registros do site organizados por projeto, categoria e etapa de análise.</p>
+          <p>Todos os registros do site organizados por projeto, categoria e etapa de anÃ¡lise.</p>
         </div>
         <label>
           <span>Projeto</span>
@@ -436,11 +436,11 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
                     </div>
                     <h2>{lead.athlete_name || lead.name}</h2>
                     <p>
-                      {lead.name} · {lead.phone}
+                      {lead.name} Â· {lead.phone}
                     </p>
                     <p>
                       {lead.email}
-                      {lead.city ? ` · ${lead.city}${lead.state ? `/${lead.state}` : ""}` : ""}
+                      {lead.city ? ` Â· ${lead.city}${lead.state ? `/${lead.state}` : ""}` : ""}
                     </p>
                     <small>{formatDate(lead.created_at)}</small>
 
@@ -507,7 +507,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
                               <input value={memberRoleLabels[memberAccount?.role ?? memberRole]} disabled />
                             </label>
                             <label>
-                              <span>Usuário</span>
+                              <span>UsuÃ¡rio</span>
                               <input name="username" defaultValue={memberAccount?.username ?? lead.email} required />
                             </label>
                             <label>

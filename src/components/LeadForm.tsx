@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -23,7 +23,7 @@ const baseFields: Field[] = [
     name: "profile_type",
     label: "Perfil",
     type: "select",
-    options: ["atleta", "pai/mãe/responsável", "treinador", "projeto", "escola", "universidade", "parceiro"]
+    options: ["atleta", "pai/mÃ£e/responsÃ¡vel", "treinador", "projeto", "escola", "universidade", "parceiro"]
   },
   { name: "message", label: "Mensagem", type: "textarea" }
 ];
@@ -94,42 +94,42 @@ const termsByProject: Partial<Record<FormProjectSlug, { title: string; clauses: 
   "onze-futuro": {
     title: "Termo de aceite do Onze Futuro",
     clauses: [
-      "O Onze Futuro é um projeto privado de desenvolvimento esportivo, formação de base, acompanhamento e oportunidade, sem promessa de resultado, patrocínio, bolsa ou permanência automática.",
-      "A participação exige que o atleta tenha treinador formado, com CREF ativo, responsável pela condução técnica cotidiana dos treinos.",
-      "Toda responsabilidade por acidentes, lesões, intercorrências ou danos antes, durante ou depois de treinos, competições, deslocamentos e atividades é integralmente dos pais ou responsáveis legais e dos profissionais que acompanham o atleta.",
-      "A 11RUN pode apoiar indicando profissionais, caminhos, contatos e boas práticas, mas não assume a execução diária dos treinamentos.",
-      "A ajuda de custo, quando concedida, será paga todo dia 15 de cada mês, podendo variar conforme critérios internos, disponibilidade financeira e patrocinadores.",
-      "Valores de ajuda de custo, modelos de materiais, uniformes, equipamentos e periodicidade de recebimento podem variar conforme disponibilidade, patrocinadores, fornecedores e critérios internos do projeto.",
-      "Atletas Onze Futuro terão inscrições gratuitas para todas as provas do Circuito 11, respeitando calendário, vagas disponíveis, regras técnicas e critérios de participação.",
-      "Uma agência de publicidade poderá assessorar o processo de imagem, comunicação, perfil, postagens e posicionamento dos atletas dentro do projeto.",
-      "Cada recebimento de ajuda, uniforme, material, inscrição ou benefício deverá ser confirmado no painel do site pelo responsável interno do projeto.",
-      "O calendário de circuitos e provas é uma referência de desenvolvimento, sem obrigatoriedade de participação. Atletas que não participarem podem ficar fora do ranking, da certificação de tempos e de indicações a patrocinadores especiais.",
-      "Podem existir patrocínios adicionais conforme desempenho, comportamento, assiduidade, evolução, visibilidade e interesse de parceiros, sem qualquer obrigação de concessão.",
-      "As imagens enviadas poderão ser usadas pela 11RUN e por sua assessoria de comunicação para perfil, análise, divulgação institucional e postagens relacionadas ao projeto."
+      "O Onze Futuro Ã© um projeto privado de desenvolvimento esportivo, formaÃ§Ã£o de base, acompanhamento e oportunidade, sem promessa de resultado, patrocÃ­nio, bolsa ou permanÃªncia automÃ¡tica.",
+      "A participaÃ§Ã£o exige que o atleta tenha treinador formado, com CREF ativo, responsÃ¡vel pela conduÃ§Ã£o tÃ©cnica cotidiana dos treinos.",
+      "Toda responsabilidade por acidentes, lesÃµes, intercorrÃªncias ou danos antes, durante ou depois de treinos, competiÃ§Ãµes, deslocamentos e atividades Ã© integralmente dos pais ou responsÃ¡veis legais e dos profissionais que acompanham o atleta.",
+      "A 11RUN pode apoiar indicando profissionais, caminhos, contatos e boas prÃ¡ticas, mas nÃ£o assume a execuÃ§Ã£o diÃ¡ria dos treinamentos.",
+      "A ajuda de custo, quando concedida, serÃ¡ paga todo dia 15 de cada mÃªs, podendo variar conforme critÃ©rios internos, disponibilidade financeira e patrocinadores.",
+      "Valores de ajuda de custo, modelos de materiais, uniformes, equipamentos e periodicidade de recebimento podem variar conforme disponibilidade, patrocinadores, fornecedores e critÃ©rios internos do projeto.",
+      "Atletas Onze Futuro terÃ£o inscriÃ§Ãµes gratuitas para todas as provas do Circuito 11, respeitando calendÃ¡rio, vagas disponÃ­veis, regras tÃ©cnicas e critÃ©rios de participaÃ§Ã£o.",
+      "Uma agÃªncia de publicidade poderÃ¡ assessorar o processo de imagem, comunicaÃ§Ã£o, perfil, postagens e posicionamento dos atletas dentro do projeto.",
+      "Cada recebimento de ajuda, uniforme, material, inscriÃ§Ã£o ou benefÃ­cio deverÃ¡ ser confirmado no painel do site pelo responsÃ¡vel interno do projeto.",
+      "O calendÃ¡rio de circuitos e provas Ã© uma referÃªncia de desenvolvimento, sem obrigatoriedade de participaÃ§Ã£o. Atletas que nÃ£o participarem podem ficar fora do ranking, da certificaÃ§Ã£o de tempos e de indicaÃ§Ãµes a patrocinadores especiais.",
+      "Podem existir patrocÃ­nios adicionais conforme desempenho, comportamento, assiduidade, evoluÃ§Ã£o, visibilidade e interesse de parceiros, sem qualquer obrigaÃ§Ã£o de concessÃ£o.",
+      "As imagens enviadas poderÃ£o ser usadas pela 11RUN e por sua assessoria de comunicaÃ§Ã£o para perfil, anÃ¡lise, divulgaÃ§Ã£o institucional e postagens relacionadas ao projeto."
     ]
   },
   "circuito-futuro-11": {
-    title: "Termo de autorização e regulamento do Circuito Futuro 11",
+    title: "Termo de autorizaÃ§Ã£o e regulamento do Circuito Futuro 11",
     clauses: [
-      "O responsável legal autoriza a participação do atleta no Circuito Futuro 11, em provas de meio-fundo e fundo organizadas pela 11RUN.",
-      "As provas seguem, por enquanto, referência técnica das regras oficiais do atletismo para 800 m e 1500 m, adaptadas às faixas etárias do projeto.",
-      "As faixas do circuito consideram sempre a idade que o atleta completa no ano da competição.",
-      "As provas por idade são: 10 anos - 800 m, 11 anos - 1000 m, 12 anos - 1500 m e 13 anos - 2000 m.",
-      "Cada prova terá limite de 20 atletas por bateria/prova, podendo haver organização por ordem de inscrição, categoria ou critério técnico.",
-      "O valor de inscrição é de R$ 50,00 por etapa ou R$ 150,00 para as 4 etapas, com necessidade de envio de comprovante de pagamento.",
-      "A participação no ranking depende de inscrição confirmada, presença na etapa, resultado válido e conferência da organização.",
-      "Toda responsabilidade por condições de saúde, deslocamento, autorização familiar e acompanhamento do atleta é dos pais ou responsáveis legais.",
-      "A organização pode ajustar horários, baterias, regulamento, locais e calendário para preservar segurança, logística e qualidade técnica."
+      "O responsÃ¡vel legal autoriza a participaÃ§Ã£o do atleta no Circuito Futuro 11, em provas de meio-fundo e fundo organizadas pela 11RUN.",
+      "As provas seguem, por enquanto, referÃªncia tÃ©cnica das regras oficiais do atletismo para 800 m e 1500 m, adaptadas Ã s faixas etÃ¡rias do projeto.",
+      "As faixas do circuito consideram sempre a idade que o atleta completa no ano da competiÃ§Ã£o.",
+      "As provas por idade sÃ£o: 10 anos - 800 m, 11 anos - 1000 m, 12 anos - 1500 m e 13 anos - 2000 m.",
+      "Cada prova terÃ¡ limite de 20 atletas por bateria/prova, podendo haver organizaÃ§Ã£o por ordem de inscriÃ§Ã£o, categoria ou critÃ©rio tÃ©cnico.",
+      "O valor de inscriÃ§Ã£o Ã© de R$ 50,00 por etapa ou R$ 150,00 para as 4 etapas, com necessidade de envio de comprovante de pagamento.",
+      "A participaÃ§Ã£o no ranking depende de inscriÃ§Ã£o confirmada, presenÃ§a na etapa, resultado vÃ¡lido e conferÃªncia da organizaÃ§Ã£o.",
+      "Toda responsabilidade por condiÃ§Ãµes de saÃºde, deslocamento, autorizaÃ§Ã£o familiar e acompanhamento do atleta Ã© dos pais ou responsÃ¡veis legais.",
+      "A organizaÃ§Ã£o pode ajustar horÃ¡rios, baterias, regulamento, locais e calendÃ¡rio para preservar seguranÃ§a, logÃ­stica e qualidade tÃ©cnica."
     ]
   },
   "11-regional": {
-    title: "Termo de inscrição 11 Regional",
+    title: "Termo de inscriÃ§Ã£o 11 Master",
     clauses: [
-      "O 11 Regional é uma iniciativa privada da 11RUN para atletas master com histórico, disciplina e potencial competitivo real.",
-      "O atleta declara que mora em Itatiba ou em raio aproximado de até 40 km da cidade, condição necessária para avaliação inicial do projeto.",
-      "A inscrição não garante aceite automático, vaga, patrocínio ou suporte financeiro. A equipe 11RUN fará análise técnica, territorial e competitiva.",
-      "O atleta declara estar apto para treinos e competições, assumindo responsabilidade por sua condição de saúde e acompanhamento profissional quando necessário.",
-      "Os dados informados poderão ser usados para contato, análise técnica, organização do pipeline e acompanhamento administrativo do projeto."
+      "O 11 Master Ã© uma iniciativa privada da 11RUN para atletas master com histÃ³rico, disciplina e potencial competitivo real.",
+      "O atleta declara que mora em Itatiba ou em raio aproximado de atÃ© 40 km da cidade, condiÃ§Ã£o necessÃ¡ria para avaliaÃ§Ã£o inicial do projeto.",
+      "A inscriÃ§Ã£o nÃ£o garante aceite automÃ¡tico, vaga, patrocÃ­nio ou suporte financeiro. A equipe 11RUN farÃ¡ anÃ¡lise tÃ©cnica, territorial e competitiva.",
+      "O atleta declara estar apto para treinos e competiÃ§Ãµes, assumindo responsabilidade por sua condiÃ§Ã£o de saÃºde e acompanhamento profissional quando necessÃ¡rio.",
+      "Os dados informados poderÃ£o ser usados para contato, anÃ¡lise tÃ©cnica, organizaÃ§Ã£o do pipeline e acompanhamento administrativo do projeto."
     ]
   }
 };
@@ -138,14 +138,14 @@ const fieldGroups: Partial<Record<FormProjectSlug, { title: string; eyebrow: str
   "onze-futuro": [
     {
       eyebrow: "dados do cadastrante",
-      title: "Quem está preenchendo",
-      text: "Identificação da pessoa responsável por enviar o cadastro e receber o contato da equipe.",
+      title: "Quem estÃ¡ preenchendo",
+      text: "IdentificaÃ§Ã£o da pessoa responsÃ¡vel por enviar o cadastro e receber o contato da equipe.",
       fields: ["name", "email", "phone", "city", "state", "profile_type", "message"]
     },
     {
       eyebrow: "dados do atleta",
-      title: "Atleta e responsáveis",
-      text: "Informações pessoais, familiares, medidas e conta PIX do responsável.",
+      title: "Atleta e responsÃ¡veis",
+      text: "InformaÃ§Ãµes pessoais, familiares, medidas e conta PIX do responsÃ¡vel.",
       fields: [
         "athlete_name",
         "birth_date",
@@ -165,22 +165,22 @@ const fieldGroups: Partial<Record<FormProjectSlug, { title: string; eyebrow: str
       ]
     },
     {
-      eyebrow: "treinador e histórico",
+      eyebrow: "treinador e histÃ³rico",
       title: "Contexto esportivo",
-      text: "Dados do treinador, escola, modalidades, marcas e histórico competitivo.",
+      text: "Dados do treinador, escola, modalidades, marcas e histÃ³rico competitivo.",
       fields: ["coach_name", "coach_phone", "coach_cref", "school", "sports", "best_marks", "competitions", "social_link"]
     }
   ],
   "circuito-futuro-11": [
     {
-      eyebrow: "dados do responsável",
-      title: "Responsável legal",
-      text: "Dados de contato e documentos de quem autoriza a participação do atleta.",
+      eyebrow: "dados do responsÃ¡vel",
+      title: "ResponsÃ¡vel legal",
+      text: "Dados de contato e documentos de quem autoriza a participaÃ§Ã£o do atleta.",
       fields: ["name", "email", "phone", "city", "state", "guardian_name", "guardian_cpf", "guardian_rg", "guardian_email", "guardian_phone"]
     },
     {
       eyebrow: "dados do atleta",
-      title: "Atleta e inscrição",
+      title: "Atleta e inscriÃ§Ã£o",
       text: "Dados do atleta, prova pretendida, equipe e plano de pagamento.",
       fields: ["athlete_name", "athlete_cpf", "athlete_rg", "birth_date", "race_event", "payment_plan", "team", "social_link", "message"]
     }
@@ -189,7 +189,7 @@ const fieldGroups: Partial<Record<FormProjectSlug, { title: string; eyebrow: str
     {
       eyebrow: "dados do atleta master",
       title: "Perfil competitivo",
-      text: "Dados do atleta, documentos, endereço, redes sociais, provas e resultados para análise do projeto.",
+      text: "Dados do atleta, documentos, endereÃ§o, redes sociais, provas e resultados para anÃ¡lise do projeto.",
       fields: [
         "name",
         "email",
@@ -243,7 +243,7 @@ function getBirthDateLimits(project: FormProjectSlug) {
     return {
       min: format(min),
       max: format(max),
-      help: "A categoria considera a idade que o atleta completa no ano da competição."
+      help: "A categoria considera a idade que o atleta completa no ano da competiÃ§Ã£o."
     };
   }
 
@@ -311,28 +311,28 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
         !isValidCpf(String(formData.get("guardian_cpf") ?? "")) ||
         !isValidCpf(String(formData.get("term_acceptor_cpf") ?? ""))
       ) {
-        return "Informe CPFs válidos para atleta, responsável e aceite do termo.";
+        return "Informe CPFs vÃ¡lidos para atleta, responsÃ¡vel e aceite do termo.";
       }
     }
 
     if (project === "circuito-futuro-11") {
       const receipt = formData.get("payment_receipt");
-      if (!(receipt instanceof File) || receipt.size === 0) return "Envie o comprovante de pagamento da inscrição.";
+      if (!(receipt instanceof File) || receipt.size === 0) return "Envie o comprovante de pagamento da inscriÃ§Ã£o.";
       if (
         !isValidCpf(String(formData.get("athlete_cpf") ?? "")) ||
         !isValidCpf(String(formData.get("guardian_cpf") ?? "")) ||
         !isValidCpf(String(formData.get("term_acceptor_cpf") ?? ""))
       ) {
-        return "Informe CPFs válidos para atleta, responsável e aceite do termo.";
+        return "Informe CPFs vÃ¡lidos para atleta, responsÃ¡vel e aceite do termo.";
       }
     }
 
     if (project === "11-regional") {
       if (!isValidCpf(String(formData.get("cpf") ?? "")) || !isValidCpf(String(formData.get("term_acceptor_cpf") ?? ""))) {
-        return "Informe CPF válido para atleta e aceite do termo.";
+        return "Informe CPF vÃ¡lido para atleta e aceite do termo.";
       }
       if (String(formData.get("within_itatiba_radius") ?? "") !== "sim") {
-        return "Para avançar, confirme residência em Itatiba ou em raio de até 40 km.";
+        return "Para avanÃ§ar, confirme residÃªncia em Itatiba ou em raio de atÃ© 40 km.";
       }
     }
 
@@ -363,12 +363,12 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
 
       const result = await response.json();
       if (!response.ok) {
-        throw new Error(result.error ?? "Erro ao enviar formulário.");
+        throw new Error(result.error ?? "Erro ao enviar formulÃ¡rio.");
       }
 
       router.push("/obrigado");
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : "Erro ao enviar formulário.");
+      setError(submitError instanceof Error ? submitError.message : "Erro ao enviar formulÃ¡rio.");
     } finally {
       setLoading(false);
     }
@@ -402,8 +402,8 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
         <section className="photo-upload-box">
           <div>
             <Upload size={20} />
-            <strong>Fotos obrigatórias do atleta</strong>
-            <p>Envie exatamente 5 fotos. Elas serão usadas para perfil, análise, assessoria de imagem e postagens do projeto.</p>
+            <strong>Fotos obrigatÃ³rias do atleta</strong>
+            <p>Envie exatamente 5 fotos. Elas serÃ£o usadas para perfil, anÃ¡lise, assessoria de imagem e postagens do projeto.</p>
           </div>
           <input
             type="file"
@@ -422,7 +422,7 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
           <div>
             <Upload size={20} />
             <strong>Comprovante de pagamento</strong>
-            <p>Inscrição: R$ 50,00 por etapa ou R$ 150,00 para as 4 etapas.</p>
+            <p>InscriÃ§Ã£o: R$ 50,00 por etapa ou R$ 150,00 para as 4 etapas.</p>
           </div>
           <input
             type="file"
@@ -475,7 +475,7 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
 
       <button className="button primary submit-button" type="submit" disabled={loading}>
         {loading ? <Loader2 className="spin" size={18} /> : <Send size={18} />}
-        {project === "circuito-futuro-11" ? "Enviar inscrição" : "Enviar formulário"}
+        {project === "circuito-futuro-11" ? "Enviar inscriÃ§Ã£o" : "Enviar formulÃ¡rio"}
       </button>
     </form>
   );

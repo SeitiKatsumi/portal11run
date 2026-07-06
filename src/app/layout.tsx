@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | 11RUN"
   },
   description:
-    "Portal oficial da 11RUN, conectando App 11Run, Onze Futuro, 11 Regional, Circuito Futuro 11 e oportunidades internacionais para corredores.",
+    "Portal oficial da 11RUN, conectando App 11Run, Onze Futuro, 11 Master, Circuito Futuro 11 e oportunidades internacionais para corredores.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://portal11run.com.br")
 };
 

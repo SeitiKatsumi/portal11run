@@ -256,7 +256,7 @@ export function validateLead(payload: LeadPayload, options?: { photoCount?: numb
 
     const missingProjectFields = requiredRegionalFields.filter((field) => !payload[field]);
     if (missingProjectFields.length > 0) {
-      return { ok: false, error: `Campos obrigatórios do 11 Regional ausentes: ${missingProjectFields.join(", ")}` };
+      return { ok: false, error: `Campos obrigatórios do 11 Master ausentes: ${missingProjectFields.join(", ")}` };
     }
 
     if (String(payload.within_itatiba_radius) !== "sim") {
