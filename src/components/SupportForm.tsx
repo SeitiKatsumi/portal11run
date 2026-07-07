@@ -1,15 +1,16 @@
 "use client";
 
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
-import { supportInterestTypes, supportProjects } from "@/lib/support-options";
+import { supportInterestTypes, supportPlanOptions, supportProjects } from "@/lib/support-options";
 
 type SubmitState = "idle" | "loading" | "success" | "error";
 
 export function SupportForm() {
   const [interestTypes, setInterestTypes] = useState<string[]>([]);
   const [sponsoredProjects, setSponsoredProjects] = useState<string[]>([]);
+  const [interestPlan, setInterestPlan] = useState("");
   const [state, setState] = useState<SubmitState>("idle");
   const [message, setMessage] = useState("");
 
@@ -18,6 +19,18 @@ export function SupportForm() {
   function toggleValue(value: string, list: string[], setter: (next: string[]) => void) {
     setter(list.includes(value) ? list.filter((item) => item !== value) : [...list, value]);
   }
+
+  useEffect(() => {
+    function handlePlanSelect(event: Event) {
+      const customEvent = event as CustomEvent<string>;
+      if (supportPlanOptions.includes(customEvent.detail as (typeof supportPlanOptions)[number])) {
+        setInterestPlan(customEvent.detail);
+      }
+    }
+
+    window.addEventListener("support-plan-select", handlePlanSelect);
+    return () => window.removeEventListener("support-plan-select", handlePlanSelect);
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,6 +42,7 @@ export function SupportForm() {
       name: String(form.get("name") ?? ""),
       whatsapp: String(form.get("whatsapp") ?? ""),
       email: String(form.get("email") ?? ""),
+      interestPlan,
       interestTypes,
       sponsoredProjects: wantsToSponsor ? sponsoredProjects : [],
       message: String(form.get("message") ?? "")
@@ -50,8 +64,9 @@ export function SupportForm() {
     event.currentTarget.reset();
     setInterestTypes([]);
     setSponsoredProjects([]);
+    setInterestPlan("");
     setState("success");
-    setMessage("Recebemos seu interesse. A equipe 11RUN vai entrar em contato.");
+    setMessage("Obrigado pelo interesse em apoiar a 11RUN. Nossa equipe comercial entrará em contato em breve para dar continuidade à contratação do plano escolhido.");
   }
 
   return (
@@ -70,6 +85,18 @@ export function SupportForm() {
           <input name="email" required type="email" placeholder="voce@email.com" />
         </label>
       </div>
+
+      <label className="support-plan-select">
+        <span>Plano de interesse</span>
+        <select name="interest_plan" required value={interestPlan} onChange={(event) => setInterestPlan(event.target.value)}>
+          <option value="">Selecione um plano</option>
+          {supportPlanOptions.map((plan) => (
+            <option key={plan} value={plan}>
+              {plan}
+            </option>
+          ))}
+        </select>
+      </label>
 
       <fieldset className="support-options">
         <legend>Como você quer apoiar?</legend>

@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createChatLead } from "@/lib/assistantStore";
 
 export const runtime = "nodejs";
@@ -18,13 +18,13 @@ export async function POST(request: Request) {
   }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return NextResponse.json({ error: "Informe um e-mail vÃ¡lido." }, { status: 400 });
+    return NextResponse.json({ error: "Informe um e-mail válido." }, { status: 400 });
   }
 
   const lead = createChatLead({ name, email, whatsapp });
-  if (!lead) return NextResponse.json({ error: "NÃ£o foi possÃ­vel iniciar o atendimento." }, { status: 500 });
+  if (!lead) return NextResponse.json({ error: "Não foi possível iniciar o atendimento." }, { status: 500 });
 
-  const message = `OlÃ¡, ${lead.name}. Envie sua pergunta sobre Onze Futuro, Circuito Futuro 11, 11 Master, Bolsas ou App 11Run. Se a IA estiver ligada no painel, ela responde com base no conteÃºdo do site; se nÃ£o estiver, a equipe assume por aqui.`;
+  const message = `Olá, ${lead.name}. Envie sua pergunta sobre Onze Futuro, Circuito Futuro 11, 11 Master, Bolsas ou App 11Run. Se a IA estiver ligada no painel, ela responde com base no conteúdo do site; se não estiver, a equipe assume por aqui.`;
 
   return NextResponse.json({ lead, message });
 }

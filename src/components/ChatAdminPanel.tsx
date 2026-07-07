@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import { Send } from "lucide-react";
@@ -79,10 +79,10 @@ export function ChatAdminPanel({
     const result = await response.json();
     if (response.ok && result.settings) {
       setSettings(result.settings);
-      setSettingsMessage("ConfiguraÃ§Ã£o salva.");
+      setSettingsMessage("Configuração salva.");
       event.currentTarget.reset();
     } else {
-      setSettingsMessage(result.error ?? "NÃ£o foi possÃ­vel salvar.");
+      setSettingsMessage(result.error ?? "Não foi possível salvar.");
     }
   }
 
@@ -110,16 +110,16 @@ export function ChatAdminPanel({
         <div>
           <span className="eyebrow">atendimento ia</span>
           <h1>Conversas do assistente</h1>
-          <p>Configure a IA real da 11RUN, acompanhe conversas e assuma manualmente quando necessÃ¡rio.</p>
+          <p>Configure a IA real da 11RUN, acompanhe conversas e assuma manualmente quando necessário.</p>
         </div>
       </div>
 
       <form className="chat-settings" onSubmit={saveSettings}>
         <div>
           <span className="eyebrow">openai</span>
-          <h2>ConfiguraÃ§Ã£o do agente</h2>
+          <h2>Configuração do agente</h2>
           <p>
-            A IA sÃ³ responde quando a chave estÃ¡ configurada, a IA global estÃ¡ ligada e a conversa tambÃ©m estÃ¡ com IA
+            A IA só responde quando a chave está configurada, a IA global está ligada e a conversa também está com IA
             ligada.
           </p>
         </div>
@@ -146,7 +146,7 @@ export function ChatAdminPanel({
             name="additional_prompt"
             rows={5}
             defaultValue={settings.additional_prompt}
-            placeholder="InstruÃ§Ãµes extras alÃ©m do conteÃºdo do site."
+            placeholder="Instruções extras além do conteúdo do site."
           />
         </label>
         <label className="chat-toggle">
@@ -178,7 +178,7 @@ export function ChatAdminPanel({
                 <div>
                   <strong>{active.name}</strong>
                   <span>
-                    {active.email} Â· {active.whatsapp}
+                    {active.email} · {active.whatsapp}
                   </span>
                 </div>
                 <label>

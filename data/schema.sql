@@ -164,6 +164,7 @@ CREATE TABLE IF NOT EXISTS support_interests (
   name TEXT NOT NULL,
   whatsapp TEXT NOT NULL,
   email TEXT NOT NULL,
+  interest_plan TEXT NOT NULL DEFAULT '',
   interest_types_json TEXT NOT NULL,
   sponsored_projects_json TEXT NOT NULL DEFAULT '[]',
   message TEXT,

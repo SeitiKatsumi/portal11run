@@ -82,6 +82,13 @@ export function SupportAdminBoard({ initialInterests }: Props) {
                   <Mail size={14} /> {interest.email}
                 </p>
 
+                {interest.interest_plan ? (
+                  <div className="support-plan-admin">
+                    <span>Plano de interesse</span>
+                    <strong>{interest.interest_plan}</strong>
+                  </div>
+                ) : null}
+
                 {projects.length > 0 ? (
                   <div className="support-tags">
                     {projects.map((project) => (

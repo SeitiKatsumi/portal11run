@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { HandHeart, Network, ShieldCheck } from "lucide-react";
 import { SupportForm } from "@/components/SupportForm";
+import { SupportPlans } from "@/components/SupportPlans";
 
 export const metadata: Metadata = {
   title: "Apoie o projeto",
@@ -15,8 +16,8 @@ export default function SupportPage() {
           <span className="eyebrow">Apoie o projeto</span>
           <h1>Estrutura para transformar talento em continuidade.</h1>
           <p>
-            A 11RUN conecta atletas, famílias, treinadores, patrocinadores e profissionais que querem construir uma
-            base esportiva mais forte. Cadastre seu interesse para conversar com a equipe.
+            A 11RUN conecta atletas, famílias, treinadores, patrocinadores e profissionais que querem construir uma base
+            esportiva mais forte. Cadastre seu interesse para conversar com a equipe.
           </p>
         </div>
         <div className="support-hero-cards">
@@ -37,6 +38,8 @@ export default function SupportPage() {
           </article>
         </div>
       </section>
+
+      <SupportPlans />
 
       <section className="support-panel" aria-labelledby="support-form-title">
         <div className="support-panel-copy">

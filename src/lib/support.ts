@@ -1,13 +1,14 @@
 import { mkdirSync, readFileSync } from "fs";
 import path from "path";
 import { DatabaseSync } from "node:sqlite";
-import { supportInterestTypes, supportProjects, supportStatuses } from "@/lib/support-options";
-export { supportInterestTypes, supportProjects, supportStatuses } from "@/lib/support-options";
+import { supportInterestTypes, supportPlanOptions, supportProjects, supportStatuses } from "@/lib/support-options";
+export { supportInterestTypes, supportPlanOptions, supportProjects, supportStatuses } from "@/lib/support-options";
 
 export type SupportInterestPayload = {
   name?: string;
   whatsapp?: string;
   email?: string;
+  interestPlan?: string;
   interestTypes?: string[];
   sponsoredProjects?: string[];
   message?: string;
@@ -18,6 +19,7 @@ export type SupportInterestRecord = {
   name: string;
   whatsapp: string;
   email: string;
+  interest_plan: string;
   interest_types_json: string;
   sponsored_projects_json: string;
   message: string | null;
@@ -27,6 +29,7 @@ export type SupportInterestRecord = {
 };
 
 const schemaColumns: Record<string, string> = {
+  interest_plan: "TEXT NOT NULL DEFAULT ''",
   status: "TEXT NOT NULL DEFAULT 'Novo interesse'",
   updated_at: "TEXT NOT NULL DEFAULT ''"
 };
@@ -71,6 +74,7 @@ export function validateSupportInterest(payload: SupportInterestPayload) {
   const name = String(payload.name ?? "").trim();
   const whatsapp = String(payload.whatsapp ?? "").trim();
   const email = String(payload.email ?? "").trim();
+  const interestPlan = String(payload.interestPlan ?? "").trim();
   const interestTypes = normalizeList(payload.interestTypes, supportInterestTypes);
   const sponsoredProjects = normalizeList(payload.sponsoredProjects, supportProjects);
 
@@ -80,6 +84,10 @@ export function validateSupportInterest(payload: SupportInterestPayload) {
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return { ok: false, error: "Informe um e-mail válido." };
+  }
+
+  if (!supportPlanOptions.includes(interestPlan as (typeof supportPlanOptions)[number])) {
+    return { ok: false, error: "Selecione um plano de interesse." };
   }
 
   if (interestTypes.length === 0) {
@@ -107,6 +115,7 @@ export function createSupportInterest(payload: SupportInterestPayload) {
     name: String(payload.name ?? "").trim(),
     whatsapp: String(payload.whatsapp ?? "").trim(),
     email: String(payload.email ?? "").trim(),
+    interest_plan: String(payload.interestPlan ?? "").trim(),
     interest_types_json: JSON.stringify(interestTypes),
     sponsored_projects_json: JSON.stringify(sponsoredProjects),
     message: String(payload.message ?? "").trim(),
@@ -122,6 +131,7 @@ export function createSupportInterest(payload: SupportInterestPayload) {
         name,
         whatsapp,
         email,
+        interest_plan,
         interest_types_json,
         sponsored_projects_json,
         message,
@@ -133,6 +143,7 @@ export function createSupportInterest(payload: SupportInterestPayload) {
         $name,
         $whatsapp,
         $email,
+        $interest_plan,
         $interest_types_json,
         $sponsored_projects_json,
         $message,
@@ -146,6 +157,7 @@ export function createSupportInterest(payload: SupportInterestPayload) {
       $name: record.name,
       $whatsapp: record.whatsapp,
       $email: record.email,
+      $interest_plan: record.interest_plan,
       $interest_types_json: record.interest_types_json,
       $sponsored_projects_json: record.sponsored_projects_json,
       $message: record.message,

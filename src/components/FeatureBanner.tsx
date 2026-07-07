@@ -9,17 +9,20 @@ export function FeatureBanner({
   text,
   imageSrc = "/assets/11run-reference.jpg",
   videoSrc,
+  videoPoster,
   imageAlt = "Corredora em movimento 11RUN",
   cta,
   ctaSlot,
   mediaOnly = false,
-  videoControls = false
+  videoControls = false,
+  videoAutoPlay = true
 }: {
   eyebrow?: string;
   title?: string;
   text?: string;
   imageSrc?: string;
   videoSrc?: string;
+  videoPoster?: string;
   imageAlt?: string;
   cta?: {
     label: string;
@@ -28,6 +31,7 @@ export function FeatureBanner({
   ctaSlot?: ReactNode;
   mediaOnly?: boolean;
   videoControls?: boolean;
+  videoAutoPlay?: boolean;
 }) {
   const hasContent = !mediaOnly && (eyebrow || title || text || ctaSlot || cta);
 
@@ -35,7 +39,16 @@ export function FeatureBanner({
     <Reveal>
       <section className={`feature-banner${mediaOnly ? " media-only" : ""}`} aria-label={title ?? imageAlt}>
         {videoSrc ? (
-          <video autoPlay muted loop playsInline preload="auto" poster={imageSrc} controls={videoControls} aria-label={imageAlt}>
+          <video
+            autoPlay={videoAutoPlay}
+            muted={videoAutoPlay}
+            loop={videoAutoPlay}
+            playsInline
+            preload={videoAutoPlay ? "auto" : "metadata"}
+            poster={videoPoster}
+            controls={videoControls}
+            aria-label={imageAlt}
+          >
             <source src={videoSrc} type="video/mp4" />
           </video>
         ) : (

@@ -1,8 +1,8 @@
-﻿import { ecosystemCards, metrics, projects } from "./content";
+import { ecosystemCards, metrics, projects } from "./content";
 import type { ChatLead } from "./assistantStore";
 
 function fixEncoding(value: string) {
-  if (!/[ÃƒÃ‚]/.test(value)) return value;
+  if (!/[ÃÂ]/.test(value)) return value;
   return Buffer.from(value, "latin1").toString("utf8");
 }
 
@@ -25,13 +25,13 @@ function projectContext() {
 
   return [
     "Site 11RUN:",
-    `- MÃ©tricas pÃºblicas: ${metrics.map((metric) => `${cleanText(metric.value)} ${cleanText(metric.label)}`).join("; ")}.`,
+    `- Métricas públicas: ${metrics.map((metric) => `${cleanText(metric.value)} ${cleanText(metric.label)}`).join("; ")}.`,
     `- Frentes do ecossistema: ${ecosystemCards.map((card) => cleanText(card.title)).join(", ")}.`,
     ...projectLines,
     "- App 11Run: quando o visitante pedir acesso ao app, use https://app.11run.com.br/.",
-    "- Circuito Futuro 11: categorias por idade no ano da competiÃ§Ã£o: 10 anos - 800m, 11 anos - 1000m, 12 anos - 1500m, 13 anos - 2000m. Limite de 20 atletas por prova.",
-    "- Onze Futuro: cadastro exige atleta de 9 a 13 anos, responsÃ¡vel legal, treinador formado com CREF, aceite dos termos e fotos obrigatÃ³rias.",
-    "- 11 Master: projeto master em Itatiba e regiÃ£o, com comando tÃ©cnico do Professor Alex Lopes, tÃ©cnico da ORCAMPI."
+    "- Circuito Futuro 11: categorias por idade no ano da competição: 10 anos - 800m, 11 anos - 1000m, 12 anos - 1500m, 13 anos - 2000m. Limite de 20 atletas por prova.",
+    "- Onze Futuro: cadastro exige atleta de 9 a 13 anos, responsável legal, treinador formado com CREF, aceite dos termos e fotos obrigatórias.",
+    "- 11 Master: projeto master em Itatiba e região, com comando técnico do Professor Alex Lopes, técnico da ORCAMPI."
   ].join("\n");
 }
 
@@ -57,10 +57,10 @@ ${additionalPrompt.trim() ? `\nPrompt adicional configurado pelo admin:\n${addit
 }
 export function buildLeadContext(lead: ChatLead) {
   return `Visitante: ${lead.name}. E-mail: ${lead.email}. WhatsApp: ${lead.whatsapp}. Status: ${lead.status}. IA ligada nesta conversa: ${
-    lead.ai_enabled ? "sim" : "nÃ£o"
+    lead.ai_enabled ? "sim" : "não"
   }.`;
 }
 
 export function buildWaitingMessage() {
-  return "Recebemos sua mensagem. A IA estÃ¡ desligada ou sem chave configurada, entÃ£o a equipe 11RUN pode assumir este atendimento por aqui ou pelo WhatsApp informado.";
+  return "Recebemos sua mensagem. A IA está desligada ou sem chave configurada, então a equipe 11RUN pode assumir este atendimento por aqui ou pelo WhatsApp informado.";
 }

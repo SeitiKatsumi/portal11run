@@ -36,6 +36,7 @@ export const metadata: Metadata = {
 };
 
 const heroImage = "/assets/onze-futuro-hero.jpg";
+const launchVideo = "/assets/onze-futuro-lancamento-full.mp4";
 const scenarioImage = "/assets/onze-futuro-cenario.jpg";
 const originImage = "/assets/onze-futuro-origem.jpg";
 const pilotImage = "/assets/onze-futuro-piloto.jpg";
@@ -226,8 +227,10 @@ export default function Page() {
   return (
     <div className="futuro-landing">
       <FeatureBanner
-        imageSrc="/assets/ayla-hero.jpg"
-        imageAlt="Representante 11RUN em ambiente esportivo"
+        videoSrc={launchVideo}
+        videoAutoPlay={false}
+        videoControls
+        imageAlt="Vídeo de lançamento do Onze Futuro"
         mediaOnly
       />
 

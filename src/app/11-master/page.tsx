@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -25,9 +25,9 @@ import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { Reveal } from "@/components/Reveal";
 
 export const metadata: Metadata = {
-  title: "11 Master | Master Itatiba e RegiÃ£o",
+  title: "11 Master | Master Itatiba e Região",
   description:
-    "Projeto local da 11RUN para atletas master de Itatiba e regiÃ£o, com comando tÃ©cnico do Professor Alex Lopes, suporte federativo, financeiro e preparaÃ§Ã£o para Campeonato Paulista e Brasileiro Master."
+    "Projeto local da 11RUN para atletas master de Itatiba e região, com comando técnico do Professor Alex Lopes, suporte federativo, financeiro e preparação para Campeonato Paulista e Brasileiro Master."
 };
 
 const image = "/assets/ayla-hero.jpg";
@@ -35,88 +35,88 @@ const image = "/assets/ayla-hero.jpg";
 const heroMetrics = [
   { value: "11 e 12", label: "de julho de 2026" },
   { value: "8", label: "atletas federados" },
-  { value: "16", label: "pares de tÃªnis distribuÃ­dos" },
-  { value: "Alex Lopes", label: "comando tÃ©cnico" }
+  { value: "16", label: "pares de tênis distribuídos" },
+  { value: "Alex Lopes", label: "comando técnico" }
 ];
 
 const authority = [
-  "TÃ©cnico ORCAMPI",
-  "ExperiÃªncia em SeleÃ§Ã£o Brasileira",
-  "ReferÃªncia em fundistas",
-  "DireÃ§Ã£o competitiva"
+  "Técnico ORCAMPI",
+  "Experiência em Seleção Brasileira",
+  "Referência em fundistas",
+  "Direção competitiva"
 ];
 
 const commandCards = [
   {
-    title: "TÃ©cnico da ORCAMPI",
-    text: "ConexÃ£o direta com uma das estruturas mais reconhecidas do atletismo brasileiro.",
+    title: "Técnico da ORCAMPI",
+    text: "Conexão direta com uma das estruturas mais reconhecidas do atletismo brasileiro.",
     icon: ShieldCheck
   },
   {
-    title: "ExperiÃªncia em SeleÃ§Ã£o Brasileira",
-    text: "HistÃ³rico de convocaÃ§Ãµes e atuaÃ§Ã£o em ambientes de alto rendimento nacional e internacional.",
+    title: "Experiência em Seleção Brasileira",
+    text: "Histórico de convocações e atuação em ambientes de alto rendimento nacional e internacional.",
     icon: Award
   },
   {
-    title: "ReferÃªncia em fundistas",
-    text: "Vivncia na formaÃ§Ã£o e desenvolvimento de atletas brasileiros de meio-fundo e fundo.",
+    title: "Referência em fundistas",
+    text: "Vivência na formação e desenvolvimento de atletas brasileiros de meio-fundo e fundo.",
     icon: Medal
   },
   {
-    title: "DireÃ§Ã£o competitiva",
-    text: "Planejamento de provas, calendÃ¡rio, estratÃ©gia, progressÃ£o e preparaÃ§Ã£o para Paulista e Brasileiro Master.",
+    title: "Direção competitiva",
+    text: "Planejamento de provas, calendário, estratégia, progressão e preparação para Paulista e Brasileiro Master.",
     icon: Target
   },
   {
     title: "Leitura individual",
-    text: "Acompanhamento considerando categoria, idade, histÃ³rico, potencial, prova-alvo e margem de evoluÃ§Ã£o.",
+    text: "Acompanhamento considerando categoria, idade, histórico, potencial, prova-alvo e margem de evolução.",
     icon: HeartPulse
   }
 ];
 
 const offerCards = [
   {
-    title: "Suporte tÃ©cnico com Professor Alex Lopes",
+    title: "Suporte técnico com Professor Alex Lopes",
     text:
-      "Acompanhamento tÃ©cnico conduzido pelo Professor Alex Lopes, tÃ©cnico da ORCAMPI, dezenas de vezes SeleÃ§Ã£o Brasileira e referÃªncia na formaÃ§Ã£o de fundistas brasileiros. DireÃ§Ã£o real para competir melhor.",
+      "Acompanhamento técnico conduzido pelo Professor Alex Lopes, técnico da ORCAMPI, dezenas de vezes Seleção Brasileira e referência na formação de fundistas brasileiros. Direção real para competir melhor.",
     icon: Trophy
   },
   {
     title: "Suporte federativo total",
     text:
-      "Apoio em filiaÃ§Ã£o, regularizaÃ§Ã£o, documentaÃ§Ã£o, inscriÃ§Ãµes e organizaÃ§Ã£o burocrÃ¡tica no ambiente CBAt, FPA, AAVSP e ABRAM, sem vÃ­nculo de patrocÃ­nio dessas entidades.",
+      "Apoio em filiação, regularização, documentação, inscrições e organização burocrática no ambiente CBAt, FPA, AAVSP e ABRAM, sem vínculo de patrocínio dessas entidades.",
     icon: ClipboardCheck
   },
   {
     title: "Suporte financeiro",
     text:
-      "Apoio para materiais esportivos, inscriÃ§Ãµes, hospedagem e necessidades competitivas, com concessÃ£o baseada em critÃ©rios tÃ©cnicos e competitivos.",
+      "Apoio para materiais esportivos, inscrições, hospedagem e necessidades competitivas, com concessão baseada em critérios técnicos e competitivos.",
     icon: CircleDollarSign
   },
   {
     title: "Uniformes oficiais",
-    text: "Entrega de uniforme para fortalecer identidade, representatividade e presenÃ§a da equipe nas competiÃ§Ãµes.",
+    text: "Entrega de uniforme para fortalecer identidade, representatividade e presença da equipe nas competições.",
     icon: Shirt
   },
   {
-    title: "TÃªnis e materiais esportivos",
+    title: "Tênis e materiais esportivos",
     text:
-      "DistribuiÃ§Ã£o inicial de 16 pares de tÃªnis, alÃ©m de apoio com materiais conforme critÃ©rios tÃ©cnicos e necessidades dos atletas.",
+      "Distribuição inicial de 16 pares de tênis, além de apoio com materiais conforme critérios técnicos e necessidades dos atletas.",
     icon: Sparkles
   },
   {
-    title: "CalendÃ¡rio competitivo",
-    text: "OrganizaÃ§Ã£o de calendÃ¡rio com foco em Campeonato Paulista Master e Campeonato Brasileiro Master.",
+    title: "Calendário competitivo",
+    text: "Organização de calendário com foco em Campeonato Paulista Master e Campeonato Brasileiro Master.",
     icon: CalendarDays
   },
   {
     title: "Treinamento em grupo",
-    text: "Ambiente semanal de treino, motivaÃ§Ã£o, cobranÃ§a saudÃ¡vel e pertencimento. Treinar junto tambÃ©m Ã© crescer junto.",
+    text: "Ambiente semanal de treino, motivação, cobrança saudável e pertencimento. Treinar junto também é crescer junto.",
     icon: Dumbbell
   },
   {
     title: "Ambiente familiar",
-    text: "Treinos com espaÃ§o para famÃ­lia, convivÃªncia e comunidade esportiva.",
+    text: "Treinos com espaço para família, convivência e comunidade esportiva.",
     icon: Users
   }
 ];
@@ -130,21 +130,21 @@ const saturdayPaces = [
 
 const doneItems = [
   "8 atletas federados",
-  "16 pares de tÃªnis distribuÃ­dos",
+  "16 pares de tênis distribuídos",
   "Uniformes oficiais entregues",
-  "RegularizaÃ§Ã£o esportiva",
-  "OrganizaÃ§Ã£o documental",
+  "Regularização esportiva",
+  "Organização documental",
   "Direcionamento competitivo",
-  "PreparaÃ§Ã£o para Paulista e Brasileiro"
+  "Preparação para Paulista e Brasileiro"
 ];
 
 const goals = [
-  "VitÃ³rias no Campeonato Paulista Master",
-  "VitÃ³rias no Campeonato Brasileiro Master",
+  "Vitórias no Campeonato Paulista Master",
+  "Vitórias no Campeonato Brasileiro Master",
   "Recordes paulistas",
   "Recordes brasileiros",
-  "PÃ³dios por categoria",
-  "Representatividade de Itatiba e regiÃ£o"
+  "Pódios por categoria",
+  "Representatividade de Itatiba e região"
 ];
 
 function CardGrid({
@@ -190,8 +190,8 @@ export default function Page() {
     <main className="regional-page">
       <FeatureBanner
         eyebrow="11 Master"
-        title="Performance nÃ£o nasce do improviso. Nasce de direÃ§Ã£o."
-        text="Uma frente master com estrutura, regularizaÃ§Ã£o, equipamentos, calendÃ¡rio competitivo e comando tÃ©cnico de alto rendimento."
+        title="Performance não nasce do improviso. Nasce de direção."
+        text="Uma frente master com estrutura, regularização, equipamentos, calendário competitivo e comando técnico de alto rendimento."
         imageSrc={image}
         imageAlt="Corredora em movimento no banner do 11 Master"
         ctaSlot={<ProjectFormModal project="11-regional" label="Inscrever atleta master" />}
@@ -199,32 +199,32 @@ export default function Page() {
 
       <section className="regional-hero" id="topo">
         <div className="regional-hero-copy">
-          <span className="eyebrow">Itatiba e regiÃ£o</span>
+          <span className="eyebrow">Itatiba e região</span>
           <h1>11 Master</h1>
-          <strong>Raiz local. Comando tÃ©cnico nacional. AmbiÃ§Ã£o competitiva.</strong>
+          <strong>Raiz local. Comando técnico nacional. Ambição competitiva.</strong>
           <p>
-            A 11RUN inicia uma nova fase para o atletismo master de Itatiba e regiÃ£o: uma frente local
-            de alta performance criada para transformar talento, experiÃªncia e vontade competitiva em
+            A 11RUN inicia uma nova fase para o atletismo master de Itatiba e região: uma frente local
+            de alta performance criada para transformar talento, experiência e vontade competitiva em
             estrutura real.
           </p>
           <p>
-            Depois de 20 anos, a 11RUN volta a federar atletas master da regiÃ£o e inicia um ciclo com
-            atletas regularizados, tÃªnis distribuÃ­dos, uniformes oficiais e suporte completo para competir
-            em alto nÃ­vel.
+            Depois de 20 anos, a 11RUN volta a federar atletas master da região e inicia um ciclo com
+            atletas regularizados, tênis distribuídos, uniformes oficiais e suporte completo para competir
+            em alto nível.
           </p>
 
           <div className="regional-authority">
-            <span>Comando tÃ©cnico</span>
+            <span>Comando técnico</span>
             <h2>Professor Alex Lopes</h2>
             <p>
-              TÃ©cnico da ORCAMPI, dezenas de vezes SeleÃ§Ã£o Brasileira e referÃªncia na formaÃ§Ã£o de
+              Técnico da ORCAMPI, dezenas de vezes Seleção Brasileira e referência na formação de
               fundistas no Brasil.
             </p>
           </div>
 
           <div className="hero-actions">
             <Link className="button primary" href="#projeto">
-              ConheÃ§a o projeto
+              Conheça o projeto
               <ArrowRight size={18} />
             </Link>
             <ProjectFormModal project="11-regional" label="Participar dos treinos" className="button ghost" />
@@ -259,12 +259,12 @@ export default function Page() {
         </div>
         <div className="regional-copy-block">
           <p>
-            A 11RUN tem visÃ£o global, mas acredita que o alto rendimento tambÃ©m precisa nascer de raÃ­zes
+            A 11RUN tem visão global, mas acredita que o alto rendimento também precisa nascer de raízes
             locais. O projeto 11 Master organiza uma frente competitiva de atletas master com identidade,
-            estrutura, acompanhamento e ambiÃ§Ã£o real.
+            estrutura, acompanhamento e ambição real.
           </p>
           <p>
-            A ideia Ã© simples: levar o nome de Itatiba e regiÃ£o para dentro das grandes provas, com atletas
+            A ideia é simples: levar o nome de Itatiba e região para dentro das grandes provas, com atletas
             preparados, federados, equipados e orientados para competir melhor.
           </p>
           <p>
@@ -276,24 +276,24 @@ export default function Page() {
 
       <section className="regional-section split highlight">
         <div>
-          <span className="eyebrow">comando tÃ©cnico</span>
-          <h2>Comando tÃ©cnico de alto rendimento</h2>
+          <span className="eyebrow">comando técnico</span>
+          <h2>Comando técnico de alto rendimento</h2>
         </div>
         <div className="regional-copy-block">
           <p>
-            O 11 Master nÃ£o nasce apenas da vontade de competir. Nasce com direÃ§Ã£o tÃ©cnica, experiÃªncia
-            e conexÃ£o real com o alto rendimento brasileiro.
+            O 11 Master não nasce apenas da vontade de competir. Nasce com direção técnica, experiência
+            e conexão real com o alto rendimento brasileiro.
           </p>
           <p>
-            O projeto serÃ¡ conduzido pelo Professor Alex Lopes, tÃ©cnico da ORCAMPI, dezenas de vezes
-            integrante da SeleÃ§Ã£o Brasileira e uma das referÃªncias na formaÃ§Ã£o de atletas fundistas no paÃ­s.
+            O projeto será conduzido pelo Professor Alex Lopes, técnico da ORCAMPI, dezenas de vezes
+            integrante da Seleção Brasileira e uma das referências na formação de atletas fundistas no país.
           </p>
           <p>
-            Sua presenÃ§a fortalece o projeto com metodologia, leitura competitiva, experiÃªncia prÃ¡tica,
-            organizaÃ§Ã£o de calendÃ¡rio, orientaÃ§Ã£o tÃ©cnica e visÃ£o de desenvolvimento para atletas master que
-            desejam competir em outro nÃ­vel.
+            Sua presença fortalece o projeto com metodologia, leitura competitiva, experiência prática,
+            organização de calendário, orientação técnica e visão de desenvolvimento para atletas master que
+            desejam competir em outro nível.
           </p>
-          <strong>Mais do que treinar, a proposta Ã© direcionar.</strong>
+          <strong>Mais do que treinar, a proposta é direcionar.</strong>
         </div>
         <CardGrid items={commandCards} columns="regional-cards technical" />
       </section>
@@ -305,18 +305,18 @@ export default function Page() {
         </div>
         <div className="regional-copy-block">
           <p>
-            Nos dias 11 e 12 de julho de 2026, a 11RUN farÃ¡ sua estreia oficial no Campeonato Paulista
-            Master, marcando o inÃ­cio de um novo ciclo para os atletas master de Itatiba e regiÃ£o.
+            Nos dias 11 e 12 de julho de 2026, a 11RUN fará sua estreia oficial no Campeonato Paulista
+            Master, marcando o início de um novo ciclo para os atletas master de Itatiba e região.
           </p>
           <p>
-            A estreia serÃ¡ realizada com a direÃ§Ã£o tÃ©cnica do Professor Alex Lopes, garantindo que os
-            atletas cheguem Ã  competiÃ§Ã£o com orientaÃ§Ã£o, estratÃ©gia e preparaÃ§Ã£o compatÃ­veis com o nÃ­vel do
+            A estreia será realizada com a direção técnica do Professor Alex Lopes, garantindo que os
+            atletas cheguem à competição com orientação, estratégia e preparação compatíveis com o nível do
             desafio.
           </p>
           <p>
-            Essa estreia nÃ£o serÃ¡ apenas uma participaÃ§Ã£o. SerÃ¡ o primeiro passo de uma jornada com metas
-            claras: competir forte, buscar vitÃ³rias, disputar recordes e recolocar atletas da regiÃ£o em
-            evidÃªncia.
+            Essa estreia não será apenas uma participação. Será o primeiro passo de uma jornada com metas
+            claras: competir forte, buscar vitórias, disputar recordes e recolocar atletas da região em
+            evidência.
           </p>
           <div className="regional-two-lists">
             <div>
@@ -337,7 +337,7 @@ export default function Page() {
           <h2>Estrutura para transformar potencial em resultado</h2>
           <p>
             A 11RUN oferece uma estrutura completa para que atletas master com potencial competitivo tenham
-            mais apoio, direÃ§Ã£o e condiÃ§Ãµes reais de evoluÃ§Ã£o.
+            mais apoio, direção e condições reais de evolução.
           </p>
         </div>
         <CardGrid items={offerCards} />
@@ -345,18 +345,18 @@ export default function Page() {
 
       <section className="regional-section split" id="treino">
         <div>
-          <span className="eyebrow">treino de sÃ¡bado</span>
-          <h2>Mais que um treino. ConfraternizaÃ§Ã£o, apoio e evoluÃ§Ã£o.</h2>
+          <span className="eyebrow">treino de sábado</span>
+          <h2>Mais que um treino. Confraternização, apoio e evolução.</h2>
         </div>
         <div className="regional-training">
           <div className="regional-training-card">
             <Timer size={28} />
-            <h3>Todo sÃ¡bado, 7h00</h3>
+            <h3>Todo sábado, 7h00</h3>
             <p>Parque da Juventude, Itatiba/SP. Treino de 16 km dividido em 4 voltas de 4 km.</p>
           </div>
           <Checklist items={saturdayPaces} />
           <div className="regional-support">
-            {["Ãgua", "Frutas", "Gel", "EspaÃ§o para a famÃ­lia"].map((item) => (
+            {["Água", "Frutas", "Gel", "Espaço para a família"].map((item) => (
               <span key={item}>{item}</span>
             ))}
           </div>
@@ -365,17 +365,17 @@ export default function Page() {
 
       <section className="regional-section split">
         <div>
-          <span className="eyebrow">critÃ©rio mÃ­nimo</span>
-          <h2>ExcelÃªncia Ã© ponto de partida</h2>
+          <span className="eyebrow">critério mínimo</span>
+          <h2>Excelência é ponto de partida</h2>
         </div>
         <div className="regional-copy-block">
           <p>
-            O 11 Master Ã© voltado para atletas master com potencial competitivo real. O critÃ©rio mÃ­nimo
-            nÃ£o Ã© apenas vontade de participar: a proposta Ã© identificar atletas com capacidade de evoluÃ§Ã£o,
-            histÃ³rico, disciplina e potencial para estar entre os melhores do paÃ­s em sua categoria.
+            O 11 Master é voltado para atletas master com potencial competitivo real. O critério mínimo
+            não é apenas vontade de participar: a proposta é identificar atletas com capacidade de evolução,
+            histórico, disciplina e potencial para estar entre os melhores do país em sua categoria.
           </p>
           <div className="regional-statement">
-            Potencial real para estar entre os 3 melhores do paÃ­s na categoria.
+            Potencial real para estar entre os 3 melhores do país na categoria.
           </div>
         </div>
       </section>
@@ -387,12 +387,12 @@ export default function Page() {
         </div>
         <div className="regional-copy-block">
           <p>
-            O 11 Master Ã© uma iniciativa privada da 11RUN. Este projeto nÃ£o possui apoio, vÃ­nculo
-            institucional ou qualquer relaÃ§Ã£o com a Prefeitura de Itatiba ou com o Departamento de Esportes
+            O 11 Master é uma iniciativa privada da 11RUN. Este projeto não possui apoio, vínculo
+            institucional ou qualquer relação com a Prefeitura de Itatiba ou com o Departamento de Esportes
             de Itatiba.
           </p>
           <p>
-            A proposta nasce de uma decisÃ£o independente da 11RUN de investir em atletas master, fortalecer
+            A proposta nasce de uma decisão independente da 11RUN de investir em atletas master, fortalecer
             a cultura esportiva local e criar uma frente competitiva com compromisso real com performance.
           </p>
         </div>
@@ -401,16 +401,16 @@ export default function Page() {
       <section className="regional-section split">
         <div>
           <span className="eyebrow">atletas master 11RUN</span>
-          <h2>Atletas com histÃ³rico, disciplina e ambiÃ§Ã£o competitiva.</h2>
+          <h2>Atletas com histórico, disciplina e ambição competitiva.</h2>
         </div>
         <article className="regional-athlete-card">
           <Flag size={24} />
-          <h3>Edson TibÃºrcio Alves</h3>
-          <p>Categoria M45. Atleta master da 11RUN com foco em ser campeÃ£o paulista e brasileiro master.</p>
+          <h3>Edson Tibúrcio Alves</h3>
+          <p>Categoria M45. Atleta master da 11RUN com foco em ser campeão paulista e brasileiro master.</p>
           <Checklist
             items={[
               "5.000 m rasos: 14:52, ouro nos Jogos Regionais 2024",
-              "10.000 m rasos: 31:22, prata nos Jogos Regionais de SÃ£o Bernardo do Campo 2024",
+              "10.000 m rasos: 31:22, prata nos Jogos Regionais de São Bernardo do Campo 2024",
               "Rumo ao Paulista e ao Brasileiro Master"
             ]}
           />
@@ -420,12 +420,12 @@ export default function Page() {
       <section className="regional-section split">
         <div>
           <span className="eyebrow">metas e recordes</span>
-          <h2>VitÃ³rias e recordes em vÃ¡rias categorias</h2>
+          <h2>Vitórias e recordes em várias categorias</h2>
         </div>
         <div className="regional-copy-block">
           <p>
-            A meta da 11RUN para o ciclo 2026 Ã© disputar o Campeonato Paulista e o Campeonato Brasileiro
-            Master com ambiÃ§Ã£o real de resultado.
+            A meta da 11RUN para o ciclo 2026 é disputar o Campeonato Paulista e o Campeonato Brasileiro
+            Master com ambição real de resultado.
           </p>
           <Checklist items={goals} />
         </div>
@@ -433,13 +433,12 @@ export default function Page() {
 
       <CTASection
         title="Quer treinar, competir ou apoiar o 11 Master"
-        text="Se vocÃª Ã© atleta master, tem histÃ³rico competitivo, potencial de performance ou deseja fazer parte de um ambiente sÃ©rio de evoluÃ§Ã£o, entre em contato com a 11RUN."
+        text="Se você é atleta master, tem histórico competitivo, potencial de performance ou deseja fazer parte de um ambiente sério de evolução, entre em contato com a 11RUN."
         actions={[
           { label: "Inscrever atleta master", modalProject: "11-regional" },
-          { label: "Ver treino de sÃ¡bado", href: "#treino" }
+          { label: "Ver treino de sábado", href: "#treino" }
         ]}
       />
     </main>
   );
 }
-

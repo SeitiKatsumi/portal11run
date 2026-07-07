@@ -1312,6 +1312,171 @@ body.modal-open {
   font-size: clamp(2.6rem, 5.5vw, 5.2rem);
 }
 
+.support-plans {
+  margin-top: 24px;
+  padding: clamp(28px, 4vw, 56px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.support-plans-head {
+  max-width: 900px;
+}
+
+.support-plans-head h2 {
+  margin: 10px 0 0;
+  font-size: clamp(2.4rem, 5.2vw, 5rem);
+  font-weight: 300;
+  line-height: 1;
+}
+
+.support-plans-head p {
+  max-width: 760px;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.support-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: clamp(24px, 4vw, 42px);
+}
+
+.support-plan-card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  min-height: 100%;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+}
+
+.support-plan-card.featured {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--surface);
+}
+
+.support-plan-badge {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  color: var(--surface);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.support-plan-top {
+  display: grid;
+  gap: 8px;
+}
+
+.support-plan-top > span,
+.support-plan-ideal > span {
+  color: var(--accent-strong);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.support-plan-card.featured .support-plan-top > span,
+.support-plan-card.featured .support-plan-ideal > span {
+  color: #f1c4a7;
+}
+
+.support-plan-card h3 {
+  margin: 0;
+  font-size: clamp(1.35rem, 2vw, 1.9rem);
+  font-weight: 400;
+  line-height: 1.1;
+}
+
+.support-plan-card strong {
+  font-size: clamp(2rem, 3vw, 3.1rem);
+  font-weight: 300;
+  line-height: 1;
+}
+
+.support-plan-card small {
+  margin-left: 4px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.support-plan-card.featured small,
+.support-plan-card.featured p,
+.support-plan-card.featured li {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.support-plan-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.58;
+}
+
+.support-plan-ideal {
+  display: grid;
+  gap: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.support-plan-card.featured .support-plan-ideal {
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.support-plan-card ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.support-plan-card li {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.support-plan-card li svg {
+  margin-top: 2px;
+  color: var(--accent-strong);
+}
+
+.support-plan-card.featured li svg {
+  color: #f1c4a7;
+}
+
+.support-plan-card .button {
+  align-self: end;
+  margin-top: 4px;
+}
+
+.support-plan-card.featured .button {
+  background: var(--surface);
+  color: var(--text);
+}
+
 .support-form {
   display: grid;
   gap: 18px;
@@ -1339,6 +1504,7 @@ body.modal-open {
 }
 
 .support-form input,
+.support-form select,
 .support-form textarea {
   width: 100%;
   min-height: 48px;
@@ -1355,6 +1521,7 @@ body.modal-open {
 }
 
 .support-form input:focus,
+.support-form select:focus,
 .support-form textarea:focus {
   border-color: var(--accent-strong);
   outline: none;
@@ -1459,6 +1626,30 @@ body.modal-open {
   background: var(--surface);
   font-size: 0.78rem;
   font-weight: 500;
+}
+
+.support-plan-admin {
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.support-plan-admin span {
+  color: var(--accent-strong);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.support-plan-admin strong {
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.3;
 }
 
 .admin-nav {
@@ -4108,6 +4299,7 @@ body.modal-open {
   .regional-metrics,
   .regional-cards,
   .regional-cards.technical,
+  .support-plan-grid,
   .support-form-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -4372,6 +4564,7 @@ body.modal-open {
   .regional-cards,
   .regional-cards.technical,
   .regional-two-lists,
+  .support-plan-grid,
   .support-form-grid {
     grid-template-columns: 1fr;
   }
@@ -4418,6 +4611,7 @@ body.modal-open {
   .lead-form,
   .site-footer,
   .support-hero,
+  .support-plans,
   .support-panel {
     padding: 24px;
   }
