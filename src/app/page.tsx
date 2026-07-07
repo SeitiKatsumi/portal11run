@@ -8,6 +8,8 @@ import { Reveal } from "@/components/Reveal";
 import { SectionTitle } from "@/components/SectionTitle";
 import { ecosystemCards, metrics } from "@/lib/content";
 
+const homeImage = "/assets/ayla-hero.jpg";
+
 export default function Home() {
   return (
     <>
@@ -15,8 +17,7 @@ export default function Home() {
         eyebrow="ecossistema 11RUN"
         title="Mais cedo no movimento. Mais futuro no fundismo."
         text="Uma plataforma viva para conectar formação, performance, circuito e oportunidades em um mesmo caminho."
-        imageSrc="/assets/11run-reference.jpg"
-        videoSrc="/assets/homevideo.mp4"
+        imageSrc={homeImage}
         ctaSlot={<ProjectFormModal project="onze-futuro" label="Cadastrar atleta" />}
       />
 
@@ -44,7 +45,7 @@ export default function Home() {
 
           <Reveal delay={0.08}>
             <div className="home-hero-visual">
-              <img src="/assets/11run-reference.jpg" alt="Corredora em movimento 11RUN" />
+              <img src={homeImage} alt="Representante 11RUN em ambiente esportivo" />
             </div>
           </Reveal>
         </div>
@@ -64,7 +65,7 @@ export default function Home() {
           <span className="eyebrow">comunidade</span>
           <h2>Atletas, famílias e treinadores dentro da mesma estrutura.</h2>
         </div>
-        <img src="/assets/11run-reference.jpg" alt="Corredora em movimento 11RUN" />
+        <img src={homeImage} alt="Representante 11RUN em ambiente esportivo" />
       </section>
 
       <section className="home-statement">
@@ -99,7 +100,7 @@ export default function Home() {
       </section>
 
       <section className="photo-hero photo-hero-split">
-        <img src="/assets/11run-reference.jpg" alt="Corredora em movimento 11RUN" />
+        <img src={homeImage} alt="Representante 11RUN em ambiente esportivo" />
         <div>
           <span className="eyebrow">performance</span>
           <h2>Da rotina de treino ao próximo salto competitivo.</h2>
@@ -139,7 +140,7 @@ export default function Home() {
           <span className="eyebrow">Onze Futuro</span>
           <h2>O caminho começa no Onze Futuro e ganha escala com continuidade.</h2>
         </div>
-        <img src="/assets/11run-reference.jpg" alt="Corredora em movimento 11RUN" />
+        <img src={homeImage} alt="Representante 11RUN em ambiente esportivo" />
       </section>
 
       <section className="section">

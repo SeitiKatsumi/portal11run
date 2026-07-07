@@ -80,7 +80,7 @@ export const projects: ProjectPage[] = [
     eyebrow: "performance orientada por dados",
     title: "App 11Run",
     subtitle: "Uma plataforma para organizar treino, leitura de desempenho e evoluÃ§Ã£o esportiva com mais clareza.",
-    imageSrc: "/assets/11run-reference.jpg",
+    imageSrc: "/assets/ayla-hero.jpg",
     imageAlt: "Corredora em movimento representando performance e tecnologia",
     body: [
       "O App 11Run nasce para atletas, treinadores e projetos que querem ir alÃ©m da planilha e transformar rotina esportiva em acompanhamento consistente.",
@@ -121,7 +121,7 @@ export const projects: ProjectPage[] = [
     eyebrow: "Onze Futuro",
     title: "Onze Futuro",
     subtitle: "O Brasil tem talento. O que falta, muitas vezes, Ã© estrutura, continuidade e oportunidade no momento certo.",
-    imageSrc: "/assets/11run-reference.jpg",
+    imageSrc: "/assets/ayla-hero.jpg",
     imageAlt: "Corredora em movimento 11RUN",
     body: [
       "O Onze Futuro acompanha jovens atletas entre 10 e 13 anos, oferecendo suporte, orientaÃ§Ã£o, convivÃªncia esportiva, ajuda de custo, materiais, inscriÃ§Ãµes gratuitas no Circuito 11RUN e assessoria de publicidade ao longo do processo.",
@@ -161,7 +161,7 @@ export const projects: ProjectPage[] = [
     eyebrow: "Itatiba e regiÃ£o",
     title: "11 Master",
     subtitle: "Performance nÃ£o tem idade.",
-    imageSrc: "/assets/11run-reference.jpg",
+    imageSrc: "/assets/ayla-hero.jpg",
     imageAlt: "Corredora em movimento 11RUN",
     body: [
       "A 11RUN Ã© global no alcance. Mas em Itatiba, o compromisso Ã© local.",
@@ -201,7 +201,7 @@ export const projects: ProjectPage[] = [
     eyebrow: "circuito infantil",
     title: "Circuito Futuro 11",
     subtitle: "Da primeira volta na pista ao sonho de chegar mais longe.",
-    imageSrc: "/assets/11run-reference.jpg",
+    imageSrc: "/assets/ayla-hero.jpg",
     imageAlt: "Corredora em movimento 11RUN",
     body: [
       "O futuro do meio-fundo e fundo comeÃ§a na pista.",
@@ -245,7 +245,7 @@ export const projects: ProjectPage[] = [
     eyebrow: "oportunidades internacionais",
     title: "Portal de Oportunidades 11RUN",
     subtitle: "Bolsas universitÃ¡rias para jovens fundistas: o caminho que muitos talentos ainda nÃ£o sabem que existe.",
-    imageSrc: "/assets/11run-reference.jpg",
+    imageSrc: "/assets/ayla-hero.jpg",
     imageAlt: "Corredora de alta performance em movimento",
     body: [
       "No Brasil, existem atletas jovens com disciplina, potencial e sonhos grandes. Mas entre correr bem e conquistar uma oportunidade internacional, existe uma jornada que quase ninguÃ©m explica com clareza.",

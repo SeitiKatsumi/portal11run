@@ -226,10 +226,9 @@ export default function Page() {
   return (
     <div className="futuro-landing">
       <FeatureBanner
-        imageSrc="/assets/11run-reference.jpg"
-        videoSrc="/assets/11run-video-base.mp4"
+        imageSrc="/assets/ayla-hero.jpg"
+        imageAlt="Representante 11RUN em ambiente esportivo"
         mediaOnly
-        videoControls
       />
 
       <section className="futuro-hero">
