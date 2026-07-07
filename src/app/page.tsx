@@ -19,7 +19,7 @@ export default function Home() {
     <>
       <FeatureBanner
         eyebrow="ecossistema 11RUN"
-        title="Mais cedo no movimento. Mais futuro no fundismo."
+        title="Um Ecossistema de amor pelo fundismo"
         text="Uma plataforma viva para conectar formação, performance, circuito e oportunidades em um mesmo caminho."
         imageSrc={homeImage}
         ctaSlot={<ProjectFormModal project="onze-futuro" label="Cadastrar atleta" />}
