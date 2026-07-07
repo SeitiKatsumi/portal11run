@@ -2839,9 +2839,9 @@ body.modal-open {
 .futuro-athlete-profile {
   min-height: 100%;
   display: grid;
-  grid-template-columns: minmax(280px, 0.36fr) minmax(0, 1fr);
+  grid-template-columns: clamp(280px, 28vw, 360px) minmax(0, 1fr);
   gap: clamp(24px, 4vw, 48px);
-  align-items: stretch;
+  align-items: center;
   padding: clamp(18px, 2.4vw, 28px);
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -2849,8 +2849,9 @@ body.modal-open {
 }
 
 .futuro-athlete-photo {
-  min-height: 100%;
-  aspect-ratio: 4 / 5;
+  width: 100%;
+  height: clamp(320px, 36vw, 460px);
+  min-width: 0;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -2865,6 +2866,7 @@ body.modal-open {
 }
 
 .futuro-athlete-copy {
+  min-width: 0;
   display: grid;
   align-content: center;
   gap: 14px;
@@ -2894,6 +2896,7 @@ body.modal-open {
   font-weight: 300;
   line-height: 1.02;
   letter-spacing: -0.04em;
+  overflow-wrap: anywhere;
 }
 
 .futuro-athlete-copy strong {
@@ -4665,7 +4668,9 @@ body.modal-open {
   }
 
   .futuro-athlete-photo {
-    max-height: 560px;
+    height: auto;
+    max-height: none;
+    aspect-ratio: 4 / 5;
   }
 
   .futuro-athlete-copy h3 {
