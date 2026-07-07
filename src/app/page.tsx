@@ -9,6 +9,10 @@ import { SectionTitle } from "@/components/SectionTitle";
 import { ecosystemCards, metrics } from "@/lib/content";
 
 const homeImage = "/assets/ayla-hero.jpg";
+const structureImage = "/assets/home-structure-track.jpg";
+const communityImage = "/assets/home-community-track.jpg";
+const performanceImage = "/assets/home-performance-stage.jpg";
+const futureImage = "/assets/home-future-track.jpg";
 
 export default function Home() {
   return (
@@ -45,7 +49,7 @@ export default function Home() {
 
           <Reveal delay={0.08}>
             <div className="home-hero-visual">
-              <img src={homeImage} alt="Representante 11RUN em ambiente esportivo" />
+              <img src={structureImage} alt="Atleta 11RUN em pista de atletismo" />
             </div>
           </Reveal>
         </div>
@@ -65,7 +69,7 @@ export default function Home() {
           <span className="eyebrow">comunidade</span>
           <h2>Atletas, famílias e treinadores dentro da mesma estrutura.</h2>
         </div>
-        <img src={homeImage} alt="Representante 11RUN em ambiente esportivo" />
+        <img src={communityImage} alt="Atleta 11RUN sentada na pista de atletismo" />
       </section>
 
       <section className="home-statement">
@@ -100,7 +104,7 @@ export default function Home() {
       </section>
 
       <section className="photo-hero photo-hero-split">
-        <img src={homeImage} alt="Representante 11RUN em ambiente esportivo" />
+        <img src={performanceImage} alt="Representante 11RUN apresentando projeto de performance" />
         <div>
           <span className="eyebrow">performance</span>
           <h2>Da rotina de treino ao próximo salto competitivo.</h2>
@@ -140,7 +144,7 @@ export default function Home() {
           <span className="eyebrow">Onze Futuro</span>
           <h2>O caminho começa no Onze Futuro e ganha escala com continuidade.</h2>
         </div>
-        <img src={homeImage} alt="Representante 11RUN em ambiente esportivo" />
+        <img src={futureImage} alt="Atleta 11RUN em pista de atletismo" />
       </section>
 
       <section className="section">
