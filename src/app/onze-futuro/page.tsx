@@ -38,8 +38,8 @@ export const metadata: Metadata = {
 const heroImage = "/assets/onze-futuro-hero.jpg";
 const launchVideo = "/assets/onze-futuro-lancamento-full.mp4";
 const scenarioImage = "/assets/onze-futuro-cenario.jpg";
-const originImage = "/assets/onze-futuro-origem.jpg";
-const pilotImage = "/assets/onze-futuro-piloto.jpg";
+const originImage = "/assets/athletes/turma-onze-futuro.webp";
+const pilotImage = "/assets/athletes/eloiza.webp";
 
 const heroStats = [
   { icon: CalendarDays, title: "Projeto piloto", text: "2026 a 2029" },
@@ -201,6 +201,57 @@ const benefits = [
   }
 ];
 
+const athleteProfiles = [
+  {
+    name: "Aimê Giaretta Katsumi",
+    birthDate: "21/03/2017",
+    image: "/assets/athletes/aime.webp",
+    alt: "Aimê Giaretta Katsumi correndo na pista",
+    intro: "A caçulinha do grupo, com energia doce, leve e cheia de sonhos grandes.",
+    bio: [
+      "Aimê começou a correr bem pertinho do papai, seu parceiro de todos os momentos, e o que parecia apenas uma brincadeira virou uma linda surpresa: ela mostrou resistência, coragem e um amor enorme pela pista.",
+      "Além da corrida, também pratica ginástica artística, atividade que ajuda no desenvolvimento da coordenação, equilíbrio, força e consciência corporal. Fora dos treinos, ama brincar, estar com a família e cuidar dos seus dois goldens, Darry e Happy.",
+      "Mesmo tão nova, Aimê já demonstra uma relação muito especial com o esporte. Quando subiu ao pódio pela primeira vez, resumiu tudo com uma frase inesquecível: “É mais legal que Natal e aniversário.” Seu grande sonho é ser medalhista olímpica."
+    ]
+  },
+  {
+    name: "Maria Eloiza Nascimento da Silva",
+    birthDate: "15/10/2016",
+    image: "/assets/athletes/eloiza.webp",
+    alt: "Maria Eloiza Nascimento da Silva correndo na pista",
+    intro: "Uma atleta alegre, intensa e cheia de futuro.",
+    bio: [
+      "Maria Eloiza descobriu o atletismo vendo o papai correr. A curiosidade virou vontade, a vontade virou pedido, e depois de ganhar seu primeiro tênis de corrida, ela nunca mais parou.",
+      "Cheia de energia, é daquelas crianças que parecem ligadas no 220. Ama correr, pedalar, brincar, dançar e estar sempre em movimento. Sua alegria aparece em tudo o que faz, principalmente quando está competindo ou vivendo novas experiências no esporte.",
+      "Em pouco tempo, já participou de provas oficiais e mostrou que determinação também pode vir acompanhada de muita doçura, espontaneidade e um sorriso que ilumina tudo ao redor."
+    ]
+  },
+  {
+    name: "Emanuelly Helena Alves Marcelino",
+    birthDate: "23/02/2016",
+    image: "/assets/athletes/manu.webp",
+    alt: "Emanuelly Helena Alves Marcelino correndo na pista",
+    intro: "Manu une concentração, sensibilidade e vontade de evoluir.",
+    bio: [
+      "Emanuelly, carinhosamente chamada de Manu, começou na corrida por incentivo do pai e logo descobriu que aquele também era o seu lugar. Desde pequena, já chamava atenção nas corridas infantis pela força, disciplina e disposição para competir.",
+      "Manu é uma menina inteligente, carinhosa, estudiosa e muito ligada à família. Fora das pistas, ama desenhar, ler, nadar, pedalar, brincar no parquinho e começar o dia com seu querido pão com ovo.",
+      "Na corrida, encanta pela entrega. Em casa, encanta pela alegria. É daquelas atletas que fazem tudo com brilho nos olhos: forte, doce e determinada."
+    ]
+  },
+  {
+    name: "Sophia Gabrielly de Aragão Maciel",
+    birthDate: "28/07/2016",
+    image: "/assets/athletes/soso.webp",
+    alt: "Sophia Gabrielly de Aragão Maciel correndo na pista",
+    intro: "Soso representa a atleta que nasce da paixão.",
+    bio: [
+      "Sophia, nossa Soso, encontrou na corrida o seu grande amor. Antes de chegar ao atletismo, passou pela ginástica rítmica, onde desenvolveu coordenação, expressão corporal e disciplina. Hoje, além de correr, também pratica natação e já sonha com novos desafios, quem sabe até no triathlon.",
+      "Carinhosa, comunicativa, determinada e dona de uma personalidade forte, Soso sabe muito bem o que quer. Quando coloca algo na cabeça e no coração, vai atrás com energia, foco e coragem.",
+      "Ela ama passear, competir e viver experiências que a façam se movimentar. Na pista, leva toda essa intensidade linda: corre com vontade, com alegria e com aquela força de quem não desiste fácil."
+    ]
+  }
+];
+
 function IconCard({ icon: Icon, title, text }: { icon: LucideIcon; title: string; text?: string }) {
   return (
     <article className="futuro-card">
@@ -266,6 +317,33 @@ export default function Page() {
           {heroStats.map((item, index) => (
             <Reveal key={item.title} delay={index * 0.03}>
               <IconCard {...item} />
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      <section className="futuro-section futuro-athletes">
+        <SectionHeader
+          eyebrow="primeira turma"
+          title="Quatro meninas, quatro histórias e um mesmo amor pela pista."
+          text="O projeto piloto do Onze Futuro começa com atletas que já carregam no corpo e no coração a alegria de correr, aprender, competir e sonhar grande."
+        />
+        <div className="futuro-athlete-grid">
+          {athleteProfiles.map((athlete, index) => (
+            <Reveal key={athlete.name} delay={index * 0.04}>
+              <article className="futuro-athlete-profile">
+                <div className="futuro-athlete-photo">
+                  <img src={athlete.image} alt={athlete.alt} loading="lazy" />
+                </div>
+                <div className="futuro-athlete-copy">
+                  <span>{athlete.birthDate}</span>
+                  <h3>{athlete.name}</h3>
+                  <strong>{athlete.intro}</strong>
+                  {athlete.bio.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                </div>
+              </article>
             </Reveal>
           ))}
         </div>
@@ -423,7 +501,7 @@ export default function Page() {
             </div>
           </Reveal>
           <Reveal delay={0.08}>
-            <img className="futuro-image-square" src={pilotImage} alt="Jovem atleta com medalha simbolizando desenvolvimento esportivo" />
+            <img className="futuro-image-square" src={pilotImage} alt="Maria Eloiza correndo na pista" />
           </Reveal>
         </div>
         <div className="futuro-timeline">
