@@ -53,13 +53,18 @@ export type ProjectPage = {
   };
 };
 
-export const navItems = [
-  { label: "InÃ­cio", href: "/" },
+export const projectNavItems = [
   { label: "App 11Run", href: "/app-11run" },
   { label: "11 Futuro", href: "/onze-futuro" },
   { label: "11 Master", href: "/11-master" },
-  { label: "Circuito Futuro 11", href: "/circuito-futuro-11" },
+  { label: "Circuito 11 Futuro", href: "/circuito-futuro-11" },
   { label: "Bolsas", href: "/bolsas" }
+];
+
+export const navItems = [
+  { label: "Home", href: "/" },
+  { label: "Projetos", href: "#projetos", children: projectNavItems },
+  { label: "Apoie o projeto", href: "/apoie-o-projeto" }
 ];
 
 export const metrics = [

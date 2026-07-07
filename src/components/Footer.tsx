@@ -2,6 +2,8 @@ import Link from "next/link";
 import { navItems } from "@/lib/content";
 
 export function Footer() {
+  const footerLinks = navItems.flatMap((item) => ("children" in item && item.children ? item.children : [item]));
+
   return (
     <footer className="site-footer">
       <div>
@@ -10,7 +12,7 @@ export function Footer() {
       </div>
       <div>
         <strong>Links</strong>
-        {navItems.map((item) => (
+        {footerLinks.map((item) => (
           <Link href={item.href} key={item.href}>
             {item.label}
           </Link>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BarChart3, Flag, Globe2, Home, Medal, Menu, Trophy, UserRound, X } from "lucide-react";
+import { BarChart3, ChevronDown, Flag, Globe2, HandHeart, Home, Medal, Menu, Trophy, UserRound, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { navItems } from "@/lib/content";
@@ -13,7 +13,8 @@ const navIcons: Record<string, LucideIcon> = {
   "/11-master": Trophy,
   "/11-regional": Trophy,
   "/circuito-futuro-11": Flag,
-  "/bolsas": Globe2
+  "/bolsas": Globe2,
+  "/apoie-o-projeto": HandHeart
 };
 
 export function Header() {
@@ -41,9 +42,31 @@ export function Header() {
         <img src="/assets/logos/onzerun-menu.png" alt="11RUN" />
       </Link>
 
-      <nav className="desktop-nav" aria-label="Navegação principal">
+      <nav className="desktop-nav" aria-label="Navegacao principal">
         {navItems.map((item) => {
           const Icon = navIcons[item.href];
+          if ("children" in item && item.children?.length) {
+            return (
+              <div className="nav-dropdown" key={item.href}>
+                <button type="button" className="nav-dropdown-trigger">
+                  <span>{item.label}</span>
+                  <ChevronDown size={14} strokeWidth={1.8} />
+                </button>
+                <div className="nav-dropdown-menu">
+                  {item.children.map((child) => {
+                    const ChildIcon = navIcons[child.href];
+                    return (
+                      <Link key={child.href} href={child.href}>
+                        {ChildIcon ? <ChildIcon size={15} strokeWidth={1.7} /> : null}
+                        <span>{child.label}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          }
+
           return (
             <Link key={item.href} href={item.href}>
               {Icon ? <Icon size={15} strokeWidth={1.7} /> : null}
@@ -65,6 +88,23 @@ export function Header() {
         <div className="mobile-nav">
           {navItems.map((item) => {
             const Icon = navIcons[item.href];
+            if ("children" in item && item.children?.length) {
+              return (
+                <div className="mobile-nav-group" key={item.href}>
+                  <strong>{item.label}</strong>
+                  {item.children.map((child) => {
+                    const ChildIcon = navIcons[child.href];
+                    return (
+                      <Link key={child.href} href={child.href} onClick={() => setOpen(false)}>
+                        {ChildIcon ? <ChildIcon size={16} strokeWidth={1.7} /> : null}
+                        <span>{child.label}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              );
+            }
+
             return (
               <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
                 {Icon ? <Icon size={16} strokeWidth={1.7} /> : null}
