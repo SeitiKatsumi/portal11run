@@ -2564,6 +2564,61 @@ body.modal-open {
   color: var(--muted);
 }
 
+.footer-sponsors {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: clamp(24px, 4vw, 42px);
+  padding: clamp(12px, 2vw, 18px) 0 clamp(28px, 4vw, 44px);
+  border-bottom: 1px solid var(--line);
+}
+
+.footer-sponsors-copy {
+  max-width: 1040px;
+}
+
+.footer-sponsors-copy h2 {
+  max-width: 980px;
+  margin: 10px 0 0;
+  color: var(--text);
+  font-size: clamp(2.4rem, 5.5vw, 5.4rem);
+  font-weight: 300;
+  line-height: 1.02;
+}
+
+.footer-sponsors-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.footer-sponsor-card {
+  min-height: 190px;
+  display: grid;
+  align-content: space-between;
+  gap: 28px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+}
+
+.footer-sponsor-card span {
+  margin: 0;
+  color: var(--accent-strong);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.footer-sponsor-card img {
+  width: min(100%, 210px);
+  max-height: 80px;
+  object-fit: contain;
+  object-position: left center;
+  filter: grayscale(1);
+}
+
 .site-footer strong {
   display: block;
   margin-bottom: 12px;
@@ -4279,7 +4334,8 @@ body.modal-open {
   }
 
   .project-lanes,
-  .project-grid {
+  .project-grid,
+  .footer-sponsors-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -4564,6 +4620,7 @@ body.modal-open {
   .regional-cards,
   .regional-cards.technical,
   .regional-two-lists,
+  .footer-sponsors-grid,
   .support-plan-grid,
   .support-form-grid {
     grid-template-columns: 1fr;
