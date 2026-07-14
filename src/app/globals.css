@@ -2287,6 +2287,65 @@ body.modal-open {
   padding: clamp(24px, 4vw, 42px);
 }
 
+.member-collapsible-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.member-details-panel {
+  padding: clamp(24px, 4vw, 42px);
+}
+
+.member-details-panel summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.member-details-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+.member-details-panel summary strong {
+  display: block;
+  margin-top: 10px;
+  color: var(--text);
+  font-size: clamp(1.8rem, 3.2vw, 3.3rem);
+  font-weight: 300;
+  letter-spacing: -0.035em;
+}
+
+.member-details-panel summary em {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--text);
+  padding: 12px 16px;
+  font-size: 0.84rem;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.member-details-panel[open] summary em {
+  color: var(--accent-strong);
+}
+
+.member-details-panel[open] summary em::before {
+  content: "Fechar painel";
+}
+
+.member-details-panel[open] summary em {
+  font-size: 0;
+}
+
+.member-details-panel[open] summary em::before {
+  font-size: 0.84rem;
+}
+
 .member-card.wide {
   grid-column: 1 / -1;
 }

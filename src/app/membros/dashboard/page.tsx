@@ -108,7 +108,7 @@ export default async function MemberDashboardPage() {
   const receipts = parseJson<Record<string, boolean>>(dashboard.lead.receipts_json, {});
   const athleteName = dashboard.lead.athlete_name || dashboard.lead.name;
   const receivedTotal = dashboard.financialRecords
-    .filter((record) => record.direction === "saida" && receivedStatuses.has(normalizeStatus(record.status)))
+    .filter((record) => receivedStatuses.has(normalizeStatus(record.status)))
     .reduce((total, record) => total + record.amount_cents, 0);
 
   return (
@@ -126,20 +126,27 @@ export default async function MemberDashboardPage() {
       </section>
 
       <section className="member-grid">
-        <article className="member-card wide">
-          <span className="eyebrow">dados cadastrais</span>
-          <h2>Informações do cadastro</h2>
-          <dl className="member-data-list">
-            {Object.entries(payload)
-              .filter(([key, value]) => !hiddenFields.has(key) && value !== undefined && value !== "")
-              .map(([key, value]) => (
-                <div key={key}>
-                  <dt>{fieldLabels[key] ?? key.replaceAll("_", " ")}</dt>
-                  <dd>{formatValue(value)}</dd>
-                </div>
-              ))}
-          </dl>
-          <MemberRegistrationEditor payload={payload} />
+        <article className="member-card wide member-collapsible-card">
+          <details className="member-details-panel">
+            <summary>
+              <span>
+                <span className="eyebrow">dados cadastrais</span>
+                <strong>Informações do cadastro</strong>
+              </span>
+              <em>Abrir painel</em>
+            </summary>
+            <dl className="member-data-list">
+              {Object.entries(payload)
+                .filter(([key, value]) => !hiddenFields.has(key) && value !== undefined && value !== "")
+                .map(([key, value]) => (
+                  <div key={key}>
+                    <dt>{fieldLabels[key] ?? key.replaceAll("_", " ")}</dt>
+                    <dd>{formatValue(value)}</dd>
+                  </div>
+                ))}
+            </dl>
+            <MemberRegistrationEditor payload={payload} />
+          </details>
         </article>
 
         <article className="member-card">
