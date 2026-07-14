@@ -1,11 +1,32 @@
 import Link from "next/link";
 import { navItems } from "@/lib/content";
 
-const sponsors = [
+const sponsorGroups = [
   {
-    name: "Elevenmind",
-    tier: "Patrocinador Master",
-    logo: "/assets/logos/elevenmind-pb.png"
+    title: "Patrocinador Master",
+    sponsors: [
+      {
+        name: "Elevenmind",
+        logo: "/assets/logos/elevenmind-pb.png"
+      }
+    ]
+  },
+  {
+    title: "Apoiadores",
+    sponsors: [
+      {
+        name: "Bahia Esportes",
+        logo: "/assets/logos/bahia-esportes.png"
+      },
+      {
+        name: "ORCAMPI",
+        logo: "/assets/logos/orcampi.jpg"
+      },
+      {
+        name: "Porto Seguro",
+        logo: "/assets/logos/porto-seguro.webp"
+      }
+    ]
   }
 ];
 
@@ -19,12 +40,18 @@ export function Footer() {
           <span className="eyebrow">Patrocinadores</span>
           <h2 id="footer-sponsors-title">Uma operação para levar a pista local ao mapa global.</h2>
         </div>
-        <div className="footer-sponsors-grid" role="list">
-          {sponsors.map((sponsor) => (
-            <article className="footer-sponsor-card" key={sponsor.name} role="listitem">
-              <span>{sponsor.tier}</span>
-              <img src={sponsor.logo} alt={sponsor.name} />
-            </article>
+        <div className="footer-sponsor-groups">
+          {sponsorGroups.map((group) => (
+            <section className="footer-sponsor-group" key={group.title} aria-label={group.title}>
+              <h3>{group.title}</h3>
+              <div className="footer-sponsors-grid" role="list">
+                {group.sponsors.map((sponsor) => (
+                  <article className="footer-sponsor-card" key={sponsor.name} role="listitem">
+                    <img src={sponsor.logo} alt={sponsor.name} />
+                  </article>
+                ))}
+              </div>
+            </section>
           ))}
         </div>
       </section>

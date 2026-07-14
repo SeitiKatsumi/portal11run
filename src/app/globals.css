@@ -1341,7 +1341,7 @@ body.modal-open {
 
 .support-plan-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   margin-top: clamp(24px, 4vw, 42px);
 }
@@ -1362,6 +1362,11 @@ body.modal-open {
   border-color: var(--text);
   background: var(--text);
   color: var(--surface);
+}
+
+.support-plan-card.custom {
+  border-color: rgba(112, 71, 42, 0.28);
+  background: #fff;
 }
 
 .support-plan-badge {
@@ -1477,6 +1482,10 @@ body.modal-open {
   color: var(--text);
 }
 
+.support-plan-card.custom .button {
+  border-color: var(--text);
+}
+
 .support-form {
   display: grid;
   gap: 18px;
@@ -1569,6 +1578,64 @@ body.modal-open {
 
 .sponsor-projects {
   background: var(--surface-muted);
+}
+
+.support-strategy-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-muted);
+}
+
+.support-inline-check {
+  min-height: 48px;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.support-inline-check input {
+  width: 16px;
+  min-height: 16px;
+  accent-color: var(--text);
+}
+
+.support-inline-check span {
+  color: var(--text) !important;
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+.support-strategy-note {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--text);
+  color: var(--surface);
+}
+
+.support-strategy-note strong {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.support-strategy-note p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.6;
 }
 
 .support-submit {
@@ -2585,37 +2652,47 @@ body.modal-open {
   line-height: 1.02;
 }
 
+.footer-sponsor-groups {
+  display: grid;
+  gap: clamp(22px, 3vw, 34px);
+}
+
+.footer-sponsor-group {
+  display: grid;
+  gap: 12px;
+}
+
+.footer-sponsor-group h3 {
+  margin: 0;
+  color: var(--accent-strong);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
 .footer-sponsors-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 14px;
 }
 
 .footer-sponsor-card {
   min-height: 190px;
   display: grid;
-  align-content: space-between;
-  gap: 28px;
-  padding: 24px;
+  place-items: center;
+  padding: 26px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: var(--surface-muted);
-}
-
-.footer-sponsor-card span {
-  margin: 0;
-  color: var(--accent-strong);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  background: #fff;
 }
 
 .footer-sponsor-card img {
-  width: min(100%, 210px);
-  max-height: 80px;
+  width: 80%;
+  max-width: 320px;
+  max-height: 118px;
   object-fit: contain;
-  object-position: left center;
+  object-position: center;
   filter: grayscale(1);
 }
 
@@ -4440,7 +4517,8 @@ body.modal-open {
   .regional-cards,
   .regional-cards.technical,
   .support-plan-grid,
-  .support-form-grid {
+  .support-form-grid,
+  .support-strategy-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -4720,7 +4798,8 @@ body.modal-open {
   .regional-two-lists,
   .footer-sponsors-grid,
   .support-plan-grid,
-  .support-form-grid {
+  .support-form-grid,
+  .support-strategy-grid {
     grid-template-columns: 1fr;
   }
 

@@ -25,7 +25,11 @@ export function SupportPlans() {
           const planLabel = `${plan.name} — ${plan.price}${plan.period}`;
 
           return (
-            <article className={`support-plan-card${plan.highlighted ? " featured" : ""}`} key={plan.id} role="listitem">
+            <article
+              className={`support-plan-card${plan.highlighted ? " featured" : ""}${plan.id === "personalizado" ? " custom" : ""}`}
+              key={plan.id}
+              role="listitem"
+            >
               {plan.highlighted ? (
                 <div className="support-plan-badge">
                   <Star size={15} />
