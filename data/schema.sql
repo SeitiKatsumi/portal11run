@@ -159,6 +159,21 @@ CREATE TABLE IF NOT EXISTS member_marks (
 CREATE INDEX IF NOT EXISTS idx_member_marks_account_id ON member_marks(account_id);
 CREATE INDEX IF NOT EXISTS idx_member_marks_lead_id ON member_marks(lead_id);
 
+CREATE TABLE IF NOT EXISTS member_events (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  project_type TEXT NOT NULL DEFAULT 'todos',
+  event_date TEXT NOT NULL,
+  event_time TEXT,
+  location TEXT,
+  description TEXT,
+  participants_json TEXT NOT NULL DEFAULT '[]',
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_member_events_project_date ON member_events(project_type, event_date);
+
 CREATE TABLE IF NOT EXISTS support_interests (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,

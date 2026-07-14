@@ -64,6 +64,44 @@ export const receiptItems = [
   "Outro recebimento"
 ] as const;
 
+export const editableLeadFields = [
+  "name",
+  "email",
+  "phone",
+  "city",
+  "state",
+  "profile_type",
+  "message",
+  "athlete_name",
+  "birth_date",
+  "father_name",
+  "mother_name",
+  "guardian_name",
+  "guardian_rg",
+  "guardian_cpf",
+  "guardian_pix",
+  "athlete_rg",
+  "athlete_cpf",
+  "address",
+  "shoe_size",
+  "height_cm",
+  "weight_kg",
+  "coach_name",
+  "coach_phone",
+  "coach_cref",
+  "athlete_dream",
+  "school",
+  "team",
+  "best_marks",
+  "competitions",
+  "social_link",
+  "category",
+  "race_event",
+  "payment_plan"
+] as const;
+
+export type EditableLeadField = (typeof editableLeadFields)[number];
+
 const requiredFields = ["name", "email", "phone", "project_type", "accepted_contact"];
 
 const schemaColumns: Record<string, string> = {
@@ -428,4 +466,66 @@ export function updateLead(id: string, updates: { pipeline_status?: string; rece
     });
 
   return getDatabase().prepare("SELECT * FROM leads WHERE id = ?").get(id) as LeadRecord;
+}
+
+export function updateLeadProfile(id: string, updates: Partial<Record<EditableLeadField, string>>) {
+  const db = getDatabase();
+  const current = db.prepare("SELECT * FROM leads WHERE id = ?").get(id) as LeadRecord | undefined;
+
+  if (!current) {
+    return null;
+  }
+
+  const allowed = new Set<string>(editableLeadFields);
+  const cleanEntries = Object.entries(updates)
+    .filter(([key]) => allowed.has(key))
+    .map(([key, value]) => [key, String(value ?? "").trim()] as const);
+
+  if (cleanEntries.length === 0) {
+    return current;
+  }
+
+  const payload = current.payload_json ? (JSON.parse(current.payload_json) as Record<string, unknown>) : {};
+  for (const [key, value] of cleanEntries) {
+    payload[key] = value;
+  }
+
+  const mirroredColumns = new Set([
+    "name",
+    "email",
+    "phone",
+    "city",
+    "state",
+    "profile_type",
+    "message",
+    "athlete_name",
+    "birth_date",
+    "category",
+    "school",
+    "team",
+    "best_marks",
+    "competitions",
+    "social_link"
+  ]);
+  const setClauses = cleanEntries.filter(([key]) => mirroredColumns.has(key)).map(([key]) => `${key} = $${key}`);
+  const updatedAt = new Date().toISOString();
+  const params: Record<string, string> = {
+    $id: id,
+    $payload_json: JSON.stringify(payload),
+    $updated_at: updatedAt
+  };
+
+  for (const [key, value] of cleanEntries) {
+    params[`$${key}`] = value;
+  }
+
+  db.prepare(
+    `UPDATE leads
+     SET ${setClauses.length ? `${setClauses.join(", ")},` : ""}
+         payload_json = $payload_json,
+         updated_at = $updated_at
+     WHERE id = $id`
+  ).run(params);
+
+  return db.prepare("SELECT * FROM leads WHERE id = ?").get(id) as LeadRecord;
 }

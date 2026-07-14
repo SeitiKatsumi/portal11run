@@ -2139,6 +2139,14 @@ body.modal-open {
   line-height: 1.35;
 }
 
+.receipt-list label em {
+  margin-left: auto;
+  color: var(--text);
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 700;
+}
+
 .receipt-list input {
   width: 16px;
   height: 16px;
@@ -2345,11 +2353,86 @@ body.modal-open {
   font-weight: 500;
 }
 
+.member-finance-total {
+  border-color: rgba(132, 74, 33, 0.35) !important;
+  background: var(--surface) !important;
+}
+
+.member-finance-total strong {
+  font-size: 1.45rem;
+}
+
 .member-table div {
   display: grid;
   grid-template-columns: 1.2fr repeat(5, minmax(0, 1fr));
   gap: 10px;
   align-items: center;
+}
+
+.member-events-table div {
+  grid-template-columns: 1.2fr 0.75fr 1fr 1.3fr;
+}
+
+.member-edit-box {
+  display: grid;
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.member-edit-box > .button {
+  width: fit-content;
+}
+
+.member-profile-form {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  padding: 18px;
+}
+
+.member-profile-form label {
+  display: grid;
+  gap: 7px;
+}
+
+.member-profile-form label.wide {
+  grid-column: span 3;
+}
+
+.member-profile-form label span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.member-profile-form input,
+.member-profile-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  padding: 0 14px;
+  font: inherit;
+}
+
+.member-profile-form input {
+  min-height: 44px;
+}
+
+.member-profile-form textarea {
+  min-height: 92px;
+  padding: 12px 14px;
+  resize: vertical;
+}
+
+.member-profile-form .button {
+  width: fit-content;
 }
 
 .member-mark-form {
@@ -2453,7 +2536,14 @@ body.modal-open {
 }
 
 .finance-form .button {
-  align-self: end;
+  align-self: flex-end;
+}
+
+.finance-form-actions {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  flex-wrap: wrap;
 }
 
 .finance-table {
@@ -2488,6 +2578,148 @@ body.modal-open {
 }
 
 .finance-table button {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--text);
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.finance-row-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.events-admin {
+  margin-top: 18px;
+}
+
+.events-form {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 22px;
+}
+
+.events-form label {
+  display: grid;
+  gap: 7px;
+}
+
+.events-form label span,
+.events-participants legend {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.events-form input,
+.events-form select,
+.events-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  color: var(--text);
+  padding: 0 14px;
+  font: inherit;
+}
+
+.events-form input,
+.events-form select {
+  min-height: 46px;
+}
+
+.events-form textarea {
+  min-height: 92px;
+  padding: 12px 14px;
+  resize: vertical;
+}
+
+.events-wide,
+.events-participants {
+  grid-column: span 2;
+}
+
+.events-participants {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+}
+
+.events-participants label {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+
+.events-participants label:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.events-participants input {
+  width: 16px;
+  min-height: 16px;
+  accent-color: var(--accent-strong);
+}
+
+.events-participants small {
+  color: var(--muted);
+}
+
+.events-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.events-list article {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  padding: 18px;
+}
+
+.events-list h2 {
+  margin: 6px 0 0;
+  color: var(--text);
+  font-size: 1.35rem;
+  font-weight: 500;
+}
+
+.events-list p,
+.events-list small {
+  margin: 6px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.events-athletes strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.events-list button {
   width: 42px;
   height: 42px;
   border: 1px solid var(--line);
@@ -4972,9 +5204,12 @@ body.modal-open {
   .member-grid,
   .member-data-list,
   .member-mark-form,
+  .member-profile-form,
   .finance-kpis,
   .finance-form,
   .finance-table article,
+  .events-form,
+  .events-list article,
   .transparency-list dl {
     grid-template-columns: 1fr;
   }
@@ -4994,6 +5229,9 @@ body.modal-open {
   }
 
   .finance-wide,
+  .events-wide,
+  .events-participants,
+  .member-profile-form label.wide,
   .member-card.wide {
     grid-column: auto;
   }
@@ -5006,8 +5244,20 @@ body.modal-open {
     margin-top: 14px;
   }
 
-  .finance-form .button {
+  .finance-form .button,
+  .events-form .button,
+  .member-profile-form .button,
+  .member-edit-box > .button {
     width: 100%;
+  }
+
+  .finance-form-actions,
+  .finance-row-actions {
+    width: 100%;
+  }
+
+  .finance-row-actions {
+    justify-content: flex-start;
   }
 
   .assistant-panel {

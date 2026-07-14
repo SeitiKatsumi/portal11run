@@ -2,6 +2,7 @@ import { mkdirSync, readFileSync } from "fs";
 import path from "path";
 import { createHash, pbkdf2Sync, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
+import { listEventsForLead, type MemberEvent } from "./events";
 import type { LeadRecord } from "./leads";
 import type { RankingRecord } from "./rankings";
 
@@ -36,6 +37,7 @@ export type MemberAccountPublic = Omit<MemberAccount, "password_hash" | "passwor
 export type FinancialRecord = {
   id: string;
   lead_id: string;
+  direction: "entrada" | "saida";
   type: string;
   description: string;
   amount_cents: number;
@@ -77,6 +79,7 @@ export type MemberDashboardData = {
   creativeAssets: CreativeAsset[];
   marks: MemberMark[];
   rankings: RankingRecord[];
+  events: MemberEvent[];
 };
 
 let database: DatabaseSync | undefined;
@@ -229,8 +232,9 @@ export function getMemberDashboard(accountId: string): MemberDashboardData | nul
   const rankings = db
     .prepare("SELECT * FROM rankings WHERE lower(athlete_name) = lower(?) ORDER BY age_group ASC, event ASC, time ASC")
     .all(lead.athlete_name || lead.name) as RankingRecord[];
+  const events = listEventsForLead(lead.id, lead.project_type);
 
-  return { account: publicAccount(account), lead, financialRecords, creativeAssets, marks, rankings };
+  return { account: publicAccount(account), lead, financialRecords, creativeAssets, marks, rankings, events };
 }
 
 export function createMemberMark(accountId: string, input: { age_group: string; event: string; time: string; date: string; location: string }) {

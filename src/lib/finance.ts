@@ -156,6 +156,85 @@ export function createFinancialRecord(input: {
   return record;
 }
 
+export function updateFinancialRecord(
+  id: string,
+  input: {
+    lead_id: string;
+    direction: FinancialDirection;
+    type: string;
+    description: string;
+    amount: string | number;
+    sponsor_name?: string;
+    due_date?: string;
+    paid_date?: string;
+    status?: string;
+    transparency_notes?: string;
+  }
+) {
+  const db = getDatabase();
+  const existing = db.prepare("SELECT * FROM financial_records WHERE id = ?").get(id) as FinancialRecord | undefined;
+  if (!existing) throw new Error("Lançamento financeiro não encontrado.");
+
+  const lead = db.prepare("SELECT * FROM leads WHERE id = ?").get(input.lead_id) as LeadRecord | undefined;
+  if (!lead) throw new Error("Atleta/cadastro não encontrado.");
+
+  const record: FinancialRecord = {
+    ...existing,
+    lead_id: lead.id,
+    project_type: lead.project_type,
+    athlete_name: lead.athlete_name || lead.name,
+    direction: input.direction === "entrada" ? "entrada" : "saida",
+    type: input.type.trim(),
+    description: input.description.trim(),
+    amount_cents: toCents(input.amount),
+    sponsor_name: input.sponsor_name?.trim() || null,
+    due_date: input.due_date || null,
+    paid_date: input.paid_date || null,
+    status: input.status?.trim() || "Previsto",
+    transparency_notes: input.transparency_notes?.trim() || null,
+    updated_at: now()
+  };
+
+  if (!record.type || !record.description || record.amount_cents <= 0) {
+    throw new Error("Tipo, descrição e valor são obrigatórios.");
+  }
+
+  db.prepare(
+    `UPDATE financial_records
+     SET lead_id = $lead_id,
+         project_type = $project_type,
+         athlete_name = $athlete_name,
+         direction = $direction,
+         type = $type,
+         description = $description,
+         amount_cents = $amount_cents,
+         sponsor_name = $sponsor_name,
+         due_date = $due_date,
+         paid_date = $paid_date,
+         status = $status,
+         transparency_notes = $transparency_notes,
+         updated_at = $updated_at
+     WHERE id = $id`
+  ).run({
+    $id: record.id,
+    $lead_id: record.lead_id,
+    $project_type: record.project_type,
+    $athlete_name: record.athlete_name,
+    $direction: record.direction,
+    $type: record.type,
+    $description: record.description,
+    $amount_cents: record.amount_cents,
+    $sponsor_name: record.sponsor_name,
+    $due_date: record.due_date,
+    $paid_date: record.paid_date,
+    $status: record.status,
+    $transparency_notes: record.transparency_notes,
+    $updated_at: record.updated_at
+  });
+
+  return record;
+}
+
 export function deleteFinancialRecord(id: string) {
   getDatabase().prepare("DELETE FROM financial_records WHERE id = ?").run(id);
 }

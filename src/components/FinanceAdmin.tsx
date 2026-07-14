@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, type FormEvent } from "react";
-import { Banknote, Trash2 } from "lucide-react";
+import { Banknote, PencilLine, Trash2, X } from "lucide-react";
 import type { FinancialRecord } from "@/lib/finance";
 
 type AdminLead = {
@@ -24,8 +24,13 @@ function formatMoney(cents: number) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
 }
 
+function centsToInput(cents: number) {
+  return String((cents / 100).toFixed(2)).replace(".", ",");
+}
+
 export function FinanceAdmin({ initialRecords, leads }: { initialRecords: FinancialRecord[]; leads: AdminLead[] }) {
   const [records, setRecords] = useState(initialRecords);
+  const [editingRecord, setEditingRecord] = useState<FinancialRecord | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -47,30 +52,39 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
     event.preventDefault();
     setError("");
     setLoading(true);
+
     const formData = new FormData(event.currentTarget);
+    const payload = {
+      id: editingRecord?.id,
+      lead_id: formData.get("lead_id"),
+      direction: formData.get("direction"),
+      type: formData.get("type"),
+      description: formData.get("description"),
+      amount: formData.get("amount"),
+      sponsor_name: formData.get("sponsor_name"),
+      due_date: formData.get("due_date"),
+      paid_date: formData.get("paid_date"),
+      status: formData.get("status"),
+      transparency_notes: formData.get("transparency_notes")
+    };
+
     const response = await fetch("/api/admin/finance", {
-      method: "POST",
+      method: editingRecord ? "PATCH" : "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        lead_id: formData.get("lead_id"),
-        direction: formData.get("direction"),
-        type: formData.get("type"),
-        description: formData.get("description"),
-        amount: formData.get("amount"),
-        sponsor_name: formData.get("sponsor_name"),
-        due_date: formData.get("due_date"),
-        paid_date: formData.get("paid_date"),
-        status: formData.get("status"),
-        transparency_notes: formData.get("transparency_notes")
-      })
+      body: JSON.stringify(payload)
     });
     const result = await response.json();
     setLoading(false);
+
     if (!response.ok) {
       setError(result.error ?? "Erro ao salvar lançamento.");
       return;
     }
-    setRecords((current) => [result.record, ...current]);
+
+    setRecords((current) =>
+      editingRecord ? current.map((record) => (record.id === result.record.id ? result.record : record)) : [result.record, ...current]
+    );
+    setEditingRecord(null);
     event.currentTarget.reset();
   }
 
@@ -116,48 +130,48 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
         </article>
       </div>
 
-      <form className="finance-form" onSubmit={onSubmit}>
+      <form className="finance-form" onSubmit={onSubmit} key={editingRecord?.id ?? "new-record"}>
         <label>
           <span>Entrada ou saída</span>
-          <select name="direction" required>
+          <select name="direction" required defaultValue={editingRecord?.direction ?? "entrada"}>
             <option value="entrada">Entrada</option>
             <option value="saida">Saída / benefício</option>
           </select>
         </label>
         <label>
           <span>Atleta / cadastro vinculado</span>
-          <select name="lead_id" required>
+          <select name="lead_id" required defaultValue={editingRecord?.lead_id ?? ""}>
             <option value="">Selecione</option>
             {leads.map((lead) => (
               <option key={lead.id} value={lead.id}>
-                {(lead.athlete_name || lead.name)} · {projectLabels[lead.project_type] ?? lead.project_type}
+                {lead.athlete_name || lead.name} · {projectLabels[lead.project_type] ?? lead.project_type}
               </option>
             ))}
           </select>
         </label>
         <label>
           <span>Tipo</span>
-          <input name="type" placeholder="Ajuda de custo, uniforme, entrada em dinheiro..." required />
+          <input name="type" placeholder="Ajuda de custo, uniforme, entrada em dinheiro..." defaultValue={editingRecord?.type ?? ""} required />
         </label>
         <label>
           <span>Valor</span>
-          <input name="amount" placeholder="500,00" required />
+          <input name="amount" placeholder="500,00" defaultValue={editingRecord ? centsToInput(editingRecord.amount_cents) : ""} required />
         </label>
         <label>
           <span>Patrocinador/apoiador</span>
-          <input name="sponsor_name" placeholder="Empresa, pessoa ou apoiador" />
+          <input name="sponsor_name" placeholder="Empresa, pessoa ou apoiador" defaultValue={editingRecord?.sponsor_name ?? ""} />
         </label>
         <label>
           <span>Data prevista</span>
-          <input name="due_date" type="date" />
+          <input name="due_date" type="date" defaultValue={editingRecord?.due_date ?? ""} />
         </label>
         <label>
           <span>Data realizada</span>
-          <input name="paid_date" type="date" />
+          <input name="paid_date" type="date" defaultValue={editingRecord?.paid_date ?? ""} />
         </label>
         <label>
           <span>Status</span>
-          <select name="status" defaultValue="Previsto">
+          <select name="status" defaultValue={editingRecord?.status ?? "Previsto"}>
             <option>Previsto</option>
             <option>Confirmada</option>
             <option>Pendente</option>
@@ -169,17 +183,30 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
         </label>
         <label className="finance-wide">
           <span>Descrição / discriminação do item</span>
-          <textarea name="description" rows={3} required />
+          <textarea name="description" rows={3} defaultValue={editingRecord?.description ?? ""} required />
         </label>
         <label className="finance-wide">
           <span>Observação de transparência</span>
-          <textarea name="transparency_notes" rows={2} placeholder="Resumo público sem dados sensíveis." />
+          <textarea
+            name="transparency_notes"
+            rows={2}
+            placeholder="Resumo público sem dados sensíveis."
+            defaultValue={editingRecord?.transparency_notes ?? ""}
+          />
         </label>
         {error ? <p className="form-error finance-wide">{error}</p> : null}
-        <button className="button primary" type="submit" disabled={loading}>
-          <Banknote size={17} />
-          {loading ? "Salvando..." : "Salvar lançamento"}
-        </button>
+        <div className="finance-form-actions">
+          <button className="button primary" type="submit" disabled={loading}>
+            <Banknote size={17} />
+            {loading ? "Salvando..." : editingRecord ? "Atualizar lançamento" : "Salvar lançamento"}
+          </button>
+          {editingRecord ? (
+            <button className="button ghost" type="button" onClick={() => setEditingRecord(null)}>
+              <X size={17} />
+              Cancelar edição
+            </button>
+          ) : null}
+        </div>
       </form>
 
       <div className="finance-table">
@@ -211,9 +238,14 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
               <span>Status</span>
               <strong>{record.status}</strong>
             </div>
-            <button type="button" onClick={() => removeRecord(record.id)} aria-label="Excluir lançamento">
-              <Trash2 size={16} />
-            </button>
+            <div className="finance-row-actions">
+              <button type="button" onClick={() => setEditingRecord(record)} aria-label="Editar lançamento">
+                <PencilLine size={16} />
+              </button>
+              <button type="button" onClick={() => removeRecord(record.id)} aria-label="Excluir lançamento">
+                <Trash2 size={16} />
+              </button>
+            </div>
           </article>
         ))}
       </div>

@@ -477,7 +477,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
                     </button>
 
                     <div className="receipt-list">
-                      <strong>Recebimentos</strong>
+                      <strong>Direitos e benefícios</strong>
                       {receiptItems.map((item) => (
                         <label key={item}>
                           <input
@@ -486,6 +486,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
                             onChange={(event) => patchLead(lead.id, { receipts: { [item]: event.target.checked } })}
                           />
                           <span>{item}</span>
+                          <em>{receipts[item] ? "Tem direito" : "Não tem direito"}</em>
                           {receipts[item] ? <CheckCircle2 size={15} /> : null}
                         </label>
                       ))}
