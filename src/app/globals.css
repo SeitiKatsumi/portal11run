@@ -1764,6 +1764,182 @@ body.modal-open {
   margin-inline: auto;
 }
 
+.seiti-story-page {
+  display: grid;
+  gap: 18px;
+}
+
+.seiti-story-hero,
+.seiti-story-records,
+.seiti-story-item {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.seiti-story-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 32px;
+  align-items: end;
+  padding: clamp(28px, 5vw, 64px);
+}
+
+.seiti-story-hero h1,
+.seiti-story-records h2 {
+  max-width: 980px;
+  margin: 10px 0 18px;
+  font-size: clamp(3.2rem, 8vw, 7.6rem);
+  font-weight: 300;
+  line-height: 0.92;
+  letter-spacing: 0;
+}
+
+.seiti-story-hero p {
+  max-width: 760px;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.75;
+}
+
+.seiti-story-path {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.seiti-story-path span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: var(--surface-muted);
+  color: var(--ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.seiti-story-timeline {
+  display: grid;
+  gap: 18px;
+}
+
+.seiti-story-item {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.75fr);
+  gap: clamp(22px, 4vw, 52px);
+  align-items: center;
+  padding: clamp(22px, 4vw, 52px);
+  overflow: hidden;
+}
+
+.seiti-story-item:nth-child(even) .seiti-story-copy {
+  order: 2;
+}
+
+.seiti-story-copy {
+  display: grid;
+  gap: 12px;
+}
+
+.seiti-story-year {
+  width: fit-content;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: var(--surface-muted);
+  color: var(--accent);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.seiti-story-copy h2 {
+  margin: 0;
+  max-width: 760px;
+  font-size: clamp(2.5rem, 5.4vw, 5.4rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+
+.seiti-story-copy p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.72;
+}
+
+.seiti-story-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.seiti-story-metrics div,
+.seiti-record-grid article {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  padding: 18px;
+}
+
+.seiti-story-metrics strong,
+.seiti-record-grid strong {
+  display: block;
+  color: var(--ink);
+  font-size: clamp(1.7rem, 3vw, 2.8rem);
+  font-weight: 300;
+  line-height: 1;
+}
+
+.seiti-story-metrics span,
+.seiti-record-grid span {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.seiti-story-media {
+  margin: 0;
+}
+
+.seiti-story-media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  object-fit: contain;
+  object-position: center;
+}
+
+.seiti-story-media figcaption {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.seiti-story-records {
+  padding: clamp(26px, 5vw, 56px);
+}
+
+.seiti-record-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
 .admin-toolbar {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(220px, 320px);
@@ -5263,6 +5439,42 @@ body.modal-open {
 
   .admin-panel {
     width: min(calc(100% - 28px), var(--max));
+  }
+
+  .seiti-story-hero,
+  .seiti-story-item {
+    grid-template-columns: 1fr;
+  }
+
+  .seiti-story-hero {
+    gap: 22px;
+    padding: 28px;
+  }
+
+  .seiti-story-hero h1,
+  .seiti-story-records h2 {
+    font-size: clamp(2.6rem, 14vw, 4.6rem);
+  }
+
+  .seiti-story-path {
+    justify-content: flex-start;
+  }
+
+  .seiti-story-item {
+    padding: 22px;
+  }
+
+  .seiti-story-item:nth-child(even) .seiti-story-copy {
+    order: 0;
+  }
+
+  .seiti-story-copy h2 {
+    font-size: clamp(2.25rem, 12vw, 4rem);
+  }
+
+  .seiti-story-metrics,
+  .seiti-record-grid {
+    grid-template-columns: 1fr;
   }
 
   .admin-toolbar {
