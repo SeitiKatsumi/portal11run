@@ -1835,6 +1835,14 @@ body.modal-open {
   overflow: hidden;
 }
 
+.seiti-story-item.no-media {
+  grid-template-columns: 1fr;
+}
+
+.seiti-story-item.no-media .seiti-story-copy {
+  max-width: 940px;
+}
+
 .seiti-story-item:nth-child(even) .seiti-story-copy {
   order: 2;
 }

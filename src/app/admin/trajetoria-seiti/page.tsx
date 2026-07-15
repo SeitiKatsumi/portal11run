@@ -7,14 +7,25 @@ export const metadata: Metadata = {
   description: "Linha do tempo temporária para apresentação da trajetória esportiva de Seiti Katsumi."
 };
 
-const timeline = [
+type TimelineItem = {
+  year: string;
+  label: string;
+  title: string;
+  image: string | null;
+  imageAlt: string;
+  caption: string;
+  text: string[];
+  metrics: Array<{ value: string; label: string }>;
+};
+
+const timeline: TimelineItem[] = [
   {
     year: "1992",
     label: "Jogos Regionais",
     title: "O início na pista",
-    image: "/assets/trajetoria-seiti/primeiros-5000m.jpg",
-    imageAlt: "Registro histórico dos primeiros 5.000 metros",
-    caption: "Primeiro contato competitivo com a pista e com o fundo.",
+    image: null,
+    imageAlt: "",
+    caption: "",
     text: [
       "Em 1992, Seiti correu os primeiros Jogos Regionais e também a primeira prova de pista, em Valinhos.",
       "Mesmo sem treinamento específico, marcou 4min06s nos 1.500 metros e 15min55s nos 5.000 metros.",
@@ -29,12 +40,12 @@ const timeline = [
     year: "1994",
     label: "Retorno",
     title: "A prova que reabriu o caminho",
-    image: "/assets/trajetoria-seiti/tres-meses-depois.jpg",
-    imageAlt: "Resultado de 5.000 metros após o retorno ao atletismo",
-    caption: "Registro do retorno competitivo e da entrada entre atletas fortes da época.",
+    image: "/assets/trajetoria-seiti/primeiros-5000m.jpg",
+    imageAlt: "Registro dos 5.000 metros em que Seiti correu atrás de Vanderlei Cordeiro de Lima",
+    caption: "A prova em que Seiti correu atrás de Vanderlei Cordeiro de Lima e abriu o caminho para a Eletropaulo.",
     text: [
       "Em 1994, a Prefeitura convidou Seiti para voltar aos Jogos Regionais. Na ocasião, José Américo, de Atibaia, orientou que ele seguisse um atleta baixo: Vanderlei Cordeiro de Lima.",
-      "Vanderlei voltava de lesão e faria a prova em ritmo próximo de 3min05s por quilômetro. Seiti foi atrás e entendeu que havia ali uma possibilidade real de evolução.",
+      "Vanderlei voltava de lesão e faria a prova em ritmo próximo de 3min05s por quilômetro. Seiti foi atrás dele; essa prova foi o ponto que abriu a porta para sua entrada na Eletropaulo.",
       "Pouco depois, Elias Bastos sugeriu um teste na Funilense, na pista da Unicamp."
     ],
     metrics: [
@@ -45,9 +56,9 @@ const timeline = [
     year: "Funilense",
     label: "Unicamp",
     title: "O teste com Ricardo D'Angelo",
-    image: "/assets/trajetoria-seiti/primeiros-5000m.jpg",
-    imageAlt: "Lista de resultado histórico da Federação Paulista de Atletismo",
-    caption: "A passagem pela Funilense conectou talento, orientação e oportunidade.",
+    image: null,
+    imageAlt: "",
+    caption: "",
     text: [
       "Ryo e Edson, que trabalhavam na Unicamp, agendaram o teste com o professor Ricardo D'Angelo.",
       "Ricardo pediu um teste de 12 minutos. Naquele dia, Elias Bastos e Rômulo treinavam tiros de 1.000 metros e passaram a primeira volta perto de 1min09s. Seiti tentou acompanhar, quebrou, mas ainda completou aproximadamente 3.750 metros.",
@@ -92,20 +103,21 @@ const timeline = [
     ]
   },
   {
-    year: "Orcampi",
-    label: "Retomada",
-    title: "Das origens à contribuição com novos atletas",
+    year: "2022-2026",
+    label: "Orcampi",
+    title: "A história volta para a base",
     image: "/assets/trajetoria-seiti/treinamentos-planilha.jpg",
     imageAlt: "Planilha histórica de treinamentos",
     caption: "Planilhas e sessões que representam método, memória e continuidade.",
     text: [
       "A relação com a Funilense começou no início da trajetória, com Elias Bastos, Ryo, Edson, a pista da Unicamp e o teste com Ricardo D'Angelo.",
       "Mesmo seguindo depois para a Eletropaulo e para o Japão, aquela passagem foi importante para mostrar que havia potencial real de evolução.",
-      "Hoje, a aproximação com a Orcampi representa uma retomada dessa história e uma conexão com as origens esportivas. É também uma forma de contribuir para que novos atletas tenham acesso à orientação, estrutura e oportunidades que foram decisivas nessa trajetória."
+      "Em 2022, Seiti levou seu filho Luhan para o projeto de base da Orcampi e para treinar com o professor Alex Lopes. Luhan acabou indo para o Japão no ano seguinte.",
+      "Agora, em 2026, Seiti vive uma nova etapa com Aimê, sua filha de 9 anos, sendo direcionada e acompanhada também na Orcampi. Essa continuidade transforma a própria história esportiva em ponte para a próxima geração."
     ],
     metrics: [
-      { value: "1992 → 1994", label: "base da história" },
-      { value: "Orcampi", label: "conexão atual" }
+      { value: "2022", label: "Luhan na base da Orcampi" },
+      { value: "2026", label: "Aimê acompanhada na Orcampi" }
     ]
   }
 ];
@@ -144,7 +156,7 @@ export default function AdminTrajetoriaSeitiPage() {
 
       <section className="seiti-story-timeline" aria-label="Linha do tempo da trajetória">
         {timeline.map((item, index) => (
-          <article className="seiti-story-item" key={`${item.year}-${item.title}`}>
+          <article className={`seiti-story-item${item.image ? "" : " no-media"}`} key={`${item.year}-${item.title}`}>
             <div className="seiti-story-copy">
               <span className="seiti-story-year">{item.year}</span>
               <span className="eyebrow">{item.label}</span>
@@ -161,10 +173,12 @@ export default function AdminTrajetoriaSeitiPage() {
                 ))}
               </div>
             </div>
-            <figure className={index % 2 === 0 ? "seiti-story-media" : "seiti-story-media alternate"}>
-              <img src={item.image} alt={item.imageAlt} />
-              <figcaption>{item.caption}</figcaption>
-            </figure>
+            {item.image ? (
+              <figure className={index % 2 === 0 ? "seiti-story-media" : "seiti-story-media alternate"}>
+                <img src={item.image} alt={item.imageAlt} />
+                <figcaption>{item.caption}</figcaption>
+              </figure>
+            ) : null}
           </article>
         ))}
       </section>
