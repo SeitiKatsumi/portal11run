@@ -69,6 +69,23 @@ const timeline: TimelineItem[] = [
     ]
   },
   {
+    year: "Eletropaulo",
+    label: "Três meses depois",
+    title: "A evolução para 14min56s",
+    image: "/assets/trajetoria-seiti/tres-meses-depois.jpg",
+    imageAlt: "Registro da prova em que Seiti correu 14min56s nos 5.000 metros pela Eletropaulo",
+    caption: "Três meses depois do teste, já pela Eletropaulo, veio o salto para 14min56s nos 5.000 metros.",
+    text: [
+      "Depois do teste com Ricardo D'Angelo, Seiti seguiu treinando e a oportunidade na Eletropaulo começou a tomar forma.",
+      "Em apenas três meses, a evolução apareceu na pista: nos 5.000 metros, já competindo pela Eletropaulo, correu 14min56s.",
+      "Esse resultado colocou Seiti entre atletas fortes da época e consolidou a passagem do potencial observado no teste para uma trajetória real no alto rendimento."
+    ],
+    metrics: [
+      { value: "3 meses", label: "tempo entre o teste e o salto competitivo" },
+      { value: "14min56s", label: "5.000 m pela Eletropaulo" }
+    ]
+  },
+  {
     year: "1995-2002",
     label: "Japão",
     title: "Bolsa, formação e consistência internacional",
