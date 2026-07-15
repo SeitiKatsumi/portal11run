@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default function AdminFinanceiroPage() {
-  const leads = listLeads();
+  const leads = listLeads().filter((lead) => ["Aceitos", "Aceitas"].includes(lead.pipeline_status));
   const financialRecords = listFinancialRecords();
 
   return <FinanceAdmin initialRecords={JSON.parse(JSON.stringify(financialRecords))} leads={JSON.parse(JSON.stringify(leads))} />;

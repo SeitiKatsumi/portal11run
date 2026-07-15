@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function AdminEventosPage() {
   const events = listMemberEvents();
-  const leads = listLeads();
+  const leads = listLeads().filter((lead) => ["Aceitos", "Aceitas"].includes(lead.pipeline_status));
 
   return <EventsAdmin initialEvents={JSON.parse(JSON.stringify(events))} leads={JSON.parse(JSON.stringify(leads))} />;
 }

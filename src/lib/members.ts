@@ -43,6 +43,7 @@ export type FinancialRecord = {
   amount_cents: number;
   due_date: string | null;
   paid_date: string | null;
+  image_url: string | null;
   status: string;
   created_at: string;
   updated_at: string;

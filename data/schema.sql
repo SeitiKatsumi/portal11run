@@ -119,6 +119,7 @@ CREATE TABLE IF NOT EXISTS financial_records (
   sponsor_name TEXT,
   due_date TEXT,
   paid_date TEXT,
+  image_url TEXT,
   status TEXT NOT NULL DEFAULT 'Previsto',
   transparency_notes TEXT,
   created_at TEXT NOT NULL,

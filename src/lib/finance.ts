@@ -18,6 +18,7 @@ export type FinancialRecord = {
   sponsor_name: string | null;
   due_date: string | null;
   paid_date: string | null;
+  image_url: string | null;
   status: string;
   transparency_notes: string | null;
   created_at: string;
@@ -31,6 +32,7 @@ const financialColumns: Record<string, string> = {
   athlete_name: "TEXT",
   direction: "TEXT NOT NULL DEFAULT 'saida'",
   sponsor_name: "TEXT",
+  image_url: "TEXT",
   transparency_notes: "TEXT"
 };
 
@@ -82,7 +84,7 @@ export function listFinancialRecords() {
 export function listTransparencyRecords() {
   return getDatabase()
     .prepare(
-      `SELECT id, project_type, athlete_name, direction, type, description, amount_cents, sponsor_name, paid_date, status, transparency_notes, created_at, updated_at
+      `SELECT id, project_type, athlete_name, direction, type, description, amount_cents, sponsor_name, paid_date, image_url, status, transparency_notes, created_at, updated_at
        FROM financial_records
        ORDER BY datetime(COALESCE(paid_date, created_at)) DESC`
     )
@@ -98,6 +100,7 @@ export function createFinancialRecord(input: {
   sponsor_name?: string;
   due_date?: string;
   paid_date?: string;
+  image_url?: string;
   status?: string;
   transparency_notes?: string;
 }) {
@@ -117,6 +120,7 @@ export function createFinancialRecord(input: {
     sponsor_name: input.sponsor_name?.trim() || null,
     due_date: input.due_date || null,
     paid_date: input.paid_date || null,
+    image_url: input.image_url?.trim() || null,
     status: input.status?.trim() || "Previsto",
     transparency_notes: input.transparency_notes?.trim() || null,
     created_at: now(),
@@ -130,10 +134,10 @@ export function createFinancialRecord(input: {
   db.prepare(
     `INSERT INTO financial_records (
       id, lead_id, project_type, athlete_name, direction, type, description, amount_cents, sponsor_name,
-      due_date, paid_date, status, transparency_notes, created_at, updated_at
+      due_date, paid_date, image_url, status, transparency_notes, created_at, updated_at
     ) VALUES (
       $id, $lead_id, $project_type, $athlete_name, $direction, $type, $description, $amount_cents, $sponsor_name,
-      $due_date, $paid_date, $status, $transparency_notes, $created_at, $updated_at
+      $due_date, $paid_date, $image_url, $status, $transparency_notes, $created_at, $updated_at
     )`
   ).run({
     $id: record.id,
@@ -147,6 +151,7 @@ export function createFinancialRecord(input: {
     $sponsor_name: record.sponsor_name,
     $due_date: record.due_date,
     $paid_date: record.paid_date,
+    $image_url: record.image_url,
     $status: record.status,
     $transparency_notes: record.transparency_notes,
     $created_at: record.created_at,
@@ -167,6 +172,7 @@ export function updateFinancialRecord(
     sponsor_name?: string;
     due_date?: string;
     paid_date?: string;
+    image_url?: string;
     status?: string;
     transparency_notes?: string;
   }
@@ -190,6 +196,7 @@ export function updateFinancialRecord(
     sponsor_name: input.sponsor_name?.trim() || null,
     due_date: input.due_date || null,
     paid_date: input.paid_date || null,
+    image_url: input.image_url === undefined ? existing.image_url : input.image_url?.trim() || null,
     status: input.status?.trim() || "Previsto",
     transparency_notes: input.transparency_notes?.trim() || null,
     updated_at: now()
@@ -211,6 +218,7 @@ export function updateFinancialRecord(
          sponsor_name = $sponsor_name,
          due_date = $due_date,
          paid_date = $paid_date,
+         image_url = $image_url,
          status = $status,
          transparency_notes = $transparency_notes,
          updated_at = $updated_at
@@ -227,6 +235,7 @@ export function updateFinancialRecord(
     $sponsor_name: record.sponsor_name,
     $due_date: record.due_date,
     $paid_date: record.paid_date,
+    $image_url: record.image_url,
     $status: record.status,
     $transparency_notes: record.transparency_notes,
     $updated_at: record.updated_at

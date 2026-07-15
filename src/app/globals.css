@@ -1720,7 +1720,7 @@ body.modal-open {
 }
 
 .admin-nav {
-  width: min(calc(100% - 48px), 1560px);
+  width: min(calc(100% - 48px), var(--max));
   margin: 0 auto 18px;
   display: flex;
   gap: 10px;
@@ -1760,7 +1760,7 @@ body.modal-open {
 }
 
 .admin-panel {
-  width: min(calc(100% - 48px), 1560px);
+  width: min(calc(100% - 48px), var(--max));
   margin-inline: auto;
 }
 
@@ -2421,6 +2421,45 @@ body.modal-open {
   font-size: 1.45rem;
 }
 
+.member-list .member-finance-item {
+  grid-template-columns: 74px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.member-finance-thumb {
+  width: 74px;
+  height: 74px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  object-fit: cover;
+  object-position: center;
+}
+
+.member-finance-thumb.placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.member-finance-content {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.member-finance-content p {
+  margin: 2px 0 0;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
 .member-table div {
   display: grid;
   grid-template-columns: 1.2fr repeat(5, minmax(0, 1fr));
@@ -2603,6 +2642,45 @@ body.modal-open {
   gap: 10px;
   align-items: flex-end;
   flex-wrap: wrap;
+}
+
+.finance-current-image {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.finance-current-image img,
+.finance-table-thumb {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+  object-fit: cover;
+  object-position: center;
+}
+
+.finance-current-image img {
+  width: 72px;
+  height: 72px;
+}
+
+.finance-current-image span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.finance-table-thumb {
+  width: 58px;
+  height: 58px;
+  margin-bottom: 8px;
 }
 
 .finance-table {
@@ -4344,7 +4422,7 @@ body.modal-open {
 .ranking-form,
 .chat-settings,
 .chat-admin {
-  width: min(calc(100% - 48px), 1560px);
+  width: min(calc(100% - 48px), var(--max));
   margin: 18px auto 0;
 }
 
@@ -4430,7 +4508,7 @@ body.modal-open {
 }
 
 .ranking-table {
-  width: min(calc(100% - 48px), 1560px);
+  width: min(calc(100% - 48px), var(--max));
   margin: 16px auto 0;
   display: grid;
   gap: 10px;
@@ -5175,7 +5253,7 @@ body.modal-open {
   }
 
   .admin-nav {
-    width: min(calc(100% - 28px), 1560px);
+    width: min(calc(100% - 28px), var(--max));
     margin-bottom: 14px;
   }
 
@@ -5184,7 +5262,7 @@ body.modal-open {
   }
 
   .admin-panel {
-    width: min(calc(100% - 28px), 1560px);
+    width: min(calc(100% - 28px), var(--max));
   }
 
   .admin-toolbar {
@@ -5242,7 +5320,7 @@ body.modal-open {
   .chat-settings,
   .ranking-table,
   .chat-admin {
-    width: min(calc(100% - 28px), 1560px);
+    width: min(calc(100% - 28px), var(--max));
   }
 
   .ranking-form,
@@ -5296,6 +5374,15 @@ body.modal-open {
 
   .member-table div {
     grid-template-columns: 1fr;
+  }
+
+  .member-list .member-finance-item {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .member-finance-thumb {
+    width: 64px;
+    height: 64px;
   }
 
   .finance-kpis {

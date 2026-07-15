@@ -54,24 +54,13 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
     setLoading(true);
 
     const formData = new FormData(event.currentTarget);
-    const payload = {
-      id: editingRecord?.id,
-      lead_id: formData.get("lead_id"),
-      direction: formData.get("direction"),
-      type: formData.get("type"),
-      description: formData.get("description"),
-      amount: formData.get("amount"),
-      sponsor_name: formData.get("sponsor_name"),
-      due_date: formData.get("due_date"),
-      paid_date: formData.get("paid_date"),
-      status: formData.get("status"),
-      transparency_notes: formData.get("transparency_notes")
-    };
+    if (editingRecord?.id) {
+      formData.set("id", editingRecord.id);
+    }
 
     const response = await fetch("/api/admin/finance", {
       method: editingRecord ? "PATCH" : "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body: formData
     });
     const result = await response.json();
     setLoading(false);
@@ -139,7 +128,7 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
           </select>
         </label>
         <label>
-          <span>Atleta / cadastro vinculado</span>
+          <span>Atleta aceito / cadastro vinculado</span>
           <select name="lead_id" required defaultValue={editingRecord?.lead_id ?? ""}>
             <option value="">Selecione</option>
             {leads.map((lead) => (
@@ -182,6 +171,16 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
           </select>
         </label>
         <label className="finance-wide">
+          <span>Imagem do item</span>
+          <input name="image" type="file" accept="image/*" />
+        </label>
+        {editingRecord?.image_url ? (
+          <div className="finance-current-image">
+            <img src={editingRecord.image_url} alt={`Imagem atual de ${editingRecord.type}`} />
+            <span>Imagem atual do item</span>
+          </div>
+        ) : null}
+        <label className="finance-wide">
           <span>Descrição / discriminação do item</span>
           <textarea name="description" rows={3} defaultValue={editingRecord?.description ?? ""} required />
         </label>
@@ -214,6 +213,7 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
         {records.map((record) => (
           <article key={record.id}>
             <div>
+              {record.image_url ? <img className="finance-table-thumb" src={record.image_url} alt={`Imagem de ${record.type}`} /> : null}
               <span className={`finance-badge ${record.direction}`}>{record.direction}</span>
               <strong>{record.type}</strong>
               <p>{record.description}</p>

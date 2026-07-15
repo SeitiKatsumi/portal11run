@@ -77,6 +77,18 @@ function formatMoney(cents: number) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
 }
 
+function formatDate(value?: string | null) {
+  if (!value) return "Data a confirmar";
+  const dateValue = value.includes("T") ? value : `${value}T12:00:00`;
+  const date = new Date(dateValue);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short" }).format(date);
+}
+
+function financialDate(record: { paid_date: string | null; due_date: string | null; created_at: string }) {
+  return record.paid_date || record.due_date || record.created_at;
+}
+
 function formatValue(value: string | boolean | string[]) {
   if (Array.isArray(value)) return value.join(", ");
   if (typeof value === "boolean") return value ? "Sim" : "Não";
@@ -169,10 +181,20 @@ export default async function MemberDashboardPage() {
           <div className="member-list">
             {dashboard.financialRecords.length === 0 ? <p>Nenhum lançamento financeiro vinculado ainda.</p> : null}
             {dashboard.financialRecords.map((record) => (
-              <div key={record.id}>
-                <span>{record.description}</span>
-                <strong>{formatMoney(record.amount_cents)}</strong>
-                <small>{record.status}</small>
+              <div className="member-finance-item" key={record.id}>
+                {record.image_url ? (
+                  <img className="member-finance-thumb" src={record.image_url} alt={`Imagem de ${record.type}`} />
+                ) : (
+                  <span className="member-finance-thumb placeholder">Sem foto</span>
+                )}
+                <section className="member-finance-content">
+                  <span>{record.type}</span>
+                  <strong>{formatMoney(record.amount_cents)}</strong>
+                  <small>
+                    {formatDate(financialDate(record))} · {record.status}
+                  </small>
+                  <p>{record.description}</p>
+                </section>
               </div>
             ))}
             <div className="member-finance-total">
