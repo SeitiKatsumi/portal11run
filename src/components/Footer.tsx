@@ -3,11 +3,20 @@ import { navItems } from "@/lib/content";
 
 const sponsorGroups = [
   {
-    title: "Patrocinador Master",
+    title: "Realização",
     sponsors: [
       {
         name: "Elevenmind",
         logo: "/assets/logos/elevenmind-pb.png"
+      }
+    ]
+  },
+  {
+    title: "Patrocinador Master",
+    sponsors: [
+      {
+        name: "BNI",
+        logo: "/assets/logos/bni.png"
       }
     ]
   },
@@ -19,12 +28,28 @@ const sponsorGroups = [
         logo: "/assets/logos/bahia-esportes.png"
       },
       {
-        name: "ORCAMPI",
-        logo: "/assets/logos/orcampi.jpg"
-      },
-      {
         name: "Porto Seguro",
         logo: "/assets/logos/porto-seguro.webp"
+      },
+      {
+        name: "U2E",
+        logo: "/assets/logos/u2e.png"
+      },
+      {
+        name: "LQF Farmacêutica",
+        logo: "/assets/logos/lqf-logo.png"
+      },
+      {
+        name: "BUILT",
+        logo: "/assets/logos/built-horizontal.png"
+      },
+      {
+        name: "Flebo",
+        logo: "/assets/logos/flebo.png"
+      },
+      {
+        name: "RM Corretora",
+        logo: "/assets/logos/rm-corretora.png"
       }
     ]
   }

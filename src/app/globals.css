@@ -2964,7 +2964,7 @@ body.modal-open {
 
 .footer-sponsors-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -2984,7 +2984,6 @@ body.modal-open {
   max-height: 118px;
   object-fit: contain;
   object-position: center;
-  filter: grayscale(1);
 }
 
 .site-footer strong {
