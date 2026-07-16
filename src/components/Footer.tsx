@@ -8,6 +8,10 @@ const sponsorGroups = [
       {
         name: "Elevenmind",
         logo: "/assets/logos/elevenmind-pb.png"
+      },
+      {
+        name: "Instituto Vanderlei Cordeiro de Lima",
+        logo: "/assets/logos/instituto-vanderlei-cordeiro.png"
       }
     ]
   },
