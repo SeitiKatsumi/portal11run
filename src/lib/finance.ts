@@ -15,6 +15,7 @@ export type FinancialRecord = {
   type: string;
   description: string;
   amount_cents: number;
+  sponsor_id: string | null;
   sponsor_name: string | null;
   due_date: string | null;
   paid_date: string | null;
@@ -31,6 +32,7 @@ const financialColumns: Record<string, string> = {
   project_type: "TEXT",
   athlete_name: "TEXT",
   direction: "TEXT NOT NULL DEFAULT 'saida'",
+  sponsor_id: "TEXT",
   sponsor_name: "TEXT",
   image_url: "TEXT",
   transparency_notes: "TEXT"
@@ -84,7 +86,7 @@ export function listFinancialRecords() {
 export function listTransparencyRecords() {
   return getDatabase()
     .prepare(
-      `SELECT id, project_type, athlete_name, direction, type, description, amount_cents, sponsor_name, paid_date, image_url, status, transparency_notes, created_at, updated_at
+      `SELECT id, project_type, athlete_name, direction, type, description, amount_cents, sponsor_id, sponsor_name, paid_date, image_url, status, transparency_notes, created_at, updated_at
        FROM financial_records
        ORDER BY datetime(COALESCE(paid_date, created_at)) DESC`
     )
@@ -97,6 +99,7 @@ export function createFinancialRecord(input: {
   type: string;
   description: string;
   amount: string | number;
+  sponsor_id?: string;
   sponsor_name?: string;
   due_date?: string;
   paid_date?: string;
@@ -117,6 +120,7 @@ export function createFinancialRecord(input: {
     type: input.type.trim(),
     description: input.description.trim(),
     amount_cents: toCents(input.amount),
+    sponsor_id: input.sponsor_id?.trim() || null,
     sponsor_name: input.sponsor_name?.trim() || null,
     due_date: input.due_date || null,
     paid_date: input.paid_date || null,
@@ -133,10 +137,10 @@ export function createFinancialRecord(input: {
 
   db.prepare(
     `INSERT INTO financial_records (
-      id, lead_id, project_type, athlete_name, direction, type, description, amount_cents, sponsor_name,
+      id, lead_id, project_type, athlete_name, direction, type, description, amount_cents, sponsor_id, sponsor_name,
       due_date, paid_date, image_url, status, transparency_notes, created_at, updated_at
     ) VALUES (
-      $id, $lead_id, $project_type, $athlete_name, $direction, $type, $description, $amount_cents, $sponsor_name,
+      $id, $lead_id, $project_type, $athlete_name, $direction, $type, $description, $amount_cents, $sponsor_id, $sponsor_name,
       $due_date, $paid_date, $image_url, $status, $transparency_notes, $created_at, $updated_at
     )`
   ).run({
@@ -148,6 +152,7 @@ export function createFinancialRecord(input: {
     $type: record.type,
     $description: record.description,
     $amount_cents: record.amount_cents,
+    $sponsor_id: record.sponsor_id,
     $sponsor_name: record.sponsor_name,
     $due_date: record.due_date,
     $paid_date: record.paid_date,
@@ -169,6 +174,7 @@ export function updateFinancialRecord(
     type: string;
     description: string;
     amount: string | number;
+    sponsor_id?: string;
     sponsor_name?: string;
     due_date?: string;
     paid_date?: string;
@@ -193,6 +199,7 @@ export function updateFinancialRecord(
     type: input.type.trim(),
     description: input.description.trim(),
     amount_cents: toCents(input.amount),
+    sponsor_id: input.sponsor_id?.trim() || null,
     sponsor_name: input.sponsor_name?.trim() || null,
     due_date: input.due_date || null,
     paid_date: input.paid_date || null,
@@ -215,6 +222,7 @@ export function updateFinancialRecord(
          type = $type,
          description = $description,
          amount_cents = $amount_cents,
+         sponsor_id = $sponsor_id,
          sponsor_name = $sponsor_name,
          due_date = $due_date,
          paid_date = $paid_date,
@@ -232,6 +240,7 @@ export function updateFinancialRecord(
     $type: record.type,
     $description: record.description,
     $amount_cents: record.amount_cents,
+    $sponsor_id: record.sponsor_id,
     $sponsor_name: record.sponsor_name,
     $due_date: record.due_date,
     $paid_date: record.paid_date,

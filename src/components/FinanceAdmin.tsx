@@ -3,6 +3,7 @@
 import { useMemo, useState, type FormEvent } from "react";
 import { Banknote, PencilLine, Trash2, X } from "lucide-react";
 import type { FinancialRecord } from "@/lib/finance";
+import type { SponsorRecord } from "@/lib/sponsors";
 
 type AdminLead = {
   id: string;
@@ -10,6 +11,12 @@ type AdminLead = {
   athlete_name?: string | null;
   project_type: string;
   email: string;
+};
+
+type FinanceAdminProps = {
+  initialRecords: FinancialRecord[];
+  leads: AdminLead[];
+  sponsors: SponsorRecord[];
 };
 
 const projectLabels: Record<string, string> = {
@@ -62,10 +69,19 @@ function financeTypeCategory(type: string) {
   return "Outros";
 }
 
-export function FinanceAdmin({ initialRecords, leads }: { initialRecords: FinancialRecord[]; leads: AdminLead[] }) {
+function leadLabel(lead: AdminLead) {
+  return `${lead.athlete_name || lead.name} · ${projectLabels[lead.project_type] ?? lead.project_type}`;
+}
+
+function sponsorFilterKey(record: FinancialRecord) {
+  return record.sponsor_id || (record.sponsor_name ? `name:${record.sponsor_name}` : "sem-origem");
+}
+
+export function FinanceAdmin({ initialRecords, leads, sponsors }: FinanceAdminProps) {
   const [records, setRecords] = useState(initialRecords);
   const [editingRecord, setEditingRecord] = useState<FinancialRecord | null>(null);
   const [typeFilter, setTypeFilter] = useState("todos");
+  const [sponsorFilter, setSponsorFilter] = useState("todos");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -76,17 +92,32 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
         if (record.direction === "saida") acc.expenses += record.amount_cents;
         acc.projects.add(record.project_type ?? "sem-projeto");
         if (record.athlete_name) acc.athletes.add(record.athlete_name);
-        if (record.sponsor_name) acc.sponsors.add(record.sponsor_name);
+        if (record.sponsor_id || record.sponsor_name) acc.sponsors.add(sponsorFilterKey(record));
         return acc;
       },
       { entries: 0, expenses: 0, projects: new Set<string>(), athletes: new Set<string>(), sponsors: new Set<string>() }
     );
   }, [records]);
 
+  const sponsorFilterOptions = useMemo(() => {
+    const oldSponsorNames = records
+      .filter((record) => !record.sponsor_id && record.sponsor_name)
+      .map((record) => record.sponsor_name as string)
+      .filter((name, index, names) => names.indexOf(name) === index);
+
+    return [
+      ...sponsors.map((sponsor) => ({ value: sponsor.id, label: sponsor.name })),
+      ...oldSponsorNames.map((name) => ({ value: `name:${name}`, label: name }))
+    ];
+  }, [records, sponsors]);
+
   const filteredRecords = useMemo(() => {
-    if (typeFilter === "todos") return records;
-    return records.filter((record) => financeTypeCategory(record.type) === typeFilter);
-  }, [records, typeFilter]);
+    return records.filter((record) => {
+      const typeMatches = typeFilter === "todos" || financeTypeCategory(record.type) === typeFilter;
+      const sponsorMatches = sponsorFilter === "todos" || sponsorFilterKey(record) === sponsorFilter;
+      return typeMatches && sponsorMatches;
+    });
+  }, [records, sponsorFilter, typeFilter]);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -96,6 +127,10 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
     const formData = new FormData(event.currentTarget);
     if (editingRecord?.id) {
       formData.set("id", editingRecord.id);
+    } else if (formData.getAll("lead_ids").length === 0) {
+      setLoading(false);
+      setError("Selecione pelo menos um atleta aceito para criar o lançamento.");
+      return;
     }
 
     const response = await fetch("/api/admin/finance", {
@@ -110,9 +145,14 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
       return;
     }
 
-    setRecords((current) =>
-      editingRecord ? current.map((record) => (record.id === result.record.id ? result.record : record)) : [result.record, ...current]
-    );
+    setRecords((current) => {
+      if (editingRecord) {
+        return current.map((record) => (record.id === result.record.id ? result.record : record));
+      }
+
+      const createdRecords = Array.isArray(result.records) ? result.records : result.record ? [result.record] : [];
+      return [...createdRecords, ...current];
+    });
     setEditingRecord(null);
     event.currentTarget.reset();
   }
@@ -121,6 +161,9 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
     const response = await fetch(`/api/admin/finance?id=${encodeURIComponent(id)}`, { method: "DELETE" });
     if (response.ok) setRecords((current) => current.filter((record) => record.id !== id));
   }
+
+  const editingSponsorValue =
+    editingRecord?.sponsor_id ?? sponsors.find((sponsor) => sponsor.name === editingRecord?.sponsor_name)?.id ?? "";
 
   return (
     <section className="admin-panel admin-subpanel finance-admin">
@@ -167,17 +210,33 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
             <option value="saida">Saída / benefício</option>
           </select>
         </label>
-        <label>
-          <span>Atleta aceito / cadastro vinculado</span>
-          <select name="lead_id" required defaultValue={editingRecord?.lead_id ?? ""}>
-            <option value="">Selecione</option>
-            {leads.map((lead) => (
-              <option key={lead.id} value={lead.id}>
-                {lead.athlete_name || lead.name} · {projectLabels[lead.project_type] ?? lead.project_type}
-              </option>
-            ))}
-          </select>
-        </label>
+
+        {editingRecord ? (
+          <label>
+            <span>Atleta aceito / cadastro vinculado</span>
+            <select name="lead_id" required defaultValue={editingRecord.lead_id}>
+              <option value="">Selecione</option>
+              {leads.map((lead) => (
+                <option key={lead.id} value={lead.id}>
+                  {leadLabel(lead)}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          <fieldset className="finance-athlete-picker">
+            <legend>Atletas aceitos / cadastros vinculados</legend>
+            <div className="finance-athlete-options">
+              {leads.map((lead) => (
+                <label className="finance-athlete-option" key={lead.id}>
+                  <input type="checkbox" name="lead_ids" value={lead.id} />
+                  <span>{leadLabel(lead)}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
+
         <label>
           <span>Tipo</span>
           <select name="type" required defaultValue={editingRecord ? financeTypeCategory(editingRecord.type) : ""}>
@@ -194,8 +253,18 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
           <input name="amount" placeholder="500,00" defaultValue={editingRecord ? centsToInput(editingRecord.amount_cents) : ""} required />
         </label>
         <label>
-          <span>Patrocinador/apoiador</span>
-          <input name="sponsor_name" placeholder="Empresa, pessoa ou apoiador" defaultValue={editingRecord?.sponsor_name ?? ""} />
+          <span>Origem do investimento</span>
+          <select name="sponsor_id" defaultValue={editingSponsorValue}>
+            <option value="">Selecione o patrocinador/apoiador</option>
+            {sponsors.map((sponsor) => (
+              <option key={sponsor.id} value={sponsor.id}>
+                {sponsor.name} · {sponsor.category}
+              </option>
+            ))}
+          </select>
+          {editingRecord?.sponsor_name && !editingSponsorValue ? (
+            <input type="hidden" name="sponsor_name" value={editingRecord.sponsor_name} />
+          ) : null}
         </label>
         <label>
           <span>Data prevista</span>
@@ -244,7 +313,7 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
         <div className="finance-form-actions">
           <button className="button primary" type="submit" disabled={loading}>
             <Banknote size={17} />
-            {loading ? "Salvando..." : editingRecord ? "Atualizar lançamento" : "Salvar lançamento"}
+            {loading ? "Salvando..." : editingRecord ? "Atualizar lançamento" : "Salvar lançamento(s)"}
           </button>
           {editingRecord ? (
             <button className="button ghost" type="button" onClick={() => setEditingRecord(null)}>
@@ -267,11 +336,22 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
             ))}
           </select>
         </label>
+        <label>
+          <span>Filtrar por origem</span>
+          <select value={sponsorFilter} onChange={(event) => setSponsorFilter(event.target.value)}>
+            <option value="todos">Todas as origens</option>
+            {sponsorFilterOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
 
       <div className="finance-table">
         {records.length === 0 ? <p>Nenhum lançamento financeiro cadastrado.</p> : null}
-        {records.length > 0 && filteredRecords.length === 0 ? <p>Nenhum lançamento encontrado para este tipo.</p> : null}
+        {records.length > 0 && filteredRecords.length === 0 ? <p>Nenhum lançamento encontrado para os filtros selecionados.</p> : null}
         {filteredRecords.map((record) => (
           <article key={record.id}>
             <div>
@@ -289,7 +369,7 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
               <strong>{record.athlete_name ?? "Não vinculado"}</strong>
             </div>
             <div>
-              <span>Patrocinador</span>
+              <span>Origem</span>
               <strong>{record.sponsor_name ?? "Não informado"}</strong>
             </div>
             <div>

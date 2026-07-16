@@ -1,66 +1,16 @@
 import Link from "next/link";
 import { navItems } from "@/lib/content";
-
-const sponsorGroups = [
-  {
-    title: "Realização",
-    sponsors: [
-      {
-        name: "Elevenmind",
-        logo: "/assets/logos/elevenmind-pb.png"
-      },
-      {
-        name: "Instituto Vanderlei Cordeiro de Lima",
-        logo: "/assets/logos/instituto-vanderlei-cordeiro.png"
-      }
-    ]
-  },
-  {
-    title: "Patrocinador Master",
-    sponsors: [
-      {
-        name: "BNI",
-        logo: "/assets/logos/bni.png"
-      }
-    ]
-  },
-  {
-    title: "Apoiadores",
-    sponsors: [
-      {
-        name: "Bahia Esportes",
-        logo: "/assets/logos/bahia-esportes.png"
-      },
-      {
-        name: "Porto Seguro",
-        logo: "/assets/logos/porto-seguro.webp"
-      },
-      {
-        name: "U2E",
-        logo: "/assets/logos/u2e.png"
-      },
-      {
-        name: "LQF Farmacêutica",
-        logo: "/assets/logos/lqf-logo.png"
-      },
-      {
-        name: "BUILT",
-        logo: "/assets/logos/built-horizontal.png"
-      },
-      {
-        name: "Flebo",
-        logo: "/assets/logos/flebo.png"
-      },
-      {
-        name: "RM Corretora",
-        logo: "/assets/logos/rm-corretora.png"
-      }
-    ]
-  }
-];
+import { listSponsors, sponsorCategories } from "@/lib/sponsors";
 
 export function Footer() {
   const footerLinks = navItems.flatMap((item) => ("children" in item && item.children ? item.children : [item]));
+  const sponsors = listSponsors();
+  const sponsorGroups = sponsorCategories
+    .map((category) => ({
+      title: category,
+      sponsors: sponsors.filter((sponsor) => sponsor.category === category)
+    }))
+    .filter((group) => group.sponsors.length > 0);
 
   return (
     <footer className="site-footer">
@@ -76,7 +26,7 @@ export function Footer() {
               <div className="footer-sponsors-grid" role="list">
                 {group.sponsors.map((sponsor) => (
                   <article className="footer-sponsor-card" key={sponsor.name} role="listitem">
-                    <img src={sponsor.logo} alt={sponsor.name} />
+                    <img src={sponsor.logo_url ?? "/assets/logos/onzerun-menu.png"} alt={sponsor.name} />
                   </article>
                 ))}
               </div>

@@ -116,6 +116,7 @@ CREATE TABLE IF NOT EXISTS financial_records (
   type TEXT NOT NULL,
   description TEXT NOT NULL,
   amount_cents INTEGER NOT NULL DEFAULT 0,
+  sponsor_id TEXT,
   sponsor_name TEXT,
   due_date TEXT,
   paid_date TEXT,
@@ -128,6 +129,22 @@ CREATE TABLE IF NOT EXISTS financial_records (
 );
 
 CREATE INDEX IF NOT EXISTS idx_financial_records_lead_id ON financial_records(lead_id);
+CREATE INDEX IF NOT EXISTS idx_financial_records_sponsor_id ON financial_records(sponsor_id);
+
+CREATE TABLE IF NOT EXISTS sponsors (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT,
+  category TEXT NOT NULL DEFAULT 'Apoiadores',
+  logo_url TEXT,
+  active INTEGER NOT NULL DEFAULT 1,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_sponsors_category ON sponsors(category);
+CREATE INDEX IF NOT EXISTS idx_sponsors_active ON sponsors(active);
 
 CREATE TABLE IF NOT EXISTS creative_assets (
   id TEXT PRIMARY KEY,

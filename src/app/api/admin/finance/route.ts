@@ -2,16 +2,19 @@ import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 import { NextResponse } from "next/server";
 import { createFinancialRecord, deleteFinancialRecord, listFinancialRecords, updateFinancialRecord } from "@/lib/finance";
+import { getSponsorById } from "@/lib/sponsors";
 
 export const runtime = "nodejs";
 
 type FinancePayload = {
   id?: string;
   lead_id?: string;
+  lead_ids?: string[];
   direction?: "entrada" | "saida";
   type?: string;
   description?: string;
   amount?: string;
+  sponsor_id?: string;
   sponsor_name?: string;
   due_date?: string;
   paid_date?: string;
@@ -30,6 +33,10 @@ function safeFileName(name: string) {
 
 function valueToString(value: FormDataEntryValue | null) {
   return typeof value === "string" ? value : undefined;
+}
+
+function valuesToStrings(values: FormDataEntryValue[]) {
+  return values.filter((value): value is string => typeof value === "string" && value.trim().length > 0);
 }
 
 async function persistFinanceImage(file?: File) {
@@ -57,10 +64,12 @@ async function parseFinancePayload(request: Request): Promise<{ body: FinancePay
     body: {
       id: valueToString(formData.get("id")),
       lead_id: valueToString(formData.get("lead_id")),
+      lead_ids: valuesToStrings(formData.getAll("lead_ids")),
       direction: valueToString(formData.get("direction")) as FinancePayload["direction"],
       type: valueToString(formData.get("type")),
       description: valueToString(formData.get("description")),
       amount: valueToString(formData.get("amount")),
+      sponsor_id: valueToString(formData.get("sponsor_id")),
       sponsor_name: valueToString(formData.get("sponsor_name")),
       due_date: valueToString(formData.get("due_date")),
       paid_date: valueToString(formData.get("paid_date")),
@@ -71,6 +80,14 @@ async function parseFinancePayload(request: Request): Promise<{ body: FinancePay
   };
 }
 
+function sponsorFields(body: FinancePayload) {
+  const sponsor = getSponsorById(body.sponsor_id);
+  return {
+    sponsor_id: sponsor?.id ?? body.sponsor_id,
+    sponsor_name: sponsor?.name ?? body.sponsor_name
+  };
+}
+
 export async function GET() {
   return NextResponse.json({ ok: true, records: listFinancialRecords() });
 }
@@ -78,27 +95,35 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const { body, image } = await parseFinancePayload(request);
+    const leadIds = Array.from(new Set(body.lead_ids?.length ? body.lead_ids : body.lead_id ? [body.lead_id] : []));
 
-    if (!body.lead_id || !body.direction || !body.type || !body.description || !body.amount) {
-      return NextResponse.json({ ok: false, error: "Cadastro, direção, tipo, descrição e valor são obrigatórios." }, { status: 400 });
+    if (leadIds.length === 0 || !body.direction || !body.type || !body.description || !body.amount) {
+      return NextResponse.json(
+        { ok: false, error: "Selecione ao menos um atleta. Direção, tipo, descrição e valor são obrigatórios." },
+        { status: 400 }
+      );
     }
 
     const imageUrl = await persistFinanceImage(image);
-    const record = createFinancialRecord({
-      lead_id: body.lead_id,
-      direction: body.direction,
-      type: body.type,
-      description: body.description,
-      amount: body.amount,
-      sponsor_name: body.sponsor_name,
-      due_date: body.due_date,
-      paid_date: body.paid_date,
-      image_url: imageUrl,
-      status: body.status,
-      transparency_notes: body.transparency_notes
-    });
+    const sponsor = sponsorFields(body);
+    const records = leadIds.map((leadId) =>
+      createFinancialRecord({
+        lead_id: leadId,
+        direction: body.direction!,
+        type: body.type!,
+        description: body.description!,
+        amount: body.amount!,
+        sponsor_id: sponsor.sponsor_id,
+        sponsor_name: sponsor.sponsor_name,
+        due_date: body.due_date,
+        paid_date: body.paid_date,
+        image_url: imageUrl,
+        status: body.status,
+        transparency_notes: body.transparency_notes
+      })
+    );
 
-    return NextResponse.json({ ok: true, record });
+    return NextResponse.json({ ok: true, record: records[0], records });
   } catch (error) {
     return NextResponse.json({ ok: false, error: error instanceof Error ? error.message : "Erro ao salvar lançamento." }, { status: 400 });
   }
@@ -116,13 +141,15 @@ export async function PATCH(request: Request) {
     }
 
     const imageUrl = await persistFinanceImage(image);
+    const sponsor = sponsorFields(body);
     const record = updateFinancialRecord(body.id, {
       lead_id: body.lead_id,
       direction: body.direction,
       type: body.type,
       description: body.description,
       amount: body.amount,
-      sponsor_name: body.sponsor_name,
+      sponsor_id: sponsor.sponsor_id,
+      sponsor_name: sponsor.sponsor_name,
       due_date: body.due_date,
       paid_date: body.paid_date,
       ...(imageUrl ? { image_url: imageUrl } : {}),
