@@ -20,6 +20,18 @@ const projectLabels: Record<string, string> = {
   "app-11run": "App 11Run"
 };
 
+const financeTypeOptions = [
+  "Ajuda Mensal",
+  "Tênis",
+  "Uniforme",
+  "Outros Materiais",
+  "Transporte",
+  "Hospedagem",
+  "Alimentação",
+  "Suplementação",
+  "Outros"
+];
+
 function formatMoney(cents: number) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(cents / 100);
 }
@@ -28,9 +40,32 @@ function centsToInput(cents: number) {
   return String((cents / 100).toFixed(2)).replace(".", ",");
 }
 
+function normalizeText(value: string) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
+
+function financeTypeCategory(type: string) {
+  if (financeTypeOptions.includes(type)) return type;
+
+  const normalized = normalizeText(type);
+  if (normalized.includes("ajuda") || normalized.includes("custo")) return "Ajuda Mensal";
+  if (normalized.includes("tenis")) return "Tênis";
+  if (normalized.includes("uniforme")) return "Uniforme";
+  if (normalized.includes("transporte")) return "Transporte";
+  if (normalized.includes("hospedagem")) return "Hospedagem";
+  if (normalized.includes("aliment")) return "Alimentação";
+  if (normalized.includes("suplement")) return "Suplementação";
+  if (normalized.includes("material")) return "Outros Materiais";
+  return "Outros";
+}
+
 export function FinanceAdmin({ initialRecords, leads }: { initialRecords: FinancialRecord[]; leads: AdminLead[] }) {
   const [records, setRecords] = useState(initialRecords);
   const [editingRecord, setEditingRecord] = useState<FinancialRecord | null>(null);
+  const [typeFilter, setTypeFilter] = useState("todos");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -47,6 +82,11 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
       { entries: 0, expenses: 0, projects: new Set<string>(), athletes: new Set<string>(), sponsors: new Set<string>() }
     );
   }, [records]);
+
+  const filteredRecords = useMemo(() => {
+    if (typeFilter === "todos") return records;
+    return records.filter((record) => financeTypeCategory(record.type) === typeFilter);
+  }, [records, typeFilter]);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -140,7 +180,14 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
         </label>
         <label>
           <span>Tipo</span>
-          <input name="type" placeholder="Ajuda de custo, uniforme, entrada em dinheiro..." defaultValue={editingRecord?.type ?? ""} required />
+          <select name="type" required defaultValue={editingRecord ? financeTypeCategory(editingRecord.type) : ""}>
+            <option value="">Selecione</option>
+            {financeTypeOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
         </label>
         <label>
           <span>Valor</span>
@@ -208,9 +255,24 @@ export function FinanceAdmin({ initialRecords, leads }: { initialRecords: Financ
         </div>
       </form>
 
+      <div className="finance-filters">
+        <label>
+          <span>Filtrar por tipo</span>
+          <select value={typeFilter} onChange={(event) => setTypeFilter(event.target.value)}>
+            <option value="todos">Todos os tipos</option>
+            {financeTypeOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
       <div className="finance-table">
         {records.length === 0 ? <p>Nenhum lançamento financeiro cadastrado.</p> : null}
-        {records.map((record) => (
+        {records.length > 0 && filteredRecords.length === 0 ? <p>Nenhum lançamento encontrado para este tipo.</p> : null}
+        {filteredRecords.map((record) => (
           <article key={record.id}>
             <div>
               {record.image_url ? <img className="finance-table-thumb" src={record.image_url} alt={`Imagem de ${record.type}`} /> : null}

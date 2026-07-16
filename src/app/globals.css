@@ -1726,10 +1726,12 @@ body.modal-open {
   gap: 10px;
   align-items: center;
   overflow-x: auto;
+  overflow-y: hidden;
   padding: 10px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
+  scrollbar-width: thin;
 }
 
 .admin-nav a {
@@ -1762,6 +1764,7 @@ body.modal-open {
 .admin-panel {
   width: min(calc(100% - 48px), var(--max));
   margin-inline: auto;
+  min-width: 0;
 }
 
 .seiti-story-page {
@@ -1957,6 +1960,8 @@ body.modal-open {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .admin-toolbar h1 {
@@ -1965,6 +1970,7 @@ body.modal-open {
   font-weight: 300;
   line-height: 1.02;
   letter-spacing: -0.038em;
+  overflow-wrap: anywhere;
 }
 
 .admin-toolbar p {
@@ -2001,16 +2007,19 @@ body.modal-open {
 
 .pipeline-board {
   display: grid;
-  grid-template-columns: repeat(5, minmax(260px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(5, minmax(220px, 1fr));
+  gap: 12px;
   margin-top: 18px;
   overflow-x: auto;
+  overflow-y: hidden;
   padding-bottom: 8px;
+  scrollbar-width: thin;
 }
 
 .pipeline-column {
+  min-width: 0;
   min-height: 460px;
-  padding: 14px;
+  padding: 12px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
@@ -2045,10 +2054,11 @@ body.modal-open {
 }
 
 .admin-card {
+  min-width: 0;
   display: grid;
   gap: 12px;
   margin-top: 12px;
-  padding: 16px;
+  padding: 14px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface-muted);
@@ -2090,6 +2100,16 @@ body.modal-open {
   margin: 0;
   color: var(--muted);
   line-height: 1.48;
+  overflow-wrap: anywhere;
+}
+
+.admin-card h3,
+.admin-card strong,
+.admin-card a,
+.admin-card button,
+.admin-card select {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .admin-photos {
@@ -2731,16 +2751,18 @@ body.modal-open {
 
 .finance-admin {
   margin-top: 18px;
+  min-width: 0;
 }
 
 .finance-kpis {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 12px;
   margin: 18px 0;
 }
 
 .finance-kpis article {
+  min-width: 0;
   min-height: 118px;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
@@ -2762,9 +2784,13 @@ body.modal-open {
 
 .finance-kpis strong {
   color: var(--text);
-  font-size: clamp(1.65rem, 2.6vw, 2.55rem);
+  max-width: 100%;
+  font-size: clamp(1.18rem, 1.28vw, 1.62rem);
   font-weight: 300;
-  letter-spacing: -0.035em;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .finance-form {
@@ -2775,9 +2801,12 @@ body.modal-open {
   border-radius: var(--radius);
   background: var(--surface);
   padding: 22px;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .finance-form label {
+  min-width: 0;
   display: grid;
   gap: 7px;
 }
@@ -2794,6 +2823,7 @@ body.modal-open {
 .finance-form select,
 .finance-form textarea {
   width: 100%;
+  min-width: 0;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--surface-muted);
@@ -2871,17 +2901,61 @@ body.modal-open {
   display: grid;
   gap: 10px;
   margin-top: 18px;
+  min-width: 0;
+}
+
+.finance-filters {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.finance-filters label {
+  width: min(100%, 280px);
+  display: grid;
+  gap: 7px;
+}
+
+.finance-filters span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.finance-filters select {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  color: var(--text);
+  padding: 0 14px;
+  font: inherit;
 }
 
 .finance-table article {
   display: grid;
-  grid-template-columns: 1.35fr repeat(5, minmax(0, 0.72fr)) auto;
-  gap: 12px;
+  grid-template-columns:
+    minmax(180px, 1.18fr)
+    minmax(86px, 0.58fr)
+    minmax(116px, 0.82fr)
+    minmax(112px, 0.78fr)
+    minmax(88px, 0.55fr)
+    minmax(82px, 0.5fr)
+    auto;
+  gap: 10px;
   align-items: center;
+  min-width: 0;
   border: 1px solid var(--line);
   border-radius: var(--radius-sm);
   background: var(--surface);
   padding: 14px;
+}
+
+.finance-table article > div {
+  min-width: 0;
 }
 
 .finance-table strong {
@@ -5090,6 +5164,29 @@ body.modal-open {
   .ranking-table article {
     grid-template-columns: 1fr 1fr;
   }
+
+  .pipeline-board {
+    grid-template-columns: repeat(5, minmax(230px, 1fr));
+    overflow-x: auto;
+    padding-bottom: 12px;
+  }
+
+  .finance-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .finance-table article {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .finance-table article > div:first-child,
+  .finance-row-actions {
+    grid-column: 1 / -1;
+  }
+
+  .finance-row-actions {
+    justify-content: flex-end;
+  }
 }
 
 @media (max-width: 720px) {
@@ -5618,6 +5715,14 @@ body.modal-open {
 
   .finance-form-actions,
   .finance-row-actions {
+    width: 100%;
+  }
+
+  .finance-filters {
+    justify-content: stretch;
+  }
+
+  .finance-filters label {
     width: 100%;
   }
 
