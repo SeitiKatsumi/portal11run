@@ -48,9 +48,7 @@ const timeline: TimelineItem[] = [
       "Vanderlei voltava de lesão e faria a prova em ritmo próximo de 3min05s por quilômetro. Seiti foi atrás dele; essa prova foi o ponto que abriu a porta para sua entrada na Eletropaulo.",
       "Pouco depois, Elias Bastos sugeriu um teste na Funilense, na pista da Unicamp."
     ],
-    metrics: [
-      { value: "14min56s", label: "5.000 m na primeira competição pela Eletropaulo" }
-    ]
+    metrics: []
   },
   {
     year: "Funilense",
