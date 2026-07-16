@@ -215,8 +215,8 @@ export const projects: ProjectPage[] = [
       "4 etapas na região de Campinas",
       "10 anos - 800m",
       "11 anos - 1000m",
-      "12 anos - 1500m",
-      "13 anos - 2000m",
+      "12 anos - 1200m",
+      "13 anos - 1500m",
       "Categorias masculino e feminino",
       "Ranking por prova e idade",
       "Limite de 20 atletas por prova",
@@ -429,7 +429,7 @@ export const formProjects = {
         name: "race_event",
         label: "Prova / faixa etária",
         type: "select",
-        options: ["10 anos - 800m", "11 anos - 1000m", "12 anos - 1500m", "13 anos - 2000m"]
+        options: ["10 anos - 800m", "11 anos - 1000m", "12 anos - 1200m", "13 anos - 1500m"]
       },
       {
         name: "payment_plan",

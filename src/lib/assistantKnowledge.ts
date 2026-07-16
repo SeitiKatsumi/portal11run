@@ -29,7 +29,7 @@ function projectContext() {
     `- Frentes do ecossistema: ${ecosystemCards.map((card) => cleanText(card.title)).join(", ")}.`,
     ...projectLines,
     "- App 11Run: quando o visitante pedir acesso ao app, use https://app.11run.com.br/.",
-    "- Circuito Futuro 11: categorias por idade no ano da competição: 10 anos - 800m, 11 anos - 1000m, 12 anos - 1500m, 13 anos - 2000m. Limite de 20 atletas por prova.",
+    "- Circuito Futuro 11: categorias por idade no ano da competição: 10 anos - 800m, 11 anos - 1000m, 12 anos - 1200m, 13 anos - 1500m. Limite de 20 atletas por prova.",
     "- Onze Futuro: cadastro exige atleta de 9 a 13 anos, responsável legal, treinador formado com CREF, aceite dos termos e fotos obrigatórias.",
     "- 11 Master: projeto master em Itatiba e região, com comando técnico do Professor Alex Lopes, técnico da ORCAMPI."
   ].join("\n");

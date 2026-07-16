@@ -112,9 +112,9 @@ const termsByProject: Partial<Record<FormProjectSlug, { title: string; clauses: 
     title: "Termo de autorização e regulamento do Circuito Futuro 11",
     clauses: [
       "O responsável legal autoriza a participação do atleta no Circuito Futuro 11, em provas de meio-fundo e fundo organizadas pela 11RUN.",
-      "As provas seguem, por enquanto, referência técnica das regras oficiais do atletismo para 800 m e 1500 m, adaptadas às faixas etárias do projeto.",
+      "As provas seguem referência técnica das regras oficiais do atletismo, com distâncias progressivas de 800 m, 1000 m, 1200 m e 1500 m adaptadas às faixas etárias do projeto.",
       "As faixas do circuito consideram sempre a idade que o atleta completa no ano da competição.",
-      "As provas por idade são: 10 anos - 800 m, 11 anos - 1000 m, 12 anos - 1500 m e 13 anos - 2000 m.",
+      "As provas por idade são: 10 anos - 800 m, 11 anos - 1000 m, 12 anos - 1200 m e 13 anos - 1500 m.",
       "Cada prova terá limite de 20 atletas por bateria/prova, podendo haver organização por ordem de inscrição, categoria ou critério técnico.",
       "O valor de inscrição é de R$ 50,00 por etapa ou R$ 150,00 para as 4 etapas, com necessidade de envio de comprovante de pagamento.",
       "A participação no ranking depende de inscrição confirmada, presença na etapa, resultado válido e conferência da organização.",

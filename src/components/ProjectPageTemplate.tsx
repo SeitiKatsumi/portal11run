@@ -140,8 +140,8 @@ function CircuitoDetails() {
   const ageEvents = [
     { age: "10 anos", event: "800m" },
     { age: "11 anos", event: "1000m" },
-    { age: "12 anos", event: "1500m" },
-    { age: "13 anos", event: "2000m" }
+    { age: "12 anos", event: "1200m" },
+    { age: "13 anos", event: "1500m" }
   ];
 
   return (
@@ -167,7 +167,7 @@ function CircuitoDetails() {
         <SectionTitle
           eyebrow="regulamento técnico"
           title="Meio-fundo e fundo com regra clara desde a base."
-          text="O circuito usa como referência as regras oficiais do atletismo para provas de meio-fundo e fundo, inicialmente nas distâncias de 800m e 1500m, com adaptações por idade, segurança e logística."
+          text="O circuito usa como referência as regras oficiais do atletismo para provas de meio-fundo e fundo, com distâncias progressivas de 800m, 1000m, 1200m e 1500m por idade, segurança e logística."
         />
         <div className="editorial-block">
           <p>As inscrições dependem de autorização do responsável, comprovante de pagamento e aceite do regulamento.</p>
