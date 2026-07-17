@@ -1,11 +1,105 @@
 import Link from "next/link";
 import { navItems } from "@/lib/content";
-import { listSponsors, sponsorCategories } from "@/lib/sponsors";
+import { listSponsors } from "@/lib/sponsors";
+
+const footerSponsorCategories = ["Realização", "Patrocinador Master", "Apoiadores"] as const;
+
+type FooterSponsorCategory = (typeof footerSponsorCategories)[number];
+
+type FooterSponsor = {
+  id: string;
+  name: string;
+  category: FooterSponsorCategory;
+  logo_url: string | null;
+};
+
+const fallbackSponsors: FooterSponsor[] = [
+  {
+    id: "elevenmind",
+    name: "Elevenmind",
+    category: "Realização",
+    logo_url: "/assets/logos/elevenmind-pb.png"
+  },
+  {
+    id: "instituto-vanderlei-cordeiro",
+    name: "Instituto Vanderlei Cordeiro de Lima",
+    category: "Realização",
+    logo_url: "/assets/logos/instituto-vanderlei-cordeiro.png"
+  },
+  {
+    id: "bni",
+    name: "BNI",
+    category: "Patrocinador Master",
+    logo_url: "/assets/logos/bni.png"
+  },
+  {
+    id: "bahia-esportes",
+    name: "Bahia Esportes",
+    category: "Apoiadores",
+    logo_url: "/assets/logos/bahia-esportes.png"
+  },
+  {
+    id: "porto-seguro",
+    name: "Porto Seguro",
+    category: "Apoiadores",
+    logo_url: "/assets/logos/porto-seguro.webp"
+  },
+  {
+    id: "u2e",
+    name: "U2E",
+    category: "Apoiadores",
+    logo_url: "/assets/logos/u2e.png"
+  },
+  {
+    id: "lqf",
+    name: "LQF Farmacêutica",
+    category: "Apoiadores",
+    logo_url: "/assets/logos/lqf-logo.png"
+  },
+  {
+    id: "built",
+    name: "BUILT",
+    category: "Apoiadores",
+    logo_url: "/assets/logos/built-horizontal.png"
+  },
+  {
+    id: "flebo",
+    name: "Flebo",
+    category: "Apoiadores",
+    logo_url: "/assets/logos/flebo.png"
+  },
+  {
+    id: "rm-corretora",
+    name: "RM Corretora",
+    category: "Apoiadores",
+    logo_url: "/assets/logos/rm-corretora.png"
+  }
+];
+
+function normalizeFooterCategory(category: string): FooterSponsorCategory {
+  return footerSponsorCategories.includes(category as FooterSponsorCategory)
+    ? (category as FooterSponsorCategory)
+    : "Apoiadores";
+}
+
+function getFooterSponsors(): FooterSponsor[] {
+  try {
+    return listSponsors().map((sponsor) => ({
+      id: sponsor.id,
+      name: sponsor.name,
+      category: normalizeFooterCategory(sponsor.category),
+      logo_url: sponsor.logo_url
+    }));
+  } catch (error) {
+    console.error("Não foi possível carregar os patrocinadores do rodapé.", error);
+    return fallbackSponsors;
+  }
+}
 
 export function Footer() {
   const footerLinks = navItems.flatMap((item) => ("children" in item && item.children ? item.children : [item]));
-  const sponsors = listSponsors();
-  const sponsorGroups = sponsorCategories
+  const sponsors = getFooterSponsors();
+  const sponsorGroups = footerSponsorCategories
     .map((category) => ({
       title: category,
       sponsors: sponsors.filter((sponsor) => sponsor.category === category)
