@@ -153,6 +153,7 @@ function getDatabase() {
   database.exec("PRAGMA foreign_keys = ON;");
   database.exec(readFileSync(path.join(process.cwd(), "data/schema.sql"), "utf8"));
   assertSponsorColumns(database);
+  assertSponsorIndexes(database);
   seedDefaultSponsors(database);
   return database;
 }
@@ -170,6 +171,11 @@ function assertSponsorColumns(db: DatabaseSync) {
       db.exec(`ALTER TABLE sponsors ADD COLUMN ${column} ${definition}`);
     }
   }
+}
+
+function assertSponsorIndexes(db: DatabaseSync) {
+  db.exec("CREATE INDEX IF NOT EXISTS idx_sponsors_category ON sponsors(category);");
+  db.exec("CREATE INDEX IF NOT EXISTS idx_sponsors_active ON sponsors(active);");
 }
 
 function seedDefaultSponsors(db: DatabaseSync) {

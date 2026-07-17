@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { AdminDataNotice } from "@/components/AdminDataNotice";
 import { EventsAdmin } from "@/components/EventsAdmin";
+import { collectAdminErrors, safeAdminData } from "@/lib/adminSafeData";
 import { listMemberEvents } from "@/lib/events";
 import { listLeads } from "@/lib/leads";
 
@@ -11,8 +13,14 @@ export const metadata: Metadata = {
 };
 
 export default function AdminEventosPage() {
-  const events = listMemberEvents();
-  const leads = listLeads().filter((lead) => ["Aceitos", "Aceitas"].includes(lead.pipeline_status));
+  const events = safeAdminData("eventos", () => listMemberEvents(), []);
+  const leads = safeAdminData("cadastros aceitos", () => listLeads().filter((lead) => ["Aceitos", "Aceitas"].includes(lead.pipeline_status)), []);
+  const errors = collectAdminErrors(events, leads);
 
-  return <EventsAdmin initialEvents={JSON.parse(JSON.stringify(events))} leads={JSON.parse(JSON.stringify(leads))} />;
+  return (
+    <>
+      <AdminDataNotice errors={errors} />
+      <EventsAdmin initialEvents={JSON.parse(JSON.stringify(events.data))} leads={JSON.parse(JSON.stringify(leads.data))} />
+    </>
+  );
 }

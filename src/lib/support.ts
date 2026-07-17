@@ -30,7 +30,11 @@ export type SupportInterestRecord = {
 
 const schemaColumns: Record<string, string> = {
   interest_plan: "TEXT NOT NULL DEFAULT ''",
+  interest_types_json: "TEXT NOT NULL DEFAULT '[]'",
+  sponsored_projects_json: "TEXT NOT NULL DEFAULT '[]'",
+  message: "TEXT",
   status: "TEXT NOT NULL DEFAULT 'Novo interesse'",
+  created_at: "TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z'",
   updated_at: "TEXT NOT NULL DEFAULT ''"
 };
 
@@ -47,6 +51,7 @@ function getDatabase() {
   database.exec("PRAGMA foreign_keys = ON;");
   database.exec(readFileSync(path.join(process.cwd(), "data/schema.sql"), "utf8"));
   assertColumns(database);
+  assertSupportIndexes(database);
   return database;
 }
 
@@ -63,6 +68,12 @@ function assertColumns(databaseInstance: DatabaseSync) {
       databaseInstance.exec(`ALTER TABLE support_interests ADD COLUMN ${column} ${definition}`);
     }
   }
+}
+
+function assertSupportIndexes(databaseInstance: DatabaseSync) {
+  databaseInstance.exec(
+    "CREATE INDEX IF NOT EXISTS idx_support_interests_status_created_at ON support_interests(status, created_at);"
+  );
 }
 
 function normalizeList(values: unknown, allowed: readonly string[]) {

@@ -26,7 +26,41 @@ function getDatabase() {
   database.exec("PRAGMA journal_mode = WAL;");
   database.exec("PRAGMA foreign_keys = ON;");
   database.exec(readFileSync(path.join(process.cwd(), "data/schema.sql"), "utf8"));
+  assertMemberEventColumns(database);
+  assertMemberEventIndexes(database);
   return database;
+}
+
+const memberEventColumns: Record<string, string> = {
+  title: "TEXT NOT NULL DEFAULT ''",
+  project_type: "TEXT NOT NULL DEFAULT 'todos'",
+  event_date: "TEXT NOT NULL DEFAULT ''",
+  event_time: "TEXT",
+  location: "TEXT",
+  description: "TEXT",
+  participants_json: "TEXT NOT NULL DEFAULT '[]'",
+  created_at: "TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z'",
+  updated_at: "TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z'"
+};
+
+function assertMemberEventColumns(db: DatabaseSync) {
+  const existing = new Set(
+    (
+      db
+        .prepare("PRAGMA table_info(member_events)")
+        .all() as Array<{ name: string }>
+    ).map((column) => column.name)
+  );
+
+  for (const [column, definition] of Object.entries(memberEventColumns)) {
+    if (!existing.has(column)) {
+      db.exec(`ALTER TABLE member_events ADD COLUMN ${column} ${definition}`);
+    }
+  }
+}
+
+function assertMemberEventIndexes(db: DatabaseSync) {
+  db.exec("CREATE INDEX IF NOT EXISTS idx_member_events_project_date ON member_events(project_type, event_date);");
 }
 
 function now() {

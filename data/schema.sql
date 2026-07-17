@@ -44,8 +44,6 @@ CREATE TABLE IF NOT EXISTS rankings (
   updated_at TEXT NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_rankings_event_age ON rankings(event, age_group);
-
 CREATE TABLE IF NOT EXISTS chat_leads (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
@@ -67,9 +65,6 @@ CREATE TABLE IF NOT EXISTS chat_messages (
   created_at TEXT NOT NULL,
   FOREIGN KEY (lead_id) REFERENCES chat_leads(id) ON DELETE CASCADE
 );
-
-CREATE INDEX IF NOT EXISTS idx_chat_messages_lead_created_at ON chat_messages(lead_id, created_at);
-CREATE INDEX IF NOT EXISTS idx_chat_leads_status_updated_at ON chat_leads(status, updated_at);
 
 CREATE TABLE IF NOT EXISTS chat_settings (
   id TEXT PRIMARY KEY CHECK (id = 'default'),
@@ -93,9 +88,6 @@ CREATE TABLE IF NOT EXISTS member_accounts (
   FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_member_accounts_role ON member_accounts(role);
-CREATE INDEX IF NOT EXISTS idx_member_accounts_username ON member_accounts(username);
-
 CREATE TABLE IF NOT EXISTS member_sessions (
   id TEXT PRIMARY KEY,
   account_id TEXT NOT NULL,
@@ -104,8 +96,6 @@ CREATE TABLE IF NOT EXISTS member_sessions (
   created_at TEXT NOT NULL,
   FOREIGN KEY (account_id) REFERENCES member_accounts(id) ON DELETE CASCADE
 );
-
-CREATE INDEX IF NOT EXISTS idx_member_sessions_token_hash ON member_sessions(token_hash);
 
 CREATE TABLE IF NOT EXISTS financial_records (
   id TEXT PRIMARY KEY,
@@ -128,9 +118,6 @@ CREATE TABLE IF NOT EXISTS financial_records (
   FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_financial_records_lead_id ON financial_records(lead_id);
-CREATE INDEX IF NOT EXISTS idx_financial_records_sponsor_id ON financial_records(sponsor_id);
-
 CREATE TABLE IF NOT EXISTS sponsors (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
@@ -143,9 +130,6 @@ CREATE TABLE IF NOT EXISTS sponsors (
   updated_at TEXT NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_sponsors_category ON sponsors(category);
-CREATE INDEX IF NOT EXISTS idx_sponsors_active ON sponsors(active);
-
 CREATE TABLE IF NOT EXISTS creative_assets (
   id TEXT PRIMARY KEY,
   project_type TEXT NOT NULL,
@@ -155,8 +139,6 @@ CREATE TABLE IF NOT EXISTS creative_assets (
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );
-
-CREATE INDEX IF NOT EXISTS idx_creative_assets_project_type ON creative_assets(project_type);
 
 CREATE TABLE IF NOT EXISTS member_marks (
   id TEXT PRIMARY KEY,
@@ -174,9 +156,6 @@ CREATE TABLE IF NOT EXISTS member_marks (
   FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS idx_member_marks_account_id ON member_marks(account_id);
-CREATE INDEX IF NOT EXISTS idx_member_marks_lead_id ON member_marks(lead_id);
-
 CREATE TABLE IF NOT EXISTS member_events (
   id TEXT PRIMARY KEY,
   title TEXT NOT NULL,
@@ -189,8 +168,6 @@ CREATE TABLE IF NOT EXISTS member_events (
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );
-
-CREATE INDEX IF NOT EXISTS idx_member_events_project_date ON member_events(project_type, event_date);
 
 CREATE TABLE IF NOT EXISTS support_interests (
   id TEXT PRIMARY KEY,
@@ -205,5 +182,3 @@ CREATE TABLE IF NOT EXISTS support_interests (
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );
-
-CREATE INDEX IF NOT EXISTS idx_support_interests_status_created_at ON support_interests(status, created_at);

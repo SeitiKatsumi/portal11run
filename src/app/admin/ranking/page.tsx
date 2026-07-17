@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { AdminDataNotice } from "@/components/AdminDataNotice";
 import { RankingAdmin } from "@/components/RankingAdmin";
+import { safeAdminData } from "@/lib/adminSafeData";
 import { listRankings } from "@/lib/rankings";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +12,12 @@ export const metadata: Metadata = {
 };
 
 export default function AdminRankingPage() {
-  const rankings = listRankings();
+  const rankings = safeAdminData("ranking", () => listRankings(), []);
 
-  return <RankingAdmin initialRankings={JSON.parse(JSON.stringify(rankings))} />;
+  return (
+    <>
+      <AdminDataNotice errors={rankings.error ? [rankings.error] : []} />
+      <RankingAdmin initialRankings={JSON.parse(JSON.stringify(rankings.data))} />
+    </>
+  );
 }

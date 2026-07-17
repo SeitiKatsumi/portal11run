@@ -29,13 +29,22 @@ export type FinancialRecord = {
 let database: DatabaseSync | undefined;
 
 const financialColumns: Record<string, string> = {
+  lead_id: "TEXT NOT NULL DEFAULT ''",
   project_type: "TEXT",
   athlete_name: "TEXT",
   direction: "TEXT NOT NULL DEFAULT 'saida'",
+  type: "TEXT NOT NULL DEFAULT 'Outros'",
+  description: "TEXT NOT NULL DEFAULT ''",
+  amount_cents: "INTEGER NOT NULL DEFAULT 0",
   sponsor_id: "TEXT",
   sponsor_name: "TEXT",
+  due_date: "TEXT",
+  paid_date: "TEXT",
   image_url: "TEXT",
-  transparency_notes: "TEXT"
+  status: "TEXT NOT NULL DEFAULT 'Previsto'",
+  transparency_notes: "TEXT",
+  created_at: "TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z'",
+  updated_at: "TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z'"
 };
 
 function getDatabase() {
@@ -47,6 +56,7 @@ function getDatabase() {
   database.exec("PRAGMA foreign_keys = ON;");
   database.exec(readFileSync(path.join(process.cwd(), "data/schema.sql"), "utf8"));
   assertFinancialColumns(database);
+  assertFinancialIndexes(database);
   return database;
 }
 
@@ -63,6 +73,11 @@ function assertFinancialColumns(db: DatabaseSync) {
       db.exec(`ALTER TABLE financial_records ADD COLUMN ${column} ${definition}`);
     }
   }
+}
+
+function assertFinancialIndexes(db: DatabaseSync) {
+  db.exec("CREATE INDEX IF NOT EXISTS idx_financial_records_lead_id ON financial_records(lead_id);");
+  db.exec("CREATE INDEX IF NOT EXISTS idx_financial_records_sponsor_id ON financial_records(sponsor_id);");
 }
 
 function now() {

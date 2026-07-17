@@ -102,8 +102,6 @@ function getDb() {
       created_at TEXT NOT NULL,
       FOREIGN KEY (lead_id) REFERENCES chat_leads(id) ON DELETE CASCADE
     );
-    CREATE INDEX IF NOT EXISTS idx_chat_messages_lead_created_at ON chat_messages(lead_id, created_at);
-    CREATE INDEX IF NOT EXISTS idx_chat_leads_status_updated_at ON chat_leads(status, updated_at);
     CREATE TABLE IF NOT EXISTS chat_settings (
       id TEXT PRIMARY KEY CHECK (id = 'default'),
       openai_api_key TEXT,
@@ -113,12 +111,68 @@ function getDb() {
       updated_at TEXT NOT NULL
     );
   `);
+  assertChatColumns(database);
+  assertChatIndexes(database);
   database
     .prepare(
       "INSERT OR IGNORE INTO chat_settings (id, openai_api_key, openai_model, additional_prompt, ai_enabled, updated_at) VALUES ('default', NULL, 'gpt-4.1-mini', '', 1, ?)"
     )
     .run(now());
   return database;
+}
+
+const chatLeadColumns: Record<string, string> = {
+  name: "TEXT NOT NULL DEFAULT ''",
+  email: "TEXT NOT NULL DEFAULT ''",
+  whatsapp: "TEXT NOT NULL DEFAULT ''",
+  status: "TEXT NOT NULL DEFAULT 'em_atendimento_ia'",
+  ai_enabled: "INTEGER NOT NULL DEFAULT 1",
+  summary: "TEXT",
+  created_at: "TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z'",
+  updated_at: "TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z'"
+};
+
+const chatMessageColumns: Record<string, string> = {
+  lead_id: "TEXT NOT NULL DEFAULT ''",
+  role: "TEXT NOT NULL DEFAULT 'user'",
+  content: "TEXT NOT NULL DEFAULT ''",
+  sender_name: "TEXT",
+  created_at: "TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z'"
+};
+
+const chatSettingsColumns: Record<string, string> = {
+  openai_api_key: "TEXT",
+  openai_model: "TEXT NOT NULL DEFAULT 'gpt-4.1-mini'",
+  additional_prompt: "TEXT NOT NULL DEFAULT ''",
+  ai_enabled: "INTEGER NOT NULL DEFAULT 1",
+  updated_at: "TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z'"
+};
+
+function assertTableColumns(db: DatabaseSync, table: string, columns: Record<string, string>) {
+  const existing = new Set(
+    (
+      db
+        .prepare(`PRAGMA table_info(${table})`)
+        .all() as Array<{ name: string }>
+    ).map((column) => column.name)
+  );
+
+  for (const [column, definition] of Object.entries(columns)) {
+    if (!existing.has(column)) {
+      db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+    }
+  }
+}
+
+function assertChatColumns(db: DatabaseSync) {
+  assertTableColumns(db, "chat_leads", chatLeadColumns);
+  assertTableColumns(db, "chat_messages", chatMessageColumns);
+  assertTableColumns(db, "chat_settings", chatSettingsColumns);
+}
+
+function assertChatIndexes(db: DatabaseSync) {
+  db.exec("CREATE INDEX IF NOT EXISTS idx_chat_messages_lead_created_at ON chat_messages(lead_id, created_at);");
+  db.exec("CREATE INDEX IF NOT EXISTS idx_chat_leads_status_updated_at ON chat_leads(status, updated_at);");
 }
 
 function normalize(value: string) {
