@@ -3,7 +3,11 @@
 import { useState, type FormEvent } from "react";
 import { Plus } from "lucide-react";
 
-export function MemberMarkForm() {
+type MemberMarkFormProps = {
+  lockedTo1000m?: boolean;
+};
+
+export function MemberMarkForm({ lockedTo1000m = false }: MemberMarkFormProps) {
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -17,7 +21,7 @@ export function MemberMarkForm() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         age_group: formData.get("age_group"),
-        event: formData.get("event"),
+        event: lockedTo1000m ? "1000m" : formData.get("event"),
         time: formData.get("time"),
         date: formData.get("date"),
         location: formData.get("location")
@@ -25,10 +29,12 @@ export function MemberMarkForm() {
     });
     const result = await response.json();
     setLoading(false);
+
     if (!response.ok) {
       setStatus(result.error ?? "Erro ao salvar marca.");
       return;
     }
+
     event.currentTarget.reset();
     setStatus("Marca enviada para acompanhamento.");
   }
@@ -41,11 +47,15 @@ export function MemberMarkForm() {
       </label>
       <label>
         <span>Prova</span>
-        <input name="event" placeholder="800m, 1500m, 5km..." required />
+        {lockedTo1000m ? (
+          <input name="event" value="1000m" readOnly aria-readonly="true" />
+        ) : (
+          <input name="event" placeholder="800m, 1500m, 5km..." required />
+        )}
       </label>
       <label>
         <span>Tempo/marca</span>
-        <input name="time" placeholder="02:35.40" required />
+        <input name="time" placeholder="03:45.20" required />
       </label>
       <label>
         <span>Data</span>
