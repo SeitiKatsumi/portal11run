@@ -62,7 +62,21 @@ const fieldLabels: Record<string, string> = {
 };
 
 const hiddenFields = new Set(["photos", "id"]);
-const receivedStatuses = new Set(["confirmada", "pago", "entregue", "recebido", "realizado"]);
+const executedStatuses = new Set([
+  "confirmada",
+  "confirmado",
+  "concluida",
+  "concluido",
+  "entregue",
+  "executada",
+  "executado",
+  "paga",
+  "pago",
+  "realizada",
+  "realizado",
+  "recebida",
+  "recebido",
+]);
 
 function parseJson<T>(value: string | null | undefined, fallback: T): T {
   if (!value) return fallback;
@@ -119,9 +133,31 @@ export default async function MemberDashboardPage() {
   const payload = parseJson<Record<string, string | boolean | string[]>>(dashboard.lead.payload_json, {});
   const receipts = parseJson<Record<string, boolean>>(dashboard.lead.receipts_json, {});
   const athleteName = dashboard.lead.athlete_name || dashboard.lead.name;
-  const receivedTotal = dashboard.financialRecords
-    .filter((record) => receivedStatuses.has(normalizeStatus(record.status)))
-    .reduce((total, record) => total + record.amount_cents, 0);
+  const executedRecords = dashboard.financialRecords.filter((record) =>
+    executedStatuses.has(normalizeStatus(record.status)),
+  );
+  const plannedRecords = dashboard.financialRecords.filter(
+    (record) => !executedStatuses.has(normalizeStatus(record.status)),
+  );
+  const receivedTotal = executedRecords.reduce((total, record) => total + record.amount_cents, 0);
+
+  const renderFinancialRecord = (record: (typeof dashboard.financialRecords)[number]) => (
+    <div className="member-finance-item" key={record.id}>
+      {record.image_url ? (
+        <img className="member-finance-thumb" src={record.image_url} alt={`Imagem de ${record.type}`} />
+      ) : (
+        <span className="member-finance-thumb placeholder">Sem foto</span>
+      )}
+      <section className="member-finance-content">
+        <span>{record.type}</span>
+        <strong>{formatMoney(record.amount_cents)}</strong>
+        <small>
+          {formatDate(financialDate(record))} &middot; {record.status}
+        </small>
+        {record.description ? <p>{record.description}</p> : null}
+      </section>
+    </div>
+  );
 
   return (
     <main className="members-dashboard">
@@ -175,32 +211,55 @@ export default async function MemberDashboardPage() {
           </div>
         </article>
 
-        <article className="member-card">
+        <article className="member-card wide">
           <span className="eyebrow">financeiro</span>
           <h2>Valores vinculados</h2>
-          <div className="member-list">
-            {dashboard.financialRecords.length === 0 ? <p>Nenhum lançamento financeiro vinculado ainda.</p> : null}
-            {dashboard.financialRecords.map((record) => (
-              <div className="member-finance-item" key={record.id}>
-                {record.image_url ? (
-                  <img className="member-finance-thumb" src={record.image_url} alt={`Imagem de ${record.type}`} />
-                ) : (
-                  <span className="member-finance-thumb placeholder">Sem foto</span>
-                )}
-                <section className="member-finance-content">
-                  <span>{record.type}</span>
-                  <strong>{formatMoney(record.amount_cents)}</strong>
-                  <small>
-                    {formatDate(financialDate(record))} · {record.status}
-                  </small>
-                  <p>{record.description}</p>
-                </section>
+          <div className="member-finance-columns">
+            <section className="member-finance-column">
+              <header className="member-finance-column-head">
+                <div>
+                  <span className="eyebrow">pendentes e previstos</span>
+                  <h3>Planejados</h3>
+                </div>
+                <span
+                  className="member-finance-count"
+                  aria-label={`${plannedRecords.length} lançamentos planejados`}
+                >
+                  {plannedRecords.length}
+                </span>
+              </header>
+              <div className="member-list">
+                {plannedRecords.length === 0 ? (
+                  <p className="member-finance-empty">Nenhum lançamento planejado.</p>
+                ) : null}
+                {plannedRecords.map(renderFinancialRecord)}
               </div>
-            ))}
-            <div className="member-finance-total">
-              <span>Total já recebido</span>
-              <strong>{formatMoney(receivedTotal)}</strong>
-            </div>
+            </section>
+
+            <section className="member-finance-column">
+              <header className="member-finance-column-head">
+                <div>
+                  <span className="eyebrow">pagos e entregues</span>
+                  <h3>Executados</h3>
+                </div>
+                <span
+                  className="member-finance-count"
+                  aria-label={`${executedRecords.length} lançamentos executados`}
+                >
+                  {executedRecords.length}
+                </span>
+              </header>
+              <div className="member-list">
+                {executedRecords.length === 0 ? (
+                  <p className="member-finance-empty">Nenhum lançamento executado.</p>
+                ) : null}
+                {executedRecords.map(renderFinancialRecord)}
+                <div className="member-finance-total">
+                  <span>Total já recebido</span>
+                  <strong>{formatMoney(receivedTotal)}</strong>
+                </div>
+              </div>
+            </section>
           </div>
         </article>
 
