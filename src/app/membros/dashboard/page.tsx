@@ -239,39 +239,6 @@ export default async function MemberDashboardPage() {
           </div>
         </article>
 
-        <article className="member-card">
-          <span className="eyebrow">ranking publicado</span>
-          <h2>Resultados aprovados</h2>
-          <div className="member-list">
-            {dashboard.rankings.length === 0 ? <p>Sem resultados publicados para este atleta.</p> : null}
-            {dashboard.rankings.map((ranking) => (
-              <div key={ranking.id}>
-                <span>
-                  {ranking.age_group} · {ranking.event}
-                </span>
-                <strong>{ranking.time}</strong>
-                <small>
-                  {ranking.date} · {ranking.location}
-                </small>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="member-card">
-          <span className="eyebrow">marketing</span>
-          <h2>Banco de criativos</h2>
-          <div className="member-list">
-            {dashboard.creativeAssets.length === 0 ? <p>Nenhum criativo liberado ainda.</p> : null}
-            {dashboard.creativeAssets.map((asset) => (
-              <div key={asset.id}>
-                <span>{asset.title}</span>
-                {asset.description ? <small>{asset.description}</small> : null}
-                {asset.file_url ? <a href={asset.file_url}>Abrir arquivo</a> : null}
-              </div>
-            ))}
-          </div>
-        </article>
       </section>
     </main>
   );

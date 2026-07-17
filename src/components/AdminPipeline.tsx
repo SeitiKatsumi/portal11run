@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type FormEvent, type MouseEvent } from "react";
-import { CheckCircle2, Download, Eye, ImageIcon, KeyRound, RefreshCw, X } from "lucide-react";
+import { CheckCircle2, Download, Eye, ImageIcon, KeyRound, PencilLine, RefreshCw, Save, X } from "lucide-react";
 import { createPortal } from "react-dom";
 
 type AdminLead = {
@@ -151,6 +151,50 @@ const fieldGroups = [
   }
 ];
 
+const adminEditableFields = [
+  "name",
+  "email",
+  "phone",
+  "city",
+  "state",
+  "profile_type",
+  "message",
+  "athlete_name",
+  "birth_date",
+  "category",
+  "school",
+  "team",
+  "athlete_rg",
+  "athlete_cpf",
+  "father_name",
+  "mother_name",
+  "address",
+  "shoe_size",
+  "height_cm",
+  "weight_kg",
+  "athlete_dream",
+  "social_link",
+  "best_marks",
+  "competitions",
+  "coach_name",
+  "coach_phone",
+  "coach_cref",
+  "guardian_name",
+  "guardian_rg",
+  "guardian_cpf",
+  "guardian_pix",
+  "race_event",
+  "payment_plan"
+] as const;
+
+const multilineProfileFields = new Set(["message", "athlete_dream", "best_marks", "competitions"]);
+const profileInputTypes: Record<string, string> = {
+  email: "email",
+  birth_date: "date",
+  height_cm: "number",
+  weight_kg: "number"
+};
+
 function parseJson<T>(value: string | null | undefined, fallback: T): T {
   if (!value) return fallback;
   try {
@@ -189,6 +233,11 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
   const [updating, setUpdating] = useState("");
   const [memberError, setMemberError] = useState("");
   const [memberErrorLead, setMemberErrorLead] = useState("");
+  const [memberSuccessLead, setMemberSuccessLead] = useState("");
+  const [editingProfile, setEditingProfile] = useState(false);
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileError, setProfileError] = useState("");
+  const [profileSuccess, setProfileSuccess] = useState("");
   const [selectedLeadId, setSelectedLeadId] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
@@ -202,6 +251,12 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
     document.body.classList.toggle("modal-open", Boolean(selectedLead));
     return () => document.body.classList.remove("modal-open");
   }, [selectedLead]);
+
+  useEffect(() => {
+    setEditingProfile(false);
+    setProfileError("");
+    setProfileSuccess("");
+  }, [selectedLeadId]);
 
   const projects = useMemo(() => {
     return Array.from(new Set(leads.map((lead) => lead.project_type))).sort();
@@ -236,31 +291,73 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
 
   async function saveMemberAccess(event: FormEvent<HTMLFormElement>, lead: AdminLead) {
     event.preventDefault();
+    const form = event.currentTarget;
     setMemberError("");
     setMemberErrorLead("");
+    setMemberSuccessLead("");
     setUpdating(lead.id);
-    const formData = new FormData(event.currentTarget);
-    const response = await fetch("/api/admin/members", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        leadId: lead.id,
-        role: formData.get("role"),
-        username: formData.get("username"),
-        password: formData.get("password"),
-        active: formData.get("active") === "on"
-      })
-    });
-    const result = await response.json();
-    setUpdating("");
+    const formData = new FormData(form);
 
-    if (!response.ok) {
-      setMemberError(result.error ?? "Erro ao salvar acesso.");
+    try {
+      const response = await fetch("/api/admin/members", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          leadId: lead.id,
+          role: formData.get("role"),
+          username: formData.get("username"),
+          password: formData.get("password"),
+          active: formData.get("active") === "on"
+        })
+      });
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(result.error ?? "Erro ao salvar acesso.");
+      }
+
+      setMemberAccounts((current) => [result.account, ...current.filter((account) => account.lead_id !== lead.id)]);
+      const passwordInput = form.elements.namedItem("password");
+      if (passwordInput instanceof HTMLInputElement) passwordInput.value = "";
+      setMemberSuccessLead(lead.id);
+    } catch (error) {
+      setMemberError(error instanceof Error ? error.message : "Erro ao salvar acesso.");
       setMemberErrorLead(lead.id);
-      return;
+    } finally {
+      setUpdating("");
     }
+  }
 
-    setMemberAccounts((current) => [result.account, ...current.filter((account) => account.lead_id !== lead.id)]);
+  async function saveAdminProfile(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!selectedLead) return;
+
+    setProfileError("");
+    setProfileSuccess("");
+    setProfileSaving(true);
+    const formData = new FormData(event.currentTarget);
+    const profile = Object.fromEntries(adminEditableFields.map((field) => [field, String(formData.get(field) ?? "")]));
+
+    try {
+      const response = await fetch("/api/admin/leads", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: selectedLead.id, profile })
+      });
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(result.error ?? "Erro ao atualizar perfil.");
+      }
+
+      setLeads((current) => current.map((lead) => (lead.id === selectedLead.id ? result.lead : lead)));
+      setEditingProfile(false);
+      setProfileSuccess("Perfil atualizado com sucesso.");
+    } catch (error) {
+      setProfileError(error instanceof Error ? error.message : "Erro ao atualizar perfil.");
+    } finally {
+      setProfileSaving(false);
+    }
   }
 
   function openLeadModalFromCard(event: MouseEvent<HTMLElement>, lead: AdminLead) {
@@ -274,6 +371,14 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
   const selectedDetails: Record<string, unknown> = selectedLead
     ? {
         ...selectedPayload,
+        name: selectedLead.name,
+        email: selectedLead.email,
+        phone: selectedLead.phone,
+        city: selectedLead.city ?? selectedPayload.city,
+        state: selectedLead.state ?? selectedPayload.state,
+        profile_type: selectedLead.profile_type ?? selectedPayload.profile_type,
+        athlete_name: selectedLead.athlete_name ?? selectedPayload.athlete_name,
+        birth_date: selectedLead.birth_date ?? selectedPayload.birth_date,
         project_type: selectedProjectLabel,
         created_at: formatDate(selectedLead.created_at)
       }
@@ -316,13 +421,34 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
                 {selectedLead.name} · {selectedLead.email} · {selectedLead.phone}
               </p>
             </div>
-            {selectedPhotos.length > 0 ? (
-              <a className="button primary" href={`/api/admin/leads/${selectedLead.id}/photos`} download>
-                <Download size={17} />
-                Baixar fotos
-              </a>
-            ) : null}
+            <div className="lead-detail-actions">
+              <button
+                className="button secondary"
+                type="button"
+                onClick={() => {
+                  setEditingProfile((current) => !current);
+                  setProfileError("");
+                  setProfileSuccess("");
+                }}
+              >
+                <PencilLine size={17} />
+                {editingProfile ? "Cancelar edição" : "Editar perfil"}
+              </button>
+              {selectedPhotos.length > 0 ? (
+                <a className="button primary" href={`/api/admin/leads/${selectedLead.id}/photos`} download>
+                  <Download size={17} />
+                  Baixar fotos
+                </a>
+              ) : null}
+            </div>
           </div>
+
+          {profileSuccess ? (
+            <p className="admin-feedback success" role="status">
+              <CheckCircle2 size={17} />
+              {profileSuccess}
+            </p>
+          ) : null}
 
           {selectedPhotos.length > 0 ? (
             <div className="lead-photo-downloads">
@@ -343,6 +469,51 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
             </div>
           )}
 
+          {editingProfile ? (
+            <form className="admin-profile-editor" onSubmit={saveAdminProfile}>
+              <div className="admin-profile-editor-grid">
+                {fieldGroups.map((group) => {
+                  const fields = group.keys.filter((key) => adminEditableFields.includes(key as (typeof adminEditableFields)[number]));
+                  if (fields.length === 0) return null;
+
+                  return (
+                    <section className="admin-profile-editor-section" key={group.title}>
+                      <h3>{group.title}</h3>
+                      <div className="admin-profile-fields">
+                        {fields.map((key) => (
+                          <label className={multilineProfileFields.has(key) ? "wide" : undefined} key={key}>
+                            <span>{formatFieldName(key)}</span>
+                            {multilineProfileFields.has(key) ? (
+                              <textarea name={key} defaultValue={String(selectedDetails[key] ?? "")} />
+                            ) : (
+                              <input name={key} type={profileInputTypes[key] ?? "text"} defaultValue={String(selectedDetails[key] ?? "")} />
+                            )}
+                          </label>
+                        ))}
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+
+              {profileError ? (
+                <p className="admin-feedback error" role="alert">
+                  {profileError}
+                </p>
+              ) : null}
+
+              <div className="admin-profile-editor-actions">
+                <button className="button primary" type="submit" disabled={profileSaving}>
+                  {profileSaving ? <RefreshCw className="spin" size={17} /> : <Save size={17} />}
+                  {profileSaving ? "Salvando..." : "Salvar alterações"}
+                </button>
+                <button className="button secondary" type="button" onClick={() => setEditingProfile(false)} disabled={profileSaving}>
+                  <X size={17} />
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          ) : (
           <div className="lead-detail-grid">
             {fieldGroups.map((group) => {
               const entries = detailEntries(group.keys);
@@ -377,6 +548,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
               </section>
             ) : null}
           </div>
+          )}
         </div>
       </div>
     ) : null;
