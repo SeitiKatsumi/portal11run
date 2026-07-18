@@ -64,6 +64,13 @@ export const projectNavItems = [
 export const navItems = [
   { label: "Home", href: "/" },
   { label: "Projetos", href: "#projetos", children: projectNavItems },
+  {
+    label: "Institucional",
+    href: "/institucional/alex-sandro-lopes",
+    children: [
+      { label: "Alex Sandro Lopes", href: "/institucional/alex-sandro-lopes" }
+    ]
+  },
   { label: "Apoie o projeto", href: "/apoie-o-projeto" }
 ];
 

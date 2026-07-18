@@ -12,7 +12,8 @@ const adminItems = [
   { href: "/admin/eventos", label: "Eventos", icon: CalendarDays },
   { href: "/admin/ranking", label: "Ranking", icon: Trophy },
   { href: "/admin/trajetoria-seiti", label: "Trajetória Seiti/Orcampi", icon: Route },
-  { href: "/admin/atendimento", label: "Chat e IA", icon: Bot }
+  { href: "/admin/atendimento", label: "Chat e IA", icon: Bot },
+  { href: "/admin/alex-lopes", label: "Alex Lopes", icon: Bot }
 ];
 
 export function AdminNav() {
