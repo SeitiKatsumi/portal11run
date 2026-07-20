@@ -79,7 +79,6 @@ export const navItems: NavItem[] = [
         href: "#profissionais",
         children: [
           { label: "Seiti Katsumi", href: "/institucional/seiti-katsumi" },
-          { label: "Ricardo D'Ângelo", href: "/institucional/seiti-katsumi#ricardo-dangelo" },
           { label: "Alex Lopes", href: "/institucional/alex-sandro-lopes" }
         ]
       }
