@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import { CTASection } from "@/components/CTASection";
 import { FeatureBanner } from "@/components/FeatureBanner";
+import { MasterOfficialEvents } from "@/components/MasterOfficialEvents";
+import { MasterPaulistaResults } from "@/components/MasterPaulistaResults";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { Reveal } from "@/components/Reveal";
 
@@ -31,6 +33,7 @@ export const metadata: Metadata = {
 };
 
 const image = "/assets/ayla-hero.jpg";
+const paulistaImage = "/assets/11-master/paulista-2026/40-titb-03805.webp";
 
 const heroMetrics = [
   { value: "11 e 12", label: "de julho de 2026" },
@@ -128,16 +131,6 @@ const saturdayPaces = [
   "12-16 km: trecho livre, cada um no seu ritmo"
 ];
 
-const doneItems = [
-  "8 atletas federados",
-  "16 pares de tênis distribuídos",
-  "Uniformes oficiais entregues",
-  "Regularização esportiva",
-  "Organização documental",
-  "Direcionamento competitivo",
-  "Preparação para Paulista e Brasileiro"
-];
-
 const goals = [
   "Vitórias no Campeonato Paulista Master",
   "Vitórias no Campeonato Brasileiro Master",
@@ -189,13 +182,15 @@ export default function Page() {
   return (
     <main className="regional-page">
       <FeatureBanner
-        eyebrow="11 Master"
-        title="Performance não nasce do improviso. Nasce de direção."
-        text="Uma frente master com estrutura, regularização, equipamentos, calendário competitivo e comando técnico de alto rendimento."
-        imageSrc={image}
-        imageAlt="Corredora em movimento no banner do 11 Master"
-        ctaSlot={<ProjectFormModal project="11-regional" label="Inscrever atleta master" />}
+        eyebrow="68º Campeonato Paulista Master"
+        title="12 pódios na estreia da OnzeRun Master."
+        text="Oito ouros, uma prata e três bronzes em uma competição que marcou o início da nossa história."
+        imageSrc={paulistaImage}
+        imageAlt="Equipe OnzeRun Master reunida com as medalhas conquistadas no Campeonato Paulista de 2026"
+        ctaSlot={<Link className="button primary feature-banner-cta" href="#paulista">Ver resultados</Link>}
       />
+
+      <MasterPaulistaResults />
 
       <section className="regional-hero" id="topo">
         <div className="regional-hero-copy">
@@ -298,39 +293,6 @@ export default function Page() {
         <CardGrid items={commandCards} columns="regional-cards technical" />
       </section>
 
-      <section className="regional-section split">
-        <div>
-          <span className="eyebrow">estreia oficial</span>
-          <h2>Campeonato Paulista Master 2026</h2>
-        </div>
-        <div className="regional-copy-block">
-          <p>
-            Nos dias 11 e 12 de julho de 2026, a 11RUN fará sua estreia oficial no Campeonato Paulista
-            Master, marcando o início de um novo ciclo para os atletas master de Itatiba e região.
-          </p>
-          <p>
-            A estreia será realizada com a direção técnica do Professor Alex Lopes, garantindo que os
-            atletas cheguem à competição com orientação, estratégia e preparação compatíveis com o nível do
-            desafio.
-          </p>
-          <p>
-            Essa estreia não será apenas uma participação. Será o primeiro passo de uma jornada com metas
-            claras: competir forte, buscar vitórias, disputar recordes e recolocar atletas da região em
-            evidência.
-          </p>
-          <div className="regional-two-lists">
-            <div>
-              <h3>O que j foi feito</h3>
-              <Checklist items={doneItems} />
-            </div>
-            <div>
-              <h3>Desafios do ano</h3>
-              <Checklist items={goals} />
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section className="regional-section">
         <div className="regional-section-head">
           <span className="eyebrow">estrutura 11RUN</span>
@@ -430,6 +392,8 @@ export default function Page() {
           <Checklist items={goals} />
         </div>
       </section>
+
+      <MasterOfficialEvents />
 
       <CTASection
         title="Quer treinar, competir ou apoiar o 11 Master"

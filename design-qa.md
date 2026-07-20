@@ -1,62 +1,60 @@
-# Design QA — slider da família, CTA e painel do Alex
+# Design QA — OnzeRun Master / Paulista 2026
 
-## Evidências
+**Source visual truth**
 
-- Fonte visual — seção dos filhos: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-ef96f22e-ade3-4ade-a133-5cf025d3bf88.png`
-- Fonte visual — posição do CTA: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-95984d2a-92b0-43dc-a348-61c005689328.png`
-- Fonte visual — painel quebrado: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-71a675c8-1cd5-421d-bc22-2dbf2e6cc7be.png`
-- Fonte visual — link administrativo a remover: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-b2a17d0e-7aaa-4ee4-8c79-13bff80eeeb8.png`
-- Implementação: `.design/qa-seiti-family-slider.png`, `.design/qa-alex-hero-cta-final.png`, `.design/qa-alex-admin-fixed-final.png`
-- Comparações combinadas: `.design/compare-seiti-slider.png`, `.design/compare-alex-cta.png`, `.design/compare-alex-admin.png`
-- Viewport do navegador: 1265 × 710, desktop.
-- Estados: primeiro e segundo slides; CTA e modal; envio confirmado; painel vazio, lista e detalhe selecionado.
+- `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-83fb0130-cf04-4f9d-95d9-a140993093a3.png`
+- The source identifies the broken calendar state and the existing 11RUN visual language. The requested outcome is an intentional redesign, not a pixel-for-pixel reproduction of the broken list.
 
-## Comparação da visão completa
+**Implementation evidence**
 
-As capturas foram normalizadas lado a lado porque as referências vieram de monitores com dimensões diferentes. A estrutura original dos cards foi preservada. O slider ocupa o mesmo espaço da imagem anterior, o CTA foi acrescentado ao grupo de ações existente e o painel voltou ao grid centralizado do sistema.
+- Top/result highlight: `C:/Users/User-PC/Documents/11run Portal 2/.design/qa-master-top.png`
+- Album state: `C:/Users/User-PC/Documents/11run Portal 2/.design/qa-master-results.png`
+- Final calendar state: `C:/Users/User-PC/Documents/11run Portal 2/.design/qa-master-calendar-approved.png`
+- Side-by-side comparison: `C:/Users/User-PC/Documents/11run Portal 2/.design/qa-master-calendar-comparison.jpg`
+- Viewport: 1280 × 720, desktop, light theme.
+- Route/state: `/11-master#calendario`, public and logged out.
 
-## Comparação focada
+**Findings**
 
-- Slider: seis imagens WebP carregadas, fotografia inteira preservada com `object-fit: contain`, legenda dinâmica, setas, contador e indicadores.
-- CTA: “Treine com o Alex” aparece no hero com a cor verde institucional e abre o modal centralizado existente.
-- Formulário: envio multipart concluído, confirmação visível e console limpo.
-- Painel: duas colunas no desktop, lista e detalhe dentro do limite de 1280 px, sem overflow horizontal; seleção do cadastro funciona.
-- Navegação administrativa: “Trajetória Seiti/Orcampi” não aparece mais.
+- No actionable P0, P1, or P2 findings remain.
+- Fonts and typography: the existing product font and light display hierarchy are preserved; headings remain readable and do not collide with cards.
+- Spacing and layout rhythm: content now respects the 1280 px page shell, uses consistent card gaps and radii, and has no horizontal page overflow (`scrollWidth: 1265` at a 1280 px viewport).
+- Colors and tokens: surfaces, borders, muted copy, dark featured card, and brown accents use the existing 11RUN tokens without gradients.
+- Image quality and asset fidelity: all supplied championship photographs were converted to WebP; the hero and album use real supplied assets with contained/cropped treatments appropriate to their slots.
+- Copy and content: the 12-podium summary, medal split, athlete results, ranking highlights, team culture, Aimê/Seiti context, and recruiting message are represented in concise sections.
+- Icons and accessibility: Lucide icons match the current product icon system; buttons have accessible names, focus rings, keyboard controls, and reduced-motion handling.
+- Responsiveness: desktop rendering has no page overflow; CSS explicitly collapses metrics, album, athlete cards, stories, recruiting CTA, and calendar at 980/940/720 px. The in-app browser surface is fixed at desktop width, so a rendered 390 px capture remains a P3 test gap.
 
-## Findings
+**Primary interactions tested**
 
-Nenhum P0, P1 ou P2 permanece.
+- Album next control changed the active photo source.
+- Album lightbox opened as a modal dialog and closed successfully.
+- Direct result/calendar anchor navigation was tested.
+- Browser console checked after rendering and interactions: no errors.
 
-- Fontes e tipografia: hierarquia e pesos existentes foram preservados; novo CTA usa a mesma tipografia e escala dos demais botões.
-- Espaçamento e ritmo: slider mantém a proporção 4:5; painel recuperou margens, padding, alinhamento e grid consistentes.
-- Cores e tokens: marfim, carvão, verde e linhas existentes foram reutilizados; nenhum degradê foi introduzido.
-- Qualidade das imagens: as seis fotos fornecidas foram convertidas para WebP com dimensões originais preservadas e sem ampliação artificial.
-- Copy e conteúdo: legendas descrevem Luhan, Aimê e a continuidade da trajetória; CTA e estados administrativos estão em português.
-- Acessibilidade: slider aceita setas do teclado, swipe, botões rotulados, pausa em foco/hover e respeita `prefers-reduced-motion`.
+**Focused region comparison evidence**
 
-## Histórico de correções
+- Calendar: the combined comparison shows the original unstyled, left-aligned list versus the final two-column status calendar with readable date blocks, locations, and a featured completed event.
+- Album: the focused capture shows a selected competition photograph, horizontal thumbnail rail, visible position counter, next/previous controls, and an enlarge affordance.
 
-1. P1 — painel administrativo sem estilos e fora do container: corrigido com `admin-panel`, grid responsivo e estilos globais específicos. Evidência final sem overflow.
-2. P1 — envio salvo, mas confirmação quebrava no navegador: a referência do formulário passou a ser preservada antes do `await`. Reenvio final exibiu confirmação e console sem erros.
-3. P1 — formulários do Alex fora do volume persistente: armazenamento direcionado ao diretório do `SQLITE_PATH`, que é `/data` no CapRover, com escrita atômica.
-4. P2 — campos com nomes divergentes eram descartados pela API: mapeamento alinhado ao formulário e áudio opcional passou a ser salvo com validação de tipo e limite de 15 MB.
-5. P2 — imagem estática não representava os filhos: substituída por slider funcional com as seis fotos fornecidas.
-6. P2 — link administrativo redundante: removido do menu sem excluir a rota pública institucional.
+**Comparison history**
 
-## Checklist
+1. Initial reference — P0: the calendar was effectively unstyled and detached from the page shell because its class names did not match the available rules. Fix: replaced the mismatched global-class implementation with a scoped responsive component and semantic event cards.
+2. First implementation — P2: deep-link navigation placed the section label too close to the fixed header. Fix: added a reserved anchor offset and global scroll padding, preserving the normal section spacing.
+3. Final implementation — post-fix evidence: `qa-master-calendar-approved.png`; heading, summary, featured event, and upcoming events are visible and aligned; no actionable P0/P1/P2 issues remain.
 
-- [x] TypeScript sem erros
-- [x] Build otimizado do Next.js aprovado
-- [x] Seis imagens carregadas e navegação do slider exercitada
-- [x] CTA abre o formulário correto
-- [x] Envio cria cadastro e apresenta confirmação
-- [x] Cadastro aparece e abre no painel administrativo
-- [x] Console final sem erros
-- [x] Sem overflow horizontal no desktop
-- [x] Regras responsivas revisadas para 900 px e 620 px
+**Implementation checklist**
 
-## Follow-up polish
+- [x] Results promoted to the top of the page.
+- [x] All supplied photos optimized and album navigation implemented.
+- [x] Athlete results and 12-podium totals published.
+- [x] Recruitment CTA connected to `/cadastro/11-master`.
+- [x] Calendar rebuilt with clear status, date, location, and result link.
+- [x] Production build and TypeScript validation passed.
+- [x] Browser interactions and console verified.
 
-Nenhum refinamento visual bloqueante.
+**Follow-up polish**
+
+- P3: capture an additional physical 390 px browser viewport when the in-app browser supports viewport emulation; responsive rules are already implemented.
 
 final result: passed

@@ -1,19 +1,98 @@
-"use client";
-
-import { CalendarDays, MapPin } from "lucide-react";
-import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { ArrowRight, CalendarDays, CheckCircle2, MapPin, Trophy } from "lucide-react";
+import styles from "./MasterOfficialEvents.module.css";
 
 const events = [
-  ["10 a 12 de junho", "58º Campeonato Paulista de Atletismo Master", "São Paulo (SP)"],
-  ["18 de setembro", "Festival de Atletismo Master Prof. Guaracy Mendes", "Rio de Janeiro (RJ)"],
-  ["18 a 20 de setembro", "Troféu Bandeirantes", "Pindamonhangaba (SP)"],
-  ["18 a 20 de setembro", "Troféu Brasil de Atletismo Master", "Porto Alegre (RS)"],
-  ["18 de outubro", "Campeonato Paulista de Cross Country", "Tupã (SP)"],
-  ["6 a 8 de novembro", "VI Taça Brasil Master Loterias Caixa de Atletismo", "Bragança Paulista (SP)"],
+  {
+    day: "11–12",
+    month: "JUL",
+    title: "68º Campeonato Paulista de Atletismo Master",
+    place: "São Paulo (SP)",
+    status: "Realizado",
+    featured: true
+  },
+  {
+    day: "18",
+    month: "SET",
+    title: "Festival de Atletismo Master Prof. Guaracy Mendes",
+    place: "Rio de Janeiro (RJ)",
+    status: "Próxima prova"
+  },
+  {
+    day: "18–20",
+    month: "SET",
+    title: "Troféu Bandeirantes",
+    place: "Pindamonhangaba (SP)",
+    status: "Planejamento"
+  },
+  {
+    day: "18–20",
+    month: "SET",
+    title: "Troféu Brasil de Atletismo Master",
+    place: "Porto Alegre (RS)",
+    status: "Planejamento"
+  },
+  {
+    day: "18",
+    month: "OUT",
+    title: "Campeonato Paulista de Cross Country",
+    place: "Tupã (SP)",
+    status: "Planejamento"
+  },
+  {
+    day: "06–08",
+    month: "NOV",
+    title: "VI Taça Brasil Master Loterias Caixa de Atletismo",
+    place: "Bragança Paulista (SP)",
+    status: "Planejamento"
+  }
 ];
 
 export function MasterOfficialEvents() {
-  const pathname = usePathname();
-  if (pathname !== "/11-master") return null;
-  return <section className="page-shell master-calendar content-section"><div className="section-heading"><div><p className="eyebrow">CALENDÁRIO 2026</p><h2>Provas oficiais em foco.</h2></div><p>Uma agenda de referência para orientar o planejamento competitivo do 11 Master.</p></div><div className="master-calendar-grid">{events.map(([date, title, place]) => <article className="panel master-event" key={title}><p><CalendarDays size={16} />{date}</p><h3>{title}</h3><span><MapPin size={15} />{place}</span></article>)}</div></section>;
+  return (
+    <section className={styles.section} id="calendario" aria-labelledby="calendar-title">
+      <div className={styles.panel}>
+        <header className={styles.header}>
+          <div>
+            <span className={styles.eyebrow}>Calendário competitivo · 2026</span>
+            <h2 id="calendar-title">Uma temporada com direção clara.</h2>
+          </div>
+          <p>
+            Datas, cidades e o momento de cada competição em uma visão simples para atletas,
+            familiares e equipe técnica.
+          </p>
+        </header>
+
+        <div className={styles.summary}>
+          <div><CalendarDays size={20} /><span><strong>6</strong> competições no calendário</span></div>
+          <div><Trophy size={20} /><span><strong>1</strong> estreia histórica concluída</span></div>
+          <Link href="#paulista">Ver resultados do Paulista <ArrowRight size={17} /></Link>
+        </div>
+
+        <div className={styles.grid}>
+          {events.map((event) => (
+            <article className={event.featured ? styles.featured : undefined} key={event.title}>
+              <div className={styles.date}>
+                <strong>{event.day}</strong>
+                <span>{event.month}</span>
+              </div>
+              <div className={styles.eventCopy}>
+                <span className={styles.status}>
+                  {event.featured && <CheckCircle2 size={14} />}
+                  {event.status}
+                </span>
+                <h3>{event.title}</h3>
+                <p><MapPin size={15} /> {event.place}</p>
+              </div>
+              {event.featured && (
+                <Link href="#paulista" aria-label="Ver os resultados do Campeonato Paulista">
+                  <ArrowRight size={18} />
+                </Link>
+              )}
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 }

@@ -1,0 +1,146 @@
+.section {
+  width: min(calc(100% - 48px), var(--max));
+  margin: -76px auto 0;
+  padding-top: 104px;
+}
+
+.panel {
+  padding: clamp(34px, 5.8vw, 74px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.48fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: end;
+}
+
+.eyebrow {
+  color: var(--accent-strong);
+  font-size: 0.73rem;
+  font-weight: 650;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.header h2 {
+  margin: 12px 0 0;
+  color: var(--text);
+  font-size: clamp(2.6rem, 5vw, 5.6rem);
+  font-weight: 300;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+}
+
+.header p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.72;
+}
+
+.summary {
+  margin-top: 34px;
+  padding: 15px 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 28px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-muted);
+}
+
+.summary div,
+.summary a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.summary svg { color: var(--accent-strong); }
+.summary span { color: var(--muted); font-size: 0.9rem; }
+.summary strong { color: var(--text); font-size: 1.05rem; }
+.summary a { margin-left: auto; color: var(--text); font-size: 0.86rem; font-weight: 650; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.grid article {
+  min-width: 0;
+  min-height: 174px;
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: start;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.grid .featured { color: #fffaf2; background: var(--text); }
+
+.date {
+  min-height: 78px;
+  padding: 12px 8px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-muted);
+}
+
+.date strong { color: var(--text); font-size: 1.15rem; font-weight: 500; }
+.date span { margin-top: 2px; color: var(--accent-strong); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; }
+.featured .date { border-color: #4b453e; background: #2c2925; }
+.featured .date strong { color: #fffaf2; }
+.featured .date span { color: #e6c18b; }
+
+.eventCopy { min-width: 0; }
+.status { display: inline-flex; align-items: center; gap: 6px; color: var(--accent-strong); font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.featured .status { color: #e6c18b; }
+.eventCopy h3 { margin: 12px 0 18px; color: var(--text); font-size: clamp(1.1rem, 1.5vw, 1.42rem); font-weight: 450; line-height: 1.2; }
+.featured .eventCopy h3 { color: #fffaf2; }
+.eventCopy p { margin: 0; display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 0.86rem; }
+.featured .eventCopy p { color: #c9c1b6; }
+
+.grid article > a {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--text);
+  background: #fffaf2;
+}
+
+.summary a:focus-visible,
+.grid article > a:focus-visible { outline: 3px solid #d69b55; outline-offset: 3px; }
+
+@media (max-width: 940px) {
+  .header { grid-template-columns: 1fr; }
+  .header p { max-width: 720px; }
+  .grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .section { width: min(calc(100% - 28px), var(--max)); }
+  .panel { padding: 28px 20px; }
+  .header h2 { font-size: clamp(2.4rem, 12vw, 4rem); }
+  .summary { align-items: flex-start; }
+  .summary div { width: 100%; }
+  .summary a { width: 100%; margin-left: 0; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--line); }
+  .grid article { grid-template-columns: 64px minmax(0, 1fr); min-height: 0; padding: 16px; gap: 14px; }
+  .date { min-height: 68px; }
+  .grid article > a { grid-column: 2; }
+}
