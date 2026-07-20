@@ -178,7 +178,7 @@ export function AlexProfileExperience() {
 
       <section className={styles.photoStory}>
         <Image src="/assets/alex-lopes/selecao-pista.webp" alt="Alex com atletas e comissão técnica junto à pista" fill sizes="100vw" />
-        <div><span className={styles.eyebrow}>Impacto que fica</span><h2>Formar atletas.<br />Transformar vidas.</h2><p>Desenvolvimento esportivo com direção clara, preparação consistente e respeito a cada história.</p></div>
+        <div><span className={styles.eyebrow}>Impacto que fica</span><h2><span>Formar atletas.</span><br /><span>Transformar vidas.</span></h2><p>Desenvolvimento esportivo com direção clara, preparação consistente e respeito a cada história.</p></div>
       </section>
 
       <section className={styles.athletes} id="atletas">

@@ -21,6 +21,12 @@ import type { LucideIcon } from "lucide-react";
 
 export type ProjectKey = "app-11run" | "onze-futuro" | "11-regional" | "circuito-futuro-11" | "bolsas";
 
+export type NavItem = {
+  label: string;
+  href: string;
+  children?: NavItem[];
+};
+
 export type ProjectPage = {
   key: ProjectKey;
   eyebrow: string;
@@ -53,7 +59,7 @@ export type ProjectPage = {
   };
 };
 
-export const projectNavItems = [
+export const projectNavItems: NavItem[] = [
   { label: "App 11Run", href: "/app-11run" },
   { label: "11 Futuro", href: "/onze-futuro" },
   { label: "11 Master", href: "/11-master" },
@@ -61,14 +67,22 @@ export const projectNavItems = [
   { label: "Bolsas", href: "/bolsas" }
 ];
 
-export const navItems = [
+export const navItems: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "Projetos", href: "#projetos", children: projectNavItems },
   {
     label: "Institucional",
-    href: "/institucional/alex-sandro-lopes",
+    href: "/institucional/seiti-katsumi",
     children: [
-      { label: "Alex Sandro Lopes", href: "/institucional/alex-sandro-lopes" }
+      {
+        label: "Profissionais",
+        href: "#profissionais",
+        children: [
+          { label: "Seiti Katsumi", href: "/institucional/seiti-katsumi" },
+          { label: "Ricardo D'Ângelo", href: "/institucional/seiti-katsumi#ricardo-dangelo" },
+          { label: "Alex Lopes", href: "/institucional/alex-sandro-lopes" }
+        ]
+      }
     ]
   },
   { label: "Apoie o projeto", href: "/apoie-o-projeto" }

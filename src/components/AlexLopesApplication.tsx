@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
+import { createPortal } from "react-dom";
 import { CheckCircle2, X } from "lucide-react";
 
 type Props = { label?: string };
@@ -52,9 +53,26 @@ const fieldGroups = [
 ] as const;
 
 export function AlexLopesApplication({ label = "Treine com o Alex" }: Props) {
+  const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
+
+  useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    document.body.classList.toggle("modal-open", open);
+
+    function closeOnEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
+
+    if (open) window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.classList.remove("modal-open");
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [open]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -76,10 +94,7 @@ export function AlexLopesApplication({ label = "Treine com o Alex" }: Props) {
     setNotice("Recebemos seu formulário. O Professor Alex Lopes e sua equipe entrarão em contato.");
   }
 
-  return (
-    <>
-      <button className="button button-primary" type="button" onClick={() => setOpen(true)}>{label}</button>
-      {open ? (
+  const modal = open ? (
         <div className="alex-modal-backdrop" role="presentation" onMouseDown={() => setOpen(false)}>
           <section className="alex-modal" role="dialog" aria-modal="true" aria-labelledby="alex-form-title" onMouseDown={(event) => event.stopPropagation()}>
             <button className="alex-close" aria-label="Fechar formulário" type="button" onClick={() => setOpen(false)}><X size={20} /></button>
@@ -120,7 +135,12 @@ export function AlexLopesApplication({ label = "Treine com o Alex" }: Props) {
             </form>
           </section>
         </div>
-      ) : null}
+      ) : null;
+
+  return (
+    <>
+      <button className="button button-primary" type="button" onClick={() => setOpen(true)}>{label}</button>
+      {mounted && modal ? createPortal(modal, document.body) : null}
     </>
   );
 }

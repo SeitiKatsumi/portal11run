@@ -5,6 +5,7 @@ import { DatabaseSync } from "node:sqlite";
 import { listEventsForLead, type MemberEvent } from "./events";
 import type { LeadRecord } from "./leads";
 import type { RankingRecord } from "./rankings";
+import { normalizeMemberMarkEvent } from "./member-mark-options";
 
 export type MemberRole = "atleta_onze_futuro" | "atleta_11_regional" | "atleta_11_bolsista" | "atleta_circuito_futuro";
 
@@ -238,24 +239,33 @@ export function getMemberDashboard(accountId: string): MemberDashboardData | nul
   return { account: publicAccount(account), lead, financialRecords, creativeAssets, marks, rankings, events };
 }
 
-export function createMemberMark(accountId: string, input: { age_group: string; event: string; time: string; date: string; location: string }) {
-  const db = getDatabase();
-  const account = db.prepare("SELECT * FROM member_accounts WHERE id = ? AND active = 1").get(accountId) as MemberAccount | undefined;
-  if (!account) throw new Error("Conta não encontrada.");
+type MemberMarkInput = { event: string; time: string; date: string; location: string };
+
+function cleanMemberMarkInput(input: MemberMarkInput) {
+  const event = normalizeMemberMarkEvent(input.event);
+  if (!event) throw new Error("Selecione uma prova válida.");
   const clean = {
-    age_group: input.age_group.trim(),
-    event: input.event.trim(),
+    event,
     time: input.time.trim(),
     date: input.date.trim(),
     location: input.location.trim()
   };
   if (Object.values(clean).some((value) => !value)) throw new Error("Preencha todos os campos da marca.");
+  return clean;
+}
+
+export function createMemberMark(accountId: string, input: MemberMarkInput) {
+  const db = getDatabase();
+  const account = db.prepare("SELECT * FROM member_accounts WHERE id = ? AND active = 1").get(accountId) as MemberAccount | undefined;
+  if (!account) throw new Error("Conta não encontrada.");
+  const clean = cleanMemberMarkInput(input);
   const createdAt = now();
   const record: MemberMark = {
     id: randomUUID(),
     account_id: account.id,
     lead_id: account.lead_id,
-    status: "Pendente de validação",
+    age_group: "",
+    status: "Registrada",
     created_at: createdAt,
     updated_at: createdAt,
     ...clean
@@ -277,4 +287,30 @@ export function createMemberMark(accountId: string, input: { age_group: string; 
     $updated_at: record.updated_at
   });
   return record;
+}
+
+export function updateMemberMark(accountId: string, markId: string, input: MemberMarkInput) {
+  const db = getDatabase();
+  const existing = db
+    .prepare("SELECT * FROM member_marks WHERE id = ? AND account_id = ?")
+    .get(markId, accountId) as MemberMark | undefined;
+  if (!existing) throw new Error("Atividade não encontrada.");
+
+  const clean = cleanMemberMarkInput(input);
+  const updatedAt = now();
+  db.prepare(
+    `UPDATE member_marks
+     SET event = $event, time = $time, date = $date, location = $location, status = 'Registrada', updated_at = $updated_at
+     WHERE id = $id AND account_id = $account_id`
+  ).run({
+    $id: markId,
+    $account_id: accountId,
+    $event: clean.event,
+    $time: clean.time,
+    $date: clean.date,
+    $location: clean.location,
+    $updated_at: updatedAt
+  });
+
+  return db.prepare("SELECT * FROM member_marks WHERE id = ? AND account_id = ?").get(markId, accountId) as MemberMark;
 }

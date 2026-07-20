@@ -23,8 +23,11 @@ export function InstitutionalStyles() {
       .alex-feature-card { padding: 24px; border: 1px solid #dfd3c3; border-radius: 16px; background: #f7f0e6; }
       .alex-feature-card h3 { color: #201d19; font-size: 20px; font-weight: 500; margin: 8px 0; }
       .alex-feature-card p { margin: 0; color: #665b50; line-height: 1.55; }
-      .alex-modal-backdrop { position: fixed; z-index: 90; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(25,22,18,.62); }
-      .alex-modal { width: min(980px, 100%); max-height: min(92vh, 960px); overflow: auto; padding: clamp(22px, 4vw, 42px); border: 1px solid #dfd3c3; border-radius: 22px; background: #fffaf2; box-shadow: 0 26px 80px rgba(0,0,0,.26); }
+      .alex-modal-backdrop { position: fixed; z-index: 220; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(25,22,18,.62); }
+      .alex-modal { position: relative; width: min(980px, 100%); max-height: min(92vh, 960px); margin: auto; overflow: auto; padding: clamp(22px, 4vw, 42px); border: 1px solid #dfd3c3; border-radius: 22px; color: #201d19; background: #fffaf2; box-shadow: 0 26px 80px rgba(0,0,0,.26); }
+      .alex-modal > h2 { margin: 14px 0 8px; color: #201d19; font-size: clamp(30px, 4vw, 52px); font-weight: 400; line-height: 1.05; }
+      .alex-modal .alex-intro { margin: 0 0 28px; color: #665b50; line-height: 1.6; }
+      .alex-close { position: sticky; top: 0; z-index: 2; width: 42px; height: 42px; display: grid; place-items: center; margin: 0 0 8px auto; border: 1px solid #cfc3b4; border-radius: 50%; color: #201d19; background: #fffaf2; cursor: pointer; }
       .alex-modal-header { display: flex; gap: 20px; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
       .alex-modal-header h2 { margin: 5px 0; color: #201d19; font-size: clamp(30px, 4vw, 52px); font-weight: 400; }
       .alex-close-button { width: 42px; height: 42px; border: 1px solid #dfd3c3; border-radius: 50%; background: transparent; font-size: 25px; cursor: pointer; }

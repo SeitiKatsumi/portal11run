@@ -194,26 +194,25 @@ export default async function MemberDashboardPage() {
                 ))}
             </dl>
             <MemberRegistrationEditor payload={payload} />
-          </details>
-        </article>
-
-        <article className="member-card">
-          <span className="eyebrow">materiais e benefícios</span>
-          <h2>Direitos do projeto</h2>
-          <div className="member-list">
-            {Object.keys(receipts).length === 0 ? <p>Nenhum direito cadastrado ainda.</p> : null}
-            {Object.entries(receipts).map(([item, hasRight]) => (
-              <div key={item}>
-                <span>{item}</span>
-                <strong>{hasRight ? "Tem direito" : "Não tem direito"}</strong>
+            <section className="member-benefits-panel" aria-labelledby="member-benefits-title">
+              <span className="eyebrow">materiais e benefícios</span>
+              <h2 id="member-benefits-title">Direitos do projeto</h2>
+              <div className="member-list">
+                {Object.keys(receipts).length === 0 ? <p>Nenhum direito cadastrado ainda.</p> : null}
+                {Object.entries(receipts).map(([item, hasRight]) => (
+                  <div key={item}>
+                    <span>{item}</span>
+                    <strong>{hasRight ? "Tem direito" : "Não tem direito"}</strong>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </section>
+          </details>
         </article>
 
         <article className="member-card wide">
           <span className="eyebrow">financeiro</span>
-          <h2>Valores vinculados</h2>
+          <h2>Benefícios Recebidos</h2>
           <div className="member-finance-columns">
             <section className="member-finance-column">
               <header className="member-finance-column-head">
@@ -282,20 +281,15 @@ export default async function MemberDashboardPage() {
         <article className="member-card wide">
           <span className="eyebrow">ranking e marcas</span>
           <h2>Inserir marca de teste ou prova</h2>
-          <MemberMarkForm />
-          <div className="member-table">
-            {dashboard.marks.length === 0 ? <p>Nenhuma marca enviada ainda.</p> : null}
-            {dashboard.marks.map((mark) => (
-              <div key={mark.id}>
-                <strong>{mark.event}</strong>
-                <span>{mark.age_group}</span>
-                <span>{mark.time}</span>
-                <span>{mark.date}</span>
-                <span>{mark.location}</span>
-                <em>{mark.status}</em>
-              </div>
-            ))}
-          </div>
+          <MemberMarkForm
+            initialMarks={dashboard.marks.map((mark) => ({
+              id: mark.id,
+              event: mark.event,
+              time: mark.time,
+              date: mark.date,
+              location: mark.location,
+            }))}
+          />
         </article>
 
       </section>

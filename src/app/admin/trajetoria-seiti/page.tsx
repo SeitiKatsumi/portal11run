@@ -171,7 +171,11 @@ export default function AdminTrajetoriaSeitiPage() {
 
       <section className="seiti-story-timeline" aria-label="Linha do tempo da trajetória">
         {timeline.map((item, index) => (
-          <article className={`seiti-story-item${item.image ? "" : " no-media"}`} key={`${item.year}-${item.title}`}>
+          <article
+            className={`seiti-story-item${item.image ? "" : " no-media"}`}
+            id={item.title === "O teste com Ricardo D'Angelo" ? "ricardo-dangelo" : undefined}
+            key={`${item.year}-${item.title}`}
+          >
             <div className="seiti-story-copy">
               <span className="seiti-story-year">{item.year}</span>
               <span className="eyebrow">{item.label}</span>

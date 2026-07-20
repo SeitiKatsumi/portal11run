@@ -2,10 +2,9 @@ import { mkdirSync, readFileSync } from "fs";
 import path from "path";
 import { randomUUID } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
+import { sponsorCategories, type SponsorCategory } from "./sponsor-categories";
 
-export const sponsorCategories = ["Realização", "Patrocinador Master", "Apoiadores"] as const;
-
-export type SponsorCategory = (typeof sponsorCategories)[number];
+export { sponsorCategories } from "./sponsor-categories";
 
 export type SponsorRecord = {
   id: string;
@@ -32,7 +31,7 @@ let database: DatabaseSync | undefined;
 
 const sponsorColumns: Record<string, string> = {
   description: "TEXT",
-  category: "TEXT NOT NULL DEFAULT 'Apoiadores'",
+  category: "TEXT NOT NULL DEFAULT 'Patrocinadores'",
   logo_url: "TEXT",
   active: "INTEGER NOT NULL DEFAULT 1",
   sort_order: "INTEGER NOT NULL DEFAULT 0"
@@ -52,7 +51,7 @@ const defaultSponsors: Array<Omit<SponsorRecord, "created_at" | "updated_at">> =
     id: "instituto-vanderlei-cordeiro",
     name: "Instituto Vanderlei Cordeiro de Lima",
     description: "Instituição parceira na construção de oportunidades para jovens atletas.",
-    category: "Realização",
+    category: "Apoio",
     logo_url: "/assets/logos/instituto-vanderlei-cordeiro.png",
     active: 1,
     sort_order: 20
@@ -61,7 +60,7 @@ const defaultSponsors: Array<Omit<SponsorRecord, "created_at" | "updated_at">> =
     id: "bni",
     name: "BNI",
     description: "Patrocinador master do projeto 11RUN.",
-    category: "Patrocinador Master",
+    category: "Patrocinadores Master",
     logo_url: "/assets/logos/bni.png",
     active: 1,
     sort_order: 10
@@ -70,7 +69,7 @@ const defaultSponsors: Array<Omit<SponsorRecord, "created_at" | "updated_at">> =
     id: "bahia-esportes",
     name: "Bahia Esportes",
     description: "Apoiador do projeto.",
-    category: "Apoiadores",
+    category: "Patrocinadores",
     logo_url: "/assets/logos/bahia-esportes.png",
     active: 1,
     sort_order: 10
@@ -79,7 +78,7 @@ const defaultSponsors: Array<Omit<SponsorRecord, "created_at" | "updated_at">> =
     id: "porto-seguro",
     name: "Porto Seguro",
     description: "Apoiador do projeto.",
-    category: "Apoiadores",
+    category: "Patrocinadores",
     logo_url: "/assets/logos/porto-seguro.webp",
     active: 1,
     sort_order: 20
@@ -88,7 +87,7 @@ const defaultSponsors: Array<Omit<SponsorRecord, "created_at" | "updated_at">> =
     id: "u2e",
     name: "U2E",
     description: "Apoiador do projeto.",
-    category: "Apoiadores",
+    category: "Patrocinadores",
     logo_url: "/assets/logos/u2e.png",
     active: 1,
     sort_order: 30
@@ -97,7 +96,7 @@ const defaultSponsors: Array<Omit<SponsorRecord, "created_at" | "updated_at">> =
     id: "lqf",
     name: "LQF Farmacêutica",
     description: "Apoiador do projeto.",
-    category: "Apoiadores",
+    category: "Patrocinadores",
     logo_url: "/assets/logos/lqf-logo.png",
     active: 1,
     sort_order: 40
@@ -106,7 +105,7 @@ const defaultSponsors: Array<Omit<SponsorRecord, "created_at" | "updated_at">> =
     id: "built",
     name: "BUILT",
     description: "Apoiador do projeto.",
-    category: "Apoiadores",
+    category: "Patrocinadores",
     logo_url: "/assets/logos/built-horizontal.png",
     active: 1,
     sort_order: 50
@@ -115,7 +114,7 @@ const defaultSponsors: Array<Omit<SponsorRecord, "created_at" | "updated_at">> =
     id: "flebo",
     name: "Flebo",
     description: "Apoiador do projeto.",
-    category: "Apoiadores",
+    category: "Patrocinadores",
     logo_url: "/assets/logos/flebo.png",
     active: 1,
     sort_order: 60
@@ -124,7 +123,7 @@ const defaultSponsors: Array<Omit<SponsorRecord, "created_at" | "updated_at">> =
     id: "rm-corretora",
     name: "RM Corretora",
     description: "Apoiador do projeto.",
-    category: "Apoiadores",
+    category: "Patrocinadores",
     logo_url: "/assets/logos/rm-corretora.png",
     active: 1,
     sort_order: 70
@@ -136,7 +135,9 @@ function now() {
 }
 
 function normalizeCategory(value?: string): SponsorCategory {
-  return sponsorCategories.includes(value as SponsorCategory) ? (value as SponsorCategory) : "Apoiadores";
+  if (value === "Patrocinador Master") return "Patrocinadores Master";
+  if (value === "Apoiadores") return "Patrocinadores";
+  return sponsorCategories.includes(value as SponsorCategory) ? (value as SponsorCategory) : "Patrocinadores";
 }
 
 function normalizeSort(value?: string | number) {
@@ -155,6 +156,7 @@ function getDatabase() {
   assertSponsorColumns(database);
   assertSponsorIndexes(database);
   seedDefaultSponsors(database);
+  migrateSponsorCategories(database);
   return database;
 }
 
@@ -203,6 +205,14 @@ function seedDefaultSponsors(db: DatabaseSync) {
   }
 }
 
+function migrateSponsorCategories(db: DatabaseSync) {
+  const timestamp = now();
+  db.prepare("UPDATE sponsors SET category = 'Realização', updated_at = ? WHERE id = 'elevenmind'").run(timestamp);
+  db.prepare("UPDATE sponsors SET category = 'Apoio', updated_at = ? WHERE id = 'instituto-vanderlei-cordeiro'").run(timestamp);
+  db.prepare("UPDATE sponsors SET category = 'Patrocinadores Master', updated_at = ? WHERE id = 'bni' OR category = 'Patrocinador Master'").run(timestamp);
+  db.prepare("UPDATE sponsors SET category = 'Patrocinadores', updated_at = ? WHERE category = 'Apoiadores'").run(timestamp);
+}
+
 export function listSponsors({ activeOnly = true } = {}) {
   const where = activeOnly ? "WHERE active = 1" : "";
   return getDatabase()
@@ -212,8 +222,9 @@ export function listSponsors({ activeOnly = true } = {}) {
        ORDER BY
          CASE category
            WHEN 'Realização' THEN 1
-           WHEN 'Patrocinador Master' THEN 2
-           ELSE 3
+           WHEN 'Apoio' THEN 2
+           WHEN 'Patrocinadores Master' THEN 3
+           ELSE 4
          END,
          sort_order ASC,
          name ASC`

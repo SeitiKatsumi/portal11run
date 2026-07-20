@@ -3,12 +3,11 @@
 import { useState, type FormEvent } from "react";
 import { Handshake, PencilLine, Trash2, X } from "lucide-react";
 import type { SponsorRecord } from "@/lib/sponsors";
+import { sponsorCategories } from "@/lib/sponsor-categories";
 
 type SponsorsAdminProps = {
   initialSponsors: SponsorRecord[];
 };
-
-const sponsorCategoryOptions = ["Realização", "Patrocinador Master", "Apoiadores"];
 
 export function SponsorsAdmin({ initialSponsors }: SponsorsAdminProps) {
   const [sponsors, setSponsors] = useState(initialSponsors);
@@ -60,7 +59,7 @@ export function SponsorsAdmin({ initialSponsors }: SponsorsAdminProps) {
         <div>
           <span className="eyebrow">patrocinadores</span>
           <h1>Gestão de patrocinadores</h1>
-          <p>Cadastre realização, patrocinadores master e apoiadores para aparecerem no site e no módulo financeiro.</p>
+          <p>Organize realização, apoio e patrocinadores para aparecerem no site e no módulo financeiro.</p>
         </div>
       </div>
 
@@ -71,8 +70,8 @@ export function SponsorsAdmin({ initialSponsors }: SponsorsAdminProps) {
         </label>
         <label>
           <span>Grupo</span>
-          <select name="category" defaultValue={editingSponsor?.category ?? "Apoiadores"} required>
-            {sponsorCategoryOptions.map((category) => (
+          <select name="category" defaultValue={editingSponsor?.category ?? "Patrocinadores"} required>
+            {sponsorCategories.map((category) => (
               <option key={category} value={category}>
                 {category}
               </option>

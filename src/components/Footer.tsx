@@ -1,8 +1,10 @@
 import Link from "next/link";
 import { navItems } from "@/lib/content";
+import type { NavItem } from "@/lib/content";
 import { listSponsors } from "@/lib/sponsors";
+import { sponsorCategories } from "@/lib/sponsor-categories";
 
-const footerSponsorCategories = ["Realização", "Patrocinador Master", "Apoiadores"] as const;
+const footerSponsorCategories = sponsorCategories;
 
 type FooterSponsorCategory = (typeof footerSponsorCategories)[number];
 
@@ -23,55 +25,55 @@ const fallbackSponsors: FooterSponsor[] = [
   {
     id: "instituto-vanderlei-cordeiro",
     name: "Instituto Vanderlei Cordeiro de Lima",
-    category: "Realização",
+    category: "Apoio",
     logo_url: "/assets/logos/instituto-vanderlei-cordeiro.png"
   },
   {
     id: "bni",
     name: "BNI",
-    category: "Patrocinador Master",
+    category: "Patrocinadores Master",
     logo_url: "/assets/logos/bni.png"
   },
   {
     id: "bahia-esportes",
     name: "Bahia Esportes",
-    category: "Apoiadores",
+    category: "Patrocinadores",
     logo_url: "/assets/logos/bahia-esportes.png"
   },
   {
     id: "porto-seguro",
     name: "Porto Seguro",
-    category: "Apoiadores",
+    category: "Patrocinadores",
     logo_url: "/assets/logos/porto-seguro.webp"
   },
   {
     id: "u2e",
     name: "U2E",
-    category: "Apoiadores",
+    category: "Patrocinadores",
     logo_url: "/assets/logos/u2e.png"
   },
   {
     id: "lqf",
     name: "LQF Farmacêutica",
-    category: "Apoiadores",
+    category: "Patrocinadores",
     logo_url: "/assets/logos/lqf-logo.png"
   },
   {
     id: "built",
     name: "BUILT",
-    category: "Apoiadores",
+    category: "Patrocinadores",
     logo_url: "/assets/logos/built-horizontal.png"
   },
   {
     id: "flebo",
     name: "Flebo",
-    category: "Apoiadores",
+    category: "Patrocinadores",
     logo_url: "/assets/logos/flebo.png"
   },
   {
     id: "rm-corretora",
     name: "RM Corretora",
-    category: "Apoiadores",
+    category: "Patrocinadores",
     logo_url: "/assets/logos/rm-corretora.png"
   }
 ];
@@ -79,7 +81,7 @@ const fallbackSponsors: FooterSponsor[] = [
 function normalizeFooterCategory(category: string): FooterSponsorCategory {
   return footerSponsorCategories.includes(category as FooterSponsorCategory)
     ? (category as FooterSponsorCategory)
-    : "Apoiadores";
+    : "Patrocinadores";
 }
 
 function getFooterSponsors(): FooterSponsor[] {
@@ -97,7 +99,9 @@ function getFooterSponsors(): FooterSponsor[] {
 }
 
 export function Footer() {
-  const footerLinks = navItems.flatMap((item) => ("children" in item && item.children ? item.children : [item]));
+  const flattenLinks = (items: NavItem[]): NavItem[] =>
+    items.flatMap((item) => (item.children?.length ? flattenLinks(item.children) : [item]));
+  const footerLinks = flattenLinks(navItems).filter((item) => item.href.startsWith("/"));
   const sponsors = getFooterSponsors();
   const sponsorGroups = footerSponsorCategories
     .map((category) => ({

@@ -54,6 +54,19 @@ export function Header() {
                 </button>
                 <div className="nav-dropdown-menu">
                   {item.children.map((child) => {
+                    if (child.children?.length) {
+                      return (
+                        <section className="nav-dropdown-section" key={child.label} aria-label={child.label}>
+                          <strong>{child.label}</strong>
+                          {child.children.map((professional) => (
+                            <Link key={professional.href} href={professional.href}>
+                              <UserRound size={15} strokeWidth={1.7} />
+                              <span>{professional.label}</span>
+                            </Link>
+                          ))}
+                        </section>
+                      );
+                    }
                     const ChildIcon = navIcons[child.href];
                     return (
                       <Link key={child.href} href={child.href}>
@@ -93,6 +106,19 @@ export function Header() {
                 <div className="mobile-nav-group" key={item.href}>
                   <strong>{item.label}</strong>
                   {item.children.map((child) => {
+                    if (child.children?.length) {
+                      return (
+                        <div className="mobile-nav-subgroup" key={child.label}>
+                          <span>{child.label}</span>
+                          {child.children.map((professional) => (
+                            <Link key={professional.href} href={professional.href} onClick={() => setOpen(false)}>
+                              <UserRound size={16} strokeWidth={1.7} />
+                              <span>{professional.label}</span>
+                            </Link>
+                          ))}
+                        </div>
+                      );
+                    }
                     const ChildIcon = navIcons[child.href];
                     return (
                       <Link key={child.href} href={child.href} onClick={() => setOpen(false)}>

@@ -69,10 +69,11 @@
 
 .photoStory { position: relative; min-height: 560px; margin-top: 24px; overflow: hidden; border-radius: 30px; }
 .photoStory img { object-fit: cover; object-position: center; }
-.photoStory > div { position: absolute; top: 50%; left: clamp(28px, 6vw, 80px); z-index: 1; width: min(430px, calc(100% - 56px)); padding: clamp(26px, 4vw, 46px); border: 1px solid rgba(255,255,255,.24); border-radius: 24px; transform: translateY(-50%); color: #fff; background: rgba(18,26,13,.82); backdrop-filter: blur(9px); }
+.photoStory > div { position: absolute; top: 50%; left: clamp(28px, 4vw, 56px); z-index: 1; width: min(390px, calc(100% - 56px)); padding: clamp(26px, 3vw, 34px); border: 1px solid rgba(255,255,255,.24); border-radius: 24px; transform: translateY(-50%); color: #fff; background: rgba(18,26,13,.82); backdrop-filter: blur(9px); }
 .photoStory .eyebrow { color: #dfe8c1; }
-.photoStory h2 { margin: 18px 0 0; font-size: clamp(2.7rem, 5.4vw, 5rem); font-weight: 300; letter-spacing: -.05em; line-height: .95; }
-.photoStory p { max-width: 370px; margin: 24px 0 0; color: rgba(255,255,255,.82); line-height: 1.6; }
+.photoStory h2 { margin: 16px 0 0; font-size: clamp(2.15rem, 3.1vw, 2.75rem); font-weight: 300; letter-spacing: -.045em; line-height: 1; }
+.photoStory h2 span { white-space: nowrap; }
+.photoStory p { max-width: 320px; margin: 20px 0 0; color: rgba(255,255,255,.82); line-height: 1.55; }
 
 .athletes { align-items: start; }
 .athleteList { display: grid; }
@@ -183,6 +184,7 @@
   .heroImage span { right: 16px; bottom: 16px; }
   .gallery { grid-template-columns: 1fr; grid-auto-rows: 300px; }
   .gallery button.wide { grid-column: auto; }
+  .photoStory h2 { font-size: clamp(1.9rem, 8.5vw, 2.1rem); }
 }
 
 @media (prefers-reduced-motion: reduce) {
