@@ -17,6 +17,11 @@ function contentType(fileName: string) {
   if (extension === ".png") return "image/png";
   if (extension === ".webp") return "image/webp";
   if (extension === ".gif") return "image/gif";
+  if (extension === ".mp3") return "audio/mpeg";
+  if (extension === ".m4a" || extension === ".mp4") return "audio/mp4";
+  if (extension === ".ogg") return "audio/ogg";
+  if (extension === ".webm") return "audio/webm";
+  if (extension === ".wav") return "audio/wav";
   return "image/jpeg";
 }
 

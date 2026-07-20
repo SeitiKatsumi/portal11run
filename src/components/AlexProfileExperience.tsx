@@ -132,6 +132,7 @@ export function AlexProfileExperience() {
           <div className={styles.actions}>
             <a className={styles.primaryButton} href="#trajetoria">Conheça a trajetória <ArrowRight size={17} /></a>
             <a className={styles.textButton} href="#curriculo">Ver currículo completo <ChevronRight size={17} /></a>
+            <AlexLopesApplication label="Treine com o Alex" className={`${styles.primaryButton} ${styles.coachingButton}`} />
           </div>
         </div>
         <div className={styles.heroImage}>

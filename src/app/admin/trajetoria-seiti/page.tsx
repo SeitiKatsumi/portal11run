@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SeitiFamilySlider } from "@/components/SeitiFamilySlider";
 
 export const dynamic = "force-dynamic";
 
@@ -192,7 +193,9 @@ export default function AdminTrajetoriaSeitiPage() {
                 ))}
               </div>
             </div>
-            {item.image ? (
+            {item.year === "2022-2026" ? (
+              <SeitiFamilySlider />
+            ) : item.image ? (
               <figure className={index % 2 === 0 ? "seiti-story-media" : "seiti-story-media alternate"}>
                 <img src={item.image} alt={item.imageAlt} />
                 <figcaption>{item.caption}</figcaption>

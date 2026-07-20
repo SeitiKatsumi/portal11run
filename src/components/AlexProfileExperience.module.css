@@ -25,6 +25,7 @@
 .primaryButton, .textButton { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; border-radius: 999px; padding: 0 20px; font-size: .84rem; font-weight: 600; text-decoration: none; transition: transform 180ms ease, background 180ms ease; }
 .primaryButton { color: #fff; background: var(--alex-ink); }
 .textButton { border: 1px solid var(--alex-line); color: var(--alex-ink); background: rgba(255,255,255,.3); }
+.coachingButton { border: 1px solid var(--alex-green); color: #fff; background: var(--alex-green); cursor: pointer; }
 .primaryButton:hover, .textButton:hover { transform: translateY(-2px); }
 .heroImage { position: relative; min-height: 610px; margin-left: -72px; overflow: hidden; clip-path: polygon(12% 0, 100% 0, 100% 100%, 0 100%); }
 .heroImage img { object-fit: cover; object-position: 50% 44%; }

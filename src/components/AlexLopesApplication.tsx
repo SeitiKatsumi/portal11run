@@ -4,7 +4,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { createPortal } from "react-dom";
 import { CheckCircle2, X } from "lucide-react";
 
-type Props = { label?: string };
+type Props = { label?: string; className?: string };
 
 const fieldGroups = [
   {
@@ -52,7 +52,7 @@ const fieldGroups = [
   },
 ] as const;
 
-export function AlexLopesApplication({ label = "Treine com o Alex" }: Props) {
+export function AlexLopesApplication({ label = "Treine com o Alex", className }: Props) {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -76,21 +76,21 @@ export function AlexLopesApplication({ label = "Treine com o Alex" }: Props) {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formElement = event.currentTarget;
     setSaving(true);
     setNotice("");
-    const form = new FormData(event.currentTarget);
-    const payload = Object.fromEntries(form.entries());
+    const form = new FormData(formElement);
     const response = await fetch("/api/alex-lopes", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: form,
     });
+    const result = await response.json().catch(() => ({})) as { error?: string };
     setSaving(false);
     if (!response.ok) {
-      setNotice("Não foi possível enviar agora. Revise os campos obrigatórios e tente novamente.");
+      setNotice(result.error ?? "Não foi possível enviar agora. Revise os campos obrigatórios e tente novamente.");
       return;
     }
-    event.currentTarget.reset();
+    formElement.reset();
     setNotice("Recebemos seu formulário. O Professor Alex Lopes e sua equipe entrarão em contato.");
   }
 
@@ -139,7 +139,7 @@ export function AlexLopesApplication({ label = "Treine com o Alex" }: Props) {
 
   return (
     <>
-      <button className="button button-primary" type="button" onClick={() => setOpen(true)}>{label}</button>
+      <button className={className ?? "button button-primary"} type="button" onClick={() => setOpen(true)}>{label}</button>
       {mounted && modal ? createPortal(modal, document.body) : null}
     </>
   );

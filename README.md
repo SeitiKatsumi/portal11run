@@ -98,3 +98,5 @@ Caminho no Host: gerenciado pelo CapRover
 ```
 
 O container usa `SQLITE_PATH=/data/portal11run.sqlite`, então o banco fica preservado entre deploys.
+
+As avaliações enviadas pelo formulário “Treine com o Alex” ficam disponíveis em `/admin/alex-lopes` e são persistidas em `/data/alex-lopes-applications.json`. Áudios opcionais são armazenados no diretório configurado por `UPLOAD_DIR` (`/data/uploads` no container).

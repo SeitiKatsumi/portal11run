@@ -5,7 +5,7 @@ import path from "path";
 export type AlexLopesApplication = {
   id: string;
   createdAt: string;
-  status: "Recebido" | "Em contato" | "Avaliado" | "Arquivado";
+  status: "Recebido" | "Em análise" | "Contato realizado" | "Matriculado" | "Arquivado";
   fullName: string;
   birthDate: string;
   cityState: string;
@@ -37,18 +37,25 @@ export type AlexLopesApplication = {
   instagram: string;
   email: string;
   motivationAndPreferences: string;
+  trainingPreference: string;
   aboutYou: string;
+  trainingAudioUrl: string;
   methodologyConsent: boolean;
   socialConsent: boolean;
   teamProfileConsent: boolean;
 };
 
-const dataDirectory = path.join(process.cwd(), "data");
+const legacyDataDirectory = path.join(process.cwd(), "data");
+const dataDirectory = path.dirname(path.resolve(process.cwd(), process.env.SQLITE_PATH ?? "data/portal11run.sqlite"));
 const dataFile = path.join(dataDirectory, "alex-lopes-applications.json");
+const legacyDataFile = path.join(legacyDataDirectory, "alex-lopes-applications.json");
 
 function ensureStore() {
   if (!fs.existsSync(dataDirectory)) fs.mkdirSync(dataDirectory, { recursive: true });
-  if (!fs.existsSync(dataFile)) fs.writeFileSync(dataFile, "[]", "utf8");
+  if (!fs.existsSync(dataFile)) {
+    if (dataFile !== legacyDataFile && fs.existsSync(legacyDataFile)) fs.copyFileSync(legacyDataFile, dataFile);
+    else fs.writeFileSync(dataFile, "[]", "utf8");
+  }
 }
 
 export function listAlexLopesApplications(): AlexLopesApplication[] {
@@ -62,7 +69,9 @@ export function listAlexLopesApplications(): AlexLopesApplication[] {
 
 function writeApplications(applications: AlexLopesApplication[]) {
   ensureStore();
-  fs.writeFileSync(dataFile, JSON.stringify(applications, null, 2), "utf8");
+  const temporaryFile = `${dataFile}.tmp`;
+  fs.writeFileSync(temporaryFile, JSON.stringify(applications, null, 2), "utf8");
+  fs.renameSync(temporaryFile, dataFile);
 }
 
 export function createAlexLopesApplication(

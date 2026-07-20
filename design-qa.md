@@ -1,65 +1,62 @@
-# Design QA — ajustes de Alex, painel do atleta e patrocinadores
+# Design QA — slider da família, CTA e painel do Alex
 
-## Evidence
+## Evidências
 
-- Source visual truth — modal desalinhado: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-626cae4d-30f3-4b1e-9f97-fc237f0667a0.png`
-- Source visual truth — texto sobre a foto: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-73df9171-2fe9-4ba1-b7ce-68462662202f.png`
-- Source visual truth — benefícios fora do cadastro: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-33bbb178-1a96-4f67-8c94-b3d8203ad8eb.png`
-- Source visual truth — marcas e gráfico: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-51a244cc-2e6f-425d-b431-d71a478f2320.png` e `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-0380e237-e40c-42cd-8304-0f435aeabb4f.png`
-- Source visual truth — grupos de patrocinadores: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-e4d216f0-c685-4d3d-af65-f348858f3d55.png` e `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-be154667-d6fe-4c12-88b4-0ecca89ccef3.png`
-- Implementation screenshots: `.design/qa-alex-modal-desktop-final.png`, `.design/qa-alex-modal-mobile-final.png`, `.design/qa-member-panel-desktop.png`
-- Combined comparisons: `.design/compare-modal-before-after.jpg`, `.design/compare-benefits-before-after.jpg`
-- Viewports tested: 1440 × 1000 desktop and 390 × 844 mobile.
-- States tested: modal open/closed, cadastro collapsed/open, activity edit/save, chart populated, sponsor admin and footer groups.
+- Fonte visual — seção dos filhos: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-ef96f22e-ade3-4ade-a133-5cf025d3bf88.png`
+- Fonte visual — posição do CTA: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-95984d2a-92b0-43dc-a348-61c005689328.png`
+- Fonte visual — painel quebrado: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-71a675c8-1cd5-421d-bc22-2dbf2e6cc7be.png`
+- Fonte visual — link administrativo a remover: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-b2a17d0e-7aaa-4ee4-8c79-13bff80eeeb8.png`
+- Implementação: `.design/qa-seiti-family-slider.png`, `.design/qa-alex-hero-cta-final.png`, `.design/qa-alex-admin-fixed-final.png`
+- Comparações combinadas: `.design/compare-seiti-slider.png`, `.design/compare-alex-cta.png`, `.design/compare-alex-admin.png`
+- Viewport do navegador: 1265 × 710, desktop.
+- Estados: primeiro e segundo slides; CTA e modal; envio confirmado; painel vazio, lista e detalhe selecionado.
 
-## Full-view comparison evidence
+## Comparação da visão completa
 
-The modal comparison shows the original left-anchored surface versus the implementation centered in the viewport. The benefits comparison shows the original independent card versus the implementation nested inside the registration disclosure. Desktop and mobile browser renders were inspected for the complete Alex page and athlete dashboard. The browser's stitched full-page capture repeats sticky elements, so normal viewport captures and DOM geometry were used for focused validation.
+As capturas foram normalizadas lado a lado porque as referências vieram de monitores com dimensões diferentes. A estrutura original dos cards foi preservada. O slider ocupa o mesmo espaço da imagem anterior, o CTA foi acrescentado ao grupo de ações existente e o painel voltou ao grid centralizado do sistema.
 
-## Focused region comparison evidence
+## Comparação focada
 
-- Modal: centered with `centerDeltaX: 0` and `centerDeltaY: 0` in desktop and mobile; explicit dark text on ivory surface; no horizontal overflow.
-- Photo statement: desktop panel width 390 px, 31% of the image width; title spans render as two controlled lines. Mobile title spans are 200 px and 245 px inside the available panel width, with no document overflow.
-- Athlete registration: `details` is closed by default; “Materiais e benefícios” exists only inside the open registration panel.
-- Marks: the form exposes the six standardized race values; legacy category and validation status are absent; each row exposes “Editar atividade”. PATCH persistence was exercised successfully.
-- Chart: two populated event series were rendered from 12 months of fixture data, with month axis, time axis, legend and responsive container.
-- Sponsors: footer and admin both render Realização, Apoio, Patrocinadores Master and Patrocinadores in the requested order.
+- Slider: seis imagens WebP carregadas, fotografia inteira preservada com `object-fit: contain`, legenda dinâmica, setas, contador e indicadores.
+- CTA: “Treine com o Alex” aparece no hero com a cor verde institucional e abre o modal centralizado existente.
+- Formulário: envio multipart concluído, confirmação visível e console limpo.
+- Painel: duas colunas no desktop, lista e detalhe dentro do limite de 1280 px, sem overflow horizontal; seleção do cadastro funciona.
+- Navegação administrativa: “Trajetória Seiti/Orcampi” não aparece mais.
 
 ## Findings
 
-No actionable P0, P1 or P2 issues remain.
+Nenhum P0, P1 ou P2 permanece.
 
-- Fonts and typography: display and body hierarchy remain consistent; the photo title no longer clips or breaks unpredictably.
-- Spacing and layout rhythm: modal and nested panels are centered and aligned; chart and forms collapse to one column on mobile.
-- Colors and visual tokens: existing ivory, charcoal, olive and brown tokens are preserved; no gradient was introduced.
-- Image quality and asset fidelity: supplied photography and sponsor logos remain unchanged and correctly cropped.
-- Copy and content: “Benefícios Recebidos”, standardized race labels and four sponsor groups match the requested terminology.
-- Accessibility and behavior: native disclosure, labeled select, keyboard-capable buttons, semantic chart label, Escape modal close and touch-sized mobile controls were verified.
+- Fontes e tipografia: hierarquia e pesos existentes foram preservados; novo CTA usa a mesma tipografia e escala dos demais botões.
+- Espaçamento e ritmo: slider mantém a proporção 4:5; painel recuperou margens, padding, alinhamento e grid consistentes.
+- Cores e tokens: marfim, carvão, verde e linhas existentes foram reutilizados; nenhum degradê foi introduzido.
+- Qualidade das imagens: as seis fotos fornecidas foram convertidas para WebP com dimensões originais preservadas e sem ampliação artificial.
+- Copy e conteúdo: legendas descrevem Luhan, Aimê e a continuidade da trajetória; CTA e estados administrativos estão em português.
+- Acessibilidade: slider aceita setas do teclado, swipe, botões rotulados, pausa em foco/hover e respeita `prefers-reduced-motion`.
 
-## Comparison history
+## Histórico de correções
 
-1. P1 modal positioning/color inheritance: fixed by rendering through a document-body portal, raising the overlay layer and defining modal foreground color. Post-fix geometry is centered at both tested viewports.
-2. P2 photo overlay density: fixed with a 390 px panel, smaller two-line title and mobile-specific scale. Post-fix measurements show no text overflow.
-3. P2 benefits exposure: moved into the closed registration disclosure. Post-fix DOM confirms hidden by default and visible only after opening.
-4. P2 mark workflow: replaced free text with normalized race options, removed category/status presentation and added owned-record editing. POST/PATCH flow passed.
-5. P2 evolution visibility: added the responsive 12-month multi-series line chart using real mark data.
-6. P2 sponsor taxonomy: added shared categories and a startup migration for existing SQLite records; footer and admin both show the expected mapping.
-7. A server-render serialization error was found during browser QA and fixed by passing plain mark objects to the client component. Final browser console: no errors or warnings.
+1. P1 — painel administrativo sem estilos e fora do container: corrigido com `admin-panel`, grid responsivo e estilos globais específicos. Evidência final sem overflow.
+2. P1 — envio salvo, mas confirmação quebrava no navegador: a referência do formulário passou a ser preservada antes do `await`. Reenvio final exibiu confirmação e console sem erros.
+3. P1 — formulários do Alex fora do volume persistente: armazenamento direcionado ao diretório do `SQLITE_PATH`, que é `/data` no CapRover, com escrita atômica.
+4. P2 — campos com nomes divergentes eram descartados pela API: mapeamento alinhado ao formulário e áudio opcional passou a ser salvo com validação de tipo e limite de 15 MB.
+5. P2 — imagem estática não representava os filhos: substituída por slider funcional com as seis fotos fornecidas.
+6. P2 — link administrativo redundante: removido do menu sem excluir a rota pública institucional.
 
-## Implementation checklist
+## Checklist
 
-- [x] Desktop and mobile modal verified
-- [x] Photo title wrapping and coverage verified
-- [x] Registration/benefits disclosure verified
-- [x] Add and edit mark paths verified
-- [x] Six filter-ready event values enforced server-side
-- [x] 12-month chart rendered with multiple events
-- [x] Footer and admin sponsor groups verified
-- [x] TypeScript and optimized Next.js production build passed
-- [x] Browser console checked with no errors or warnings
+- [x] TypeScript sem erros
+- [x] Build otimizado do Next.js aprovado
+- [x] Seis imagens carregadas e navegação do slider exercitada
+- [x] CTA abre o formulário correto
+- [x] Envio cria cadastro e apresenta confirmação
+- [x] Cadastro aparece e abre no painel administrativo
+- [x] Console final sem erros
+- [x] Sem overflow horizontal no desktop
+- [x] Regras responsivas revisadas para 900 px e 620 px
 
 ## Follow-up polish
 
-No blocking visual polish remains.
+Nenhum refinamento visual bloqueante.
 
 final result: passed
