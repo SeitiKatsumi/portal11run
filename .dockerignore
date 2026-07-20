@@ -1,4 +1,5 @@
 .git
+.design
 .next
 node_modules
 data/*.sqlite

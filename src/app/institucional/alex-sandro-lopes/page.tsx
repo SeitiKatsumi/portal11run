@@ -1,17 +1,49 @@
-import { ExternalLink, Medal, Route, Trophy, UsersRound } from "lucide-react";
-import { AlexLopesApplication } from "@/components/AlexLopesApplication";
+import type { Metadata } from "next";
+import { AlexProfileExperience } from "@/components/AlexProfileExperience";
 
-const pillars = [
-  ["Técnico da ORCAMPI", "Conexão direta com uma estrutura reconhecida na formação de atletas brasileiros."],
-  ["Experiência de Seleção Brasileira", "Vivência em ambientes de alto rendimento, preparação e competição."],
-  ["Especialista em fundismo", "Leitura prática para provas de meio-fundo, fundo, estrada e cross country."],
-  ["Direção individual", "Planejamento construído a partir do histórico, rotina, prova-alvo e margem de evolução."],
-];
+export const metadata: Metadata = {
+  title: "Alex Sandro Lopes — Treinador Conselheiro",
+  description:
+    "Conheça a trajetória, a formação e os resultados de Alex Sandro Lopes, treinador conselheiro do Projeto 11RUN e coordenador de performance da ORCAMPI.",
+  alternates: { canonical: "/institucional/alex-sandro-lopes" },
+  openGraph: {
+    title: "Alex Sandro Lopes | Projeto 11RUN",
+    description:
+      "Método, presença e resultados que atravessam gerações no atletismo brasileiro.",
+    url: "/institucional/alex-sandro-lopes",
+    type: "profile",
+    images: [{ url: "/assets/alex-lopes/hero-parceria.webp", width: 709, height: 945, alt: "Alex Sandro Lopes em ambiente de treinamento" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Alex Sandro Lopes | Projeto 11RUN",
+    description: "Treinador conselheiro, formador de atletas e referência em alto rendimento.",
+    images: ["/assets/alex-lopes/hero-parceria.webp"],
+  },
+};
 
 export default function AlexSandroLopesPage() {
-  return <main className="page-shell alex-page">
-    <section className="alex-hero panel"><div className="alex-hero-copy"><p className="eyebrow">INSTITUCIONAL</p><h1>Alex Sandro Lopes</h1><p className="alex-lead">Direção técnica para quem quer transformar rotina em rendimento.</p><p>Professor Alex Lopes é técnico da ORCAMPI, com trajetória ligada ao alto rendimento e à formação de atletas fundistas no Brasil. O trabalho combina organização, leitura individual, calendário e consistência.</p><div className="alex-hero-actions"><AlexLopesApplication /><a className="button button-secondary" target="_blank" rel="noreferrer" href="https://www.instagram.com/treinador.corrida.alex.lopes/">Conhecer no Instagram <ExternalLink size={16} /></a></div></div><div className="alex-hero-quote"><p>“Performance não nasce do improviso. Nasce de direção.”</p><span>Professor Alex Lopes</span></div></section>
-    <section className="content-section"><div className="section-heading"><div><p className="eyebrow">COMANDO TÉCNICO</p><h2>Alto rendimento com método e presença.</h2></div><p>Mais do que treinar, a proposta é direcionar atletas para competir melhor, com decisões claras e preparação consistente.</p></div><div className="alex-pillars">{pillars.map(([title, text], index) => { const Icon = [Medal, Trophy, Route, UsersRound][index]; return <article className="panel alex-pillar" key={title}><Icon size={22} /><h3>{title}</h3><p>{text}</p></article>; })}</div></section>
-    <section className="alex-process panel"><div><p className="eyebrow">AVALIAÇÃO INICIAL</p><h2>O treino começa pela escuta.</h2></div><div><p>Antes de receber uma orientação, cada atleta apresenta sua rotina, histórico, objetivos, provas, disponibilidade e condições de saúde. Assim, o planejamento parte da realidade e respeita a evolução de cada pessoa.</p><AlexLopesApplication label="Preencher avaliação" /></div></section>
-  </main>;
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Alex Sandro de Jesus Lopes",
+    jobTitle: "Treinador Conselheiro do Projeto 11RUN",
+    alumniOf: [
+      { "@type": "CollegeOrUniversity", name: "Universidade de São Paulo" },
+      { "@type": "CollegeOrUniversity", name: "Universidade Federal de São Paulo" },
+    ],
+    affiliation: [
+      { "@type": "Organization", name: "ORCAMPI Unimed" },
+      { "@type": "Organization", name: "Instituto Vanderlei Cordeiro de Lima" },
+      { "@type": "Organization", name: "Projeto 11RUN" },
+    ],
+    knowsAbout: ["Atletismo", "Meio-fundo", "Fundo", "Marcha atlética", "Alto rendimento"],
+  };
+
+  return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <AlexProfileExperience />
+    </>
+  );
 }
