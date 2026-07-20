@@ -43,7 +43,7 @@ const heroMetrics = [
 ];
 
 const authority = [
-  "Técnico ORCAMPI",
+  "Técnico IVCL/Orcampi",
   "Experiência em Seleção Brasileira",
   "Referência em fundistas",
   "Direção competitiva"
@@ -51,7 +51,7 @@ const authority = [
 
 const commandCards = [
   {
-    title: "Técnico da ORCAMPI",
+    title: "Técnico do IVCL/Orcampi",
     text: "Conexão direta com uma das estruturas mais reconhecidas do atletismo brasileiro.",
     icon: ShieldCheck
   },
@@ -81,7 +81,7 @@ const offerCards = [
   {
     title: "Suporte técnico com Professor Alex Lopes",
     text:
-      "Acompanhamento técnico conduzido pelo Professor Alex Lopes, técnico da ORCAMPI, dezenas de vezes Seleção Brasileira e referência na formação de fundistas brasileiros. Direção real para competir melhor.",
+      "Acompanhamento técnico conduzido pelo Professor Alex Lopes, técnico do IVCL/Orcampi, dezenas de vezes Seleção Brasileira e referência na formação de fundistas brasileiros. Direção real para competir melhor.",
     icon: Trophy
   },
   {
@@ -212,7 +212,7 @@ export default function Page() {
             <span>Comando técnico</span>
             <h2>Professor Alex Lopes</h2>
             <p>
-              Técnico da ORCAMPI, dezenas de vezes Seleção Brasileira e referência na formação de
+              Técnico do IVCL/Orcampi, dezenas de vezes Seleção Brasileira e referência na formação de
               fundistas no Brasil.
             </p>
           </div>
@@ -280,7 +280,7 @@ export default function Page() {
             e conexão real com o alto rendimento brasileiro.
           </p>
           <p>
-            O projeto será conduzido pelo Professor Alex Lopes, técnico da ORCAMPI, dezenas de vezes
+            O projeto será conduzido pelo Professor Alex Lopes, técnico do IVCL/Orcampi, dezenas de vezes
             integrante da Seleção Brasileira e uma das referências na formação de atletas fundistas no país.
           </p>
           <p>

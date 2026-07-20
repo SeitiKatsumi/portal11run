@@ -4,7 +4,7 @@ import { SeitiFamilySlider } from "@/components/SeitiFamilySlider";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Admin - Trajetória do Seiti e Orcampi",
+  title: "Admin - Trajetória do Seiti e IVCL/Orcampi",
   description: "Linha do tempo temporária para apresentação da trajetória esportiva de Seiti Katsumi."
 };
 
@@ -120,7 +120,7 @@ const timeline: TimelineItem[] = [
   },
   {
     year: "2022-2026",
-    label: "Orcampi",
+    label: "IVCL/Orcampi",
     title: "A história volta para a base",
     image: "/assets/trajetoria-seiti/treinamentos-planilha.jpg",
     imageAlt: "Planilha histórica de treinamentos",
@@ -128,12 +128,12 @@ const timeline: TimelineItem[] = [
     text: [
       "A relação com a Funilense começou no início da trajetória, com Elias Bastos, Ryo, Edson, a pista da Unicamp e o teste com Ricardo D'Angelo.",
       "Mesmo seguindo depois para a Eletropaulo e para o Japão, aquela passagem foi importante para mostrar que havia potencial real de evolução.",
-      "Em 2022, Seiti levou seu filho Luhan para o projeto de base da Orcampi e para treinar com o professor Alex Lopes. Luhan acabou indo para o Japão no ano seguinte.",
-      "Agora, em 2026, Seiti vive uma nova etapa com Aimê, sua filha de 9 anos, sendo direcionada e acompanhada também na Orcampi. Essa continuidade transforma a própria história esportiva em ponte para a próxima geração."
+      "Em 2022, Seiti levou seu filho Luhan para o projeto de base do IVCL/Orcampi e para treinar com o professor Alex Lopes. Luhan acabou indo para o Japão no ano seguinte.",
+      "Agora, em 2026, Seiti vive uma nova etapa com Aimê, sua filha de 9 anos, sendo direcionada e acompanhada também no IVCL/Orcampi. Essa continuidade transforma a própria história esportiva em ponte para a próxima geração."
     ],
     metrics: [
-      { value: "2022", label: "Luhan na base da Orcampi" },
-      { value: "2026", label: "Aimê acompanhada na Orcampi" }
+      { value: "2022", label: "Luhan na base do IVCL/Orcampi" },
+      { value: "2026", label: "Aimê acompanhada no IVCL/Orcampi" }
     ]
   }
 ];
@@ -154,10 +154,10 @@ export default function AdminTrajetoriaSeitiPage() {
       <section className="seiti-story-hero">
         <div>
           <span className="eyebrow">Área temporária para apresentação</span>
-          <h1>Trajetória do Seiti e relação com a Orcampi</h1>
+          <h1>Trajetória do Seiti e relação com o IVCL/Orcampi</h1>
           <p>
             Uma linha do tempo objetiva para apresentar ao Ricardo a conexão entre Jogos Regionais, Funilense, Unicamp,
-            Eletropaulo, Japão e a retomada dessa história junto à Orcampi.
+            Eletropaulo, Japão e a retomada dessa história junto ao IVCL/Orcampi.
           </p>
         </div>
         <aside className="seiti-story-path" aria-label="Sequência da trajetória">
@@ -166,7 +166,7 @@ export default function AdminTrajetoriaSeitiPage() {
           <span>Funilense</span>
           <span>Eletropaulo</span>
           <span>Japão</span>
-          <span>Orcampi</span>
+          <span>IVCL/Orcampi</span>
         </aside>
       </section>
 

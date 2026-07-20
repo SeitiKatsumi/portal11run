@@ -24,14 +24,14 @@ import { AlexLopesApplication } from "@/components/AlexLopesApplication";
 import styles from "./AlexProfileExperience.module.css";
 
 const milestones = [
-  { year: "2008", title: "ORCAMPI e IVCL", text: "Início da atuação como treinador de meio-fundo, fundo e marcha atlética." },
+  { year: "2008", title: "IVCL/Orcampi", text: "Início da atuação como treinador de meio-fundo, fundo e marcha atlética." },
   { year: "2010–2015", title: "Núcleo de Formação BM&FBOVESPA", text: "Trabalho na formação de atletas e consolidação da experiência no alto rendimento." },
   { year: "2012", title: "Seleções paulistas", text: "Passa a integrar comissões técnicas estaduais em diferentes categorias." },
   { year: "2015", title: "Primeiras missões mundiais", text: "Treinador do Brasil nos Mundiais de Menores e de Cross Country, além de competições pan e sul-americanas." },
   { year: "2017–2020", title: "Coordenação da Escola de Formação", text: "Liderança técnica no Instituto Vanderlei Cordeiro de Lima." },
   { year: "2018–2019", title: "Comitê técnico da CBAt", text: "Membro do comitê técnico de base nas áreas de meio-fundo e fundo." },
   { year: "2021–2026", title: "Ciclos olímpico e internacional", text: "Atletas convocados para Jogos Olímpicos, mundiais, parapan-americanos e campeonatos continentais." },
-  { year: "2022–atual", title: "Coordenador de Performance", text: "Coordenação de performance da ORCAMPI Unimed e direção técnica conectada ao Projeto 11RUN." },
+  { year: "2022–atual", title: "Coordenador de Performance", text: "Coordenação de performance do IVCL/Orcampi Unimed e direção técnica conectada ao Projeto 11RUN." },
 ];
 
 const records = [
@@ -77,7 +77,7 @@ const curriculum = [
   },
   {
     title: "Experiência profissional",
-    content: "Coordenador de performance e treinador da ORCAMPI Unimed; treinador e ex-coordenador da Escola de Formação do IVCL; treinador do Núcleo de Formação BM&FBOVESPA; membro de comitês técnicos da CBAt e FPA; experiências anteriores na USP, Toyota, arbitragem e assessoria esportiva.",
+    content: "Coordenador de performance e treinador do IVCL/Orcampi Unimed; treinador e ex-coordenador da Escola de Formação do IVCL; treinador do Núcleo de Formação BM&FBOVESPA; membro de comitês técnicos da CBAt e FPA; experiências anteriores na USP, Toyota, arbitragem e assessoria esportiva.",
   },
   {
     title: "Seleções e competições",
@@ -151,7 +151,7 @@ export function AlexProfileExperience() {
           <h2>Do conhecimento à prática que transforma.</h2>
           <p>Uma carreira construída ao lado de atletas, equipes e instituições que acreditam no potencial humano.</p>
           <ul className={styles.factList}>
-            <li><Route size={19} /> ORCAMPI e IVCL desde 2008</li>
+            <li><Route size={19} /> IVCL/Orcampi desde 2008</li>
             <li><Trophy size={19} /> Coordenador de Performance desde 2022</li>
             <li><Flag size={19} /> Treinador de Seleções Brasileiras</li>
           </ul>

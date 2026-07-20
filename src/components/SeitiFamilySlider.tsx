@@ -16,13 +16,13 @@ const familyPhotos = [
   },
   {
     src: "/assets/trajetoria-seiti/familia/luhan-orcampi-com-alex.webp",
-    alt: "Luhan ao lado de Seiti e do treinador Alex Lopes na pista da Orcampi",
+    alt: "Luhan ao lado de Seiti e do treinador Alex Lopes na pista do IVCL/Orcampi",
     caption: "Luhan, Seiti e Alex Lopes: formação, acompanhamento e confiança."
   },
   {
     src: "/assets/trajetoria-seiti/familia/aime-orcampi.webp",
-    alt: "Aimê segurando seu novo tênis diante dos símbolos da Orcampi e do IVCL",
-    caption: "Aimê inicia sua própria caminhada acompanhada pela Orcampi."
+    alt: "Aimê segurando seu novo tênis diante dos símbolos do IVCL/Orcampi",
+    caption: "Aimê inicia sua própria caminhada acompanhada pelo IVCL/Orcampi."
   },
   {
     src: "/assets/trajetoria-seiti/familia/luhan-na-pista.webp",
@@ -59,7 +59,7 @@ export function SeitiFamilySlider() {
     <figure
       className="seiti-story-media seiti-family-slider"
       aria-roledescription="carrossel"
-      aria-label="Registros de Luhan e Aimê na Orcampi"
+      aria-label="Registros de Luhan e Aimê no IVCL/Orcampi"
       tabIndex={0}
       onKeyDown={(event) => {
         if (event.key === "ArrowLeft") showPrevious();

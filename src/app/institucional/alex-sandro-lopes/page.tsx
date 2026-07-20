@@ -4,7 +4,7 @@ import { AlexProfileExperience } from "@/components/AlexProfileExperience";
 export const metadata: Metadata = {
   title: "Alex Sandro Lopes — Treinador Conselheiro",
   description:
-    "Conheça a trajetória, a formação e os resultados de Alex Sandro Lopes, treinador conselheiro do Projeto 11RUN e coordenador de performance da ORCAMPI.",
+    "Conheça a trajetória, a formação e os resultados de Alex Sandro Lopes, treinador conselheiro do Projeto 11RUN e coordenador de performance do IVCL/Orcampi.",
   alternates: { canonical: "/institucional/alex-sandro-lopes" },
   openGraph: {
     title: "Alex Sandro Lopes | Projeto 11RUN",
@@ -33,7 +33,7 @@ export default function AlexSandroLopesPage() {
       { "@type": "CollegeOrUniversity", name: "Universidade Federal de São Paulo" },
     ],
     affiliation: [
-      { "@type": "Organization", name: "ORCAMPI Unimed" },
+      { "@type": "Organization", name: "IVCL/Orcampi Unimed" },
       { "@type": "Organization", name: "Instituto Vanderlei Cordeiro de Lima" },
       { "@type": "Organization", name: "Projeto 11RUN" },
     ],
