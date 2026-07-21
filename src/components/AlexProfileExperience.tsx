@@ -62,6 +62,11 @@ const education = [
 ];
 
 const gallery = [
+  { src: "/assets/alex-lopes/brasileiro-sub23-medalhistas.webp", alt: "Alex Lopes com dois atletas medalhistas no Campeonato Brasileiro Interclubes Sub-23" },
+  { src: "/assets/alex-lopes/selecao-brasileira-atleta.webp", alt: "Alex Lopes com atleta da Seleção Brasileira" },
+  { src: "/assets/alex-lopes/estadio-brasil-atleta.webp", alt: "Alex Lopes com atleta brasileira em estádio de atletismo" },
+  { src: "/assets/alex-lopes/bandeira-brasil-pista.webp", alt: "Alex Lopes e atleta brasileira celebrando com a bandeira do Brasil" },
+  { src: "/assets/alex-lopes/hero-alex-selecao-brasileira.webp", alt: "Retrato de Alex Lopes com uniforme da Seleção Brasileira" },
   { src: "/assets/alex-lopes/pista-parceria.webp", alt: "Alex com parceiro técnico em uma pista de atletismo" },
   { src: "/assets/alex-lopes/selecao-pista.webp", alt: "Alex com atletas e comissão técnica ao lado da pista", wide: true },
   { src: "/assets/alex-lopes/medalha-jovem-atleta.webp", alt: "Alex celebrando a conquista de uma jovem atleta" },
@@ -151,7 +156,7 @@ export function AlexProfileExperience() {
           </div>
         </div>
         <div className={styles.heroImage}>
-          <Image src="/assets/alex-lopes/hero-alex-solo-v2.webp" alt="Retrato de Alex Sandro Lopes no ambiente de treinamento" fill priority sizes="(max-width: 900px) 100vw, 50vw" />
+          <Image src="/assets/alex-lopes/hero-alex-selecao-brasileira.webp" alt="Retrato de Alex Sandro Lopes com uniforme da Seleção Brasileira" fill priority sizes="(max-width: 900px) 100vw, 50vw" />
           <span>Presença na pista.<br />Visão de longo prazo.</span>
         </div>
       </section>

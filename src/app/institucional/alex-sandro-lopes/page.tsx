@@ -12,13 +12,13 @@ export const metadata: Metadata = {
       "Método, presença e resultados que atravessam gerações no atletismo brasileiro.",
     url: "/institucional/alex-sandro-lopes",
     type: "profile",
-    images: [{ url: "/assets/alex-lopes/hero-alex-solo-v2.webp", width: 1086, height: 1448, alt: "Retrato de Alex Sandro Lopes em ambiente de treinamento" }],
+    images: [{ url: "/assets/alex-lopes/hero-alex-selecao-brasileira.webp", width: 853, height: 1280, alt: "Retrato de Alex Sandro Lopes com uniforme da Seleção Brasileira" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Alex Sandro Lopes | Projeto 11RUN",
     description: "Treinador conselheiro, formador de atletas e referência em alto rendimento.",
-    images: ["/assets/alex-lopes/hero-alex-solo-v2.webp"],
+    images: ["/assets/alex-lopes/hero-alex-selecao-brasileira.webp"],
   },
 };
 

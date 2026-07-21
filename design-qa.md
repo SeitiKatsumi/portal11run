@@ -1,52 +1,54 @@
-# Design QA — Submenu Institucional
+# Design QA — Novas fotos do perfil de Alex Lopes
 
 **Source visual truth**
 
-- `C:/Users/User-PC/Documents/11run Portal 2/.design/institutional-submenu-reference.png`
-- A anotação solicita mover Seiti Katsumi e Alex Lopes para um submenu lateral de “Profissionais”.
+- Página publicada antes da troca: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-before-top.png`
+- Retrato fornecido pelo usuário: `D:/active projects/Z1 Elevenmind/alex/WhatsApp Unknown 2026-07-21 at 15.18.02/WhatsApp Image 2026-07-20 at 21.22.29.jpeg`
 
 **Implementation evidence**
 
-- Desktop/foco aberto: `C:/Users/User-PC/Documents/11run Portal 2/.design/institutional-submenu-desktop.png`
-- Mobile/accordion aberto: `C:/Users/User-PC/Documents/11run Portal 2/.design/institutional-submenu-mobile.png`
-- Comparação lado a lado: `C:/Users/User-PC/Documents/11run Portal 2/.design/institutional-submenu-comparison.jpg`
-- Viewports: 1265 px desktop e 375 px mobile; estado público, tema claro.
+- Topo desktop: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-new-photos-after.png`
+- Galeria desktop: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-gallery-after.png`
+- Topo mobile: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-mobile-after.png`
+- Comparação lado a lado: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-new-photos-comparison.jpg`
+- Viewports: desktop padrão do navegador e mobile 390 × 844; estado público, tema claro.
 
 **Findings**
 
 - Nenhum P0, P1 ou P2 acionável permanece.
-- Tipografia: escala, caixa-alta, peso e espaçamento seguem os tokens existentes do cabeçalho.
-- Layout: “Profissionais” ocupa o primeiro painel e o segundo painel abre lateralmente à direita, como indicado na referência.
-- Cores: superfícies, bordas, sombra e estados de foco preservam a identidade atual, sem gradientes.
-- Ícones: ChevronRight e UserRound pertencem à biblioteca já usada pelo produto e mantêm peso consistente.
-- Conteúdo: Seiti Katsumi e Alex Lopes permanecem com as rotas públicas corretas.
-- Acessibilidade: submenu desktop funciona por hover e `focus-within`, usa `aria-haspopup`, `menu` e `menuitem`; mobile usa `details/summary` nativo.
-- Responsividade: mobile transforma o flyout em accordion; 375 px sem rolagem horizontal.
+- Tipografia: família, pesos, escala, entrelinha e quebras permanecem iguais à landing anterior.
+- Espaçamento e layout: a imagem nova ocupa o mesmo recorte do hero, sem deslocar textos, CTAs ou navegação; não há rolagem horizontal no desktop ou no mobile.
+- Cores e tokens: a fotografia azul e branca cria contraste claro com o painel bege e preserva o acabamento existente, sem introduzir gradientes ou elementos artificiais.
+- Qualidade de imagem: o retrato real está nítido, com o rosto e o uniforme enquadrados no desktop e no mobile; as cinco imagens foram convertidas para WebP e carregam com dimensões naturais válidas.
+- Conteúdo: textos e ações existentes foram preservados; as cinco novas fotos aparecem no início da galeria com descrições acessíveis específicas.
+- Acessibilidade: textos alternativos descrevem pessoas e contexto esportivo; o lightbox mantém abertura e fechamento funcionais e bloqueia corretamente o scroll de fundo.
 
 **Primary interactions tested**
 
-- Institucional aberto por foco.
-- Profissionais aberto por foco, exibindo o painel lateral.
-- Accordion Profissionais aberto no mobile, exibindo os dois links.
-- Console verificado: sem erros ou avisos.
+- Hero carregado com o novo retrato real e `naturalWidth` 853 / `naturalHeight` 1280.
+- Galeria com 26 botões/imagens.
+- Primeira imagem aberta no lightbox e fechada pelo botão.
+- Corpo bloqueado durante o modal e liberado após o fechamento.
+- Console verificado: nenhum erro.
 
 **Focused region comparison evidence**
 
-- A comparação conjunta mostra os links saindo do painel original e aparecendo no flyout direito, preservando dimensões, raio, cores e hierarquia do menu existente.
+- O comparativo conjunto confirma que apenas o conteúdo fotográfico do hero mudou: a composição, a hierarquia, os CTAs e o recorte diagonal foram preservados.
+- A captura da galeria confirma as quatro novas fotos de competição visíveis na primeira linha, com recortes coerentes e sem deformação.
 
 **Comparison history**
 
-1. Referência: Seiti e Alex estavam no mesmo painel, com indicação para movê-los à direita.
-2. Implementação final: Profissionais virou o gatilho; os dois profissionais aparecem em painel lateral e, no mobile, em accordion.
+1. Estado anterior: foto compartilhada com outra pessoa no hero e 21 imagens na galeria.
+2. Implementação final: retrato profissional de Alex sozinho no hero e cinco novas fotos inseridas no início da galeria, totalizando 26.
 
 **Implementation checklist**
 
-- [x] Submenu lateral desktop.
-- [x] Navegação por hover e teclado/foco.
-- [x] Accordion mobile.
-- [x] Rotas dos profissionais preservadas.
+- [x] Retrato real de Alex sozinho no topo.
+- [x] Cinco novas fotos otimizadas em WebP.
+- [x] Metadados Open Graph e Twitter atualizados.
+- [x] Galeria e lightbox validados.
+- [x] Responsividade desktop/mobile aprovada.
 - [x] TypeScript e build de produção aprovados.
-- [x] QA visual desktop/mobile aprovado.
 
 **Follow-up polish**
 
