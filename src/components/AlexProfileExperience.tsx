@@ -63,11 +63,26 @@ const education = [
 
 const gallery = [
   { src: "/assets/alex-lopes/pista-parceria.webp", alt: "Alex com parceiro técnico em uma pista de atletismo" },
-  { src: "/assets/alex-lopes/selecao-pista.webp", alt: "Alex com atletas e comissão técnica ao lado da pista" },
+  { src: "/assets/alex-lopes/selecao-pista.webp", alt: "Alex com atletas e comissão técnica ao lado da pista", wide: true },
   { src: "/assets/alex-lopes/medalha-jovem-atleta.webp", alt: "Alex celebrando a conquista de uma jovem atleta" },
   { src: "/assets/alex-lopes/medpucamp.webp", alt: "Alex com profissionais do atletismo em competição" },
   { src: "/assets/alex-lopes/pista-equipe.webp", alt: "Alex e equipe em uma pista de atletismo" },
-  { src: "/assets/alex-lopes/pista-familia.webp", alt: "Alex em encontro esportivo na pista" },
+  { src: "/assets/alex-lopes/pista-familia.webp", alt: "Alex em encontro esportivo na pista", wide: true },
+  { src: "/assets/alex-lopes/bastidores-equipe.webp", alt: "Alex com profissionais do esporte nos bastidores de uma competição" },
+  { src: "/assets/alex-lopes/encontro-profissional.webp", alt: "Alex em encontro com profissional ligado ao atletismo" },
+  { src: "/assets/alex-lopes/hero-parceria.webp", alt: "Alex em registro de parceria durante um treino" },
+  { src: "/assets/alex-lopes/atleta-com-treinador-ivcl.webp", alt: "Jovem atleta ao lado de treinador do IVCL/Orcampi" },
+  { src: "/assets/alex-lopes/atletas-em-prova-pista.webp", alt: "Atletas disputando uma prova em pista", wide: true },
+  { src: "/assets/alex-lopes/podio-atletismo-jovens.webp", alt: "Jovens atletas celebrando no pódio" },
+  { src: "/assets/alex-lopes/podio-campeonato-paulista.webp", alt: "Atleta no pódio do Campeonato Paulista" },
+  { src: "/assets/alex-lopes/podio-pista-atletismo.webp", alt: "Jovens atletas no pódio junto à pista" },
+  { src: "/assets/alex-lopes/equipe-familias-pista.webp", alt: "Equipe e familiares reunidos na pista", wide: true },
+  { src: "/assets/alex-lopes/grupo-atletas-familias.webp", alt: "Atletas, equipe e familiares em encontro esportivo", wide: true },
+  { src: "/assets/alex-lopes/confraternizacao-equipe.webp", alt: "Equipe reunida em momento de confraternização" },
+  { src: "/assets/alex-lopes/jovem-atleta-medalha.webp", alt: "Jovem atleta exibindo sua medalha" },
+  { src: "/assets/alex-lopes/jovem-atleta-pista.webp", alt: "Jovem atleta em uma pista de atletismo" },
+  { src: "/assets/alex-lopes/entrega-premiacao-jovem.webp", alt: "Entrega de premiação a jovem atleta" },
+  { src: "/assets/alex-lopes/aime-ivcl-orcampi.webp", alt: "Aimê em ação do IVCL/Orcampi" },
 ];
 
 const curriculum = [
@@ -136,7 +151,7 @@ export function AlexProfileExperience() {
           </div>
         </div>
         <div className={styles.heroImage}>
-          <Image src="/assets/alex-lopes/pista-parceria.webp" alt="Alex Sandro Lopes em uma pista de atletismo" fill priority sizes="(max-width: 900px) 100vw, 50vw" />
+          <Image src="/assets/alex-lopes/hero-alex-solo-v2.webp" alt="Retrato de Alex Sandro Lopes no ambiente de treinamento" fill priority sizes="(max-width: 900px) 100vw, 50vw" />
           <span>Presença na pista.<br />Visão de longo prazo.</span>
         </div>
       </section>
@@ -199,7 +214,7 @@ export function AlexProfileExperience() {
 
       <section className={styles.gallerySection} id="galeria">
         <div className={styles.sectionHeader}><span className={styles.eyebrow}>Galeria</span><h2>Momentos que constroem histórias.</h2></div>
-        <div className={styles.gallery}>{gallery.map((image, index) => <button type="button" key={image.src} className={index === 1 || index === 5 ? styles.wide : ""} onClick={() => setActiveImage(image)} aria-label={`Ampliar: ${image.alt}`}><Image src={image.src} alt={image.alt} fill sizes="(max-width: 720px) 100vw, 33vw" /><span>Ampliar <ExternalLink size={14} /></span></button>)}</div>
+        <div className={styles.gallery}>{gallery.map((image) => <button type="button" key={image.src} className={image.wide ? styles.wide : ""} onClick={() => setActiveImage(image)} aria-label={`Ampliar: ${image.alt}`}><Image src={image.src} alt={image.alt} fill sizes="(max-width: 720px) 100vw, 33vw" /><span>Ampliar <ExternalLink size={14} /></span></button>)}</div>
       </section>
 
       <section className={styles.curriculum} id="curriculo">
