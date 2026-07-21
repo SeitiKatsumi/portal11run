@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BarChart3, ChevronDown, Flag, Globe2, HandHeart, Home, Medal, Menu, Trophy, UserRound, X } from "lucide-react";
+import { BarChart3, ChevronDown, ChevronRight, Flag, Globe2, HandHeart, Home, Medal, Menu, Trophy, UserRound, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { navItems } from "@/lib/content";
@@ -56,15 +56,20 @@ export function Header() {
                   {item.children.map((child) => {
                     if (child.children?.length) {
                       return (
-                        <section className="nav-dropdown-section" key={child.label} aria-label={child.label}>
-                          <strong>{child.label}</strong>
-                          {child.children.map((professional) => (
-                            <Link key={professional.href} href={professional.href}>
-                              <UserRound size={15} strokeWidth={1.7} />
-                              <span>{professional.label}</span>
-                            </Link>
-                          ))}
-                        </section>
+                        <div className="nav-submenu" key={child.label}>
+                          <button type="button" className="nav-submenu-trigger" aria-haspopup="menu">
+                            <span>{child.label}</span>
+                            <ChevronRight size={15} strokeWidth={1.8} />
+                          </button>
+                          <div className="nav-nested-menu" role="menu" aria-label={child.label}>
+                            {child.children.map((professional) => (
+                              <Link key={professional.href} href={professional.href} role="menuitem">
+                                <UserRound size={15} strokeWidth={1.7} />
+                                <span>{professional.label}</span>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
                       );
                     }
                     const ChildIcon = navIcons[child.href];
@@ -108,15 +113,20 @@ export function Header() {
                   {item.children.map((child) => {
                     if (child.children?.length) {
                       return (
-                        <div className="mobile-nav-subgroup" key={child.label}>
-                          <span>{child.label}</span>
-                          {child.children.map((professional) => (
-                            <Link key={professional.href} href={professional.href} onClick={() => setOpen(false)}>
-                              <UserRound size={16} strokeWidth={1.7} />
-                              <span>{professional.label}</span>
-                            </Link>
-                          ))}
-                        </div>
+                        <details className="mobile-nav-subgroup" key={child.label}>
+                          <summary>
+                            <span>{child.label}</span>
+                            <ChevronRight size={16} strokeWidth={1.8} />
+                          </summary>
+                          <div>
+                            {child.children.map((professional) => (
+                              <Link key={professional.href} href={professional.href} onClick={() => setOpen(false)}>
+                                <UserRound size={16} strokeWidth={1.7} />
+                                <span>{professional.label}</span>
+                              </Link>
+                            ))}
+                          </div>
+                        </details>
                       );
                     }
                     const ChildIcon = navIcons[child.href];

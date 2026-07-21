@@ -1,53 +1,55 @@
-# Design QA — Landing Alex Sandro Lopes
+# Design QA — Submenu Institucional
 
 **Source visual truth**
 
-- Public page before the update: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-before-top.png`
-- Supplied photo catalog: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-source-contact-sheet.jpg`
+- `C:/Users/User-PC/Documents/11run Portal 2/.design/institutional-submenu-reference.png`
+- A anotação solicita mover Seiti Katsumi e Alex Lopes para um submenu lateral de “Profissionais”.
 
 **Implementation evidence**
 
-- Final desktop hero: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-after-top.png`
-- Final desktop gallery: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-after-gallery.png`
-- Final mobile hero: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-after-mobile.png`
-- Final mobile gallery: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-after-gallery-mobile.png`
-- Desktop side-by-side comparison: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-top-comparison.jpg`
-- Viewports: 1265 px desktop and 375 px mobile, light theme, public/logged-out state.
+- Desktop/foco aberto: `C:/Users/User-PC/Documents/11run Portal 2/.design/institutional-submenu-desktop.png`
+- Mobile/accordion aberto: `C:/Users/User-PC/Documents/11run Portal 2/.design/institutional-submenu-mobile.png`
+- Comparação lado a lado: `C:/Users/User-PC/Documents/11run Portal 2/.design/institutional-submenu-comparison.jpg`
+- Viewports: 1265 px desktop e 375 px mobile; estado público, tema claro.
 
 **Findings**
 
-- No actionable P0, P1, or P2 findings remain.
-- Fonts and typography: unchanged from the source design; headline weight, wrapping, body copy, and button hierarchy remain consistent.
-- Spacing and layout rhythm: the existing two-column hero, diagonal image edge, card radius, spacing, and section flow are preserved.
-- Colors and tokens: the existing cream, black, green, border, and muted-text tokens remain unchanged; no gradients were introduced.
-- Image quality and asset fidelity: the hero now presents Alex alone in a natural training setting; all 12 added photographs were optimized to WebP and the gallery contains 21 unique records.
-- Copy and content: existing copy is preserved; new images have descriptive Portuguese alternative text.
-- Interaction and accessibility: all 21 gallery buttons expose unique accessible names; the lightbox opens and closes correctly; the console has no errors or warnings.
-- Responsiveness: desktop and 375 px mobile have no horizontal overflow; hero and gallery preserve their hierarchy and usable crops.
+- Nenhum P0, P1 ou P2 acionável permanece.
+- Tipografia: escala, caixa-alta, peso e espaçamento seguem os tokens existentes do cabeçalho.
+- Layout: “Profissionais” ocupa o primeiro painel e o segundo painel abre lateralmente à direita, como indicado na referência.
+- Cores: superfícies, bordas, sombra e estados de foco preservam a identidade atual, sem gradientes.
+- Ícones: ChevronRight e UserRound pertencem à biblioteca já usada pelo produto e mantêm peso consistente.
+- Conteúdo: Seiti Katsumi e Alex Lopes permanecem com as rotas públicas corretas.
+- Acessibilidade: submenu desktop funciona por hover e `focus-within`, usa `aria-haspopup`, `menu` e `menuitem`; mobile usa `details/summary` nativo.
+- Responsividade: mobile transforma o flyout em accordion; 375 px sem rolagem horizontal.
+
+**Primary interactions tested**
+
+- Institucional aberto por foco.
+- Profissionais aberto por foco, exibindo o painel lateral.
+- Accordion Profissionais aberto no mobile, exibindo os dois links.
+- Console verificado: sem erros ou avisos.
 
 **Focused region comparison evidence**
 
-- Hero: the side-by-side comparison confirms that only the requested photographic content changed; layout, typography, CTA positions, geometry, and visual tokens remain faithful to the published source.
-- Gallery: desktop and mobile captures confirm consistent rounded crops, real supplied imagery, readable rhythm, and stable two-column/one-column behavior.
+- A comparação conjunta mostra os links saindo do painel original e aparecendo no flyout direito, preservando dimensões, raio, cores e hierarquia do menu existente.
 
 **Comparison history**
 
-1. Source: hero showed Alex with another person and the gallery contained six visible records.
-2. First portrait edit: other people were removed, but small shirt inscriptions required a fidelity correction.
-3. Final portrait and gallery: Alex is isolated, the supplied photographic collection is incorporated, desktop/mobile overflow is absent, and no actionable visual issues remain.
+1. Referência: Seiti e Alex estavam no mesmo painel, com indicação para movê-los à direita.
+2. Implementação final: Profissionais virou o gatilho; os dois profissionais aparecem em painel lateral e, no mobile, em accordion.
 
 **Implementation checklist**
 
-- [x] Alex displayed alone in the hero.
-- [x] Hero metadata updated for social sharing.
-- [x] Supplied photos deduplicated and optimized.
-- [x] Gallery expanded from 6 to 21 accessible images.
-- [x] Lightbox interaction verified.
-- [x] Desktop and mobile visual checks passed.
-- [x] TypeScript and production build passed.
+- [x] Submenu lateral desktop.
+- [x] Navegação por hover e teclado/foco.
+- [x] Accordion mobile.
+- [x] Rotas dos profissionais preservadas.
+- [x] TypeScript e build de produção aprovados.
+- [x] QA visual desktop/mobile aprovado.
 
 **Follow-up polish**
 
-- No blocking follow-up items.
+- Nenhum item bloqueante.
 
 final result: passed

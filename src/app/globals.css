@@ -201,18 +201,67 @@ main {
   background: var(--surface-muted);
 }
 
-.nav-dropdown-section {
-  display: grid;
-  gap: 4px;
+.nav-submenu {
+  position: relative;
 }
 
-.nav-dropdown-section > strong {
-  padding: 8px 10px 5px;
-  color: var(--accent-strong);
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
+.nav-submenu-trigger {
+  width: 100%;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--muted);
+  cursor: default;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  transition: color 180ms ease, background 180ms ease;
+}
+
+.nav-submenu:hover .nav-submenu-trigger,
+.nav-submenu:focus-within .nav-submenu-trigger {
+  color: var(--text);
+  background: var(--surface-muted);
+}
+
+.nav-nested-menu {
+  position: absolute;
+  top: -10px;
+  left: calc(100% + 7px);
+  min-width: 220px;
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 20px 45px rgb(36 27 16 / 0.12);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-6px);
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.nav-nested-menu::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 100%;
+  width: 8px;
+  height: 100%;
+}
+
+.nav-submenu:hover .nav-nested-menu,
+.nav-submenu:focus-within .nav-nested-menu {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
 }
 
 .desktop-nav svg {
@@ -334,18 +383,40 @@ main {
 }
 
 .mobile-nav-subgroup {
-  display: grid;
-  gap: 2px;
   padding: 4px 0 0 12px;
 }
 
-.mobile-nav-subgroup > span {
-  padding: 7px 13px 3px;
+.mobile-nav-subgroup summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 13px;
   color: var(--muted);
   font-size: 0.64rem;
   font-weight: 700;
   letter-spacing: 0.12em;
+  list-style: none;
   text-transform: uppercase;
+  cursor: pointer;
+}
+
+.mobile-nav-subgroup summary::-webkit-details-marker {
+  display: none;
+}
+
+.mobile-nav-subgroup summary svg {
+  transition: transform 180ms ease;
+}
+
+.mobile-nav-subgroup[open] summary svg {
+  transform: rotate(90deg);
+}
+
+.mobile-nav-subgroup > div {
+  display: grid;
+  gap: 2px;
+  padding-left: 10px;
 }
 
 .hero-section,
