@@ -4968,6 +4968,54 @@ body.modal-open {
   background: var(--surface-muted);
 }
 
+.regional-athletes-section .regional-section-head {
+  margin-bottom: clamp(26px, 4vw, 42px);
+}
+
+.regional-athletes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.regional-athletes-grid .regional-athlete-card {
+  display: flex;
+  min-height: 148px;
+  flex-direction: column;
+  justify-content: space-between;
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease;
+}
+
+.regional-athletes-grid .regional-athlete-card:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--accent-strong) 42%, var(--line));
+  background: var(--surface);
+}
+
+.regional-athletes-grid .regional-athlete-card h3 {
+  max-width: 18ch;
+  margin-top: 30px;
+  font-size: clamp(1.22rem, 1.7vw, 1.65rem);
+}
+
+.regional-athlete-category {
+  display: inline-flex;
+  width: fit-content;
+  min-width: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--accent-strong);
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
 .ai-page {
   --ai-bg: #050505;
   --ai-panel: #101010;
@@ -6024,6 +6072,7 @@ body.modal-open {
   .regional-metrics,
   .regional-cards,
   .regional-cards.technical,
+  .regional-athletes-grid,
   .support-plan-grid,
   .support-form-grid,
   .support-strategy-grid {
@@ -6338,12 +6387,17 @@ body.modal-open {
   .regional-metrics,
   .regional-cards,
   .regional-cards.technical,
+  .regional-athletes-grid,
   .regional-two-lists,
   .footer-sponsors-grid,
   .support-plan-grid,
   .support-form-grid,
   .support-strategy-grid {
     grid-template-columns: 1fr;
+  }
+
+  .regional-athletes-grid .regional-athlete-card {
+    min-height: 128px;
   }
 
   .project-lane {
