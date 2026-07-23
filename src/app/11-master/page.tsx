@@ -8,7 +8,6 @@ import {
   CircleDollarSign,
   ClipboardCheck,
   Dumbbell,
-  Flag,
   HeartPulse,
   Medal,
   ShieldCheck,
@@ -138,6 +137,21 @@ const goals = [
   "Recordes brasileiros",
   "Pódios por categoria",
   "Representatividade de Itatiba e região"
+];
+
+const masterAthletes = [
+  { name: "Seiti Katsumi", category: "M50" },
+  { name: "Edson Tibúrcio", category: "M45" },
+  { name: "Silvano Lima Pinto", category: "M45" },
+  { name: "Leonardo Alves da Silva", category: "M40" },
+  { name: "Tiago Alves da Silva", category: "M40" },
+  { name: "Vanderlei Alves Tibúrcio", category: "M40" },
+  { name: "Leandro Cordeito Marcelino", category: "M40" },
+  { name: "Edinaldo Machado dos Santos", category: "M35" },
+  { name: "Josimar Aparecido Ribeiro", category: "M35" },
+  { name: "Tatiele Carvalho", category: "M35" },
+  { name: "Robson Alvarenga", category: "M30" },
+  { name: "Ana Paula Pandolfi Soares", category: "M30" }
 ];
 
 function CardGrid({
@@ -360,23 +374,22 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="regional-section split">
-        <div>
+      <section className="regional-section regional-athletes-section">
+        <div className="regional-section-head">
           <span className="eyebrow">atletas master 11RUN</span>
-          <h2>Atletas com histórico, disciplina e ambição competitiva.</h2>
+          <h2>Uma equipe construída em diferentes categorias.</h2>
+          <p>Conheça os atletas que integram o 11 Master.</p>
         </div>
-        <article className="regional-athlete-card">
-          <Flag size={24} />
-          <h3>Edson Tibúrcio Alves</h3>
-          <p>Categoria M45. Atleta master da 11RUN com foco em ser campeão paulista e brasileiro master.</p>
-          <Checklist
-            items={[
-              "5.000 m rasos: 14:52, ouro nos Jogos Regionais 2024",
-              "10.000 m rasos: 31:22, prata nos Jogos Regionais de São Bernardo do Campo 2024",
-              "Rumo ao Paulista e ao Brasileiro Master"
-            ]}
-          />
-        </article>
+        <div className="regional-athletes-grid">
+          {masterAthletes.map((athlete, index) => (
+            <Reveal key={`${athlete.category}-${athlete.name}`} delay={index * 0.025}>
+              <article className="regional-athlete-card">
+                <span className="regional-athlete-category">{athlete.category}</span>
+                <h3>{athlete.name}</h3>
+              </article>
+            </Reveal>
+          ))}
+        </div>
       </section>
 
       <section className="regional-section split">
