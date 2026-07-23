@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "11RUN — O futuro da corrida começa aqui",
     description: "Projetos que transformam talento em oportunidade.",
-    images: ["/assets/home/ayla-podcast-hero.webp"]
+    images: ["/assets/home/ayla-trofeus-hero.webp"]
   }
 };
 

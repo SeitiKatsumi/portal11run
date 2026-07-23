@@ -7,5 +7,6 @@ data/*.sqlite-wal
 .env.local
 dist
 coverage
+artifacts/
 *.log
 tsconfig.tsbuildinfo

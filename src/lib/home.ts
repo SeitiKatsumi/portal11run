@@ -53,13 +53,25 @@ function seedHome(db: DatabaseSync) {
     `INSERT OR IGNORE INTO home_settings (
       id, hero_media_type, hero_image, hero_video, hero_title, hero_subtitle, hero_kicker,
       content_alignment, overlay_strength, header_opacity, header_blur, updated_at
-    ) VALUES ('primary', 'image', ?, NULL, ?, ?, ?, 'center', 46, 74, 18, ?)`
+    ) VALUES ('primary', 'image', ?, NULL, ?, ?, ?, 'center', 58, 74, 18, ?)`
   ).run(
-    "/assets/home/ayla-podcast-hero.webp",
+    "/assets/home/ayla-trofeus-hero.webp",
     "O futuro da corrida começa aqui.",
     "Escolha uma frente e entre no ecossistema 11RUN.",
     "Performance · formação · oportunidade",
     timestamp
+  );
+
+  db.prepare(
+    `UPDATE home_settings
+     SET hero_image = ?,
+         overlay_strength = CASE WHEN overlay_strength < 58 THEN 58 ELSE overlay_strength END,
+         updated_at = ?
+     WHERE hero_image = ?`
+  ).run(
+    "/assets/home/ayla-trofeus-hero.webp",
+    timestamp,
+    "/assets/home/ayla-podcast-hero.webp"
   );
 
   const projects = [
