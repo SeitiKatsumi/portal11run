@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Boxes, CheckCircle2, PackageCheck, PencilLine, Plus, ShoppingBag, Trash2, Truck, X } from "lucide-react";
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
   orderStatusLabels,
   orderStatuses,
@@ -18,7 +18,19 @@ function currency(value: number) {
 }
 
 function dateTime(value: string) {
-  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(new Date(value));
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Data não informada";
+  return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" }).format(date);
+}
+
+function shippingAddress(value: string | null) {
+  if (!value) return null;
+  try {
+    const address = JSON.parse(value);
+    return address && typeof address === "object" ? address as Record<string, string> : null;
+  } catch {
+    return null;
+  }
 }
 
 const stageIcons = {
@@ -39,9 +51,36 @@ export function StoreAdmin({
   const [products, setProducts] = useState(initialProducts);
   const [orders, setOrders] = useState(initialOrders);
   const [editing, setEditing] = useState<StoreProduct | null>(null);
-  const [activeTab, setActiveTab] = useState<"orders" | "products">("orders");
+  const [activeTab, setActiveTab] = useState<"orders" | "products">("products");
   const [loading, setLoading] = useState(false);
+  const [ordersLoading, setOrdersLoading] = useState(true);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    async function loadOrders() {
+      try {
+        const response = await fetch("/api/admin/store/orders", { cache: "no-store" });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error ?? "Erro ao carregar pedidos.");
+        if (active) setOrders(Array.isArray(result.orders) ? result.orders : []);
+      } catch (loadError) {
+        if (active) {
+          setError(
+            loadError instanceof Error
+              ? `Não foi possível carregar os pedidos: ${loadError.message}`
+              : "Não foi possível carregar os pedidos."
+          );
+        }
+      } finally {
+        if (active) setOrdersLoading(false);
+      }
+    }
+    loadOrders();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const metrics = useMemo(() => ({
     orders: orders.length,
@@ -129,13 +168,15 @@ export function StoreAdmin({
             <div><span className="eyebrow">Operação</span><h2>Fluxo dos pedidos</h2></div>
             <span>{orders.length} registro{orders.length === 1 ? "" : "s"}</span>
           </div>
-          {!orders.length ? (
+          {ordersLoading ? (
+            <div className={styles.empty}><ShoppingBag /><strong>Carregando pedidos...</strong><span>Aguarde enquanto consultamos a operação da loja.</span></div>
+          ) : !orders.length ? (
             <div className={styles.empty}><ShoppingBag /><strong>Nenhum pedido recebido ainda.</strong><span>Os novos pedidos aparecerão aqui automaticamente.</span></div>
           ) : (
             <div className={styles.orderList}>
               {orders.map((order) => {
-                const StageIcon = stageIcons[order.order_status];
-                const address = order.shipping_address_json ? JSON.parse(order.shipping_address_json) as Record<string, string> : null;
+                const StageIcon = stageIcons[order.order_status] ?? ShoppingBag;
+                const address = shippingAddress(order.shipping_address_json);
                 return (
                   <article className={styles.orderCard} key={order.id}>
                     <div className={styles.orderTop}>
