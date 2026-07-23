@@ -1,0 +1,28 @@
+.adminHome { display: grid; gap: 18px; }
+.heading,.settings,.projects { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding: clamp(28px,5vw,54px); }
+.heading h1 { margin: 10px 0 0; font-size: clamp(46px,6vw,78px); font-weight: 400; letter-spacing: -.055em; line-height: .95; }
+.heading a,.primary,.actions button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 42px; padding: 0 16px; border: 1px solid var(--line); border-radius: 999px; background: transparent; font-weight: 700; cursor: pointer; }
+.settings,.projects { padding: clamp(24px,4vw,48px); }
+.sectionTitle { margin-bottom: 24px; }
+.sectionTitle h2 { margin: 8px 0 0; font-size: clamp(34px,4vw,52px); font-weight: 400; letter-spacing: -.045em; }
+.formGrid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.formGrid label,.projectForm label { display: grid; gap: 7px; }
+.formGrid label>span,.projectForm label>span { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.formGrid input,.formGrid select,.projectForm input,.projectForm select { width: 100%; min-height: 44px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: transparent; color: var(--text); }
+.formGrid input[type="range"] { padding-inline: 0; }
+.full { grid-column: 1/-1; }
+.primary { margin-top: 18px; border-color: var(--text); background: var(--text); color: white; }
+.message { margin: 0; padding: 14px 18px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); }
+.projectList { display: grid; gap: 10px; }
+.projectForm { display: grid; grid-template-columns: 1fr 1fr 1.5fr .8fr 90px auto auto; gap: 10px; align-items: end; padding: 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.wide { min-width: 0; }
+.active { display: flex!important; align-items: center; gap: 6px!important; min-height: 44px; color: var(--muted); font-size: 12px; }
+.active input { width: auto; min-height: 0; }
+.actions { display: flex; gap: 5px; }
+.actions button { width: 42px; padding: 0; }
+.actions button:first-child { width: auto; padding-inline: 13px; }
+.newProject { margin-top: 18px; border-style: dashed; }
+.newProject .primary { margin: 0; }
+@media(max-width:1100px){.projectForm{grid-template-columns:repeat(2,minmax(0,1fr))}.wide{grid-column:1/-1}}
+@media(max-width:720px){.heading{align-items:flex-start;flex-direction:column}.formGrid,.projectForm{grid-template-columns:1fr}.full,.wide{grid-column:1}.actions{justify-content:flex-end}}

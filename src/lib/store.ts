@@ -6,6 +6,7 @@ import {
   orderStatuses,
   pickupCities,
   STORE_SHIPPING_CENTS,
+  storeProductTypes,
   storeSizes,
   type CartInput,
   type FulfillmentMethod,
@@ -14,6 +15,7 @@ import {
   type StoreOrder,
   type StoreOrderItem,
   type StoreProduct,
+  type StoreProductType,
   type StoreSize
 } from "@/lib/store-shared";
 
@@ -22,8 +24,10 @@ export * from "@/lib/store-shared";
 type ProductInput = {
   title: string;
   description?: string;
+  product_type?: StoreProductType;
   price_cents: number;
   image_url?: string;
+  design_image_url?: string;
   active?: boolean;
   inventory?: Partial<Record<StoreSize, number>>;
 };
@@ -49,6 +53,8 @@ function getDatabase() {
   database.exec(readFileSync(path.join(process.cwd(), "data/schema.sql"), "utf8"));
   ensureColumn(database, "store_orders", "fulfillment_method", "TEXT NOT NULL DEFAULT 'shipping'");
   ensureColumn(database, "store_orders", "pickup_city", "TEXT");
+  ensureColumn(database, "store_products", "product_type", "TEXT NOT NULL DEFAULT 'De passeio'");
+  ensureColumn(database, "store_products", "design_image_url", "TEXT");
   database.exec("CREATE INDEX IF NOT EXISTS idx_store_products_active ON store_products(active);");
   database.exec("CREATE INDEX IF NOT EXISTS idx_store_orders_status ON store_orders(order_status);");
   database.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_store_orders_session ON store_orders(stripe_session_id);");
@@ -65,24 +71,46 @@ function ensureColumn(db: DatabaseSync, table: string, column: string, definitio
 
 function seedDefaultProduct(db: DatabaseSync) {
   const timestamp = now();
-  db.prepare(
+  db.prepare("UPDATE store_products SET active = 0, updated_at = ? WHERE id = ?")
+    .run(timestamp, "camiseta-alem-da-imaginacao");
+
+  const designs = [
+    ["centro-sonho-olimpico", "Centro do Sonho Olímpico", 1],
+    ["onzerun-horizontal", "OnzeRun Horizontal", 2],
+    ["futuro-olimpico-comeca-aqui", "O Futuro Olímpico Começa Aqui", 3],
+    ["apoio-sonho-olimpico", "Eu Apoio o Sonho Olímpico", 4],
+    ["faco-parte-sonho-olimpico", "Eu Faço Parte do Sonho Olímpico", 5]
+  ] as const;
+  const productTypes = [
+    ["passeio", "De passeio", "poliéster branco", 5990],
+    ["dri-fit", "Dri-fit", "tecido Dri-fit branco", 7990]
+  ] as const;
+  const insertProduct = db.prepare(
     `INSERT OR IGNORE INTO store_products (
-      id, title, description, price_cents, image_url, active, created_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, 1, ?, ?)`
-  ).run(
-    "camiseta-alem-da-imaginacao",
-    'Camiseta de passeio "Além da Imaginação"',
-    "Camiseta de Poliéster branca",
-    5990,
-    "/assets/store/camiseta-alem-da-imaginacao.webp",
-    timestamp,
-    timestamp
+      id, title, description, product_type, price_cents, image_url, design_image_url, active, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`
   );
 
   const insertInventory = db.prepare(
     "INSERT OR IGNORE INTO store_inventory (product_id, size, quantity) VALUES (?, ?, ?)"
   );
-  for (const size of storeSizes) insertInventory.run("camiseta-alem-da-imaginacao", size, 20);
+  for (const [slug, designName, imageNumber] of designs) {
+    for (const [typeSlug, productType, material, priceCents] of productTypes) {
+      const id = `camiseta-${slug}-${typeSlug}`;
+      insertProduct.run(
+        id,
+        `Camiseta ${productType.toLowerCase()} "${designName}"`,
+        `Camiseta branca em ${material} com estampa oficial 11RUN.`,
+        productType,
+        priceCents,
+        `/assets/store/colecao-sonho-olimpico/camiseta-${imageNumber}.webp`,
+        `/assets/store/colecao-sonho-olimpico/estampa-${imageNumber}.webp`,
+        timestamp,
+        timestamp
+      );
+      for (const size of storeSizes) insertInventory.run(id, size, 20);
+    }
+  }
 }
 
 function inventoryFor(productId: string) {
@@ -103,9 +131,10 @@ function hydrateProduct(row: Omit<StoreProduct, "inventory">): StoreProduct {
 export function listProducts({ activeOnly = true } = {}) {
   const rows = getDatabase()
     .prepare(
-      `SELECT id, title, description, price_cents, image_url, active, created_at, updated_at
+      `SELECT id, title, description, product_type, price_cents, image_url, design_image_url, active, created_at, updated_at
        FROM store_products
-       ${activeOnly ? "WHERE active = 1" : ""}
+       WHERE id <> 'camiseta-alem-da-imaginacao'
+       ${activeOnly ? "AND active = 1" : ""}
        ORDER BY created_at DESC`
     )
     .all() as Array<Omit<StoreProduct, "inventory">>;
@@ -115,7 +144,7 @@ export function listProducts({ activeOnly = true } = {}) {
 export function getProduct(id: string) {
   const row = getDatabase()
     .prepare(
-      `SELECT id, title, description, price_cents, image_url, active, created_at, updated_at
+      `SELECT id, title, description, product_type, price_cents, image_url, design_image_url, active, created_at, updated_at
        FROM store_products WHERE id = ?`
     )
     .get(id) as Omit<StoreProduct, "inventory"> | undefined;
@@ -125,10 +154,13 @@ export function getProduct(id: string) {
 function validateProduct(input: ProductInput) {
   const title = input.title.trim();
   const description = input.description?.trim() ?? "";
+  const productType = storeProductTypes.includes(input.product_type as StoreProductType)
+    ? input.product_type as StoreProductType
+    : "De passeio";
   const priceCents = Math.trunc(Number(input.price_cents));
   if (!title) throw new Error("O título do produto é obrigatório.");
   if (!Number.isFinite(priceCents) || priceCents <= 0) throw new Error("Informe um preço válido.");
-  return { title, description, priceCents };
+  return { title, description, productType, priceCents };
 }
 
 function upsertInventory(db: DatabaseSync, productId: string, inventory?: Partial<Record<StoreSize, number>>) {
@@ -149,14 +181,16 @@ export function createProduct(input: ProductInput) {
   try {
     db.prepare(
       `INSERT INTO store_products (
-        id, title, description, price_cents, image_url, active, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+        id, title, description, product_type, price_cents, image_url, design_image_url, active, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     ).run(
       productId,
       values.title,
       values.description,
+      values.productType,
       values.priceCents,
       input.image_url?.trim() || null,
+      input.design_image_url?.trim() || null,
       input.active === false ? 0 : 1,
       timestamp,
       timestamp
@@ -179,13 +213,17 @@ export function updateProduct(id: string, input: ProductInput) {
   try {
     db.prepare(
       `UPDATE store_products
-       SET title = ?, description = ?, price_cents = ?, image_url = ?, active = ?, updated_at = ?
+       SET title = ?, description = ?, product_type = ?, price_cents = ?, image_url = ?, design_image_url = ?, active = ?, updated_at = ?
        WHERE id = ?`
     ).run(
       values.title,
       values.description,
+      values.productType,
       values.priceCents,
       input.image_url === undefined ? current.image_url : input.image_url?.trim() || null,
+      input.design_image_url === undefined
+        ? current.design_image_url
+        : input.design_image_url?.trim() || null,
       input.active === false ? 0 : 1,
       now(),
       id

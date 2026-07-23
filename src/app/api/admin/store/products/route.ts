@@ -6,8 +6,10 @@ import {
   createProduct,
   deactivateProduct,
   listProducts,
+  storeProductTypes,
   storeSizes,
   updateProduct,
+  type StoreProductType,
   type StoreSize
 } from "@/lib/store";
 
@@ -40,15 +42,20 @@ function priceToCents(value: FormDataEntryValue | null) {
 async function parseProduct(request: Request) {
   const form = await request.formData();
   const image = form.get("image");
+  const designImage = form.get("design_image");
   const inventory = Object.fromEntries(
     storeSizes.map((size) => [size, Number(form.get(`stock_${size}`) ?? 0)])
   ) as Record<StoreSize, number>;
   return {
     id: String(form.get("id") ?? ""),
     image: image instanceof File ? image : undefined,
+    designImage: designImage instanceof File ? designImage : undefined,
     input: {
       title: String(form.get("title") ?? ""),
       description: String(form.get("description") ?? ""),
+      product_type: storeProductTypes.includes(form.get("product_type") as StoreProductType)
+        ? form.get("product_type") as StoreProductType
+        : "De passeio",
       price_cents: priceToCents(form.get("price")),
       active: form.get("active") !== null,
       inventory
@@ -62,9 +69,10 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { image, input } = await parseProduct(request);
+    const { image, designImage, input } = await parseProduct(request);
     const imageUrl = await persistImage(image);
-    const product = createProduct({ ...input, image_url: imageUrl });
+    const designImageUrl = await persistImage(designImage);
+    const product = createProduct({ ...input, image_url: imageUrl, design_image_url: designImageUrl });
     return NextResponse.json({ ok: true, product });
   } catch (error) {
     return NextResponse.json(
@@ -76,10 +84,15 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
-    const { id, image, input } = await parseProduct(request);
+    const { id, image, designImage, input } = await parseProduct(request);
     if (!id) throw new Error("ID do produto ausente.");
     const imageUrl = await persistImage(image);
-    const product = updateProduct(id, { ...input, ...(imageUrl ? { image_url: imageUrl } : {}) });
+    const designImageUrl = await persistImage(designImage);
+    const product = updateProduct(id, {
+      ...input,
+      ...(imageUrl ? { image_url: imageUrl } : {}),
+      ...(designImageUrl ? { design_image_url: designImageUrl } : {})
+    });
     return NextResponse.json({ ok: true, product });
   } catch (error) {
     return NextResponse.json(

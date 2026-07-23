@@ -22,13 +22,17 @@ export const STORE_SHIPPING_CENTS = 1990;
 export const pickupCities = ["Americana", "Campinas", "Itatiba", "Mogi Mirim", "Recife"] as const;
 export type PickupCity = (typeof pickupCities)[number];
 export type FulfillmentMethod = "shipping" | "athlete_pickup";
+export const storeProductTypes = ["De passeio", "Dri-fit"] as const;
+export type StoreProductType = (typeof storeProductTypes)[number];
 
 export type StoreProduct = {
   id: string;
   title: string;
   description: string;
+  product_type: StoreProductType;
   price_cents: number;
   image_url: string | null;
+  design_image_url: string | null;
   active: number;
   inventory: Record<StoreSize, number>;
   created_at: string;

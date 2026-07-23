@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
   orderStatusLabels,
   orderStatuses,
+  storeProductTypes,
   storeSizes,
   type OrderStatus,
   type StoreOrder,
@@ -239,8 +240,15 @@ export function StoreAdmin({
             <div className={styles.formGrid}>
               <label><span>Título</span><input name="title" required defaultValue={editing?.title ?? ""} placeholder='Camiseta "Além da Imaginação"' /></label>
               <label><span>Preço</span><input name="price" required defaultValue={editing ? currency(editing.price_cents).replace("R$", "").trim() : ""} placeholder="59,90" /></label>
+              <label className={styles.full}>
+                <span>Tipo de camiseta</span>
+                <select name="product_type" defaultValue={editing?.product_type ?? "De passeio"}>
+                  {storeProductTypes.map((type) => <option value={type} key={type}>{type}</option>)}
+                </select>
+              </label>
               <label className={styles.full}><span>Descrição</span><textarea name="description" rows={3} defaultValue={editing?.description ?? ""} placeholder="Descrição curta do produto." /></label>
-              <label className={styles.full}><span>Foto do produto</span><input name="image" type="file" accept="image/*" /></label>
+              <label className={styles.full}><span>Foto do mockup</span><input name="image" type="file" accept="image/*" /></label>
+              <label className={styles.full}><span>Foto da estampa</span><input name="design_image" type="file" accept="image/*" /></label>
               <fieldset className={styles.stockFields}>
                 <legend>Quantidade em estoque por tamanho</legend>
                 {storeSizes.map((size) => (
@@ -259,7 +267,7 @@ export function StoreAdmin({
                   {product.image_url ? <Image src={product.image_url} alt={product.title} fill sizes="180px" unoptimized={product.image_url.startsWith("/api/")} /> : null}
                 </div>
                 <div>
-                  <span>{product.active ? "Publicado" : "Oculto"}</span>
+                  <span>{product.active ? "Publicado" : "Oculto"} · {product.product_type}</span>
                   <h3>{product.title}</h3>
                   <strong>{currency(product.price_cents)}</strong>
                   <div className={styles.inventoryPills}>{storeSizes.map((size) => <small key={size}>{size} · {product.inventory[size]}</small>)}</div>

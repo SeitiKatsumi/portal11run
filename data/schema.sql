@@ -187,8 +187,10 @@ CREATE TABLE IF NOT EXISTS store_products (
   id TEXT PRIMARY KEY,
   title TEXT NOT NULL,
   description TEXT NOT NULL DEFAULT '',
+  product_type TEXT NOT NULL DEFAULT 'De passeio',
   price_cents INTEGER NOT NULL,
   image_url TEXT,
+  design_image_url TEXT,
   active INTEGER NOT NULL DEFAULT 1,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
@@ -231,6 +233,33 @@ CREATE TABLE IF NOT EXISTS store_order_items (
   quantity INTEGER NOT NULL,
   line_total_cents INTEGER NOT NULL,
   FOREIGN KEY (order_id) REFERENCES store_orders(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS home_settings (
+  id TEXT PRIMARY KEY,
+  hero_media_type TEXT NOT NULL DEFAULT 'image',
+  hero_image TEXT NOT NULL,
+  hero_video TEXT,
+  hero_title TEXT,
+  hero_subtitle TEXT,
+  hero_kicker TEXT,
+  content_alignment TEXT NOT NULL DEFAULT 'center',
+  overlay_strength INTEGER NOT NULL DEFAULT 46,
+  header_opacity INTEGER NOT NULL DEFAULT 74,
+  header_blur INTEGER NOT NULL DEFAULT 18,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS home_projects (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+  icon TEXT NOT NULL DEFAULT 'Sparkles',
+  href TEXT NOT NULL,
+  sort_order INTEGER NOT NULL DEFAULT 0,
+  active INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
 );
 
 -- Circuito Virtual 11Run ------------------------------------------------------

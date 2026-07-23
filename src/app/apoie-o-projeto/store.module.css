@@ -188,6 +188,33 @@
   color: var(--muted);
 }
 
+.viewDesign {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid rgb(255 255 255 / 0.68);
+  border-radius: 999px;
+  background: rgb(31 30 27 / 0.88);
+  color: white;
+  font-weight: 750;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+}
+
+.viewDesign svg {
+  transition: transform 180ms ease;
+}
+
+.viewDesign:hover svg {
+  transform: translateX(3px);
+}
+
 .productDetails {
   display: flex;
   flex: 1;
@@ -352,6 +379,129 @@
   color: var(--muted);
   font-size: 11px;
   line-height: 1.4;
+}
+
+.galleryBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  border: 0;
+  background: rgb(31 30 27 / 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.galleryModal {
+  position: fixed;
+  inset: 50% auto auto 50%;
+  z-index: 130;
+  display: grid;
+  width: min(calc(100vw - 40px), 820px);
+  max-height: calc(100dvh - 40px);
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.2);
+  border-radius: var(--radius);
+  background: #fffaf3;
+  box-shadow: 0 34px 100px rgb(0 0 0 / 0.34);
+  transform: translate(-50%, -50%);
+}
+
+.galleryModal > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.galleryModal h2 {
+  margin: 7px 0 0;
+  font-size: clamp(22px, 3vw, 34px);
+  font-weight: 450;
+  letter-spacing: -0.04em;
+}
+
+.galleryModal > header > button {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.galleryStage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-height: min(68dvh, 720px);
+  background: #f1eee9;
+}
+
+.galleryStage img {
+  object-fit: contain;
+  padding: clamp(12px, 2vw, 24px);
+}
+
+.galleryStage > button {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgb(255 255 255 / 0.68);
+  border-radius: 50%;
+  background: rgb(31 30 27 / 0.86);
+  color: white;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.galleryStage > button:first-of-type {
+  left: 16px;
+}
+
+.galleryStage > button:last-of-type {
+  right: 16px;
+}
+
+.galleryModal > footer {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 20px 20px;
+}
+
+.galleryModal > footer button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.galleryModal > footer button > span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.galleryModal > footer .galleryDotActive {
+  border-color: var(--text);
+  background: var(--text);
+  color: white;
 }
 
 .backdrop {
@@ -748,6 +898,25 @@
 
   .productDetails {
     padding: 22px 20px 24px;
+  }
+
+  .galleryModal {
+    width: min(calc(100vw - 20px), 820px);
+    max-height: calc(100dvh - 20px);
+    border-radius: 22px;
+  }
+
+  .galleryModal > header {
+    padding: 18px;
+  }
+
+  .galleryModal > footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .galleryModal > footer button {
+    justify-content: center;
   }
 
   .purchaseRow {

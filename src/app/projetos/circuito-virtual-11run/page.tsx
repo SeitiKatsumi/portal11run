@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Award, CheckCircle2, Clock3, MapPin, Medal, Route, ShieldCheck, Trophy, Users } from "lucide-react";
+import { CalendarDays, CheckCircle2, Clock3, MapPin, Medal, Route, ShieldCheck, Trophy, Users } from "lucide-react";
 import { CircuitRegistration } from "@/components/CircuitRegistration";
 import { CircuitRanking } from "@/components/CircuitRanking";
 import { getCircuitEdition } from "@/lib/virtual-circuit";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Desafio Virtual 1km 11Run Futuro",
     description: "Primeira competição virtual para atletas de 9 a 13 anos.",
-    images: ["/assets/onze-futuro-hero.jpg"]
+    images: ["/assets/circuito-virtual/hero-atletas-2026.webp"]
   }
 };
 
@@ -56,7 +56,10 @@ export default function VirtualCircuitPage() {
             </div>
           </div>
           <div className={styles.heroImage}>
-            <img src={edition.hero_image || "/assets/onze-futuro-hero.jpg"} alt="Jovens atletas na pista de atletismo" />
+            <img
+              src={edition.hero_image || "/assets/circuito-virtual/hero-atletas-2026.webp"}
+              alt="Três jovens atletas brasileiros correndo em provas de rua"
+            />
             <div><strong>1.000 m</strong><span>de qualquer cidade do Brasil</span></div>
           </div>
         </section>
@@ -103,9 +106,24 @@ export default function VirtualCircuitPage() {
             <h2>Premiações para celebrar coragem e evolução.</h2>
           </div>
           <div className={styles.awardGrid}>
-            <article><Medal /><span>Mensal</span><h3>Camisetas oficiais</h3><p>Para os três primeiros de cada idade e gênero.</p></article>
-            <article><Award /><span>Trimestral</span><h3>Um par de tênis</h3><p>Para o líder geral do ciclo trimestral.</p></article>
-            <article><Trophy /><span>Edição</span><h3>R$ 1.000</h3><p>Para o campeão geral após homologação final.</p></article>
+            <article>
+              <CalendarDays />
+              <span>Edição 2026</span>
+              <h3>1º de julho a 15 de dezembro de 2026</h3>
+              <p>Período oficial para realização e envio das atividades válidas.</p>
+            </article>
+            <article>
+              <Trophy />
+              <span>Campeões de categoria</span>
+              <h3>Um par de tênis</h3>
+              <p>Para o 1º colocado de cada categoria por idade e gênero.</p>
+            </article>
+            <article>
+              <Medal />
+              <span>Top 10 de cada categoria</span>
+              <h3>Camiseta oficial do projeto</h3>
+              <p>Para atletas classificados do 1º ao 10º lugar de cada categoria.</p>
+            </article>
           </div>
           <div className={styles.futureCallout}>
             <div><strong>Oportunidade 11Run Futuro</strong><p>Líderes de 9 e 10 anos poderão ser convidados para avaliação presencial.</p></div>
