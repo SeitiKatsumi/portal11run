@@ -1,57 +1,61 @@
-# Design QA — Novas fotos do perfil de Alex Lopes
+# Design QA — Loja 11RUN
 
-**Source visual truth**
+- Source visual truth: `C:\Users\User-PC\AppData\Local\Temp\codex-clipboard-5ef72dad-99e9-44db-9354-f50f00fa7259.png`
+- Desktop implementation: `C:\Users\User-PC\Documents\11run Portal 2\.design\store-layout-fixed-top.png`
+- Focused product card: `C:\Users\User-PC\Documents\11run Portal 2\.design\store-layout-fixed-final.png`
+- Mobile implementation: `C:\Users\User-PC\Documents\11run Portal 2\.design\store-layout-fixed-mobile.png`
+- Side-by-side comparison: `C:\Users\User-PC\Documents\11run Portal 2\.design\store-layout-comparison.png`
+- Desktop viewport: 2048 × 1024 CSS px, device scale 1
+- Source pixels: 2048 × 1024
+- Desktop implementation pixels: 2048 × 1024
+- Mobile viewport and pixels: 390 × 844, device scale 1
+- State: catálogo com produto padrão; botão de compra disponível; carrinho testado com uma unidade PP
 
-- Página publicada antes da troca: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-before-top.png`
-- Retrato fornecido pelo usuário: `D:/active projects/Z1 Elevenmind/alex/WhatsApp Unknown 2026-07-21 at 15.18.02/WhatsApp Image 2026-07-20 at 21.22.29.jpeg`
+## Full-view comparison evidence
 
-**Implementation evidence**
+The supplied screenshot documented the broken full-width state. The revised implementation uses the same 1280 px centered frame as the site header and other public pages. Hero and catalog now share the same margins, surface, border, radius, spacing, and background tokens as the existing 11RUN visual system.
 
-- Topo desktop: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-new-photos-after.png`
-- Galeria desktop: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-gallery-after.png`
-- Topo mobile: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-mobile-after.png`
-- Comparação lado a lado: `C:/Users/User-PC/Documents/11run Portal 2/.design/alex-new-photos-comparison.jpg`
-- Viewports: desktop padrão do navegador e mobile 390 × 844; estado público, tema claro.
+## Focused region comparison evidence
 
-**Findings**
+The product card was checked separately because the source screenshot cut the purchase action below the viewport. The final card has a centered 1:1 image (`372 × 372` inside a `374 px` card), visible title, description, price, sizes, quantity, shipping note, and a high-contrast “Adicionar ao carrinho” button. At desktop width the grid resolves to three centered `374 px` tracks; unused tracks collapse, so a single product is centered. Mobile has no horizontal overflow.
 
-- Nenhum P0, P1 ou P2 acionável permanece.
-- Tipografia: família, pesos, escala, entrelinha e quebras permanecem iguais à landing anterior.
-- Espaçamento e layout: a imagem nova ocupa o mesmo recorte do hero, sem deslocar textos, CTAs ou navegação; não há rolagem horizontal no desktop ou no mobile.
-- Cores e tokens: a fotografia azul e branca cria contraste claro com o painel bege e preserva o acabamento existente, sem introduzir gradientes ou elementos artificiais.
-- Qualidade de imagem: o retrato real está nítido, com o rosto e o uniforme enquadrados no desktop e no mobile; as cinco imagens foram convertidas para WebP e carregam com dimensões naturais válidas.
-- Conteúdo: textos e ações existentes foram preservados; as cinco novas fotos aparecem no início da galeria com descrições acessíveis específicas.
-- Acessibilidade: textos alternativos descrevem pessoas e contexto esportivo; o lightbox mantém abertura e fechamento funcionais e bloqueia corretamente o scroll de fundo.
+## Required fidelity surfaces
 
-**Primary interactions tested**
+- Fonts and typography: existing global font and weight hierarchy preserved; product copy reduced to card-scale sizes.
+- Spacing and layout rhythm: page frame, header offset, section gaps, radii, and internal card spacing now match the existing site.
+- Colors and visual tokens: only existing `--surface`, `--line`, `--text`, `--muted`, and accent tokens are used. The invalid `--ink` reference was removed.
+- Image quality and asset fidelity: original optimized WebP retained, centered without cropping using `object-fit: contain` in a 1:1 frame.
+- Copy and content: supplied title, description, price, sizes, fixed shipping, and cart labels are preserved.
 
-- Hero carregado com o novo retrato real e `naturalWidth` 853 / `naturalHeight` 1280.
-- Galeria com 26 botões/imagens.
-- Primeira imagem aberta no lightbox e fechada pelo botão.
-- Corpo bloqueado durante o modal e liberado após o fechamento.
-- Console verificado: nenhum erro.
+## Comparison history
 
-**Focused region comparison evidence**
+1. P1 — Full-width page broke the established site frame.
+   - Fix: added the shared 1280 px centered frame and correct fixed-header offset.
+   - Evidence: `store-layout-comparison.png`.
+2. P1 — Product presentation was oversized and purchase action fell below the visible card area.
+   - Fix: compact three/two/one-column responsive grid with a complete action area inside each card.
+   - Evidence: `store-layout-fixed-final.png`.
+3. P1 — Purchase button text was invisible because `--ink` did not exist.
+   - Fix: replaced the invalid token with the global `--text` token in storefront and store admin styles.
+   - Evidence: computed button colors are `rgb(33,31,27)` background and white text; cart interaction passed.
+4. P2 — One product aligned to the first grid column.
+   - Fix: switched to centered `auto-fit` tracks; the single product now sits at the horizontal center.
+   - Evidence: desktop card x=830 in a 2048 px viewport; three-column capacity retained.
 
-- O comparativo conjunto confirma que apenas o conteúdo fotográfico do hero mudou: a composição, a hierarquia, os CTAs e o recorte diagonal foram preservados.
-- A captura da galeria confirma as quatro novas fotos de competição visíveis na primeira linha, com recortes coerentes e sem deformação.
+## Browser checks
 
-**Comparison history**
+- Product card and image dimensions checked at desktop and mobile.
+- “Adicionar ao carrinho” resolved uniquely and added the product.
+- Cart drawer showed the item, selected size, subtotal, shipping, total, and secure checkout action.
+- No browser console errors or warnings.
+- No horizontal overflow at 390 px.
 
-1. Estado anterior: foto compartilhada com outra pessoa no hero e 21 imagens na galeria.
-2. Implementação final: retrato profissional de Alex sozinho no hero e cinco novas fotos inseridas no início da galeria, totalizando 26.
+## Findings
 
-**Implementation checklist**
+No remaining actionable P0, P1, or P2 visual issues for the requested scope.
 
-- [x] Retrato real de Alex sozinho no topo.
-- [x] Cinco novas fotos otimizadas em WebP.
-- [x] Metadados Open Graph e Twitter atualizados.
-- [x] Galeria e lightbox validados.
-- [x] Responsividade desktop/mobile aprovada.
-- [x] TypeScript e build de produção aprovados.
+## Follow-up polish
 
-**Follow-up polish**
-
-- Nenhum item bloqueante.
+The floating chat remains available throughout the store, consistent with the rest of the site.
 
 final result: passed

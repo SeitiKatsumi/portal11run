@@ -58,7 +58,7 @@
 }
 
 .tabs .activeTab {
-  background: var(--ink);
+  background: var(--text);
   color: white;
 }
 
@@ -156,7 +156,7 @@
 }
 
 .empty strong {
-  color: var(--ink);
+  color: var(--text);
 }
 
 .orderList {
@@ -239,7 +239,7 @@
   border: 1px solid var(--line);
   border-radius: 999px;
   background: transparent;
-  color: var(--ink);
+  color: var(--text);
 }
 
 .orderBody {
@@ -261,7 +261,7 @@
 }
 
 .orderBody p strong {
-  color: var(--ink);
+  color: var(--text);
 }
 
 .orderTotal {
@@ -311,7 +311,7 @@
   border: 1px solid var(--line);
   border-radius: 12px;
   background: transparent;
-  color: var(--ink);
+  color: var(--text);
   font: inherit;
 }
 
@@ -362,9 +362,9 @@
   width: 100%;
   min-height: 48px;
   margin-top: 18px;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--text);
   border-radius: 999px;
-  background: var(--ink);
+  background: var(--text);
   color: white;
   font-weight: 800;
   cursor: pointer;
@@ -443,7 +443,7 @@
   border: 1px solid var(--line);
   border-radius: 50%;
   background: transparent;
-  color: var(--ink);
+  color: var(--text);
   cursor: pointer;
 }
 
