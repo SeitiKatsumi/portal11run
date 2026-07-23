@@ -1,9 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { Minus, Package, Plus, ShieldCheck, ShoppingBag, Trash2, Truck, X } from "lucide-react";
+import { MapPin, Minus, Package, Plus, ShieldCheck, ShoppingBag, Trash2, Truck, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import { STORE_SHIPPING_CENTS, storeSizes, type StoreProduct, type StoreSize } from "@/lib/store-shared";
+import {
+  pickupCities,
+  STORE_SHIPPING_CENTS,
+  storeSizes,
+  type FulfillmentMethod,
+  type PickupCity,
+  type StoreProduct,
+  type StoreSize
+} from "@/lib/store-shared";
 import styles from "@/app/apoie-o-projeto/store.module.css";
 
 type CartItem = {
@@ -41,12 +49,15 @@ export function Storefront({
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [error, setError] = useState("");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [fulfillmentMethod, setFulfillmentMethod] = useState<FulfillmentMethod>("shipping");
+  const [pickupCity, setPickupCity] = useState<PickupCity>("Americana");
 
   const subtotal = useMemo(
     () => cart.reduce((total, item) => total + item.priceCents * item.quantity, 0),
     [cart]
   );
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+  const shippingCents = cart.length && fulfillmentMethod === "shipping" ? STORE_SHIPPING_CENTS : 0;
 
   function addToCart(product: StoreProduct) {
     const size = selectedSizes[product.id] ?? availableSizes(product)[0];
@@ -102,6 +113,8 @@ export function Storefront({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          fulfillmentMethod,
+          pickupCity: fulfillmentMethod === "athlete_pickup" ? pickupCity : undefined,
           items: cart.map((item) => ({
             productId: item.productId,
             size: item.size,
@@ -131,7 +144,7 @@ export function Storefront({
         </div>
         <div className={styles.heroBenefits}>
           <article><ShieldCheck /><span><strong>Pagamento seguro</strong>Checkout protegido pela Stripe</span></article>
-          <article><Truck /><span><strong>Frete fixo</strong>R$ 19,90 para todo o Brasil</span></article>
+          <article><Truck /><span><strong>Entrega ou retirada</strong>Frete fixo ou retirada gratuita com atletas</span></article>
           <article><Package /><span><strong>Estoque por tamanho</strong>PP, P, M, G e GG</span></article>
         </div>
       </section>
@@ -202,7 +215,7 @@ export function Storefront({
                       {sizes.length ? "Adicionar ao carrinho" : "Produto esgotado"}
                     </button>
                   </div>
-                  <small>Frete fixo de {currency(STORE_SHIPPING_CENTS)} calculado no carrinho.</small>
+                  <small>Frete fixo de {currency(STORE_SHIPPING_CENTS)} ou retirada gratuita com atletas.</small>
                 </div>
               </article>
             );
@@ -241,9 +254,43 @@ export function Storefront({
         </div>
 
         <footer>
+          <fieldset className={styles.fulfillment}>
+            <legend>Como deseja receber?</legend>
+            <div className={styles.fulfillmentOptions}>
+              <button
+                className={fulfillmentMethod === "shipping" ? styles.fulfillmentActive : ""}
+                type="button"
+                onClick={() => setFulfillmentMethod("shipping")}
+                aria-pressed={fulfillmentMethod === "shipping"}
+              >
+                <Truck size={17} />
+                <span><strong>Entrega</strong><small>Frete fixo de {currency(STORE_SHIPPING_CENTS)}</small></span>
+              </button>
+              <button
+                className={fulfillmentMethod === "athlete_pickup" ? styles.fulfillmentActive : ""}
+                type="button"
+                onClick={() => setFulfillmentMethod("athlete_pickup")}
+                aria-pressed={fulfillmentMethod === "athlete_pickup"}
+              >
+                <MapPin size={17} />
+                <span><strong>Retirar com atletas</strong><small>Grátis</small></span>
+              </button>
+            </div>
+            {fulfillmentMethod === "athlete_pickup" ? (
+              <label className={styles.pickupCity}>
+                <span>Cidade para retirada</span>
+                <select value={pickupCity} onChange={(event) => setPickupCity(event.target.value as PickupCity)}>
+                  {pickupCities.map((city) => <option value={city} key={city}>{city}</option>)}
+                </select>
+              </label>
+            ) : null}
+          </fieldset>
           <div><span>Subtotal</span><strong>{currency(subtotal)}</strong></div>
-          <div><span>Frete padrão</span><strong>{currency(STORE_SHIPPING_CENTS)}</strong></div>
-          <div className={styles.cartTotal}><span>Total</span><strong>{currency(subtotal + (cart.length ? STORE_SHIPPING_CENTS : 0))}</strong></div>
+          <div>
+            <span>{fulfillmentMethod === "athlete_pickup" ? `Retirada · ${pickupCity}` : "Frete padrão"}</span>
+            <strong>{shippingCents ? currency(shippingCents) : "Grátis"}</strong>
+          </div>
+          <div className={styles.cartTotal}><span>Total</span><strong>{currency(subtotal + shippingCents)}</strong></div>
           {error ? <p className={styles.cartError}>{error}</p> : null}
           <button className={styles.checkoutButton} type="button" disabled={!cart.length || checkoutLoading} onClick={checkout}>
             <ShieldCheck size={18} />

@@ -136,7 +136,7 @@ export function StoreAdmin({
   }
 
   return (
-    <section className={styles.adminStore}>
+    <section className={`admin-panel ${styles.adminStore}`}>
       <header className={styles.heading}>
         <div>
           <span className="eyebrow">Loja 11RUN</span>
@@ -211,14 +211,16 @@ export function StoreAdmin({
                       </div>
                       <div>
                         <span>Entrega</span>
-                        {address ? (
+                        {order.fulfillment_method === "athlete_pickup" ? (
+                          <p><strong>Retirar com atletas</strong><br />{order.pickup_city}</p>
+                        ) : address ? (
                           <p>{address.line1}{address.line2 ? `, ${address.line2}` : ""}<br />{address.city} · {address.state}<br />{address.postal_code}</p>
                         ) : <p>Endereço aguardando checkout</p>}
                       </div>
                       <div className={styles.orderTotal}>
                         <span>Total</span>
                         <strong>{currency(order.total_cents)}</strong>
-                        <small>Frete {currency(order.shipping_cents)}</small>
+                        <small>{order.fulfillment_method === "athlete_pickup" ? "Retirada gratuita" : `Frete ${currency(order.shipping_cents)}`}</small>
                       </div>
                     </div>
                   </article>

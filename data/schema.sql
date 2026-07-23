@@ -210,6 +210,8 @@ CREATE TABLE IF NOT EXISTS store_orders (
   customer_email TEXT,
   customer_phone TEXT,
   shipping_address_json TEXT,
+  fulfillment_method TEXT NOT NULL DEFAULT 'shipping',
+  pickup_city TEXT,
   subtotal_cents INTEGER NOT NULL,
   shipping_cents INTEGER NOT NULL DEFAULT 1990,
   total_cents INTEGER NOT NULL,

@@ -8,6 +8,7 @@ import {
   markOrderPaid,
   markOrderPaymentFailed,
   type CartInput,
+  type FulfillmentMethod,
   type StoreOrder
 } from "@/lib/store";
 
@@ -42,9 +43,13 @@ function sessionCustomer(session: Stripe.Checkout.Session) {
   };
 }
 
-export async function createStripeCheckout(cart: CartInput[], siteUrl: string) {
+export async function createStripeCheckout(
+  cart: CartInput[],
+  siteUrl: string,
+  fulfillment: { method: FulfillmentMethod; pickupCity?: string | null }
+) {
   const stripe = getStripe();
-  const order = createOrder(cart);
+  const order = createOrder(cart, fulfillment);
   const integrationIdentifier = `portal11run_${randomBytes(4).toString("hex")}`;
 
   try {
@@ -68,24 +73,46 @@ export async function createStripeCheckout(cart: CartInput[], siteUrl: string) {
           }
         }
       })),
-      shipping_address_collection: { allowed_countries: ["BR"] },
-      shipping_options: [
-        {
-          shipping_rate_data: {
-            type: "fixed_amount",
-            display_name: "Frete padrão",
-            fixed_amount: { amount: order.shipping_cents, currency: "brl" },
-            delivery_estimate: {
-              minimum: { unit: "business_day", value: 5 },
-              maximum: { unit: "business_day", value: 12 }
+      shipping_address_collection:
+        order.fulfillment_method === "shipping" ? { allowed_countries: ["BR"] } : undefined,
+      shipping_options:
+        order.fulfillment_method === "shipping"
+          ? [
+              {
+                shipping_rate_data: {
+                  type: "fixed_amount",
+                  display_name: "Frete padrão",
+                  fixed_amount: { amount: order.shipping_cents, currency: "brl" },
+                  delivery_estimate: {
+                    minimum: { unit: "business_day", value: 5 },
+                    maximum: { unit: "business_day", value: 12 }
+                  }
+                }
+              }
+            ]
+          : undefined,
+      custom_text:
+        order.fulfillment_method === "athlete_pickup"
+          ? {
+              submit: {
+                message: `Retirada gratuita com atletas em ${order.pickup_city}. Nossa equipe combinará o ponto de encontro após a confirmação.`
+              }
             }
-          }
-        }
-      ],
+          : undefined,
       phone_number_collection: { enabled: true },
       billing_address_collection: "auto",
-      metadata: { order_id: order.id },
-      payment_intent_data: { metadata: { order_id: order.id } },
+      metadata: {
+        order_id: order.id,
+        fulfillment_method: order.fulfillment_method,
+        pickup_city: order.pickup_city ?? ""
+      },
+      payment_intent_data: {
+        metadata: {
+          order_id: order.id,
+          fulfillment_method: order.fulfillment_method,
+          pickup_city: order.pickup_city ?? ""
+        }
+      },
       success_url: `${siteUrl}/apoie-o-projeto/sucesso?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteUrl}/apoie-o-projeto?checkout=cancelado`
     });

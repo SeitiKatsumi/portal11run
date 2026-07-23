@@ -27,7 +27,9 @@ export default async function StoreSuccessPage({
         <h1>{paid ? "Pagamento aprovado." : "Estamos confirmando seu pagamento."}</h1>
         <p>
           {paid
-            ? "Obrigado por vestir a 11RUN. A equipe já recebeu seu pedido e iniciará a preparação para o envio."
+            ? order?.fulfillment_method === "athlete_pickup"
+              ? `Obrigado por vestir a 11RUN. A equipe combinará a retirada com atletas em ${order.pickup_city}.`
+              : "Obrigado por vestir a 11RUN. A equipe já recebeu seu pedido e iniciará a preparação para o envio."
             : "Assim que a Stripe confirmar o pagamento, o pedido aparecerá como aprovado para nossa equipe."}
         </p>
 

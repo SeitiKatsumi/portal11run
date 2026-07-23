@@ -4,10 +4,13 @@ import path from "path";
 import { DatabaseSync } from "node:sqlite";
 import {
   orderStatuses,
+  pickupCities,
   STORE_SHIPPING_CENTS,
   storeSizes,
   type CartInput,
+  type FulfillmentMethod,
   type OrderStatus,
+  type PickupCity,
   type StoreOrder,
   type StoreOrderItem,
   type StoreProduct,
@@ -44,11 +47,20 @@ function getDatabase() {
   database.exec("PRAGMA journal_mode = WAL;");
   database.exec("PRAGMA foreign_keys = ON;");
   database.exec(readFileSync(path.join(process.cwd(), "data/schema.sql"), "utf8"));
+  ensureColumn(database, "store_orders", "fulfillment_method", "TEXT NOT NULL DEFAULT 'shipping'");
+  ensureColumn(database, "store_orders", "pickup_city", "TEXT");
   database.exec("CREATE INDEX IF NOT EXISTS idx_store_products_active ON store_products(active);");
   database.exec("CREATE INDEX IF NOT EXISTS idx_store_orders_status ON store_orders(order_status);");
   database.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_store_orders_session ON store_orders(stripe_session_id);");
   seedDefaultProduct(database);
   return database;
+}
+
+function ensureColumn(db: DatabaseSync, table: string, column: string, definition: string) {
+  const columns = db.prepare(`PRAGMA table_info(${table})`).all() as Array<{ name: string }>;
+  if (!columns.some((item) => item.name === column)) {
+    db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+  }
 }
 
 function seedDefaultProduct(db: DatabaseSync) {
@@ -191,8 +203,21 @@ export function deactivateProduct(id: string) {
   getDatabase().prepare("UPDATE store_products SET active = 0, updated_at = ? WHERE id = ?").run(now(), id);
 }
 
-export function createOrder(cart: CartInput[]) {
+export function createOrder(
+  cart: CartInput[],
+  fulfillment: { method: FulfillmentMethod; pickupCity?: string | null } = { method: "shipping" }
+) {
   if (!Array.isArray(cart) || cart.length === 0) throw new Error("O carrinho está vazio.");
+  if (!["shipping", "athlete_pickup"].includes(fulfillment.method)) {
+    throw new Error("Forma de entrega inválida.");
+  }
+  const pickupCity =
+    fulfillment.method === "athlete_pickup" && pickupCities.includes(fulfillment.pickupCity as PickupCity)
+      ? fulfillment.pickupCity as PickupCity
+      : null;
+  if (fulfillment.method === "athlete_pickup" && !pickupCity) {
+    throw new Error("Selecione a cidade para retirada com atletas.");
+  }
   const normalized = new Map<string, CartInput>();
   for (const item of cart) {
     const size = item.size.toUpperCase() as StoreSize;
@@ -216,16 +241,27 @@ export function createOrder(cart: CartInput[]) {
 
   const orderId = randomUUID();
   const subtotal = items.reduce((total, item) => total + item.lineTotal, 0);
-  const total = subtotal + STORE_SHIPPING_CENTS;
+  const shippingCents = fulfillment.method === "athlete_pickup" ? 0 : STORE_SHIPPING_CENTS;
+  const total = subtotal + shippingCents;
   const timestamp = now();
   const db = getDatabase();
   db.exec("BEGIN IMMEDIATE;");
   try {
     db.prepare(
       `INSERT INTO store_orders (
-        id, subtotal_cents, shipping_cents, total_cents, order_status, payment_status, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, 'pedido_feito', 'não pago', ?, ?)`
-    ).run(orderId, subtotal, STORE_SHIPPING_CENTS, total, timestamp, timestamp);
+        id, fulfillment_method, pickup_city, subtotal_cents, shipping_cents, total_cents,
+        order_status, payment_status, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, 'pedido_feito', 'não pago', ?, ?)`
+    ).run(
+      orderId,
+      fulfillment.method,
+      pickupCity,
+      subtotal,
+      shippingCents,
+      total,
+      timestamp,
+      timestamp
+    );
     const insertItem = db.prepare(
       `INSERT INTO store_order_items (
         id, order_id, product_id, title, size, unit_price_cents, quantity, line_total_cents

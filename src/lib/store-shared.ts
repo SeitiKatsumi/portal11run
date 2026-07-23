@@ -19,6 +19,9 @@ export const orderStatusLabels: Record<OrderStatus, string> = {
 };
 
 export const STORE_SHIPPING_CENTS = 1990;
+export const pickupCities = ["Americana", "Campinas", "Itatiba", "Mogi Mirim", "Recife"] as const;
+export type PickupCity = (typeof pickupCities)[number];
+export type FulfillmentMethod = "shipping" | "athlete_pickup";
 
 export type StoreProduct = {
   id: string;
@@ -51,6 +54,8 @@ export type StoreOrder = {
   customer_email: string | null;
   customer_phone: string | null;
   shipping_address_json: string | null;
+  fulfillment_method: FulfillmentMethod;
+  pickup_city: PickupCity | null;
   subtotal_cents: number;
   shipping_cents: number;
   total_cents: number;

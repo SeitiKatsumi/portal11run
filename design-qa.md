@@ -1,61 +1,63 @@
-# Design QA — Loja 11RUN
+# Design QA — Admin da loja e retirada com atletas
 
-- Source visual truth: `C:\Users\User-PC\AppData\Local\Temp\codex-clipboard-5ef72dad-99e9-44db-9354-f50f00fa7259.png`
-- Desktop implementation: `C:\Users\User-PC\Documents\11run Portal 2\.design\store-layout-fixed-top.png`
-- Focused product card: `C:\Users\User-PC\Documents\11run Portal 2\.design\store-layout-fixed-final.png`
-- Mobile implementation: `C:\Users\User-PC\Documents\11run Portal 2\.design\store-layout-fixed-mobile.png`
-- Side-by-side comparison: `C:\Users\User-PC\Documents\11run Portal 2\.design\store-layout-comparison.png`
-- Desktop viewport: 2048 × 1024 CSS px, device scale 1
-- Source pixels: 2048 × 1024
-- Desktop implementation pixels: 2048 × 1024
-- Mobile viewport and pixels: 390 × 844, device scale 1
-- State: catálogo com produto padrão; botão de compra disponível; carrinho testado com uma unidade PP
+- Source visual truth: `C:\Users\User-PC\AppData\Local\Temp\codex-clipboard-3afb466d-94bf-4548-804e-66406721cfd4.png`
+- Implementation screenshot: `C:\Users\User-PC\Documents\11run Portal 2\.design\admin-store-contained-final.png`
+- Combined comparison: `C:\Users\User-PC\Documents\11run Portal 2\.design\admin-store-comparison.png`
+- Pickup desktop: `C:\Users\User-PC\Documents\11run Portal 2\.design\store-pickup-free-final.png`
+- Pickup mobile: `C:\Users\User-PC\Documents\11run Portal 2\.design\store-pickup-mobile.png`
+- Desktop viewport: 1280 × 720 CSS px, device scale factor 1.
+- Mobile viewport: 390 × 844 CSS px, device scale factor 1.
+- Source pixels: 2526 × 966.
+- Implementation pixels: 1280 × 720.
+- Normalization: the source was proportionally reduced to 1280 px width in the combined comparison; the implementation remained at its native 1280 px width.
+- State: admin on the Products tab; storefront cart open with “Retirar com atletas” selected.
 
 ## Full-view comparison evidence
 
-The supplied screenshot documented the broken full-width state. The revised implementation uses the same 1280 px centered frame as the site header and other public pages. Hero and catalog now share the same margins, surface, border, radius, spacing, and background tokens as the existing 11RUN visual system.
+The original admin content occupied the full viewport while the header and admin navigation used the portal’s 1280 px maximum container. In the final capture, the header, admin navigation and store panel share the exact same measured frame: 24 px left margin and 1217 px rendered width at the 1280 px viewport. No page-level horizontal overflow was detected.
 
-## Focused region comparison evidence
+## Focused-region evidence
 
-The product card was checked separately because the source screenshot cut the purchase action below the viewport. The final card has a centered 1:1 image (`372 × 372` inside a `374 px` card), visible title, description, price, sizes, quantity, shipping note, and a high-contrast “Adicionar ao carrinho” button. At desktop width the grid resolves to three centered `374 px` tracks; unused tracks collapse, so a single product is centered. Mobile has no horizontal overflow.
+The container mismatch affected every major admin region, so the full-view side-by-side comparison was sufficient for the requested layout correction. The new checkout option received separate desktop and mobile focused captures because it was not present in the source screenshot.
 
 ## Required fidelity surfaces
 
-- Fonts and typography: existing global font and weight hierarchy preserved; product copy reduced to card-scale sizes.
-- Spacing and layout rhythm: page frame, header offset, section gaps, radii, and internal card spacing now match the existing site.
-- Colors and visual tokens: only existing `--surface`, `--line`, `--text`, `--muted`, and accent tokens are used. The invalid `--ink` reference was removed.
-- Image quality and asset fidelity: original optimized WebP retained, centered without cropping using `object-fit: contain` in a 1:1 frame.
-- Copy and content: supplied title, description, price, sizes, fixed shipping, and cart labels are preserved.
+- Fonts and typography: existing Geist family, weights, hierarchy and wrapping preserved.
+- Spacing and layout rhythm: admin content now uses the shared `.admin-panel` frame and matches header/navigation margins, radii and section gaps.
+- Colors and visual tokens: existing `--surface`, `--line`, `--text`, `--muted` and accent tokens preserved; no gradient introduced.
+- Image quality and assets: existing square product image and Lucide interface icons preserved without placeholders or generated replacements.
+- Copy and content: labels remain consistent with the portal; pickup adds the requested cities and clearly communicates free withdrawal.
 
 ## Comparison history
 
-1. P1 — Full-width page broke the established site frame.
-   - Fix: added the shared 1280 px centered frame and correct fixed-header offset.
-   - Evidence: `store-layout-comparison.png`.
-2. P1 — Product presentation was oversized and purchase action fell below the visible card area.
-   - Fix: compact three/two/one-column responsive grid with a complete action area inside each card.
-   - Evidence: `store-layout-fixed-final.png`.
-3. P1 — Purchase button text was invisible because `--ink` did not exist.
-   - Fix: replaced the invalid token with the global `--text` token in storefront and store admin styles.
-   - Evidence: computed button colors are `rgb(33,31,27)` background and white text; cart interaction passed.
-4. P2 — One product aligned to the first grid column.
-   - Fix: switched to centered `auto-fit` tracks; the single product now sits at the horizontal center.
-   - Evidence: desktop card x=830 in a 2048 px viewport; three-column capacity retained.
+### Iteration 1
 
-## Browser checks
+- [P1] Admin content escaped the site container.
+  - Fix: composed the store root with the shared `admin-panel` class.
+  - Post-fix evidence: header, admin navigation and store panel all measure 1217 px wide with the same 24 px left edge.
+- [P2] Floating chat overlapped the checkout action.
+  - Fix: raised the cart drawer and backdrop above the assistant.
+  - Post-fix evidence: drawer z-index 110, assistant z-index 90; checkout button remains fully visible.
+- [P2] No free athlete pickup flow.
+  - Fix: added fulfillment selection, five-city selector, zero shipping total, persistence and admin display.
+  - Post-fix evidence: Americana, Campinas, Itatiba, Mogi Mirim and Recife appear; selected pickup shows “Grátis” and total R$ 59,90 on desktop and mobile.
 
-- Product card and image dimensions checked at desktop and mobile.
-- “Adicionar ao carrinho” resolved uniquely and added the product.
-- Cart drawer showed the item, selected size, subtotal, shipping, total, and secure checkout action.
-- No browser console errors or warnings.
-- No horizontal overflow at 390 px.
+## Interaction verification
+
+- Product added to cart.
+- Delivery toggled to “Retirar com atletas”.
+- Pickup city changed to Mogi Mirim and Recife.
+- Shipping changed from R$ 19,90 to Grátis.
+- Total recalculated without shipping.
+- Local persisted order recorded `fulfillment_method=athlete_pickup`, `pickup_city=Mogi Mirim`, `shipping_cents=0`.
+- Admin and storefront console: no errors or warnings.
 
 ## Findings
 
-No remaining actionable P0, P1, or P2 visual issues for the requested scope.
+No actionable P0, P1 or P2 mismatch remains for the requested scope.
 
 ## Follow-up polish
 
-The floating chat remains available throughout the store, consistent with the rest of the site.
+No P3 item is required before release.
 
 final result: passed

@@ -93,6 +93,9 @@ Healthcheck do app:
 
 A página `/apoie-o-projeto` funciona como loja oficial. Produtos e estoque são gerenciados em `/admin/loja`.
 
+O carrinho oferece entrega nacional com frete fixo de R$ 19,90 ou retirada gratuita com atletas em Americana,
+Campinas, Itatiba, Mogi Mirim e Recife. A modalidade e a cidade escolhidas ficam registradas no pedido.
+
 Configure no CapRover, sem gravar chaves no GitHub:
 
 ```txt

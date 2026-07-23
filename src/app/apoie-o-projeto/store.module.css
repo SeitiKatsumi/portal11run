@@ -357,7 +357,7 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  z-index: 80;
+  z-index: 100;
   border: 0;
   background: rgb(31 30 27 / 0.48);
   cursor: default;
@@ -367,7 +367,7 @@
   position: fixed;
   top: 0;
   right: 0;
-  z-index: 90;
+  z-index: 110;
   display: grid;
   grid-template-rows: auto 1fr auto;
   width: min(520px, 100vw);
@@ -488,8 +488,98 @@
 .cartDrawer > footer {
   display: grid;
   gap: 10px;
+  max-height: 58vh;
+  overflow-y: auto;
   padding: 22px 28px 28px;
   border-top: 1px solid var(--line);
+}
+
+.fulfillment {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 8px;
+  padding: 0 0 16px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.fulfillment legend {
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.fulfillmentOptions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.fulfillmentOptions > button {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 9px;
+  align-items: center;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.fulfillmentOptions > button > span {
+  display: grid;
+  min-width: 0;
+}
+
+.fulfillmentOptions strong {
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.fulfillmentOptions small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 10px;
+  text-align: left;
+}
+
+.fulfillmentOptions .fulfillmentActive {
+  border-color: var(--text);
+  background: var(--text);
+  color: white;
+}
+
+.fulfillmentActive svg,
+.fulfillmentActive small {
+  color: white;
+}
+
+.pickupCity {
+  display: grid;
+  gap: 7px;
+}
+
+.pickupCity > span {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.pickupCity select {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--surface);
+  color: var(--text);
 }
 
 .cartDrawer > footer > div {
@@ -662,6 +752,16 @@
 
   .purchaseRow {
     flex-direction: column;
+  }
+
+  .cartDrawer > header,
+  .cartItems,
+  .cartDrawer > footer {
+    padding-inline: 20px;
+  }
+
+  .fulfillmentOptions {
+    grid-template-columns: 1fr;
   }
 
   .quantityControl {
