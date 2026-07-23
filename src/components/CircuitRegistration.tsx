@@ -134,7 +134,6 @@ export function CircuitRegistration({ startDate, endDate }: { startDate: string;
         <span className={styles.eyebrow}>Inscrição segura</span>
         <h2>Registre uma atividade.</h2>
         <p>As informações sensíveis e o documento ficam privados. Apenas os dados autorizados aparecem no ranking.</p>
-        <a href="/projetos/circuito-virtual-11run/acompanhamento">Já enviou? Acompanhe aqui</a>
       </div>
       <div className={styles.formCard}>
         <div className={styles.progress} aria-label={`Etapa ${step} de 6`}>
