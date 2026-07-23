@@ -9,6 +9,8 @@ services:
     environment:
       - NODE_ENV=production
       - SQLITE_PATH=/data/portal11run.sqlite
+      - VIRTUAL_CIRCUIT_PRIVATE_UPLOAD_DIR=/data/virtual-circuit-private
+      - VIRTUAL_CIRCUIT_DATA_KEY=${VIRTUAL_CIRCUIT_DATA_KEY}
     volumes:
       - ./data:/data
     restart: always
