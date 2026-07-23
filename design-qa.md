@@ -61,3 +61,25 @@ No actionable P0, P1 or P2 mismatch remains for the requested scope.
 No P3 item is required before release.
 
 final result: passed
+
+---
+
+# Design QA — Circuito Virtual 11Run
+
+- Página pública desktop: `.design/circuito-virtual-desktop.png`
+- Página pública mobile: `.design/circuito-virtual-mobile.png`
+- Painel administrativo: `.design/circuito-virtual-admin.png`
+- Viewports: 1440 × 900 e 390 × 844 CSS px.
+
+## Verificações
+
+- Cabeçalho, página pública, painel administrativo e configuração da edição usam o container central do portal.
+- Desktop: largura do documento e viewport iguais (1425 px após scrollbar), sem overflow horizontal.
+- Mobile: largura do documento e viewport iguais (375 px após scrollbar), sem overflow horizontal.
+- Painel: navegação e conteúdo medidos em 1280 px no viewport desktop de 1440 px.
+- Apenas um cabeçalho e um rodapé são renderizados.
+- Formulário adapta para uma coluna, mantém labels visíveis e controles com área adequada para toque.
+- CTA mobile permanece acima do chat para não bloquear ações.
+- Ranking, estados vazios, filtros, formulário e fila administrativa preservam a identidade visual do portal.
+
+final result: passed

@@ -1370,6 +1370,73 @@ body.modal-open {
   padding: 118px 0 54px;
 }
 
+.legal-page {
+  width: min(calc(100% - 48px), var(--max));
+  margin: 0 auto;
+  padding: 118px 0 54px;
+}
+
+.legal-page > section {
+  max-width: 920px;
+  padding: clamp(28px, 5vw, 64px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.legal-page h1 {
+  margin: 16px 0 28px;
+  font-size: clamp(3rem, 7vw, 6rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.055em;
+}
+
+.legal-page h2 {
+  margin: 34px 0 8px;
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
+.legal-page p {
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.circuit-correction {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.circuit-correction label {
+  display: grid;
+  gap: 7px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.circuit-correction textarea {
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  resize: vertical;
+}
+
+.circuit-correction button {
+  justify-self: start;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 14px;
+  background: var(--text);
+  color: var(--surface);
+  font-weight: 600;
+}
+
 .support-page {
   width: min(calc(100% - 48px), var(--max));
   margin: 0 auto;
@@ -6357,6 +6424,11 @@ body.modal-open {
   }
 
   .admin-page {
+    padding-top: 104px;
+  }
+
+  .legal-page {
+    width: min(calc(100% - 28px), var(--max));
     padding-top: 104px;
   }
 

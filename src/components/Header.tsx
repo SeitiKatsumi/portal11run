@@ -13,6 +13,7 @@ const navIcons: Record<string, LucideIcon> = {
   "/11-master": Trophy,
   "/11-regional": Trophy,
   "/circuito-futuro-11": Flag,
+  "/projetos/circuito-virtual-11run": Globe2,
   "/bolsas": Globe2,
   "/apoie-o-projeto": HandHeart
 };

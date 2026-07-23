@@ -64,6 +64,7 @@ export const projectNavItems: NavItem[] = [
   { label: "11 Futuro", href: "/onze-futuro" },
   { label: "11 Master", href: "/11-master" },
   { label: "Circuito 11 Futuro", href: "/circuito-futuro-11" },
+  { label: "Circuito Virtual 11Run", href: "/projetos/circuito-virtual-11run" },
   { label: "Bolsas", href: "/bolsas" }
 ];
 
