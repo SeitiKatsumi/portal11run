@@ -152,7 +152,7 @@ export const projects: ProjectPage[] = [
     formHref: "/cadastro/onze-futuro",
     cta: "Cadastrar atleta",
     icon: Users,
-    metrics: ["4 atletas", "1 missão", "cultura esportiva", "disciplina"],
+    metrics: ["5 atletas", "1 missão", "cultura esportiva", "disciplina"],
     features: [
       "Acompanhamento esportivo",
       "Ajuda de custo",

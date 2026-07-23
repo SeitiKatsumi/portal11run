@@ -111,6 +111,16 @@ main {
   border-radius: var(--radius);
 }
 
+.home-site-header {
+  border-color: rgb(255 255 255 / 0.34);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.1);
+  transition: background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.home-site-header-scrolled {
+  box-shadow: 0 14px 42px rgb(0 0 0 / 0.16);
+}
+
 .brand img,
 .footer-logo {
   filter: grayscale(1) brightness(0);

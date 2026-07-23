@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Banknote, Bot, CalendarDays, ClipboardList, Globe2, HandHeart, Handshake, ShoppingBag, Trophy } from "lucide-react";
+import { Banknote, Bot, CalendarDays, ClipboardList, Globe2, HandHeart, Handshake, Home, ShoppingBag, Trophy } from "lucide-react";
 
 const adminItems = [
+  { href: "/admin/home", label: "Home", icon: Home },
   { href: "/admin/cadastros", label: "Cadastros", icon: ClipboardList },
   { href: "/admin/apoiadores", label: "Interessados em apoiar", icon: HandHeart },
   { href: "/admin/patrocinadores", label: "Patrocinadores", icon: Handshake },

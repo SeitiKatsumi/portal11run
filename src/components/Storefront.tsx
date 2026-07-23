@@ -1,8 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import { MapPin, Minus, Package, Plus, ShieldCheck, ShoppingBag, Trash2, Truck, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import {
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  MapPin,
+  Minus,
+  Package,
+  Plus,
+  ShieldCheck,
+  ShoppingBag,
+  Trash2,
+  Truck,
+  X
+} from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 import {
   pickupCities,
   STORE_SHIPPING_CENTS,
@@ -51,6 +64,7 @@ export function Storefront({
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [fulfillmentMethod, setFulfillmentMethod] = useState<FulfillmentMethod>("shipping");
   const [pickupCity, setPickupCity] = useState<PickupCity>("Americana");
+  const [gallery, setGallery] = useState<{ product: StoreProduct; index: number } | null>(null);
 
   const subtotal = useMemo(
     () => cart.reduce((total, item) => total + item.priceCents * item.quantity, 0),
@@ -58,6 +72,35 @@ export function Storefront({
   );
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
   const shippingCents = cart.length && fulfillmentMethod === "shipping" ? STORE_SHIPPING_CENTS : 0;
+
+  useEffect(() => {
+    if (!gallery) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setGallery(null);
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [gallery]);
+
+  function galleryImages(product: StoreProduct) {
+    return [
+      product.image_url ? { src: product.image_url, label: "Mockup da camiseta" } : null,
+      product.design_image_url ? { src: product.design_image_url, label: "Estampa em detalhes" } : null
+    ].filter((image): image is { src: string; label: string } => Boolean(image));
+  }
+
+  function moveGallery(direction: number) {
+    setGallery((current) => {
+      if (!current) return null;
+      const images = galleryImages(current.product);
+      return { ...current, index: (current.index + direction + images.length) % images.length };
+    });
+  }
 
   function addToCart(product: StoreProduct) {
     const size = selectedSizes[product.id] ?? availableSizes(product)[0];
@@ -179,9 +222,18 @@ export function Storefront({
                   ) : (
                     <span>Foto em breve</span>
                   )}
+                  {product.design_image_url ? (
+                    <button
+                      className={styles.viewDesign}
+                      type="button"
+                      onClick={() => setGallery({ product, index: product.image_url ? 1 : 0 })}
+                    >
+                      Ver estampa <ArrowRight size={15} />
+                    </button>
+                  ) : null}
                 </div>
                 <div className={styles.productDetails}>
-                  <span className={styles.productTag}>Camiseta oficial</span>
+                  <span className={styles.productTag}>{product.product_type}</span>
                   <h3>{product.title}</h3>
                   <p>{product.description}</p>
                   <strong className={styles.price}>{currency(product.price_cents)}</strong>
@@ -222,6 +274,53 @@ export function Storefront({
           })}
         </div>
       </section>
+
+      {gallery ? (
+        <>
+          <button className={styles.galleryBackdrop} type="button" aria-label="Fechar galeria" onClick={() => setGallery(null)} />
+          <section className={styles.galleryModal} role="dialog" aria-modal="true" aria-label={`Galeria de ${gallery.product.title}`}>
+            <header>
+              <div>
+                <span className="eyebrow">{gallery.product.product_type}</span>
+                <h2>{gallery.product.title}</h2>
+              </div>
+              <button type="button" onClick={() => setGallery(null)} aria-label="Fechar galeria"><X /></button>
+            </header>
+            <div className={styles.galleryStage}>
+              {(() => {
+                const images = galleryImages(gallery.product);
+                const currentImage = images[gallery.index] ?? images[0];
+                return currentImage ? (
+                  <Image
+                    src={currentImage.src}
+                    alt={`${currentImage.label} de ${gallery.product.title}`}
+                    fill
+                    sizes="(max-width: 760px) 92vw, 760px"
+                    unoptimized={currentImage.src.startsWith("/api/")}
+                  />
+                ) : null;
+              })()}
+              <button type="button" onClick={() => moveGallery(-1)} aria-label="Imagem anterior"><ChevronLeft /></button>
+              <button type="button" onClick={() => moveGallery(1)} aria-label="Próxima imagem"><ChevronRight /></button>
+            </div>
+            <footer>
+              {galleryImages(gallery.product).map((image, index) => (
+                <button
+                  className={gallery.index === index ? styles.galleryDotActive : ""}
+                  type="button"
+                  onClick={() => setGallery((current) => current ? { ...current, index } : null)}
+                  aria-label={`Ver ${image.label.toLowerCase()}`}
+                  aria-pressed={gallery.index === index}
+                  key={image.src}
+                >
+                  <span />
+                  {image.label}
+                </button>
+              ))}
+            </footer>
+          </section>
+        </>
+      ) : null}
 
       {drawerOpen ? <button className={styles.backdrop} type="button" aria-label="Fechar carrinho" onClick={() => setDrawerOpen(false)} /> : null}
       <aside className={`${styles.cartDrawer} ${drawerOpen ? styles.cartDrawerOpen : ""}`} aria-hidden={!drawerOpen}>

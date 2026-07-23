@@ -28,6 +28,9 @@ import type { LucideIcon } from "lucide-react";
 import { FeatureBanner } from "@/components/FeatureBanner";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { Reveal } from "@/components/Reveal";
+import { getPublicAthleteProfileByFirstName } from "@/lib/leads";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Onze Futuro | 11RUN",
@@ -43,7 +46,7 @@ const pilotImage = "/assets/athletes/eloiza.webp";
 
 const heroStats = [
   { icon: CalendarDays, title: "Projeto piloto", text: "2026 a 2029" },
-  { icon: Users, title: "Amostragem inicial", text: "4 atletas acompanhados de perto" },
+  { icon: Users, title: "Amostragem inicial", text: "5 atletas acompanhados de perto" },
   { icon: HeartPulse, title: "Ciclo de base", text: "3 anos de desenvolvimento" },
   { icon: Network, title: "Corpo multidisciplinar", text: "técnico, docente e emocional" },
   { icon: BarChart3, title: "Expansão responsável", text: "crescimento guiado por análise" },
@@ -82,7 +85,7 @@ const differentials = [
   {
     icon: Users,
     title: "Amostragem inicial com profundidade",
-    text: "A fase inicial começa com 4 atletas para permitir acompanhamento próximo, coleta de dados, análise individual e refinamento da metodologia."
+    text: "A fase inicial começa com 5 atletas para permitir acompanhamento próximo, coleta de dados, análise individual e refinamento da metodologia."
   },
   {
     icon: Network,
@@ -252,6 +255,24 @@ const athleteProfiles = [
   }
 ];
 
+const thalesProfile = {
+  image: "/assets/athletes/thales.webp",
+  alt: "Thales correndo uma prova de rua noturna com o uniforme da 11RUN",
+  intro: "Um convite do pai virou paixão, disciplina e o sonho de construir uma grande história no esporte.",
+  bio: [
+    "A trajetória do Thales na corrida começou aos 9 anos, em novembro de 2024, de uma forma muito simples. O esporte sempre esteve presente em sua infância, mas foi quando seu pai o convidou para um treino de 5 quilômetros que ele descobriu sua verdadeira paixão. Naquele primeiro treino, completou os 5 km em 26 minutos e nunca mais parou de correr.",
+    "Com dedicação, disciplina e amor pelo esporte, sua evolução aconteceu de forma consistente. Em poucos meses, baixou seu tempo para 23 minutos. Mesmo depois de enfrentar a dengue e precisar retomar os treinos, voltou ainda mais forte e alcançou a marca de 22 minutos.",
+    "Os resultados continuaram aparecendo: em julho de 2025, conquistou seu primeiro sub-20 nos 5 quilômetros; em dezembro, chegou ao sub-19; e, em junho de 2026, aos 11 anos, completou a distância em 17min45s, tornando-se um atleta sub-18.",
+    "Thales também iniciou sua trajetória no atletismo de pista, estreando nos 1.500 metros com 5min06s e mostrando potencial nas provas de meio-fundo. Hoje, segue treinando em busca da alta performance sem perder a essência daquele primeiro momento entre pai e filho: um convite simples que se transformou em paixão, estilo de vida e sonho."
+  ]
+};
+
+function formatBirthDate(value: string | null | undefined) {
+  if (!value) return "Nascimento informado no cadastro";
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  return match ? `${match[3]}/${match[2]}/${match[1]}` : value;
+}
+
 function IconCard({ icon: Icon, title, text }: { icon: LucideIcon; title: string; text?: string }) {
   return (
     <article className="futuro-card">
@@ -275,6 +296,16 @@ function SectionHeader({ eyebrow, title, text }: { eyebrow: string; title: strin
 }
 
 export default function Page() {
+  const thalesRegistration = getPublicAthleteProfileByFirstName("Thales");
+  const profiles = [
+    ...athleteProfiles,
+    {
+      ...thalesProfile,
+      name: thalesRegistration?.athlete_name || "Thales",
+      birthDate: formatBirthDate(thalesRegistration?.birth_date)
+    }
+  ];
+
   return (
     <div className="futuro-landing">
       <FeatureBanner
@@ -325,11 +356,11 @@ export default function Page() {
       <section className="futuro-section futuro-athletes">
         <SectionHeader
           eyebrow="primeira turma"
-          title="Quatro meninas, quatro histórias e um mesmo amor pela pista."
+          title="Cinco atletas, cinco histórias e um mesmo amor pela corrida."
           text="O projeto piloto do Onze Futuro começa com atletas que já carregam no corpo e no coração a alegria de correr, aprender, competir e sonhar grande."
         />
         <div className="futuro-athlete-grid">
-          {athleteProfiles.map((athlete, index) => (
+          {profiles.map((athlete, index) => (
             <Reveal key={athlete.name} delay={index * 0.04}>
               <article className="futuro-athlete-profile">
                 <div className="futuro-athlete-photo">
@@ -485,11 +516,11 @@ export default function Page() {
               <SectionHeader
                 eyebrow="piloto 2026-2029"
                 title="Um projeto piloto para estudar, validar e crescer."
-                text="A proposta não é limitar o projeto a 4 atletas. A proposta é começar com responsabilidade."
+                text="A proposta não é limitar o projeto a 5 atletas. A proposta é começar com responsabilidade."
               />
               <div className="futuro-text-block">
                 <p>
-                  O Onze Futuro começará com uma primeira turma de amostragem formada por 4 atletas, acompanhados
+                  O Onze Futuro começará com uma primeira turma de amostragem formada por 5 atletas, acompanhados
                   durante o ciclo inicial de 2026 a 2029.
                 </p>
                 <p>
@@ -524,7 +555,7 @@ export default function Page() {
               <h3>{item}</h3>
               <p>
                 {index === 0
-                  ? "O projeto começa com 4 atletas entre 10 e 13 anos, acompanhados por 3 anos em uma fase de estudo, validação e desenvolvimento."
+                  ? "O projeto começa com 5 atletas entre 10 e 13 anos, acompanhados por 3 anos em uma fase de estudo, validação e desenvolvimento."
                   : index === 1
                     ? "Os atletas terão suporte técnico, psicológico, esportivo, educacional e institucional dentro do ecossistema 11RUN."
                     : index === 2
@@ -570,7 +601,7 @@ export default function Page() {
           precisamos de base. Se queremos futuro, precisamos de ecossistema.
         </p>
         <p>
-          Começaremos com 4 atletas. Mas a missão é maior: criar cultura, desenvolver disciplina, abrir caminhos,
+          Começaremos com 5 atletas. Mas a missão é maior: criar cultura, desenvolver disciplina, abrir caminhos,
           estudar a base, validar um modelo e construir um futuro possível para mais jovens corredores.
         </p>
       </section>

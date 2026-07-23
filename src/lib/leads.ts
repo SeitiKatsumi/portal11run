@@ -429,6 +429,26 @@ export function listLeads() {
     .all() as LeadRecord[];
 }
 
+export function getPublicAthleteProfileByFirstName(firstName: string) {
+  const normalizedName = firstName.trim();
+  if (!normalizedName) return null;
+
+  return (
+    (getDatabase()
+      .prepare(
+        `SELECT athlete_name, birth_date
+         FROM leads
+         WHERE project_type = 'onze-futuro'
+           AND lower(athlete_name) LIKE lower(?)
+           AND birth_date IS NOT NULL
+           AND trim(birth_date) <> ''
+         ORDER BY datetime(created_at) DESC
+         LIMIT 1`
+      )
+      .get(`%${normalizedName}%`) as { athlete_name: string; birth_date: string } | undefined) ?? null
+  );
+}
+
 export function getLeadById(id: string) {
   return getDatabase().prepare("SELECT * FROM leads WHERE id = ?").get(id) as LeadRecord | undefined;
 }

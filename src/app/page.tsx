@@ -1,170 +1,102 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Flag, Globe2, Trophy, Users } from "lucide-react";
-import { CTASection } from "@/components/CTASection";
-import { FeatureBanner } from "@/components/FeatureBanner";
-import { FeatureCard } from "@/components/FeatureCard";
-import { ProjectFormModal } from "@/components/ProjectFormModal";
-import { Reveal } from "@/components/Reveal";
-import { SectionTitle } from "@/components/SectionTitle";
-import { ecosystemCards, metrics } from "@/lib/content";
+import {
+  ArrowUpRight,
+  BarChart3,
+  Flag,
+  Globe2,
+  GraduationCap,
+  Medal,
+  Route,
+  ShoppingBag,
+  Sparkles,
+  Trophy,
+  Users,
+  type LucideIcon
+} from "lucide-react";
+import { getHomeConfig } from "@/lib/home";
+import styles from "./home.module.css";
 
-const homeImage = "/assets/ayla-hero.jpg";
-const structureImage = "/assets/home-structure-track.jpg";
-const communityImage = "/assets/home-community-track.jpg";
-const performanceImage = "/assets/home-performance-stage.jpg";
-const futureImage = "/assets/home-future-track.jpg";
+export const metadata: Metadata = {
+  title: "11RUN | Performance, formação e oportunidades na corrida",
+  description:
+    "Entre no ecossistema 11RUN e conheça projetos de formação, performance, circuito, atletas master, bolsas e oportunidades.",
+  openGraph: {
+    title: "11RUN — O futuro da corrida começa aqui",
+    description: "Projetos que transformam talento em oportunidade.",
+    images: ["/assets/home/ayla-podcast-hero.webp"]
+  }
+};
+
+const icons: Record<string, LucideIcon> = {
+  BarChart3,
+  Flag,
+  Globe2,
+  GraduationCap,
+  Medal,
+  Route,
+  ShoppingBag,
+  Sparkles,
+  Trophy,
+  Users
+};
 
 export default function Home() {
+  const { settings, projects } = getHomeConfig();
+  const useVideo = settings.hero_media_type === "video" && settings.hero_video;
+
   return (
-    <>
-      <FeatureBanner
-        eyebrow="ecossistema 11RUN"
-        title="Um Ecossistema de amor pelo fundismo"
-        text="Uma plataforma viva para conectar formação, performance, circuito e oportunidades em um mesmo caminho."
-        imageSrc={homeImage}
-        ctaSlot={<ProjectFormModal project="onze-futuro" label="Cadastrar atleta" />}
+    <section
+      className={`${styles.hero} ${settings.content_alignment === "left" ? styles.alignLeft : ""}`}
+      aria-labelledby="home-title"
+    >
+      <div className={styles.media} aria-hidden="true">
+        {useVideo ? (
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster={settings.hero_image}
+            src={settings.hero_video || undefined}
+          />
+        ) : (
+          <img src={settings.hero_image} alt="" fetchPriority="high" />
+        )}
+      </div>
+      <div
+        className={styles.overlay}
+        style={{ backgroundColor: `rgb(12 13 13 / ${settings.overlay_strength / 100})` }}
       />
 
-      <section className="home-hero">
-        <div className="home-hero-inner">
-          <Reveal>
-            <div className="home-hero-copy">
-              <h1>Uma estrutura para revelar, formar e levar corredores mais longe.</h1>
-              <p>
-                A 11RUN organiza base, circuito, projetos regionais e caminhos internacionais em uma plataforma viva para
-                atletas, famílias, treinadores e parceiros.
-              </p>
-              <div className="hero-actions">
-                <Link className="button primary" href="#projetos">
-                  Conhecer os projetos
-                  <ArrowRight size={18} />
-                </Link>
-                <Link className="button ghost" href="https://app.11run.com.br/">
-                  Acessar App 11Run
-                  <ArrowRight size={18} />
-                </Link>
-              </div>
-            </div>
-          </Reveal>
-
-          <Reveal delay={0.08}>
-            <div className="home-hero-visual">
-              <img src={structureImage} alt="Atleta 11RUN em pista de atletismo" />
-            </div>
-          </Reveal>
+      <div className={styles.content}>
+        <div className={styles.intro}>
+          {settings.hero_kicker ? <span>{settings.hero_kicker}</span> : null}
+          <h1 id="home-title">{settings.hero_title || "O futuro da corrida começa aqui."}</h1>
+          {settings.hero_subtitle ? <p>{settings.hero_subtitle}</p> : null}
         </div>
 
-        <div className="home-hero-metrics">
-          {metrics.map((metric) => (
-            <div key={metric.label} className="home-metric">
-              <strong>{metric.value}</strong>
-              <span>{metric.label}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="photo-hero photo-hero-wide">
-        <div>
-          <span className="eyebrow">comunidade</span>
-          <h2>Atletas, famílias e treinadores dentro da mesma estrutura.</h2>
-        </div>
-        <img src={communityImage} alt="Atleta 11RUN sentada na pista de atletismo" />
-      </section>
-
-      <section className="home-statement">
-        <span>11RUN</span>
-        <h2>
-          Mais que um portal. Uma arquitetura de desenvolvimento para atletas, famílias, treinadores e projetos que
-          querem chegar mais longe.
-        </h2>
-      </section>
-
-      <section className="section home-projects" id="projetos">
-        <SectionTitle
-          eyebrow="frentes do ecossistema"
-          title="Cinco frentes, uma mesma esteira de evolução."
-          text="Cada iniciativa funciona como uma trilha independente, mas todas alimentam o mesmo sistema de formação, performance e oportunidade."
-        />
-        <div className="project-lanes">
-          {ecosystemCards.map((project, index) => (
-            <Reveal key={project.href} delay={index * 0.04}>
-              <Link className="project-lane" href={project.href}>
-                <span>{String(index + 1).padStart(2, "0")}</span>
-                <project.icon size={28} strokeWidth={1.4} />
-                <div>
-                  <h3>{project.title}</h3>
-                  <p>{project.text}</p>
-                </div>
-                <ArrowRight size={18} />
+        <nav className={styles.projectGrid} aria-label="Projetos 11RUN">
+          {projects.map((project, index) => {
+            const Icon = icons[project.icon] || Sparkles;
+            return (
+              <Link
+                className={styles.projectCard}
+                href={project.href}
+                key={project.id}
+                style={{ animationDelay: `${Math.min(index, 8) * 55}ms` }}
+              >
+                <span className={styles.projectIcon}><Icon size={22} strokeWidth={1.55} /></span>
+                <span className={styles.projectText}>
+                  <strong>{project.name}</strong>
+                  {project.description ? <small>{project.description}</small> : null}
+                </span>
+                <ArrowUpRight size={18} />
               </Link>
-            </Reveal>
-          ))}
-        </div>
-      </section>
-
-      <section className="photo-hero photo-hero-split">
-        <img src={performanceImage} alt="Representante 11RUN apresentando projeto de performance" />
-        <div>
-          <span className="eyebrow">performance</span>
-          <h2>Da rotina de treino ao próximo salto competitivo.</h2>
-          <p>Uma operação pensada para organizar acompanhamento, calendário, orientação e oportunidade.</p>
-        </div>
-      </section>
-
-      <section className="section split home-system">
-        <SectionTitle
-          eyebrow="o sistema"
-          title="Da descoberta do talento ao contexto que sustenta a performance."
-          text="A 11RUN conecta tecnologia, base, circuito, projetos regionais e oportunidades internacionais em uma experiência única."
-        />
-        <Reveal>
-          <div className="system-panel">
-            <div>
-              <span>01</span>
-              <strong>Identificar</strong>
-              <p>Mapear atletas, famílias, projetos e marcas competitivas.</p>
-            </div>
-            <div>
-              <span>02</span>
-              <strong>Desenvolver</strong>
-              <p>Transformar rotina, calendário e orientação em continuidade.</p>
-            </div>
-            <div>
-              <span>03</span>
-              <strong>Conectar</strong>
-              <p>Aproximar desempenho de bolsas, universidades e oportunidades reais.</p>
-            </div>
-          </div>
-        </Reveal>
-      </section>
-
-      <section className="photo-hero photo-hero-wide">
-        <div>
-          <span className="eyebrow">Onze Futuro</span>
-          <h2>O caminho começa no Onze Futuro e ganha escala com continuidade.</h2>
-        </div>
-        <img src={futureImage} alt="Atleta 11RUN em pista de atletismo" />
-      </section>
-
-      <section className="section">
-        <SectionTitle eyebrow="impacto" title="Uma operação para levar a pista local ao mapa global." />
-        <div className="feature-grid compact">
-          <FeatureCard title="Alto rendimento" icon={Trophy} />
-          <FeatureCard title="Onze Futuro" icon={Users} />
-          <FeatureCard title="Circuito Futuro 11" icon={Flag} />
-          <FeatureCard title="Oportunidade internacional" icon={Globe2} />
-        </div>
-      </section>
-
-      <CTASection
-        title="Escolha uma frente da 11RUN e faça parte do movimento."
-        actions={[
-          { label: "Cadastrar no Onze Futuro", modalProject: "onze-futuro" },
-          { label: "Acessar App 11Run", href: "https://app.11run.com.br/" },
-          { label: "Conhecer oportunidades", href: "/bolsas" }
-        ]}
-      />
-    </>
+            );
+          })}
+        </nav>
+      </div>
+    </section>
   );
 }

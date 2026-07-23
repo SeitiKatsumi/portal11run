@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { BarChart3, ChevronDown, ChevronRight, Flag, Globe2, HandHeart, Home, Medal, Menu, Trophy, UserRound, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -19,8 +20,12 @@ const navIcons: Record<string, LucideIcon> = {
 };
 
 export function Header() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [open, setOpen] = useState(false);
   const [memberLoggedIn, setMemberLoggedIn] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [homeHeader, setHomeHeader] = useState({ opacity: 74, blur: 18 });
   const accountHref = memberLoggedIn ? "/meu-painel" : "/login";
   const accountLabel = memberLoggedIn ? "Meu Painel" : "Login";
 
@@ -37,8 +42,33 @@ export function Header() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!isHome) return;
+    const onScroll = () => setScrolled(window.scrollY > 18);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    fetch("/api/home")
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.settings) {
+          setHomeHeader({
+            opacity: Number(result.settings.header_opacity) || 74,
+            blur: Number(result.settings.header_blur) || 18
+          });
+        }
+      })
+      .catch(() => undefined);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isHome]);
+
   return (
-    <header className="site-header">
+    <header
+      className={`site-header ${isHome ? "home-site-header" : ""} ${scrolled ? "home-site-header-scrolled" : ""}`}
+      style={isHome ? {
+        backgroundColor: `rgb(255 250 242 / ${Math.min(100, scrolled ? homeHeader.opacity + 18 : homeHeader.opacity) / 100})`,
+        backdropFilter: `blur(${homeHeader.blur}px)`
+      } : undefined}
+    >
       <Link href="/" className="brand" aria-label="11RUN Home">
         <img src="/assets/logos/onzerun-menu.png" alt="11RUN" />
       </Link>

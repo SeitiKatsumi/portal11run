@@ -305,7 +305,8 @@
 }
 
 .formGrid input,
-.formGrid textarea {
+.formGrid textarea,
+.formGrid select {
   width: 100%;
   padding: 12px 13px;
   border: 1px solid var(--line);
@@ -313,6 +314,10 @@
   background: transparent;
   color: var(--text);
   font: inherit;
+}
+
+.formGrid select {
+  min-height: 46px;
 }
 
 .full,
