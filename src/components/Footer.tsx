@@ -115,7 +115,7 @@ export function Footer() {
       <section className="footer-sponsors" aria-labelledby="footer-sponsors-title">
         <div className="footer-sponsors-copy">
           <span className="eyebrow">Patrocinadores</span>
-          <h2 id="footer-sponsors-title">Uma operação para levar a pista local ao mapa global.</h2>
+          <h2 id="footer-sponsors-title">Um ecossistema de amor ao fundismo</h2>
         </div>
         <div className="footer-sponsor-groups">
           {sponsorGroups.map((group) => (
