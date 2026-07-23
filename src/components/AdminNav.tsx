@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Banknote, Bot, CalendarDays, ClipboardList, HandHeart, Handshake, Trophy } from "lucide-react";
+import { Banknote, Bot, CalendarDays, ClipboardList, HandHeart, Handshake, ShoppingBag, Trophy } from "lucide-react";
 
 const adminItems = [
   { href: "/admin/cadastros", label: "Cadastros", icon: ClipboardList },
@@ -11,6 +11,7 @@ const adminItems = [
   { href: "/admin/financeiro", label: "Financeiro", icon: Banknote },
   { href: "/admin/eventos", label: "Eventos", icon: CalendarDays },
   { href: "/admin/ranking", label: "Ranking", icon: Trophy },
+  { href: "/admin/loja", label: "Loja e pedidos", icon: ShoppingBag },
   { href: "/admin/atendimento", label: "Chat e IA", icon: Bot },
   { href: "/admin/alex-lopes", label: "Alex Lopes", icon: Bot }
 ];

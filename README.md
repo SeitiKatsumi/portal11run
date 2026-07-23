@@ -9,6 +9,7 @@ Portal institucional oficial do ecossistema 11RUN Brazil, com páginas internas 
 - Framer Motion
 - Lucide Icons
 - Banco de dados SQLite persistente para leads
+- Loja com catálogo, estoque por tamanho, pedidos e Stripe Checkout
 - Docker e CapRover
 
 ## Rodar localmente
@@ -87,6 +88,35 @@ Healthcheck do app:
 ```txt
 /api/health
 ```
+
+## Loja e Stripe
+
+A página `/apoie-o-projeto` funciona como loja oficial. Produtos e estoque são gerenciados em `/admin/loja`.
+
+Configure no CapRover, sem gravar chaves no GitHub:
+
+```txt
+NEXT_PUBLIC_SITE_URL=https://11run.com.br
+STRIPE_SECRET_KEY=rk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+Cadastre no Stripe Workbench o webhook:
+
+```txt
+https://11run.com.br/api/stripe/webhook
+```
+
+Eventos necessários:
+
+```txt
+checkout.session.completed
+checkout.session.async_payment_succeeded
+checkout.session.async_payment_failed
+checkout.session.expired
+```
+
+Os meios de pagamento são dinâmicos e devem ser ativados no Dashboard da Stripe. O código não restringe o checkout a cartão.
 
 Se `11run.com.br` mostrar `Nothing here yet`, o domínio ainda está no placeholder/default do CapRover ou não foi salvo no app correto. A porta do container deste projeto é sempre `80`.
 
