@@ -149,6 +149,7 @@ export function Footer() {
         <strong>Contato</strong>
         <span>E-mail, Instagram e WhatsApp em breve.</span>
         <span>11RUN Brazil</span>
+        <Link href="/politica-de-privacidade">Política de Privacidade</Link>
       </div>
     </footer>
   );
