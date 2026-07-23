@@ -10,6 +10,7 @@ import {
   parseCircuitTime,
   periodBounds,
   selectBestMarks,
+  validateCircuitActivityDate,
   validateCpf,
   type RankableSubmission
 } from "../src/lib/virtual-circuit-core.ts";
@@ -24,6 +25,12 @@ test("calcula a categoria pela idade no ano da edição", () => {
   assert.deepEqual(categoryForBirthDate("2017-08-21", 2026), { age: 9, birthYear: 2017 });
   assert.equal(categoryForBirthDate("2013-01-02", 2026).age, 13);
   assert.throws(() => categoryForBirthDate("2012-01-01", 2026));
+});
+
+test("aceita atividades desde 01 de julho de 2026", () => {
+  assert.equal(validateCircuitActivityDate("2026-07-01", "2026-07-01", "2026-12-15"), "2026-07-01");
+  assert.equal(validateCircuitActivityDate("2026-08-01", "2026-07-01", "2026-12-15"), "2026-08-01");
+  assert.throws(() => validateCircuitActivityDate("2026-06-30", "2026-07-01", "2026-12-15"));
 });
 
 test("valida dígitos verificadores do CPF", () => {

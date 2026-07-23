@@ -10,6 +10,7 @@ import {
   normalizeState,
   parseCircuitTime,
   selectBestMarks,
+  validateCircuitActivityDate,
   validateCpf,
   type CircuitGender,
   type CircuitSubmissionType,
@@ -19,6 +20,7 @@ import { circuitFaq, circuitRegulations, mandatoryConsents } from "./virtual-cir
 
 export const CIRCUIT_SLUG = "desafio-virtual-1km-11run-futuro-2026";
 export const CIRCUIT_EDITION_ID = "virtual-circuit-2026";
+export const CIRCUIT_ACTIVITY_START = "2026-07-01";
 
 let database: DatabaseSync | undefined;
 
@@ -47,8 +49,34 @@ function safeJson<T>(value: string | null | undefined, fallback: T): T {
 }
 
 function seedCircuitEdition(db: DatabaseSync) {
-  if (db.prepare("SELECT id FROM virtual_circuit_editions WHERE id = ?").get(CIRCUIT_EDITION_ID)) return;
   const timestamp = now();
+  const existing = db
+    .prepare("SELECT start_date, regulations_text, faq_json FROM virtual_circuit_editions WHERE id = ?")
+    .get(CIRCUIT_EDITION_ID) as { start_date: string; regulations_text: string; faq_json: string } | undefined;
+  if (existing) {
+    const currentRegulations = safeJson<string[][]>(existing.regulations_text, []);
+    const currentFaq = safeJson<string[][]>(existing.faq_json, []);
+    const updatedRegulations = currentRegulations.map(([title, text]) => {
+      const replacement = circuitRegulations.find(([currentTitle]) => currentTitle === title);
+      return title === "2. Do período" || title === "3. Dos participantes" ? [...(replacement ?? [title, text])] : [title, text];
+    });
+    const updatedFaq = currentFaq.map(([question, answer]) => {
+      const replacement = circuitFaq.find(([currentQuestion]) => currentQuestion === question);
+      return question === "Quem pode participar?" ? [...(replacement ?? [question, answer])] : [question, answer];
+    });
+    db.prepare(
+      `UPDATE virtual_circuit_editions
+       SET start_date = ?, regulations_text = ?, faq_json = ?, updated_at = ?
+       WHERE id = ?`
+    ).run(
+      existing.start_date > CIRCUIT_ACTIVITY_START ? CIRCUIT_ACTIVITY_START : existing.start_date,
+      JSON.stringify(updatedRegulations),
+      JSON.stringify(updatedFaq),
+      timestamp,
+      CIRCUIT_EDITION_ID
+    );
+    return;
+  }
   const settings = {
     minAge: 9,
     maxAge: 13,
@@ -71,7 +99,7 @@ function seedCircuitEdition(db: DatabaseSync) {
     "Desafio Virtual 1km 11Run Futuro",
     CIRCUIT_SLUG,
     "Primeira competição virtual para atletas de 9 a 13 anos.",
-    "2026-08-01",
+    CIRCUIT_ACTIVITY_START,
     "2026-12-15",
     "America/Sao_Paulo",
     1000,
@@ -238,13 +266,6 @@ function cleanText(value: unknown, field: string, max = 180) {
     .slice(0, max);
   if (!clean) throw new Error(`${field} é obrigatório.`);
   return clean;
-}
-
-function validateActivityDate(value: string, start: string, end: string) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value) || value < start || value > end) {
-    throw new Error(`A atividade deve ter sido realizada entre ${start} e ${end}.`);
-  }
-  return value;
 }
 
 function assertDocumentOwnerReady(db: DatabaseSync, fileId: string) {
@@ -430,7 +451,7 @@ export function createCircuitRegistration(input: RegistrationInput) {
     }
 
     const submissionId = randomUUID();
-    const activityDate = validateActivityDate(input.submission.activityDate, edition.start_date, edition.end_date);
+    const activityDate = validateCircuitActivityDate(input.submission.activityDate, edition.start_date, edition.end_date);
     db.prepare(
       `INSERT INTO virtual_circuit_submissions
         (id, edition_id, athlete_id, guardian_id, coach_id, submission_type, activity_date, declared_time_ms,

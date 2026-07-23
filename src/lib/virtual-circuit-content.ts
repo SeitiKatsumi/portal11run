@@ -1,5 +1,5 @@
 export const circuitFaq = [
-  ["Quem pode participar?", "Crianças que completem entre 9 e 13 anos no ano da edição e possuam autorização de um responsável legal."],
+  ["Quem pode participar?", "Crianças brasileiras que completem entre 9 e 13 anos no ano da edição e possuam autorização de um responsável legal. Podem residir no Brasil ou no exterior."],
   ["Preciso morar perto de uma pista?", "Não. São aceitas competições oficiais, pistas de 400 metros e percursos abertos."],
   ["A participação é gratuita?", "Sim, nesta primeira edição a participação é gratuita."],
   ["Posso participar mais de uma vez?", "Sim. Apenas a melhor marca aprovada será considerada em cada período."],
@@ -21,8 +21,8 @@ export const circuitFaq = [
 
 export const circuitRegulations = [
   ["1. Do projeto", "O Circuito Virtual 11Run incentiva a corrida, acompanha a evolução e amplia oportunidades para crianças de todo o Brasil. A primeira edição chama-se Desafio Virtual 1km 11Run Futuro."],
-  ["2. Do período", "Serão aceitas atividades realizadas de 1º de agosto a 15 de dezembro de 2026. Fechamentos mensais, trimestrais e finais seguirão as datas publicadas."],
-  ["3. Dos participantes", "Podem participar crianças que completem 9, 10, 11, 12 ou 13 anos em 2026. A categoria é definida pelo ano de nascimento e permanece durante toda a edição."],
+  ["2. Do período", "Serão aceitas atividades realizadas de 1º de julho a 15 de dezembro de 2026. Fechamentos mensais, trimestrais e finais seguirão as datas publicadas."],
+  ["3. Dos participantes", "Podem participar exclusivamente crianças brasileiras que completem 9, 10, 11, 12 ou 13 anos em 2026, residentes no Brasil ou no exterior. A categoria é definida pelo ano de nascimento e permanece durante toda a edição."],
   ["4. Da autorização", "A participação exige autorização expressa do responsável legal. Treinadores podem auxiliar o envio, mas não substituem esse consentimento."],
   ["5. Da distância", "Todos os resultados devem corresponder a 1.000 metros. Distâncias inferiores não serão aceitas."],
   ["6. Das formas de participação", "São aceitas marcas de competição oficial, teste em pista oficial de 400 metros e teste em percurso aberto, cada uma com comprovação própria."],
@@ -45,6 +45,7 @@ export const circuitRegulations = [
 
 export const mandatoryConsents = [
   ["LEGAL_GUARDIAN", "Declaro ser pai, mãe, tutor ou responsável legal pelo atleta."],
+  ["BRAZILIAN_NATIONALITY", "Declaro que o atleta possui nacionalidade brasileira, residindo no Brasil ou no exterior."],
   ["DATA_TRUE", "Confirmo que os dados fornecidos são verdadeiros."],
   ["PARTICIPATION", "Autorizo a participação do atleta no Circuito Virtual 11Run."],
   ["DATA_PROCESSING", "Autorizo o tratamento dos dados necessários para inscrição, validação, ranking e premiação."],

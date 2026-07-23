@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
-    assertRateLimit(request, "circuit-register", 5, 30 * 60_000);
+    assertRateLimit(request, "circuit-register", 20, 10 * 60_000);
     const payload = (await request.json()) as Parameters<typeof createCircuitRegistration>[0] & { website?: string };
     if (payload.website) return NextResponse.json({ ok: true });
     payload.meta = { ip: clientIp(request), userAgent: request.headers.get("user-agent") ?? undefined };

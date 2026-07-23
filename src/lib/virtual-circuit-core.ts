@@ -59,6 +59,20 @@ export function categoryForBirthDate(birthDate: string, editionYear: number, min
   return { age, birthYear: year };
 }
 
+export function validateCircuitActivityDate(value: string, start: string, end: string) {
+  const parsed = new Date(`${value}T12:00:00.000Z`);
+  if (
+    !/^\d{4}-\d{2}-\d{2}$/.test(value) ||
+    Number.isNaN(parsed.valueOf()) ||
+    parsed.toISOString().slice(0, 10) !== value ||
+    value < start ||
+    value > end
+  ) {
+    throw new Error(`A atividade deve ter sido realizada entre ${start} e ${end}.`);
+  }
+  return value;
+}
+
 export function normalizePublicName(value: string) {
   return value
     .replace(/<[^>]*>/g, "")

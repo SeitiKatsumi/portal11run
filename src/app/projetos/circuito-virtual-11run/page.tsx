@@ -9,7 +9,7 @@ import styles from "./virtual-circuit.module.css";
 export const metadata: Metadata = {
   title: "Circuito Virtual 11Run | Desafio Nacional de 1.000 Metros",
   description:
-    "Crianças de 9 a 13 anos de todo o Brasil podem registrar sua marca nos 1.000 metros, participar do ranking nacional e concorrer a premiações.",
+    "Crianças brasileiras de 9 a 13 anos, residentes no Brasil ou no exterior, podem registrar sua marca nos 1.000 metros e participar do ranking.",
   alternates: { canonical: "/projetos/circuito-virtual-11run" },
   openGraph: {
     title: "Desafio Virtual 1km 11Run Futuro",
@@ -43,16 +43,16 @@ export default function VirtualCircuitPage() {
           <div className={styles.heroCopy}>
             <span className={styles.eyebrow}>Circuito Virtual 11Run</span>
             <h1>Desafio Virtual 1km 11Run Futuro</h1>
-            <p className={styles.lead}>Primeira competição virtual para atletas de 9 a 13 anos.</p>
+            <p className={styles.lead}>Para atletas brasileiros de 9 a 13 anos, residentes no Brasil ou no exterior.</p>
             <p>Corra 1.000 metros, registre sua atividade e participe de um ranking nacional criado para incentivar e descobrir novos talentos.</p>
             <div className={styles.heroActions}>
               <a className={styles.primaryButton} href="#inscricao">Registrar atividade</a>
               <a className={styles.secondaryButton} href="#ranking">Ver ranking nacional</a>
             </div>
             <div className={styles.quickFacts}>
-              <span><Clock3 size={17} /> 1 ago — 15 dez 2026</span>
+              <span><Clock3 size={17} /> 1 jul — 15 dez 2026</span>
               <span><ShieldCheck size={17} /> Participação gratuita</span>
-              <span><Users size={17} /> 9 a 13 anos</span>
+              <span><Users size={17} /> Exclusivo para brasileiros</span>
             </div>
           </div>
           <div className={styles.heroImage}>
@@ -118,7 +118,7 @@ export default function VirtualCircuitPage() {
         </section>
 
         <section className={styles.section} id="inscricao">
-          <CircuitRegistration />
+          <CircuitRegistration startDate={edition.start_date} endDate={edition.end_date} />
         </section>
 
         <section className={styles.section} id="regulamento">

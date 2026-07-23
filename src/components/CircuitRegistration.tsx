@@ -7,6 +7,7 @@ import styles from "./CircuitUI.module.css";
 const UFS = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
 const consentItems = [
   ["LEGAL_GUARDIAN", "Declaro ser pai, mãe, tutor ou responsável legal pelo atleta."],
+  ["BRAZILIAN_NATIONALITY", "Declaro que o atleta possui nacionalidade brasileira, residindo no Brasil ou no exterior."],
   ["DATA_TRUE", "Confirmo que os dados fornecidos são verdadeiros."],
   ["PARTICIPATION", "Autorizo a participação do atleta no Circuito Virtual 11Run."],
   ["DATA_PROCESSING", "Autorizo o tratamento dos dados para inscrição, validação, ranking e premiação."],
@@ -29,7 +30,7 @@ function category(birthDate: string) {
   return age >= 9 && age <= 13 ? `${age} anos` : "Fora das categorias desta edição";
 }
 
-export function CircuitRegistration() {
+export function CircuitRegistration({ startDate, endDate }: { startDate: string; endDate: string }) {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<FormState>(initial);
   const [fileId, setFileId] = useState("");
@@ -64,6 +65,10 @@ export function CircuitRegistration() {
     }
     if (step === 1 && !fileId) { setMessage({ type: "error", text: "Envie o documento comprobatório do atleta." }); return false; }
     if (step === 4) {
+      const activityDate = String(data.activityDate ?? "");
+      if (activityDate < startDate || activityDate > endDate) {
+        setMessage({ type: "error", text: "A atividade deve ter sido realizada a partir de 01/07/2026." }); return false;
+      }
       if (data.type === "OFFICIAL_COMPETITION" && (!data.competitionName || !data.organizer || !data.officialResultUrl)) {
         setMessage({ type: "error", text: "Informe competição, entidade e resultado oficial." }); return false;
       }
@@ -139,7 +144,7 @@ export function CircuitRegistration() {
         {step === 1 && <StepAthlete data={data} set={set} category={athleteCategory} uploadDocument={uploadDocument} uploading={uploading} fileName={fileName} />}
         {step === 2 && <StepGuardian data={data} set={set} />}
         {step === 3 && <StepType data={data} set={set} />}
-        {step === 4 && <StepActivity data={data} set={set} />}
+        {step === 4 && <StepActivity data={data} set={set} startDate={startDate} endDate={endDate} />}
         {step === 5 && <StepConsents data={data} set={set} />}
         {step === 6 && <Review data={data} category={athleteCategory} fileName={fileName} />}
         {message && <div className={message.type === "error" ? styles.error : styles.success} role="status">{message.text}</div>}
@@ -154,8 +159,8 @@ export function CircuitRegistration() {
 }
 
 type StepProps = { data: FormState; set: (key: string, value: string | boolean) => void };
-const Input = ({ label, name, data, set, type = "text", required = true, placeholder }: StepProps & { label: string; name: string; type?: string; required?: boolean; placeholder?: string }) =>
-  <label><span>{label}{required && " *"}</span><input type={type} value={String(data[name] ?? "")} onChange={(e) => set(name, e.target.value)} required={required} placeholder={placeholder}/></label>;
+const Input = ({ label, name, data, set, type = "text", required = true, placeholder, min, max }: StepProps & { label: string; name: string; type?: string; required?: boolean; placeholder?: string; min?: string; max?: string }) =>
+  <label><span>{label}{required && " *"}</span><input type={type} value={String(data[name] ?? "")} onChange={(e) => set(name, e.target.value)} required={required} placeholder={placeholder} min={min} max={max}/></label>;
 const SelectState = ({ label, name, data, set }: StepProps & { label: string; name: string }) =>
   <label><span>{label} *</span><select value={String(data[name] ?? "SP")} onChange={(e) => set(name, e.target.value)}>{UFS.map((uf) => <option key={uf}>{uf}</option>)}</select></label>;
 
@@ -172,6 +177,6 @@ function StepAthlete({ data,set,category,uploadDocument,uploading,fileName }: St
 }
 function StepGuardian({data,set}:StepProps){return <div><h3>Responsável legal</h3><div className={styles.fieldGrid}><Input label="Nome completo" name="guardianFullName" data={data} set={set}/><Input label="CPF" name="guardianCpf" data={data} set={set}/><Input label="Relação com o atleta" name="guardianRelationship" data={data} set={set}/><Input label="Data de nascimento" name="guardianBirthDate" data={data} set={set} type="date"/><Input label="E-mail" name="guardianEmail" data={data} set={set} type="email"/><Input label="WhatsApp" name="guardianPhone" data={data} set={set}/></div><details className={styles.optional}><summary>Adicionar treinador ou responsável técnico (opcional)</summary><div className={styles.fieldGrid}><Input label="Nome" name="coachName" data={data} set={set} required={false}/><Input label="CPF" name="coachCpf" data={data} set={set} required={false}/><Input label="CREF" name="coachCref" data={data} set={set} required={false}/><Input label="Estado do CREF" name="coachCrefState" data={data} set={set} required={false}/><Input label="Clube, escola ou assessoria" name="coachOrganization" data={data} set={set} required={false}/><Input label="E-mail" name="coachEmail" data={data} set={set} type="email" required={false}/></div></details></div>}
 function StepType({data,set}:StepProps){return <div><h3>Como esta marca foi obtida?</h3><div className={styles.typeCards}>{[["OFFICIAL_COMPETITION","Competição oficial","Resultado público de federação ou organização."],["TRACK_400M","Pista oficial de 400m","Teste de 2,5 voltas com vídeo público."],["OPEN_COURSE","Percurso aberto","Atividade no Strava, vídeo e altimetria."]].map(([value,title,text])=><button type="button" key={value} className={data.type===value?styles.selected:""} onClick={()=>set("type",value)}><FileCheck2/><strong>{title}</strong><span>{text}</span></button>)}</div></div>}
-function StepActivity({data,set}:StepProps){return <div><h3>Resultado e comprovações</h3><div className={styles.fieldGrid}><Input label="Data da atividade" name="activityDate" data={data} set={set} type="date"/><Input label="Tempo (MM:SS.CC)" name="activityTime" data={data} set={set} placeholder="03:42.18"/><Input label="Cidade" name="activityCity" data={data} set={set}/><SelectState label="Estado" name="activityState" data={data} set={set}/>{data.type==="OFFICIAL_COMPETITION"&&<><Input label="Nome da competição" name="competitionName" data={data} set={set}/><Input label="Entidade organizadora" name="organizer" data={data} set={set}/><Input label="Link do resultado oficial" name="officialResultUrl" data={data} set={set} type="url"/><Input label="Prova ou bateria" name="heatNumber" data={data} set={set} required={false}/></>}{data.type==="TRACK_400M"&&<><Input label="Nome da pista" name="trackName" data={data} set={set}/><Input label="Vídeo público (YouTube ou Instagram)" name="videoUrl" data={data} set={set} type="url"/></>}{data.type==="OPEN_COURSE"&&<><Input label="Vídeo público" name="videoUrl" data={data} set={set} type="url"/><Input label="Atividade pública no Strava" name="stravaUrl" data={data} set={set} type="url"/></>}</div><label><span>Observações</span><textarea value={String(data.activityNotes??"")} onChange={(e)=>set("activityNotes",e.target.value)} rows={3}/></label></div>}
+function StepActivity({data,set,startDate,endDate}:StepProps & { startDate:string; endDate:string }){return <div><h3>Resultado e comprovações</h3><div className={styles.fieldGrid}><Input label="Data da atividade" name="activityDate" data={data} set={set} type="date" min={startDate} max={endDate}/><Input label="Tempo (MM:SS.CC)" name="activityTime" data={data} set={set} placeholder="03:42.18"/><Input label="Cidade" name="activityCity" data={data} set={set}/><SelectState label="Estado" name="activityState" data={data} set={set}/>{data.type==="OFFICIAL_COMPETITION"&&<><Input label="Nome da competição" name="competitionName" data={data} set={set}/><Input label="Entidade organizadora" name="organizer" data={data} set={set}/><Input label="Link do resultado oficial" name="officialResultUrl" data={data} set={set} type="url"/><Input label="Prova ou bateria" name="heatNumber" data={data} set={set} required={false}/></>}{data.type==="TRACK_400M"&&<><Input label="Nome da pista" name="trackName" data={data} set={set}/><Input label="Vídeo público (YouTube ou Instagram)" name="videoUrl" data={data} set={set} type="url"/></>}{data.type==="OPEN_COURSE"&&<><Input label="Vídeo público" name="videoUrl" data={data} set={set} type="url"/><Input label="Atividade pública no Strava" name="stravaUrl" data={data} set={set} type="url"/></>}</div><label><span>Observações</span><textarea value={String(data.activityNotes??"")} onChange={(e)=>set("activityNotes",e.target.value)} rows={3}/></label></div>}
 function StepConsents({data,set}:StepProps){return <div><h3>Regulamento e consentimentos</h3><p className={styles.hint}>Cada aceite é registrado com versão, data, IP e navegador.</p><div className={styles.consents}>{consentItems.map(([key,text])=><label key={key}><input type="checkbox" checked={data[key]===true} onChange={(e)=>set(key,e.target.checked)}/><span>{text}</span></label>)}<label className={styles.optionalConsent}><input type="checkbox" checked={data.mediaPromotion===true} onChange={(e)=>set("mediaPromotion",e.target.checked)}/><span><strong>Opcional:</strong> autorizo o uso de imagens e vídeos em comunicações institucionais da 11Run.</span></label></div><a className={styles.regulationLink} href="#regulamento">Ler regulamento completo</a></div>}
 function Review({data,category,fileName}:{data:FormState;category:string;fileName:string}){return <div><h3>Revise antes de enviar</h3><div className={styles.review}><article><span>Atleta</span><strong>{String(data.athletePublicName)}</strong><small>{category} · {String(data.athleteCity)}/{String(data.athleteState)}</small></article><article><span>Responsável</span><strong>{String(data.guardianFullName)}</strong><small>{String(data.guardianEmail)}</small></article><article><span>Atividade</span><strong>{String(data.activityTime)} nos 1.000 m</strong><small>{String(data.activityDate)} · {String(data.activityCity)}/{String(data.activityState)}</small></article><article><span>Documento</span><strong>{fileName}</strong><small>Privado e acessível somente à comissão.</small></article></div></div>}
