@@ -192,6 +192,11 @@ export function Storefront({
         </div>
       </section>
 
+      <div className={styles.notice}>
+        <strong>Vista a 11RUN. Apoie talentos. Faça parte dessa história.</strong>{" "}
+        Parte dos recursos obtidos na loja é destinada ao desenvolvimento dos projetos e atletas da 11RUN.
+      </div>
+
       {checkoutCancelled ? (
         <div className={styles.notice}>O pagamento foi cancelado. Seus produtos continuam disponíveis para uma nova tentativa.</div>
       ) : null}

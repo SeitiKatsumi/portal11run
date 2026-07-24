@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, ChevronDown, ChevronRight, Flag, Globe2, HandHeart, Home, Medal, Menu, Trophy, UserRound, X } from "lucide-react";
+import { BarChart3, ChevronDown, ChevronRight, Flag, Gift, Globe2, HandHeart, HeartHandshake, Home, Medal, Menu, ShoppingBag, Trophy, UserRound, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { navItems } from "@/lib/content";
@@ -16,7 +16,11 @@ const navIcons: Record<string, LucideIcon> = {
   "/circuito-futuro-11": Flag,
   "/projetos/circuito-virtual-11run": Globe2,
   "/bolsas": Globe2,
-  "/apoie-o-projeto": HandHeart
+  "/apoie": HandHeart,
+  "/apoie-o-projeto": ShoppingBag,
+  "/apoie/patrocine": HeartHandshake,
+  "/apoie/doacao": Gift,
+  "/apoie/voluntariado": UserRound
 };
 
 export function Header() {

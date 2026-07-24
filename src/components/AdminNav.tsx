@@ -7,7 +7,7 @@ import { Banknote, Bot, CalendarDays, ClipboardList, Globe2, HandHeart, Handshak
 const adminItems = [
   { href: "/admin/home", label: "Home", icon: Home },
   { href: "/admin/cadastros", label: "Cadastros", icon: ClipboardList },
-  { href: "/admin/apoiadores", label: "Interessados em apoiar", icon: HandHeart },
+  { href: "/admin/apoios", label: "Patrocínios e apoios", icon: HandHeart },
   { href: "/admin/patrocinadores", label: "Patrocinadores", icon: Handshake },
   { href: "/admin/financeiro", label: "Financeiro", icon: Banknote },
   { href: "/admin/eventos", label: "Eventos", icon: CalendarDays },
