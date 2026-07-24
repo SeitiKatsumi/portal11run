@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState, type FormEvent } from "react";
 import {
   orderStatusLabels,
   orderStatuses,
-  storeProductTypes,
+  storeVariantDefinitions,
   storeSizes,
   type OrderStatus,
   type StoreOrder,
@@ -191,7 +191,11 @@ export function StoreAdmin({
                       </div>
                       <div className={styles.orderStatus}>
                         <span className={order.payment_status === "pago" ? styles.paid : styles.unpaid}>
-                          {order.payment_status === "pago" ? "Pagamento aprovado" : "Aguardando pagamento"}
+                          {order.payment_status === "pago"
+                            ? `Pagamento aprovado · ${order.payment_method === "pix" ? "Pix" : "Cartão"}`
+                            : order.payment_method === "pix"
+                              ? "Pix aguardando confirmação"
+                              : "Aguardando pagamento"}
                         </span>
                         <select value={order.order_status} onChange={(event) => setOrderStatus(order.id, event.target.value as OrderStatus)}>
                           {orderStatuses.map((status) => <option value={status} key={status}>{orderStatusLabels[status]}</option>)}
@@ -202,7 +206,9 @@ export function StoreAdmin({
                       <div>
                         <span>Itens</span>
                         {order.items.map((item) => (
-                          <p key={item.id}><strong>{item.quantity}×</strong> {item.title} · {item.size}</p>
+                          <p key={item.id}>
+                            <strong>{item.quantity}×</strong> {item.title} · {item.variant_label} · {item.size}
+                          </p>
                         ))}
                       </div>
                       <div>
@@ -238,23 +244,53 @@ export function StoreAdmin({
               {editing ? <button type="button" onClick={() => setEditing(null)}><X size={16} /> Cancelar</button> : null}
             </div>
             <div className={styles.formGrid}>
-              <label><span>Título</span><input name="title" required defaultValue={editing?.title ?? ""} placeholder='Camiseta "Além da Imaginação"' /></label>
-              <label><span>Preço</span><input name="price" required defaultValue={editing ? currency(editing.price_cents).replace("R$", "").trim() : ""} placeholder="59,90" /></label>
-              <label className={styles.full}>
-                <span>Tipo de camiseta</span>
-                <select name="product_type" defaultValue={editing?.product_type ?? "De passeio"}>
-                  {storeProductTypes.map((type) => <option value={type} key={type}>{type}</option>)}
-                </select>
-              </label>
+              <label className={styles.full}><span>Título</span><input name="title" required defaultValue={editing?.title ?? ""} placeholder='Camiseta "Além da Imaginação"' /></label>
               <label className={styles.full}><span>Descrição</span><textarea name="description" rows={3} defaultValue={editing?.description ?? ""} placeholder="Descrição curta do produto." /></label>
+              <fieldset className={styles.variantFields}>
+                <legend>Variações de tecido, preço e estoque</legend>
+                {storeVariantDefinitions.map((definition) => {
+                  const variant = editing?.variants.find((item) => item.code === definition.code);
+                  return (
+                    <div className={styles.variantAdminCard} key={definition.code}>
+                      <header>
+                        <strong>{definition.label}</strong>
+                        <label className={styles.variantActiveCheck}>
+                          <input
+                            name={`active_${definition.code}`}
+                            type="checkbox"
+                            defaultChecked={variant ? variant.active === 1 : true}
+                          />
+                          <span>Disponível</span>
+                        </label>
+                      </header>
+                      <label>
+                        <span>Preço</span>
+                        <input
+                          name={`price_${definition.code}`}
+                          required
+                          defaultValue={variant ? currency(variant.price_cents).replace("R$", "").trim() : definition.code === "casual" ? "59,90" : "79,90"}
+                          placeholder={definition.code === "casual" ? "59,90" : "79,90"}
+                        />
+                      </label>
+                      <div className={styles.variantStock}>
+                        {storeSizes.map((size) => (
+                          <label key={size}>
+                            <span>{size}</span>
+                            <input
+                              name={`stock_${definition.code}_${size}`}
+                              type="number"
+                              min="0"
+                              defaultValue={variant?.inventory[size] ?? 0}
+                            />
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </fieldset>
               <label className={styles.full}><span>Foto do mockup</span><input name="image" type="file" accept="image/*" /></label>
               <label className={styles.full}><span>Foto da estampa</span><input name="design_image" type="file" accept="image/*" /></label>
-              <fieldset className={styles.stockFields}>
-                <legend>Quantidade em estoque por tamanho</legend>
-                {storeSizes.map((size) => (
-                  <label key={size}><span>{size}</span><input name={`stock_${size}`} type="number" min="0" defaultValue={editing?.inventory[size] ?? 0} /></label>
-                ))}
-              </fieldset>
               <label className={styles.activeCheck}><input name="active" type="checkbox" defaultChecked={editing ? editing.active === 1 : true} /><span>Produto visível na loja</span></label>
             </div>
             <button className={styles.saveButton} type="submit" disabled={loading}><Plus size={17} />{loading ? "Salvando..." : editing ? "Atualizar produto" : "Cadastrar produto"}</button>
@@ -267,10 +303,18 @@ export function StoreAdmin({
                   {product.image_url ? <Image src={product.image_url} alt={product.title} fill sizes="180px" unoptimized={product.image_url.startsWith("/api/")} /> : null}
                 </div>
                 <div>
-                  <span>{product.active ? "Publicado" : "Oculto"} · {product.product_type}</span>
+                  <span>{product.active ? "Publicado" : "Oculto"} · 2 variações</span>
                   <h3>{product.title}</h3>
-                  <strong>{currency(product.price_cents)}</strong>
-                  <div className={styles.inventoryPills}>{storeSizes.map((size) => <small key={size}>{size} · {product.inventory[size]}</small>)}</div>
+                  <div className={styles.adminVariants}>
+                    {product.variants.map((variant) => (
+                      <div key={variant.code}>
+                        <strong>{variant.label} · {currency(variant.price_cents)}</strong>
+                        <div className={styles.inventoryPills}>
+                          {storeSizes.map((size) => <small key={size}>{size} · {variant.inventory[size]}</small>)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div className={styles.productActions}>
                   <button type="button" onClick={() => setEditing(product)} aria-label={`Editar ${product.title}`}><PencilLine size={16} /></button>

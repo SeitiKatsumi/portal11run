@@ -341,6 +341,29 @@ CREATE TABLE IF NOT EXISTS store_inventory (
   FOREIGN KEY (product_id) REFERENCES store_products(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS store_product_variants (
+  product_id TEXT NOT NULL,
+  variant_code TEXT NOT NULL,
+  variant_label TEXT NOT NULL,
+  price_cents INTEGER NOT NULL,
+  active INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  PRIMARY KEY (product_id, variant_code),
+  FOREIGN KEY (product_id) REFERENCES store_products(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS store_variant_inventory (
+  product_id TEXT NOT NULL,
+  variant_code TEXT NOT NULL,
+  size TEXT NOT NULL,
+  quantity INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (product_id, variant_code, size),
+  FOREIGN KEY (product_id, variant_code)
+    REFERENCES store_product_variants(product_id, variant_code)
+    ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS store_orders (
   id TEXT PRIMARY KEY,
   stripe_session_id TEXT,
@@ -356,6 +379,9 @@ CREATE TABLE IF NOT EXISTS store_orders (
   total_cents INTEGER NOT NULL,
   order_status TEXT NOT NULL DEFAULT 'pedido_feito',
   payment_status TEXT NOT NULL DEFAULT 'não pago',
+  payment_method TEXT NOT NULL DEFAULT 'stripe',
+  pix_reference TEXT,
+  pix_payload TEXT,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );
@@ -365,6 +391,8 @@ CREATE TABLE IF NOT EXISTS store_order_items (
   order_id TEXT NOT NULL,
   product_id TEXT NOT NULL,
   title TEXT NOT NULL,
+  variant_code TEXT NOT NULL DEFAULT 'casual',
+  variant_label TEXT NOT NULL DEFAULT 'Casual',
   size TEXT NOT NULL,
   unit_price_cents INTEGER NOT NULL,
   quantity INTEGER NOT NULL,

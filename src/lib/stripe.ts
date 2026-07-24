@@ -65,9 +65,10 @@ export async function createStripeCheckout(
           currency: "brl",
           unit_amount: item.unit_price_cents,
           product_data: {
-            name: `${item.title} — ${item.size}`,
+            name: `${item.title} — ${item.variant_label} — ${item.size}`,
             metadata: {
               product_id: item.product_id,
+              variant: item.variant_code,
               size: item.size
             }
           }

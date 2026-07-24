@@ -3,12 +3,16 @@
 import Image from "next/image";
 import {
   ArrowRight,
+  Check,
   ChevronLeft,
   ChevronRight,
+  Copy,
+  CreditCard,
   MapPin,
   Minus,
   Package,
   Plus,
+  QrCode,
   ShieldCheck,
   ShoppingBag,
   Trash2,
@@ -23,6 +27,8 @@ import {
   type FulfillmentMethod,
   type PickupCity,
   type StoreProduct,
+  type StoreProductVariant,
+  type StorePaymentMethod,
   type StoreSize
 } from "@/lib/store-shared";
 import styles from "@/app/apoie-o-projeto/store.module.css";
@@ -31,18 +37,32 @@ type CartItem = {
   productId: string;
   title: string;
   imageUrl: string | null;
+  variantCode: StoreProductVariant["code"];
+  variantLabel: StoreProductVariant["label"];
   priceCents: number;
   size: StoreSize;
   quantity: number;
   stock: number;
 };
 
+type PixPayment = {
+  orderId: string;
+  reference: string;
+  amountCents: number;
+  pixPayload: string;
+  qrCode: string;
+};
+
 function currency(value: number) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value / 100);
 }
 
-function availableSizes(product: StoreProduct) {
-  return storeSizes.filter((size) => product.inventory[size] > 0);
+function availableVariants(product: StoreProduct) {
+  return product.variants.filter((variant) => variant.active === 1);
+}
+
+function availableSizes(variant?: StoreProductVariant) {
+  return variant ? storeSizes.filter((size) => variant.inventory[size] > 0) : [];
 }
 
 export function Storefront({
@@ -54,17 +74,28 @@ export function Storefront({
 }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, StoreProductVariant["code"]>>(() =>
+    Object.fromEntries(
+      initialProducts.map((product) => [product.id, availableVariants(product)[0]?.code ?? "casual"])
+    ) as Record<string, StoreProductVariant["code"]>
+  );
   const [selectedSizes, setSelectedSizes] = useState<Record<string, StoreSize>>(() =>
     Object.fromEntries(
-      initialProducts.map((product) => [product.id, availableSizes(product)[0] ?? "M"])
+      initialProducts.map((product) => [
+        product.id,
+        availableSizes(availableVariants(product)[0])[0] ?? "M"
+      ])
     ) as Record<string, StoreSize>
   );
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [error, setError] = useState("");
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [fulfillmentMethod, setFulfillmentMethod] = useState<FulfillmentMethod>("shipping");
+  const [paymentMethod, setPaymentMethod] = useState<StorePaymentMethod>("stripe");
   const [pickupCity, setPickupCity] = useState<PickupCity>("Americana");
   const [gallery, setGallery] = useState<{ product: StoreProduct; index: number } | null>(null);
+  const [pixPayment, setPixPayment] = useState<PixPayment | null>(null);
+  const [pixCopied, setPixCopied] = useState(false);
 
   const subtotal = useMemo(
     () => cart.reduce((total, item) => total + item.priceCents * item.quantity, 0),
@@ -74,18 +105,21 @@ export function Storefront({
   const shippingCents = cart.length && fulfillmentMethod === "shipping" ? STORE_SHIPPING_CENTS : 0;
 
   useEffect(() => {
-    if (!gallery) return;
+    if (!gallery && !pixPayment) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setGallery(null);
+      if (event.key === "Escape") {
+        setGallery(null);
+        setPixPayment(null);
+      }
     };
     window.addEventListener("keydown", closeOnEscape);
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", closeOnEscape);
     };
-  }, [gallery]);
+  }, [gallery, pixPayment]);
 
   function galleryImages(product: StoreProduct) {
     return [
@@ -103,15 +137,20 @@ export function Storefront({
   }
 
   function addToCart(product: StoreProduct) {
-    const size = selectedSizes[product.id] ?? availableSizes(product)[0];
+    const variant = product.variants.find(
+      (candidate) => candidate.code === selectedVariants[product.id] && candidate.active === 1
+    ) ?? availableVariants(product)[0];
+    const size = selectedSizes[product.id] ?? availableSizes(variant)[0];
     const quantity = Math.max(1, Math.min(10, quantities[product.id] ?? 1));
-    if (!size || product.inventory[size] < quantity) {
-      setError("Escolha um tamanho disponível.");
+    if (!variant || !size || variant.inventory[size] < quantity) {
+      setError("Escolha uma variação e um tamanho disponíveis.");
       return;
     }
     setError("");
     setCart((current) => {
-      const index = current.findIndex((item) => item.productId === product.id && item.size === size);
+      const index = current.findIndex(
+        (item) => item.productId === product.id && item.variantCode === variant.code && item.size === size
+      );
       if (index >= 0) {
         return current.map((item, itemIndex) =>
           itemIndex === index
@@ -125,10 +164,12 @@ export function Storefront({
           productId: product.id,
           title: product.title,
           imageUrl: product.image_url,
-          priceCents: product.price_cents,
+          variantCode: variant.code,
+          variantLabel: variant.label,
+          priceCents: variant.price_cents,
           size,
           quantity,
-          stock: product.inventory[size]
+          stock: variant.inventory[size]
         }
       ];
     });
@@ -152,7 +193,7 @@ export function Storefront({
     setCheckoutLoading(true);
     setError("");
     try {
-      const response = await fetch("/api/store/checkout", {
+      const response = await fetch(paymentMethod === "pix" ? "/api/store/pix" : "/api/store/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -160,13 +201,22 @@ export function Storefront({
           pickupCity: fulfillmentMethod === "athlete_pickup" ? pickupCity : undefined,
           items: cart.map((item) => ({
             productId: item.productId,
+            variant: item.variantCode,
             size: item.size,
             quantity: item.quantity
           }))
         })
       });
       const result = await response.json();
-      if (!response.ok || !result.url) throw new Error(result.error ?? "Não foi possível abrir o checkout.");
+      if (!response.ok) throw new Error(result.error ?? "Não foi possível iniciar o pagamento.");
+      if (paymentMethod === "pix") {
+        if (!result.pixPayload || !result.qrCode) throw new Error("Não foi possível gerar o QR Code Pix.");
+        setPixPayment(result as PixPayment);
+        setDrawerOpen(false);
+        setCheckoutLoading(false);
+        return;
+      }
+      if (!result.url) throw new Error("Não foi possível abrir o checkout.");
       window.location.assign(result.url);
     } catch (checkoutError) {
       setError(checkoutError instanceof Error ? checkoutError.message : "Não foi possível abrir o checkout.");
@@ -216,7 +266,10 @@ export function Storefront({
 
         <div className={styles.productGrid}>
           {initialProducts.map((product) => {
-            const sizes = availableSizes(product);
+            const variants = availableVariants(product);
+            const selectedVariant =
+              variants.find((variant) => variant.code === selectedVariants[product.id]) ?? variants[0];
+            const sizes = availableSizes(selectedVariant);
             const selected = selectedSizes[product.id] ?? sizes[0];
             const quantity = quantities[product.id] ?? 1;
             return (
@@ -238,10 +291,37 @@ export function Storefront({
                   ) : null}
                 </div>
                 <div className={styles.productDetails}>
-                  <span className={styles.productTag}>{product.product_type}</span>
+                  <span className={styles.productTag}>Casual ou Dri-fit</span>
                   <h3>{product.title}</h3>
                   <p>{product.description}</p>
-                  <strong className={styles.price}>{currency(product.price_cents)}</strong>
+                  <strong className={styles.price}>
+                    {selectedVariant ? currency(selectedVariant.price_cents) : "Indisponível"}
+                  </strong>
+
+                  <fieldset className={styles.variantSelector}>
+                    <legend>Tecido</legend>
+                    <div>
+                      {product.variants.map((variant) => (
+                        <button
+                          className={selectedVariant?.code === variant.code ? styles.variantActive : ""}
+                          type="button"
+                          key={variant.code}
+                          disabled={variant.active !== 1}
+                          onClick={() => {
+                            setSelectedVariants((current) => ({ ...current, [product.id]: variant.code }));
+                            setSelectedSizes((current) => ({
+                              ...current,
+                              [product.id]: availableSizes(variant)[0] ?? "M"
+                            }));
+                          }}
+                          aria-pressed={selectedVariant?.code === variant.code}
+                        >
+                          <span>{variant.label}</span>
+                          <small>{currency(variant.price_cents)}</small>
+                        </button>
+                      ))}
+                    </div>
+                  </fieldset>
 
                   <fieldset className={styles.sizeSelector}>
                     <legend>Tamanho</legend>
@@ -286,7 +366,7 @@ export function Storefront({
           <section className={styles.galleryModal} role="dialog" aria-modal="true" aria-label={`Galeria de ${gallery.product.title}`}>
             <header>
               <div>
-                <span className="eyebrow">{gallery.product.product_type}</span>
+                <span className="eyebrow">Casual ou Dri-fit</span>
                 <h2>{gallery.product.title}</h2>
               </div>
               <button type="button" onClick={() => setGallery(null)} aria-label="Fechar galeria"><X /></button>
@@ -327,6 +407,50 @@ export function Storefront({
         </>
       ) : null}
 
+      {pixPayment ? (
+        <>
+          <button
+            className={styles.galleryBackdrop}
+            type="button"
+            aria-label="Fechar pagamento Pix"
+            onClick={() => setPixPayment(null)}
+          />
+          <section className={styles.pixModal} role="dialog" aria-modal="true" aria-label="Pagamento por Pix">
+            <header>
+              <div>
+                <span className="eyebrow">Pagamento direto</span>
+                <h2>Finalize pelo Pix</h2>
+              </div>
+              <button type="button" onClick={() => setPixPayment(null)} aria-label="Fechar Pix"><X /></button>
+            </header>
+            <div className={styles.pixContent}>
+              <div className={styles.pixQr}>
+                <Image src={pixPayment.qrCode} alt="QR Code Pix do pedido" width={560} height={560} unoptimized />
+              </div>
+              <div className={styles.pixInstructions}>
+                <span>Pedido #{pixPayment.orderId.slice(0, 8).toUpperCase()}</span>
+                <strong>{currency(pixPayment.amountCents)}</strong>
+                <p>Escaneie o QR Code no aplicativo do seu banco ou copie o código Pix abaixo.</p>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(pixPayment.pixPayload);
+                    setPixCopied(true);
+                    window.setTimeout(() => setPixCopied(false), 2200);
+                  }}
+                >
+                  {pixCopied ? <Check size={17} /> : <Copy size={17} />}
+                  {pixCopied ? "Código copiado" : "Copiar código Pix"}
+                </button>
+                <small>
+                  Referência: {pixPayment.reference}. O pedido ficará aguardando a confirmação do pagamento.
+                </small>
+              </div>
+            </div>
+          </section>
+        </>
+      ) : null}
+
       {drawerOpen ? <button className={styles.backdrop} type="button" aria-label="Fechar carrinho" onClick={() => setDrawerOpen(false)} /> : null}
       <aside className={`${styles.cartDrawer} ${drawerOpen ? styles.cartDrawerOpen : ""}`} aria-hidden={!drawerOpen}>
         <header>
@@ -338,13 +462,13 @@ export function Storefront({
           {!cart.length ? (
             <div className={styles.emptyCart}><ShoppingBag /><strong>Seu carrinho está vazio.</strong><span>Escolha um produto para começar.</span></div>
           ) : cart.map((item, index) => (
-            <article className={styles.cartItem} key={`${item.productId}-${item.size}`}>
+            <article className={styles.cartItem} key={`${item.productId}-${item.variantCode}-${item.size}`}>
               <div className={styles.cartThumb}>
                 {item.imageUrl ? <Image src={item.imageUrl} alt="" fill sizes="72px" unoptimized={item.imageUrl.startsWith("/api/")} /> : null}
               </div>
               <div>
                 <strong>{item.title}</strong>
-                <span>Tamanho {item.size}</span>
+                <span>{item.variantLabel} · Tamanho {item.size}</span>
                 <div className={styles.cartQuantity}>
                   <button type="button" onClick={() => changeCartQuantity(index, -1)}><Minus size={13} /></button>
                   <span>{item.quantity}</span>
@@ -358,6 +482,29 @@ export function Storefront({
         </div>
 
         <footer>
+          <fieldset className={styles.paymentMethod}>
+            <legend>Como deseja pagar?</legend>
+            <div>
+              <button
+                className={paymentMethod === "stripe" ? styles.paymentActive : ""}
+                type="button"
+                onClick={() => setPaymentMethod("stripe")}
+                aria-pressed={paymentMethod === "stripe"}
+              >
+                <CreditCard size={18} />
+                <span><strong>Cartão</strong><small>Ambiente seguro Stripe</small></span>
+              </button>
+              <button
+                className={paymentMethod === "pix" ? styles.paymentActive : ""}
+                type="button"
+                onClick={() => setPaymentMethod("pix")}
+                aria-pressed={paymentMethod === "pix"}
+              >
+                <QrCode size={18} />
+                <span><strong>Pix</strong><small>Direto para a 11RUN</small></span>
+              </button>
+            </div>
+          </fieldset>
           <fieldset className={styles.fulfillment}>
             <legend>Como deseja receber?</legend>
             <div className={styles.fulfillmentOptions}>
@@ -397,10 +544,18 @@ export function Storefront({
           <div className={styles.cartTotal}><span>Total</span><strong>{currency(subtotal + shippingCents)}</strong></div>
           {error ? <p className={styles.cartError}>{error}</p> : null}
           <button className={styles.checkoutButton} type="button" disabled={!cart.length || checkoutLoading} onClick={checkout}>
-            <ShieldCheck size={18} />
-            {checkoutLoading ? "Abrindo pagamento..." : "Ir para pagamento seguro"}
+            {paymentMethod === "pix" ? <QrCode size={18} /> : <ShieldCheck size={18} />}
+            {checkoutLoading
+              ? "Preparando pagamento..."
+              : paymentMethod === "pix"
+                ? "Gerar QR Code Pix"
+                : "Ir para pagamento seguro"}
           </button>
-          <small>Você será direcionado ao ambiente seguro da Stripe para escolher a forma de pagamento disponível.</small>
+          <small>
+            {paymentMethod === "pix"
+              ? "O Pix será gerado diretamente para a mesma conta oficial das doações 11RUN."
+              : "Você será direcionado ao ambiente seguro da Stripe para pagar com cartão."}
+          </small>
         </footer>
       </aside>
     </main>

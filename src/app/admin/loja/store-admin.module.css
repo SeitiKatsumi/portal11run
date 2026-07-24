@@ -322,8 +322,72 @@
 
 .full,
 .stockFields,
+.variantFields,
 .activeCheck {
   grid-column: 1 / -1;
+}
+
+.variantFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 4px 0 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
+.variantFields > legend {
+  padding: 0 8px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.variantAdminCard {
+  display: grid;
+  gap: 13px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: rgb(255 255 255 / 0.28);
+}
+
+.variantAdminCard > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.variantActiveCheck {
+  display: inline-flex !important;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 6px !important;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.variantActiveCheck input {
+  width: auto;
+}
+
+.variantStock {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.variantStock label {
+  text-align: center;
+}
+
+.variantStock input {
+  padding-inline: 5px;
+  text-align: center;
 }
 
 .stockFields {
@@ -435,6 +499,20 @@
   color: var(--muted);
 }
 
+.adminVariants {
+  display: grid;
+  gap: 10px;
+}
+
+.adminVariants > div {
+  padding-top: 9px;
+  border-top: 1px solid var(--line);
+}
+
+.adminVariants > div > strong {
+  font-size: 13px;
+}
+
 .productActions {
   display: flex;
   gap: 6px;
@@ -467,6 +545,10 @@
 }
 
 @media (max-width: 760px) {
+  .variantFields {
+    grid-template-columns: 1fr;
+  }
+
   .heading,
   .orderTop {
     align-items: flex-start;

@@ -22,19 +22,30 @@ export const STORE_SHIPPING_CENTS = 1990;
 export const pickupCities = ["Americana", "Campinas", "Itatiba", "Mogi Mirim", "Recife"] as const;
 export type PickupCity = (typeof pickupCities)[number];
 export type FulfillmentMethod = "shipping" | "athlete_pickup";
-export const storeProductTypes = ["De passeio", "Dri-fit"] as const;
-export type StoreProductType = (typeof storeProductTypes)[number];
+export type StorePaymentMethod = "stripe" | "pix";
+export const storeVariantDefinitions = [
+  { code: "casual", label: "Casual" },
+  { code: "dri_fit", label: "Dri-fit" }
+] as const;
+export type StoreVariantCode = (typeof storeVariantDefinitions)[number]["code"];
+export type StoreVariantLabel = (typeof storeVariantDefinitions)[number]["label"];
+
+export type StoreProductVariant = {
+  code: StoreVariantCode;
+  label: StoreVariantLabel;
+  price_cents: number;
+  active: number;
+  inventory: Record<StoreSize, number>;
+};
 
 export type StoreProduct = {
   id: string;
   title: string;
   description: string;
-  product_type: StoreProductType;
-  price_cents: number;
   image_url: string | null;
   design_image_url: string | null;
   active: number;
-  inventory: Record<StoreSize, number>;
+  variants: StoreProductVariant[];
   created_at: string;
   updated_at: string;
 };
@@ -44,6 +55,8 @@ export type StoreOrderItem = {
   order_id: string;
   product_id: string;
   title: string;
+  variant_code: StoreVariantCode;
+  variant_label: StoreVariantLabel;
   size: StoreSize;
   unit_price_cents: number;
   quantity: number;
@@ -65,6 +78,9 @@ export type StoreOrder = {
   total_cents: number;
   order_status: OrderStatus;
   payment_status: string;
+  payment_method: StorePaymentMethod;
+  pix_reference: string | null;
+  pix_payload: string | null;
   created_at: string;
   updated_at: string;
   items: StoreOrderItem[];
@@ -72,6 +88,7 @@ export type StoreOrder = {
 
 export type CartInput = {
   productId: string;
+  variant: string;
   size: string;
   quantity: number;
 };

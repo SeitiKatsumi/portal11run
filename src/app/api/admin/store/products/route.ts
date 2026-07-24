@@ -6,10 +6,10 @@ import {
   createProduct,
   deactivateProduct,
   listProducts,
-  storeProductTypes,
+  storeVariantDefinitions,
   storeSizes,
   updateProduct,
-  type StoreProductType,
+  type StoreVariantCode,
   type StoreSize
 } from "@/lib/store";
 
@@ -43,9 +43,28 @@ async function parseProduct(request: Request) {
   const form = await request.formData();
   const image = form.get("image");
   const designImage = form.get("design_image");
-  const inventory = Object.fromEntries(
-    storeSizes.map((size) => [size, Number(form.get(`stock_${size}`) ?? 0)])
-  ) as Record<StoreSize, number>;
+  const variants = Object.fromEntries(
+    storeVariantDefinitions.map((definition) => [
+      definition.code,
+      {
+        price_cents: priceToCents(form.get(`price_${definition.code}`)),
+        active: form.get(`active_${definition.code}`) !== null,
+        inventory: Object.fromEntries(
+          storeSizes.map((size) => [
+            size,
+            Number(form.get(`stock_${definition.code}_${size}`) ?? 0)
+          ])
+        ) as Record<StoreSize, number>
+      }
+    ])
+  ) as Record<
+    StoreVariantCode,
+    {
+      price_cents: number;
+      active: boolean;
+      inventory: Record<StoreSize, number>;
+    }
+  >;
   return {
     id: String(form.get("id") ?? ""),
     image: image instanceof File ? image : undefined,
@@ -53,12 +72,8 @@ async function parseProduct(request: Request) {
     input: {
       title: String(form.get("title") ?? ""),
       description: String(form.get("description") ?? ""),
-      product_type: storeProductTypes.includes(form.get("product_type") as StoreProductType)
-        ? form.get("product_type") as StoreProductType
-        : "De passeio",
-      price_cents: priceToCents(form.get("price")),
       active: form.get("active") !== null,
-      inventory
+      variants
     }
   };
 }
