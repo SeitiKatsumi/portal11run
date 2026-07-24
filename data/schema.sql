@@ -183,6 +183,143 @@ CREATE TABLE IF NOT EXISTS support_interests (
   updated_at TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS support_sponsorship_leads (
+  id TEXT PRIMARY KEY,
+  protocol TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  company TEXT,
+  role TEXT,
+  email TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  city TEXT NOT NULL,
+  state TEXT NOT NULL,
+  supporter_type TEXT NOT NULL,
+  support_types_json TEXT NOT NULL DEFAULT '[]',
+  estimated_value_cents INTEGER,
+  periodicity TEXT,
+  project_interest TEXT,
+  message TEXT,
+  best_contact_time TEXT,
+  origin TEXT NOT NULL DEFAULT 'Site 11RUN',
+  priority TEXT NOT NULL DEFAULT 'Normal',
+  owner TEXT,
+  status TEXT NOT NULL DEFAULT 'Novo contato',
+  admin_notes TEXT,
+  consent_at TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  deleted_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS support_donations (
+  id TEXT PRIMARY KEY,
+  protocol TEXT NOT NULL UNIQUE,
+  donor_name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT,
+  document TEXT,
+  city TEXT NOT NULL,
+  state TEXT NOT NULL,
+  amount_cents INTEGER NOT NULL,
+  project TEXT NOT NULL,
+  message TEXT,
+  anonymous INTEGER NOT NULL DEFAULT 0,
+  transfer_date TEXT,
+  account_holder TEXT,
+  transaction_id TEXT,
+  pix_payload TEXT NOT NULL,
+  receipt_file_id TEXT,
+  status TEXT NOT NULL DEFAULT 'PIX gerado',
+  admin_notes TEXT,
+  owner TEXT,
+  consent_at TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  deleted_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS support_volunteers (
+  id TEXT PRIMARY KEY,
+  protocol TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  birth_date TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  city TEXT NOT NULL,
+  state TEXT NOT NULL,
+  profession TEXT NOT NULL,
+  other_profession TEXT,
+  company TEXT,
+  professional_registration TEXT,
+  portfolio_url TEXT,
+  presentation TEXT,
+  contribution_types_json TEXT NOT NULL DEFAULT '[]',
+  available_days TEXT,
+  periods_json TEXT NOT NULL DEFAULT '[]',
+  frequency TEXT,
+  work_mode TEXT,
+  travel_distance TEXT,
+  events_travel INTEGER NOT NULL DEFAULT 0,
+  child_experience TEXT,
+  sport_experience TEXT,
+  social_experience TEXT,
+  motivation TEXT NOT NULL,
+  contribution_description TEXT NOT NULL,
+  attachment_file_id TEXT,
+  owner TEXT,
+  status TEXT NOT NULL DEFAULT 'Novo cadastro',
+  admin_notes TEXT,
+  consent_at TEXT NOT NULL,
+  truth_accepted_at TEXT NOT NULL,
+  contact_authorized_at TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  deleted_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS support_private_files (
+  id TEXT PRIMARY KEY,
+  storage_name TEXT NOT NULL UNIQUE,
+  original_name TEXT NOT NULL,
+  mime_type TEXT NOT NULL,
+  size_bytes INTEGER NOT NULL,
+  sha256 TEXT NOT NULL,
+  purpose TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS support_history (
+  id TEXT PRIMARY KEY,
+  record_type TEXT NOT NULL,
+  record_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  from_value TEXT,
+  to_value TEXT,
+  note TEXT,
+  actor TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS support_notifications (
+  id TEXT PRIMARY KEY,
+  record_type TEXT NOT NULL,
+  record_id TEXT NOT NULL,
+  recipient TEXT NOT NULL,
+  subject TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'Pendente',
+  provider_message_id TEXT,
+  error_message TEXT,
+  created_at TEXT NOT NULL,
+  sent_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS support_settings (
+  setting_key TEXT PRIMARY KEY,
+  setting_value TEXT NOT NULL,
+  updated_by TEXT NOT NULL DEFAULT 'system',
+  updated_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS store_products (
   id TEXT PRIMARY KEY,
   title TEXT NOT NULL,

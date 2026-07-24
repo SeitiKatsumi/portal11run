@@ -75,12 +75,10 @@ function seedHome(db: DatabaseSync) {
   );
 
   const projects = [
-    ["app-11run", "App 11Run", "Dados, treinos e evolução esportiva.", "BarChart3", "/app-11run", 10],
-    ["onze-futuro", "11Run Futuro", "Base, cultura esportiva e desenvolvimento.", "Medal", "/onze-futuro", 20],
-    ["circuito-virtual", "Circuito Virtual", "Um ranking nacional para jovens brasileiros.", "Globe2", "/projetos/circuito-virtual-11run", 30],
-    ["master", "11Run Master", "Performance competitiva em todas as fases.", "Trophy", "/11-master", 40],
-    ["bolsas", "Bolsas", "Caminhos acadêmicos e esportivos internacionais.", "GraduationCap", "/bolsas", 50],
-    ["loja", "Loja 11RUN", "Produtos oficiais que fortalecem o projeto.", "ShoppingBag", "/apoie-o-projeto", 60]
+    ["onze-futuro", "11 Run Futuro", "Base, cultura esportiva e desenvolvimento.", "Medal", "/onze-futuro", 10],
+    ["circuito-futuro-11", "Circuito 11 Run 2027", "Desenvolvimento competitivo em pista.", "Flag", "/circuito-futuro-11", 20],
+    ["circuito-virtual", "Circuito Virtual 11 2026", "Ranking nacional para jovens brasileiros.", "Globe2", "/projetos/circuito-virtual-11run", 30],
+    ["master", "11 Run Master", "Performance competitiva em todas as fases.", "Trophy", "/11-master", 40]
   ] as const;
   const insert = db.prepare(
     `INSERT OR IGNORE INTO home_projects
@@ -88,6 +86,16 @@ function seedHome(db: DatabaseSync) {
      VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?)`
   );
   for (const project of projects) insert.run(...project, timestamp, timestamp);
+
+  const update = db.prepare(
+    `UPDATE home_projects
+     SET name = ?, description = ?, icon = ?, href = ?, sort_order = ?, active = 1, updated_at = ?
+     WHERE id = ?`
+  );
+  for (const [id, name, description, icon, href, sortOrder] of projects) {
+    update.run(name, description, icon, href, sortOrder, timestamp, id);
+  }
+  db.exec("UPDATE home_projects SET active = 0 WHERE id IN ('app-11run', 'bolsas', 'loja')");
 }
 
 export function getHomeConfig({ activeOnly = true } = {}) {

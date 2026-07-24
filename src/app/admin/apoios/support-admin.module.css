@@ -1,0 +1,390 @@
+.admin {
+  width: min(calc(100% - 48px), var(--max));
+  margin: 0 auto;
+  padding: 26px 0 72px;
+}
+
+.hero,
+.settings,
+.workspace,
+.kpis article {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  align-items: flex-end;
+  padding: clamp(28px, 5vw, 58px);
+}
+
+.hero span,
+.settings span {
+  color: var(--accent-strong);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 900px;
+  margin: 10px 0 0;
+  font-size: clamp(2.8rem, 5vw, 5.8rem);
+  font-weight: 300;
+  letter-spacing: -0.05em;
+  line-height: 0.98;
+}
+
+.hero p {
+  color: var(--muted);
+}
+
+.hero button,
+.settings button,
+.edit button,
+.toolbar a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid var(--text);
+  border-radius: 999px;
+  background: var(--text);
+  color: white;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.kpis article {
+  display: grid;
+  gap: 12px;
+  min-height: 118px;
+  padding: 19px;
+}
+
+.kpis span {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.kpis strong {
+  align-self: end;
+  font-size: 1.6rem;
+  font-weight: 400;
+}
+
+.settings {
+  margin-top: 12px;
+  padding: 28px;
+}
+
+.settings h2 {
+  margin: 8px 0 22px;
+  font-size: 2rem;
+  font-weight: 350;
+}
+
+.settingsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.settings label,
+.edit label {
+  display: grid;
+  gap: 7px;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.settings input,
+.settings textarea,
+.edit input,
+.edit textarea,
+.edit select,
+.toolbar input,
+.toolbar select {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin: 22px 0 10px;
+}
+
+.tabs button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.tabs button span {
+  min-width: 24px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: var(--bg);
+  font-size: 0.72rem;
+}
+
+.tabs button.active {
+  border-color: var(--text);
+  background: var(--text);
+  color: white;
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 240px auto;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.toolbar label {
+  position: relative;
+}
+
+.toolbar label svg {
+  position: absolute;
+  top: 13px;
+  left: 13px;
+}
+
+.toolbar label input {
+  padding-left: 39px;
+}
+
+.message {
+  margin: 10px 0;
+  padding: 11px 14px;
+  border-radius: 10px;
+  background: #edf3e8;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.72fr) minmax(0, 1.28fr);
+  min-height: 620px;
+  overflow: hidden;
+}
+
+.list {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  max-height: 760px;
+  padding: 14px;
+  overflow: auto;
+  border-right: 1px solid var(--line);
+}
+
+.list button {
+  display: grid;
+  gap: 6px;
+  padding: 15px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--bg);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.list button.selected {
+  border-color: var(--text);
+  background: #fffdf8;
+}
+
+.list button > span {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.list button strong {
+  font-weight: 550;
+}
+
+.list button small {
+  color: var(--muted);
+}
+
+.list button em {
+  width: fit-content;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 0.68rem;
+  font-style: normal;
+}
+
+.detail {
+  padding: clamp(22px, 4vw, 42px);
+  overflow: auto;
+}
+
+.detail header span {
+  color: var(--accent-strong);
+  font-size: 0.75rem;
+}
+
+.detail h2 {
+  margin: 8px 0 0;
+  font-size: 2.5rem;
+  font-weight: 350;
+}
+
+.detail header p {
+  color: var(--muted);
+}
+
+.detail dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 24px 0;
+}
+
+.detail dl div {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+}
+
+.detail dt {
+  color: var(--muted);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.detail dd {
+  margin: 5px 0 0;
+  overflow-wrap: anywhere;
+  font-size: 0.86rem;
+}
+
+.file {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 22px;
+  font-weight: 600;
+}
+
+.edit {
+  display: grid;
+  gap: 13px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.edit button {
+  width: fit-content;
+}
+
+.empty {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  min-height: 480px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.empty strong {
+  margin-top: 14px;
+  color: var(--text);
+}
+
+@media (max-width: 1050px) {
+  .kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .admin {
+    width: min(calc(100% - 28px), var(--max));
+  }
+
+  .hero,
+  .toolbar,
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .hero {
+    display: grid;
+    align-items: start;
+  }
+
+  .hero button {
+    width: 100%;
+  }
+
+  .kpis,
+  .settingsGrid,
+  .detail dl {
+    grid-template-columns: 1fr;
+  }
+
+  .wide {
+    grid-column: auto;
+  }
+
+  .tabs {
+    overflow-x: auto;
+  }
+
+  .tabs button {
+    flex: 0 0 auto;
+  }
+
+  .workspace {
+    overflow: visible;
+  }
+
+  .list {
+    max-height: 410px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+}

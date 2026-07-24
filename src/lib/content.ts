@@ -61,10 +61,10 @@ export type ProjectPage = {
 
 export const projectNavItems: NavItem[] = [
   { label: "App 11Run", href: "/app-11run" },
-  { label: "11 Futuro", href: "/onze-futuro" },
-  { label: "11 Master", href: "/11-master" },
-  { label: "Circuito 11 Futuro", href: "/circuito-futuro-11" },
-  { label: "Circuito Virtual 11Run", href: "/projetos/circuito-virtual-11run" },
+  { label: "11 Run Futuro", href: "/onze-futuro" },
+  { label: "Circuito 11 Run 2027", href: "/circuito-futuro-11" },
+  { label: "Circuito Virtual 11 2026", href: "/projetos/circuito-virtual-11run" },
+  { label: "11 Run Master", href: "/11-master" },
   { label: "Bolsas", href: "/bolsas" }
 ];
 
@@ -85,7 +85,16 @@ export const navItems: NavItem[] = [
       }
     ]
   },
-  { label: "Apoie o projeto", href: "/apoie-o-projeto" }
+  {
+    label: "Apoie o Projeto",
+    href: "/apoie",
+    children: [
+      { label: "Loja 11Run", href: "/apoie-o-projeto" },
+      { label: "Patrocine o Projeto", href: "/apoie/patrocine" },
+      { label: "Faça uma Doação", href: "/apoie/doacao" },
+      { label: "Seja um Voluntário", href: "/apoie/voluntariado" }
+    ]
+  }
 ];
 
 export const metrics = [
