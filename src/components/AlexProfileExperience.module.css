@@ -177,8 +177,8 @@
 @media (max-width: 430px) {
   .heroImage { min-height: 360px; }
   .heroImage span { right: 16px; bottom: 16px; }
-  .gallery { grid-template-columns: 1fr; grid-auto-rows: 300px; }
-  .gallery button.wide { grid-column: auto; }
+  .gallery { grid-template-columns: 1fr 1fr; grid-auto-rows: 170px; }
+  .gallery button.wide { grid-column: span 2; }
   .photoStory h2 { font-size: clamp(1.9rem, 8.5vw, 2.1rem); }
 }
 
