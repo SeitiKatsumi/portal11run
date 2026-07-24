@@ -244,7 +244,7 @@ export function Storefront({
 
       <div className={styles.notice}>
         <strong>Vista a 11RUN. Apoie talentos. Faça parte dessa história.</strong>{" "}
-        Parte dos recursos obtidos na loja é destinada ao desenvolvimento dos projetos e atletas da 11RUN.
+        A totalidade dos recursos obtidos na loja é destinada ao desenvolvimento dos projetos e atletas da 11RUN.
       </div>
 
       {checkoutCancelled ? (

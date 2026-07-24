@@ -114,11 +114,32 @@ main {
 .home-site-header {
   border-color: rgb(255 255 255 / 0.34);
   box-shadow: 0 12px 40px rgb(0 0 0 / 0.1);
-  transition: background-color 180ms ease, box-shadow 180ms ease;
+  color: #fff;
+  transition: background-color 180ms ease, box-shadow 180ms ease, backdrop-filter 180ms ease;
 }
 
 .home-site-header-scrolled {
   box-shadow: 0 14px 42px rgb(0 0 0 / 0.16);
+}
+
+.home-site-header .brand img {
+  filter: grayscale(1) brightness(0) invert(1);
+}
+
+.home-site-header .desktop-nav,
+.home-site-header .desktop-nav svg {
+  color: rgb(255 255 255 / 0.9);
+}
+
+.home-site-header .menu-button {
+  border-color: rgb(255 255 255 / 0.38);
+  background: rgb(18 19 18 / 0.18);
+  color: #fff;
+}
+
+.home-site-header .nav-dropdown-menu,
+.home-site-header .nav-nested-menu {
+  color: var(--muted);
 }
 
 .brand img,
@@ -347,15 +368,20 @@ main {
 
 .mobile-nav {
   position: absolute;
-  top: 100%;
-  right: 18px;
+  top: calc(100% + 8px);
+  right: 0;
   width: min(320px, calc(100vw - 36px));
+  max-height: calc(100dvh - 108px);
   display: grid;
   gap: 2px;
-  padding: 12px;
+  padding: 12px 12px max(18px, env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
+  box-shadow: 0 22px 54px rgb(20 17 13 / 0.18);
 }
 
 .mobile-nav a {
@@ -6388,26 +6414,47 @@ body.modal-open {
   .form-grid,
   .site-footer,
   .hero-metrics,
-  .futuro-kpis,
   .futuro-card-grid.four,
   .futuro-card-grid.three,
   .futuro-timeline,
   .futuro-steps,
   .futuro-benefits,
-  .regional-metrics,
   .regional-cards,
   .regional-cards.technical,
-  .regional-athletes-grid,
   .regional-two-lists,
-  .footer-sponsors-grid,
   .support-plan-grid,
   .support-form-grid,
   .support-strategy-grid {
     grid-template-columns: 1fr;
   }
 
+  .hero-metrics,
+  .futuro-kpis,
+  .regional-metrics,
+  .regional-athletes-grid,
+  .footer-sponsors-grid,
+  .finance-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer-sponsors-grid {
+    gap: 10px;
+  }
+
+  .footer-sponsor-card {
+    min-height: 124px;
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .footer-sponsor-card img {
+    width: 88%;
+    max-height: 82px;
+  }
+
   .regional-athletes-grid .regional-athlete-card {
-    min-height: 128px;
+    min-height: 142px;
+    padding: 18px;
   }
 
   .project-lane {
@@ -6746,6 +6793,11 @@ body.modal-open {
 }
 
 @media (max-width: 640px) {
+  body.mobile-menu-open .assistant-trigger,
+  body.mobile-menu-open .assistant-panel {
+    display: none;
+  }
+
   .assistant-trigger {
     width: 52px;
     min-width: 52px;

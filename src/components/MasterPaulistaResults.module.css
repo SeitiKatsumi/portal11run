@@ -319,10 +319,10 @@
   .metrics article { min-height: 122px; padding: 18px; }
   .galleryBlock { margin-top: 58px; }
   .mainPhoto { aspect-ratio: 4 / 5; }
-  .athleteGrid,
+  .athleteGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .storyGrid { grid-template-columns: 1fr; }
-  .athleteCard:last-child { grid-column: auto; }
-  .athleteCard { min-height: 0; }
+  .athleteCard:last-child { grid-column: 1 / -1; }
+  .athleteCard { min-height: 118px; padding: 16px; }
   .recruiting { padding: 26px 22px; }
   .cta { width: 100%; }
   .lightbox { padding: 70px 14px; }

@@ -65,12 +65,37 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, [isHome]);
 
+  useEffect(() => {
+    if (!open) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+
+    document.body.style.overflow = "hidden";
+    document.body.classList.add("mobile-menu-open");
+    window.addEventListener("keydown", closeOnEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.body.classList.remove("mobile-menu-open");
+      window.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [open]);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
   return (
     <header
       className={`site-header ${isHome ? "home-site-header" : ""} ${scrolled ? "home-site-header-scrolled" : ""}`}
       style={isHome ? {
-        backgroundColor: `rgb(255 250 242 / ${Math.min(100, scrolled ? homeHeader.opacity + 18 : homeHeader.opacity) / 100})`,
-        backdropFilter: `blur(${homeHeader.blur}px)`
+        backgroundColor: scrolled
+          ? `rgb(18 19 18 / ${Math.max(72, Math.min(88, homeHeader.opacity)) / 100})`
+          : "rgb(18 19 18 / 0.08)",
+        backdropFilter: `blur(${scrolled ? homeHeader.blur : Math.min(6, homeHeader.blur)}px)`
       } : undefined}
     >
       <Link href="/" className="brand" aria-label="11RUN Home">
@@ -133,12 +158,19 @@ export function Header() {
         </Link>
       </nav>
 
-      <button className="menu-button" type="button" onClick={() => setOpen((value) => !value)} aria-label="Abrir menu">
+      <button
+        className="menu-button"
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-label={open ? "Fechar menu" : "Abrir menu"}
+        aria-expanded={open}
+        aria-controls="mobile-navigation"
+      >
         {open ? <X size={22} /> : <Menu size={22} />}
       </button>
 
       {open ? (
-        <div className="mobile-nav">
+        <div className="mobile-nav" id="mobile-navigation">
           {navItems.map((item) => {
             const Icon = navIcons[item.href];
             if ("children" in item && item.children?.length) {
