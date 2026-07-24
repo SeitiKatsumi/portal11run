@@ -64,6 +64,27 @@ function seedHome(db: DatabaseSync) {
 
   db.prepare(
     `UPDATE home_settings
+     SET hero_media_type = 'video',
+         hero_video = ?,
+         hero_title = ?,
+         hero_subtitle = NULL,
+         hero_kicker = NULL,
+         overlay_strength = CASE WHEN overlay_strength < 58 THEN 58 ELSE overlay_strength END,
+         updated_at = ?
+     WHERE id = 'primary'
+       AND (
+         hero_title = 'O futuro da corrida começa aqui.'
+         OR hero_subtitle = 'Escolha uma frente e entre no ecossistema 11RUN.'
+         OR hero_kicker = 'Performance · formação · oportunidade'
+       )`
+  ).run(
+    "/assets/home/homevideo.mp4",
+    "O maior ecossistema de amor ao fundismo do mundo",
+    timestamp
+  );
+
+  db.prepare(
+    `UPDATE home_settings
      SET hero_image = ?,
          overlay_strength = CASE WHEN overlay_strength < 58 THEN 58 ELSE overlay_strength END,
          updated_at = ?

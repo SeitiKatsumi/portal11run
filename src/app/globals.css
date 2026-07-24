@@ -6744,3 +6744,16 @@ body.modal-open {
   }
 
 }
+
+@media (max-width: 640px) {
+  .assistant-trigger {
+    width: 52px;
+    min-width: 52px;
+    min-height: 52px;
+    padding: 0;
+  }
+
+  .assistant-trigger span {
+    display: none;
+  }
+}

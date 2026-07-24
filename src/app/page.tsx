@@ -18,11 +18,11 @@ import { getHomeConfig } from "@/lib/home";
 import styles from "./home.module.css";
 
 export const metadata: Metadata = {
-  title: "11RUN | Performance, formação e oportunidades na corrida",
+  title: "11RUN | O maior ecossistema de amor ao fundismo do mundo",
   description:
-    "Entre no ecossistema 11RUN e conheça projetos de formação, performance, circuito, atletas master, bolsas e oportunidades.",
+    "Conheça o ecossistema 11RUN e seus projetos de formação, circuito, alto rendimento e amor ao fundismo.",
   openGraph: {
-    title: "11RUN — O futuro da corrida começa aqui",
+    title: "11RUN — O maior ecossistema de amor ao fundismo do mundo",
     description: "Projetos que transformam talento em oportunidade.",
     images: ["/assets/home/ayla-trofeus-hero.webp"]
   }
@@ -72,7 +72,9 @@ export default function Home() {
       <div className={styles.content}>
         <div className={styles.intro}>
           {settings.hero_kicker ? <span>{settings.hero_kicker}</span> : null}
-          <h1 id="home-title">{settings.hero_title || "O futuro da corrida começa aqui."}</h1>
+          <h1 id="home-title">
+            {settings.hero_title || "O maior ecossistema de amor ao fundismo do mundo"}
+          </h1>
           {settings.hero_subtitle ? <p>{settings.hero_subtitle}</p> : null}
         </div>
 
