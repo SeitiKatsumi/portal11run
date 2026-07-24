@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { resolveCheckoutSiteUrl } from "@/lib/site-url";
 import { createStripeCheckout } from "@/lib/stripe";
 import type { CartInput, FulfillmentMethod } from "@/lib/store";
 
@@ -11,7 +12,10 @@ export async function POST(request: Request) {
       fulfillmentMethod?: FulfillmentMethod;
       pickupCity?: string;
     };
-    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || new URL(request.url).origin).replace(/\/$/, "");
+    const siteUrl = resolveCheckoutSiteUrl({
+      configuredUrl: process.env.NEXT_PUBLIC_SITE_URL,
+      requestUrl: request.url
+    });
     const checkout = await createStripeCheckout(body.items ?? [], siteUrl, {
       method: body.fulfillmentMethod ?? "shipping",
       pickupCity: body.pickupCity
