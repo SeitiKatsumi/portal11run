@@ -5,14 +5,11 @@ import {
   Award,
   CalendarDays,
   CheckCircle2,
-  CircleDollarSign,
   ClipboardCheck,
   Dumbbell,
   HeartPulse,
   Medal,
   ShieldCheck,
-  Shirt,
-  Sparkles,
   Target,
   Timer,
   Trophy,
@@ -28,7 +25,7 @@ import { Reveal } from "@/components/Reveal";
 export const metadata: Metadata = {
   title: "11 Master | Master Itatiba e Região",
   description:
-    "Projeto local da 11RUN para atletas master de Itatiba e região, com comando técnico do Professor Alex Lopes, suporte federativo, financeiro e preparação para Campeonato Paulista e Brasileiro Master."
+    "Projeto local da 11RUN para atletas master de Itatiba e região, com comando técnico do Professor Alex Lopes, suporte federativo e preparação para Campeonato Paulista e Brasileiro Master."
 };
 
 const image = "/assets/ayla-hero.jpg";
@@ -37,7 +34,7 @@ const paulistaImage = "/assets/11-master/paulista-2026/40-titb-03805.webp";
 const heroMetrics = [
   { value: "11 e 12", label: "de julho de 2026" },
   { value: "8", label: "atletas federados" },
-  { value: "16", label: "pares de tênis distribuídos" },
+  { value: "12", label: "pódios na estreia" },
   { value: "Alex Lopes", label: "comando técnico" }
 ];
 
@@ -88,23 +85,6 @@ const offerCards = [
     text:
       "Apoio em filiação, regularização, documentação, inscrições e organização burocrática no ambiente CBAt, FPA, AAVSP e ABRAM, sem vínculo de patrocínio dessas entidades.",
     icon: ClipboardCheck
-  },
-  {
-    title: "Suporte financeiro",
-    text:
-      "Apoio para materiais esportivos, inscrições, hospedagem e necessidades competitivas, com concessão baseada em critérios técnicos e competitivos.",
-    icon: CircleDollarSign
-  },
-  {
-    title: "Uniformes oficiais",
-    text: "Entrega de uniforme para fortalecer identidade, representatividade e presença da equipe nas competições.",
-    icon: Shirt
-  },
-  {
-    title: "Tênis e materiais esportivos",
-    text:
-      "Distribuição inicial de 16 pares de tênis, além de apoio com materiais conforme critérios técnicos e necessidades dos atletas.",
-    icon: Sparkles
   },
   {
     title: "Calendário competitivo",
@@ -218,8 +198,8 @@ export default function Page() {
           </p>
           <p>
             Depois de 20 anos, a 11RUN volta a federar atletas master da região e inicia um ciclo com
-            atletas regularizados, tênis distribuídos, uniformes oficiais e suporte completo para competir
-            em alto nível.
+            atletas regularizados, direção técnica, calendário competitivo e preparação consistente para
+            competir em alto nível.
           </p>
 
           <div className="regional-authority">
@@ -274,7 +254,7 @@ export default function Page() {
           </p>
           <p>
             A ideia é simples: levar o nome de Itatiba e região para dentro das grandes provas, com atletas
-            preparados, federados, equipados e orientados para competir melhor.
+            preparados, federados, acompanhados e orientados para competir melhor.
           </p>
           <p>
             Mais do que participar, queremos representar. Mais do que correr, queremos construir uma cultura
@@ -331,11 +311,6 @@ export default function Page() {
             <p>Parque da Juventude, Itatiba/SP. Treino de 16 km dividido em 4 voltas de 4 km.</p>
           </div>
           <Checklist items={saturdayPaces} />
-          <div className="regional-support">
-            {["Água", "Frutas", "Gel", "Espaço para a família"].map((item) => (
-              <span key={item}>{item}</span>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -368,7 +343,7 @@ export default function Page() {
             de Itatiba.
           </p>
           <p>
-            A proposta nasce de uma decisão independente da 11RUN de investir em atletas master, fortalecer
+            A proposta nasce de uma decisão independente da 11RUN de desenvolver atletas master, fortalecer
             a cultura esportiva local e criar uma frente competitiva com compromisso real com performance.
           </p>
         </div>

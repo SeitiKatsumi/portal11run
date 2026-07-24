@@ -21,7 +21,7 @@ export const circuitFaq = [
 
 export const circuitRegulations = [
   ["1. Do projeto", "O Circuito Virtual 11Run incentiva a corrida, acompanha a evolução e amplia oportunidades para crianças de todo o Brasil. A primeira edição chama-se Desafio Virtual 1km 11Run Futuro."],
-  ["2. Do período", "Serão aceitas atividades realizadas de 1º de julho a 15 de dezembro de 2026. Fechamentos mensais, trimestrais e finais seguirão as datas publicadas."],
+  ["2. Do período", "A edição será realizada de 1º de agosto a 15 de dezembro de 2026. As inscrições já estão abertas; atividades com data anterior ao início serão registradas como realizadas em 1º de agosto de 2026. Fechamentos mensais, trimestrais e finais seguirão as datas publicadas."],
   ["3. Dos participantes", "Podem participar exclusivamente crianças brasileiras que completem 9, 10, 11, 12 ou 13 anos em 2026, residentes no Brasil ou no exterior. A categoria é definida pelo ano de nascimento e permanece durante toda a edição."],
   ["4. Da autorização", "A participação exige autorização expressa do responsável legal. Treinadores podem auxiliar o envio, mas não substituem esse consentimento."],
   ["5. Da distância", "Todos os resultados devem corresponder a 1.000 metros. Distâncias inferiores não serão aceitas."],

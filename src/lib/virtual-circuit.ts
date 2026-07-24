@@ -20,7 +20,7 @@ import { circuitFaq, circuitRegulations, mandatoryConsents } from "./virtual-cir
 
 export const CIRCUIT_SLUG = "desafio-virtual-1km-11run-futuro-2026";
 export const CIRCUIT_EDITION_ID = "virtual-circuit-2026";
-export const CIRCUIT_ACTIVITY_START = "2026-07-01";
+export const CIRCUIT_ACTIVITY_START = "2026-08-01";
 
 let database: DatabaseSync | undefined;
 
@@ -64,17 +64,40 @@ function seedCircuitEdition(db: DatabaseSync) {
       const replacement = circuitFaq.find(([currentQuestion]) => currentQuestion === question);
       return question === "Quem pode participar?" ? [...(replacement ?? [question, answer])] : [question, answer];
     });
-    db.prepare(
-      `UPDATE virtual_circuit_editions
-       SET start_date = ?, regulations_text = ?, faq_json = ?, updated_at = ?
-       WHERE id = ?`
-    ).run(
-      existing.start_date > CIRCUIT_ACTIVITY_START ? CIRCUIT_ACTIVITY_START : existing.start_date,
-      JSON.stringify(updatedRegulations),
-      JSON.stringify(updatedFaq),
-      timestamp,
-      CIRCUIT_EDITION_ID
-    );
+    db.exec("BEGIN IMMEDIATE;");
+    try {
+      db.prepare(
+        `UPDATE virtual_circuit_editions
+         SET start_date = ?, regulations_text = ?, faq_json = ?, updated_at = ?
+         WHERE id = ?`
+      ).run(
+        CIRCUIT_ACTIVITY_START,
+        JSON.stringify(updatedRegulations),
+        JSON.stringify(updatedFaq),
+        timestamp,
+        CIRCUIT_EDITION_ID
+      );
+      const normalized = db.prepare(
+        `UPDATE virtual_circuit_submissions
+         SET activity_date = ?, updated_at = ?
+         WHERE edition_id = ? AND activity_date < ?`
+      ).run(CIRCUIT_ACTIVITY_START, timestamp, CIRCUIT_EDITION_ID, CIRCUIT_ACTIVITY_START);
+      if (Number(normalized.changes) > 0) {
+        audit(db, {
+          entityType: "edition",
+          entityId: CIRCUIT_EDITION_ID,
+          action: "NORMALIZED_PRE_START_DATES",
+          actor: "system:migration",
+          before: { startDate: existing.start_date },
+          after: { startDate: CIRCUIT_ACTIVITY_START, normalizedSubmissions: Number(normalized.changes) },
+          reason: "Registros anteriores ao início oficial da edição foram ajustados para 01/08/2026."
+        });
+      }
+      db.exec("COMMIT;");
+    } catch (error) {
+      db.exec("ROLLBACK;");
+      throw error;
+    }
     return;
   }
   const settings = {
@@ -451,7 +474,8 @@ export function createCircuitRegistration(input: RegistrationInput) {
     }
 
     const submissionId = randomUUID();
-    const activityDate = validateCircuitActivityDate(input.submission.activityDate, edition.start_date, edition.end_date);
+    const submittedActivityDate = input.submission.activityDate;
+    const activityDate = validateCircuitActivityDate(submittedActivityDate, edition.start_date, edition.end_date);
     db.prepare(
       `INSERT INTO virtual_circuit_submissions
         (id, edition_id, athlete_id, guardian_id, coach_id, submission_type, activity_date, declared_time_ms,
@@ -520,7 +544,15 @@ export function createCircuitRegistration(input: RegistrationInput) {
       ip: input.meta.ip
     });
     db.exec("COMMIT;");
-    return { submissionId, athleteId: athlete.id, guardianId: guardian.id, accessToken: token, expiresAt: expires };
+    return {
+      submissionId,
+      athleteId: athlete.id,
+      guardianId: guardian.id,
+      accessToken: token,
+      expiresAt: expires,
+      activityDate,
+      activityDateAdjusted: activityDate !== submittedActivityDate
+    };
   } catch (error) {
     db.exec("ROLLBACK;");
     throw error;

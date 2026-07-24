@@ -50,10 +50,13 @@ export default function VirtualCircuitPage() {
               <a className={styles.secondaryButton} href="#ranking">Ver ranking nacional</a>
             </div>
             <div className={styles.quickFacts}>
-              <span><Clock3 size={17} /> 1 jul — 15 dez 2026</span>
+              <span><Clock3 size={17} /> 1 ago — 15 dez 2026</span>
               <span><ShieldCheck size={17} /> Participação gratuita</span>
               <span><Users size={17} /> Exclusivo para brasileiros</span>
             </div>
+            <p className={styles.datePolicy}>
+              Inscrições abertas. Atividades anteriores a 1º de agosto serão registradas com a data de 01/08/2026.
+            </p>
           </div>
           <div className={styles.heroImage}>
             <img
@@ -117,7 +120,7 @@ export default function VirtualCircuitPage() {
             <article>
               <Trophy />
               <span>Trimestral · 2 ciclos</span>
-              <h3>01/07 a 30/09 e 01/10 a 15/12</h3>
+              <h3>01/08 a 30/09 e 01/10 a 15/12</h3>
               <ul>
                 <li>Tênis para o primeiro de cada categoria.</li>
                 <li>Camiseta 11Run para os três primeiros de cada categoria.</li>

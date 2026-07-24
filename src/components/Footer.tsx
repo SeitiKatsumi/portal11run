@@ -112,11 +112,7 @@ export function Footer() {
 
   return (
     <footer className="site-footer">
-      <section className="footer-sponsors" aria-labelledby="footer-sponsors-title">
-        <div className="footer-sponsors-copy">
-          <span className="eyebrow">Patrocinadores</span>
-          <h2 id="footer-sponsors-title">Um ecossistema de amor ao fundismo</h2>
-        </div>
+      <section className="footer-sponsors" aria-label="Patrocinadores e parceiros">
         <div className="footer-sponsor-groups">
           {sponsorGroups.map((group) => (
             <section className="footer-sponsor-group" key={group.title} aria-label={group.title}>

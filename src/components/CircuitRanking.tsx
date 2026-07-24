@@ -8,7 +8,6 @@ type Period = "total" | "monthly" | "quarterly";
 type Rank = { id:string;position:number;categoryPosition:number;publicName:string;categoryAge:number;gender:string;city:string;state:string;formattedTime:string;activityDate:string;badge:string };
 
 const monthOptions = [
-  ["2026-07", "Julho de 2026"],
   ["2026-08", "Agosto de 2026"],
   ["2026-09", "Setembro de 2026"],
   ["2026-10", "Outubro de 2026"],
@@ -17,7 +16,7 @@ const monthOptions = [
 ] as const;
 
 const quarterOptions = [
-  ["2026-07-01|2026-09-30", "1º ciclo · 01/07 a 30/09"],
+  ["2026-08-01|2026-09-30", "1º ciclo · 01/08 a 30/09"],
   ["2026-10-01|2026-12-15", "2º ciclo · 01/10 a 15/12"]
 ] as const;
 
@@ -64,7 +63,7 @@ function CurrentPrizes({ period, position }: { period: Period; position: number 
 export function CircuitRanking(){
   const [filters,setFilters]=useState({age:"",gender:"",state:"",name:""});
   const [period,setPeriod]=useState<Period>("total");
-  const [periodSelection,setPeriodSelection]=useState("2026-07");
+  const [periodSelection,setPeriodSelection]=useState("2026-08");
   const [ranking,setRanking]=useState<Rank[]>([]);
   const [loading,setLoading]=useState(true);
   useEffect(()=>{
