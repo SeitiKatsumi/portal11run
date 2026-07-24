@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, ChevronDown, ChevronRight, Flag, Gift, Globe2, HandHeart, HeartHandshake, Home, Medal, Menu, ShoppingBag, Trophy, UserRound, X } from "lucide-react";
+import { BarChart3, ChevronDown, ChevronRight, Compass, Flag, Gift, Globe2, HandHeart, HeartHandshake, Home, Medal, Menu, ShoppingBag, Trophy, UserRound, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { navItems } from "@/lib/content";
@@ -20,13 +20,16 @@ const navIcons: Record<string, LucideIcon> = {
   "/apoie-o-projeto": ShoppingBag,
   "/apoie/patrocine": HeartHandshake,
   "/apoie/doacao": Gift,
-  "/apoie/voluntariado": UserRound
+  "/apoie/voluntariado": UserRound,
+  "/institucional/missao-visao-valores": Compass
 };
 
 export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [open, setOpen] = useState(false);
+  const [desktopMenu, setDesktopMenu] = useState<string | null>(null);
+  const [desktopSubmenu, setDesktopSubmenu] = useState<string | null>(null);
   const [memberLoggedIn, setMemberLoggedIn] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [homeHeader, setHomeHeader] = useState({ opacity: 74, blur: 18 });
@@ -86,7 +89,12 @@ export function Header() {
 
   useEffect(() => {
     setOpen(false);
+    setDesktopMenu(null);
+    setDesktopSubmenu(null);
   }, [pathname]);
+
+  const isActiveHref = (href: string) =>
+    pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
 
   return (
     <header
@@ -107,34 +115,73 @@ export function Header() {
           const Icon = navIcons[item.href];
           if ("children" in item && item.children?.length) {
             return (
-              <div className="nav-dropdown" key={item.href}>
-                <button type="button" className="nav-dropdown-trigger">
+              <div
+                className={`nav-dropdown ${desktopMenu === item.label ? "is-open" : ""}`}
+                key={item.href}
+                onMouseEnter={() => setDesktopMenu(item.label)}
+                onMouseLeave={() => {
+                  setDesktopMenu(null);
+                  setDesktopSubmenu(null);
+                }}
+                onBlur={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                    setDesktopMenu(null);
+                    setDesktopSubmenu(null);
+                  }
+                }}
+              >
+                <button
+                  type="button"
+                  className="nav-dropdown-trigger"
+                  aria-haspopup="menu"
+                  aria-expanded={desktopMenu === item.label}
+                  onClick={() => setDesktopMenu((current) => current === item.label ? null : item.label)}
+                >
                   <span>{item.label}</span>
                   <ChevronDown size={14} strokeWidth={1.8} />
                 </button>
-                <div className="nav-dropdown-menu">
+                <div className="nav-dropdown-menu" role="menu" aria-label={item.label}>
                   {item.children.map((child) => {
                     if (child.children?.length) {
                       return (
-                        <div className="nav-submenu" key={child.label}>
-                          <button type="button" className="nav-submenu-trigger" aria-haspopup="menu">
+                        <div
+                          className={`nav-submenu ${desktopSubmenu === child.label ? "is-open" : ""}`}
+                          key={child.label}
+                          onMouseEnter={() => setDesktopSubmenu(child.label)}
+                          onMouseLeave={() => setDesktopSubmenu(null)}
+                        >
+                          <button
+                            type="button"
+                            className="nav-submenu-trigger"
+                            aria-haspopup="menu"
+                            aria-expanded={desktopSubmenu === child.label}
+                            onClick={() => setDesktopSubmenu((current) => current === child.label ? null : child.label)}
+                          >
                             <span>{child.label}</span>
                             <ChevronRight size={15} strokeWidth={1.8} />
                           </button>
                           <div className="nav-nested-menu" role="menu" aria-label={child.label}>
-                            {child.children.map((professional) => (
-                              <Link key={professional.href} href={professional.href} role="menuitem">
-                                <UserRound size={15} strokeWidth={1.7} />
-                                <span>{professional.label}</span>
-                              </Link>
-                            ))}
+                            {child.children.map((professional) => {
+                              const NestedIcon = navIcons[professional.href] ?? UserRound;
+                              return (
+                                <Link
+                                  key={professional.href}
+                                  href={professional.href}
+                                  role="menuitem"
+                                  aria-current={isActiveHref(professional.href) ? "page" : undefined}
+                                >
+                                  <NestedIcon size={15} strokeWidth={1.7} />
+                                  <span>{professional.label}</span>
+                                </Link>
+                              );
+                            })}
                           </div>
                         </div>
                       );
                     }
                     const ChildIcon = navIcons[child.href];
                     return (
-                      <Link key={child.href} href={child.href}>
+                      <Link key={child.href} href={child.href} role="menuitem" aria-current={isActiveHref(child.href) ? "page" : undefined}>
                         {ChildIcon ? <ChildIcon size={15} strokeWidth={1.7} /> : null}
                         <span>{child.label}</span>
                       </Link>
@@ -146,13 +193,13 @@ export function Header() {
           }
 
           return (
-            <Link key={item.href} href={item.href}>
+            <Link key={item.href} href={item.href} aria-current={isActiveHref(item.href) ? "page" : undefined}>
               {Icon ? <Icon size={15} strokeWidth={1.7} /> : null}
               <span>{item.label}</span>
             </Link>
           );
         })}
-        <Link className="member-nav-link" href={accountHref}>
+        <Link className="member-nav-link" href={accountHref} aria-current={isActiveHref(accountHref) ? "page" : undefined}>
           <UserRound size={15} strokeWidth={1.7} />
           <span>{accountLabel}</span>
         </Link>
@@ -180,25 +227,37 @@ export function Header() {
                   {item.children.map((child) => {
                     if (child.children?.length) {
                       return (
-                        <details className="mobile-nav-subgroup" key={child.label}>
+                        <details
+                          className="mobile-nav-subgroup"
+                          key={child.label}
+                          open={child.children.some((nested) => isActiveHref(nested.href)) || undefined}
+                        >
                           <summary>
                             <span>{child.label}</span>
                             <ChevronRight size={16} strokeWidth={1.8} />
                           </summary>
                           <div>
-                            {child.children.map((professional) => (
-                              <Link key={professional.href} href={professional.href} onClick={() => setOpen(false)}>
-                                <UserRound size={16} strokeWidth={1.7} />
-                                <span>{professional.label}</span>
-                              </Link>
-                            ))}
+                            {child.children.map((professional) => {
+                              const NestedIcon = navIcons[professional.href] ?? UserRound;
+                              return (
+                                <Link
+                                  key={professional.href}
+                                  href={professional.href}
+                                  onClick={() => setOpen(false)}
+                                  aria-current={isActiveHref(professional.href) ? "page" : undefined}
+                                >
+                                  <NestedIcon size={16} strokeWidth={1.7} />
+                                  <span>{professional.label}</span>
+                                </Link>
+                              );
+                            })}
                           </div>
                         </details>
                       );
                     }
                     const ChildIcon = navIcons[child.href];
                     return (
-                      <Link key={child.href} href={child.href} onClick={() => setOpen(false)}>
+                      <Link key={child.href} href={child.href} onClick={() => setOpen(false)} aria-current={isActiveHref(child.href) ? "page" : undefined}>
                         {ChildIcon ? <ChildIcon size={16} strokeWidth={1.7} /> : null}
                         <span>{child.label}</span>
                       </Link>
@@ -209,13 +268,13 @@ export function Header() {
             }
 
             return (
-              <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
+              <Link key={item.href} href={item.href} onClick={() => setOpen(false)} aria-current={isActiveHref(item.href) ? "page" : undefined}>
                 {Icon ? <Icon size={16} strokeWidth={1.7} /> : null}
                 <span>{item.label}</span>
               </Link>
             );
           })}
-          <Link href={accountHref} onClick={() => setOpen(false)}>
+          <Link href={accountHref} onClick={() => setOpen(false)} aria-current={isActiveHref(accountHref) ? "page" : undefined}>
             <UserRound size={16} strokeWidth={1.7} />
             <span>{accountLabel}</span>
           </Link>

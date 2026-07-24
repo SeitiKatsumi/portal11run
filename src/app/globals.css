@@ -214,8 +214,18 @@ main {
     transform 160ms ease;
 }
 
+.nav-dropdown-menu::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  left: 0;
+  height: 20px;
+}
+
 .nav-dropdown:hover .nav-dropdown-menu,
-.nav-dropdown:focus-within .nav-dropdown-menu {
+.nav-dropdown:focus-within .nav-dropdown-menu,
+.nav-dropdown.is-open .nav-dropdown-menu {
   opacity: 1;
   pointer-events: auto;
   transform: translate(-50%, 0);
@@ -289,7 +299,8 @@ main {
 }
 
 .nav-submenu:hover .nav-nested-menu,
-.nav-submenu:focus-within .nav-nested-menu {
+.nav-submenu:focus-within .nav-nested-menu,
+.nav-submenu.is-open .nav-nested-menu {
   opacity: 1;
   pointer-events: auto;
   transform: translateX(0);
@@ -308,7 +319,9 @@ main {
 }
 
 .desktop-nav a:hover,
+.desktop-nav a[aria-current="page"],
 .mobile-nav a:hover,
+.mobile-nav a[aria-current="page"],
 .back-link:hover,
 .portal-shortcut a:hover {
   color: var(--text);

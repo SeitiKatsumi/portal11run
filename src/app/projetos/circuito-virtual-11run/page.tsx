@@ -134,7 +134,9 @@ export default function VirtualCircuitPage() {
                 <li><strong>R$ 500,00</strong> para o líder de cada categoria.</li>
                 <li>Tênis para o primeiro de cada categoria.</li>
                 <li>Camiseta 11Run para os dez primeiros de cada categoria.</li>
-                <li>Troféu 11Run.</li>
+                <li>Troféu 11Run para os três primeiros de cada categoria.</li>
+                <li>Certificado físico para os cinco primeiros de cada categoria.</li>
+                <li>Certificado digital para todos os concluintes com marca validada no ranking.</li>
                 <li>Oportunidade de entrar para o 11Run Futuro, exclusiva para atletas de 9, 10 e 11 anos.</li>
               </ul>
             </article>

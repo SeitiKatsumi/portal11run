@@ -73,8 +73,15 @@ export const navItems: NavItem[] = [
   { label: "Projetos", href: "#projetos", children: projectNavItems },
   {
     label: "Institucional",
-    href: "/institucional/seiti-katsumi",
+    href: "/institucional/missao-visao-valores",
     children: [
+      {
+        label: "Sobre o projeto",
+        href: "#sobre-o-projeto",
+        children: [
+          { label: "Missão e Valores", href: "/institucional/missao-visao-valores" }
+        ]
+      },
       {
         label: "Profissionais",
         href: "#profissionais",
@@ -230,9 +237,9 @@ export const projects: ProjectPage[] = [
     key: "circuito-futuro-11",
     eyebrow: "circuito infantil",
     title: "Circuito Futuro 11",
-    subtitle: "Da primeira volta na pista ao sonho de chegar mais longe.",
-    imageSrc: "/assets/ayla-hero.jpg",
-    imageAlt: "Corredora em movimento 11RUN",
+    subtitle: "Estreia em 2027. Da primeira volta na pista ao sonho de chegar mais longe.",
+    imageSrc: "/assets/circuito-futuro-11-hero.webp",
+    imageAlt: "Atleta 11RUN sentada em uma pista de atletismo",
     body: [
       "O futuro do meio-fundo e fundo começa na pista.",
       "Vem aí o Circuito Futuro 11, o primeiro circuito de desenvolvimento competitivo em pista para crianças e pré-adolescentes de 10 a 13 anos."
@@ -260,9 +267,9 @@ export const projects: ProjectPage[] = [
       { label: "Etapa 4", detail: "novembro de 2027" }
     ],
     banner: {
-      eyebrow: "Circuito Futuro 11",
+      eyebrow: "Circuito Futuro 11 · estreia em 2027",
       title: "Primeira pista, primeiro ritmo, futuro competitivo.",
-      text: "Um circuito para transformar a infância ativa em experiência esportiva segura e progressiva."
+      text: "O circuito começa em 2027, transformando a infância ativa em experiência esportiva segura e progressiva."
     },
     metadata: {
       title: "Circuito Futuro 11",
