@@ -99,6 +99,37 @@ final result: passed
 
 ---
 
+# Design QA — nova foto da home na pista
+
+## Evidências
+
+- Fonte: `D:/active projects/Z1 Elevenmind/11run/ayla/ayla web/JPEG/4.jpg`
+- Referência do layout: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-01a8fd77-0610-4f57-b8b1-707daa37af64.png`
+- Implementação desktop: `.design/home-ayla-pista-desktop.png`
+- Implementação mobile: `.design/home-ayla-pista-mobile.png`
+- Comparação lado a lado: `.design/home-ayla-pista-comparison.png`
+- Viewports: 1440 × 900 e 390 × 844 CSS px.
+
+## Verificações
+
+- A nova imagem foi convertida para WebP em 1920 × 1080, com 168.606 bytes.
+- O overlay escuro existente foi preservado e mantém contraste adequado no título, subtítulo e cards.
+- O enquadramento central mantém a atleta visível em desktop e mobile.
+- Navegação, conteúdo, links, cards e chat permanecem funcionais e sem alteração estrutural.
+- `scrollWidth` e `clientWidth` coincidem nos dois breakpoints, sem overflow horizontal.
+
+## Findings
+
+Nenhuma divergência P0, P1 ou P2 foi encontrada no escopo da substituição da imagem.
+
+## Follow-up polish
+
+Nenhum ajuste P3 é necessário antes da publicação.
+
+final result: passed
+
+---
+
 # Design QA — Circuito Virtual 11Run
 
 - Página pública desktop: `.design/circuito-virtual-desktop.png`
