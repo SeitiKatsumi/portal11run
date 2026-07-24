@@ -65,12 +65,11 @@ export function validateCircuitActivityDate(value: string, start: string, end: s
     !/^\d{4}-\d{2}-\d{2}$/.test(value) ||
     Number.isNaN(parsed.valueOf()) ||
     parsed.toISOString().slice(0, 10) !== value ||
-    value < start ||
     value > end
   ) {
-    throw new Error(`A atividade deve ter sido realizada entre ${start} e ${end}.`);
+    throw new Error(`A atividade deve ter sido realizada até ${end}.`);
   }
-  return value;
+  return value < start ? start : value;
 }
 
 export function normalizePublicName(value: string) {

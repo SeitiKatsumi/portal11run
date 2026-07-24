@@ -13,7 +13,9 @@ export async function POST(request: Request) {
     const result = createCircuitRegistration(payload);
     const response = NextResponse.json({
       ok: true,
-      message: "Atividade recebida com sucesso. A análise foi iniciada.",
+      message: result.activityDateAdjusted
+        ? "Atividade recebida. Como a data informada é anterior ao início da edição, o registro foi considerado em 01/08/2026."
+        : "Atividade recebida com sucesso. A análise foi iniciada.",
       submissionId: result.submissionId
     });
     response.cookies.set("circuit_guardian", result.accessToken, {

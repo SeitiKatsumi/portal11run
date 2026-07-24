@@ -27,10 +27,11 @@ test("calcula a categoria pela idade no ano da edição", () => {
   assert.throws(() => categoryForBirthDate("2012-01-01", 2026));
 });
 
-test("aceita atividades desde 01 de julho de 2026", () => {
-  assert.equal(validateCircuitActivityDate("2026-07-01", "2026-07-01", "2026-12-15"), "2026-07-01");
-  assert.equal(validateCircuitActivityDate("2026-08-01", "2026-07-01", "2026-12-15"), "2026-08-01");
-  assert.throws(() => validateCircuitActivityDate("2026-06-30", "2026-07-01", "2026-12-15"));
+test("normaliza atividades anteriores ao início oficial para 01 de agosto de 2026", () => {
+  assert.equal(validateCircuitActivityDate("2026-07-01", "2026-08-01", "2026-12-15"), "2026-08-01");
+  assert.equal(validateCircuitActivityDate("2026-08-01", "2026-08-01", "2026-12-15"), "2026-08-01");
+  assert.equal(validateCircuitActivityDate("2026-09-10", "2026-08-01", "2026-12-15"), "2026-09-10");
+  assert.throws(() => validateCircuitActivityDate("2026-12-16", "2026-08-01", "2026-12-15"));
 });
 
 test("valida dígitos verificadores do CPF", () => {
