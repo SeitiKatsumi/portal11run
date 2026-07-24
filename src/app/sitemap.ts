@@ -8,6 +8,7 @@ const routes = [
   "/circuito-futuro-11",
   "/projetos/circuito-virtual-11run",
   "/bolsas",
+  "/institucional/missao-visao-valores",
   "/institucional/seiti-katsumi",
   "/institucional/alex-sandro-lopes",
   "/apoie",

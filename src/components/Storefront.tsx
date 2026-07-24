@@ -3,6 +3,7 @@
 import Image from "next/image";
 import {
   ArrowRight,
+  BadgeCheck,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -239,13 +240,9 @@ export function Storefront({
           <article><ShieldCheck /><span><strong>Pagamento seguro</strong>Checkout protegido pela Stripe</span></article>
           <article><Truck /><span><strong>Entrega ou retirada</strong>Frete fixo ou retirada gratuita com atletas</span></article>
           <article><Package /><span><strong>Estoque por tamanho</strong>PP, P, M, G e GG</span></article>
+          <article><BadgeCheck /><span><strong>Personalização para parceiros</strong>Aplicamos o logo dos patrocinadores nas peças do projeto</span></article>
         </div>
       </section>
-
-      <div className={styles.notice}>
-        <strong>Vista a 11RUN. Apoie talentos. Faça parte dessa história.</strong>{" "}
-        A totalidade dos recursos obtidos na loja é destinada ao desenvolvimento dos projetos e atletas da 11RUN.
-      </div>
 
       {checkoutCancelled ? (
         <div className={styles.notice}>O pagamento foi cancelado. Seus produtos continuam disponíveis para uma nova tentativa.</div>

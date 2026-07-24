@@ -64,6 +64,38 @@ final result: passed
 
 ---
 
+# QA complementar — Institucional, apoios, circuitos e loja
+
+## Escopo validado
+
+- Loja 11RUN e remoção da faixa abaixo do hero.
+- Circuito Futuro 11 e destaque de estreia em 2027.
+- Circuito Virtual 11RUN e premiações.
+- Patrocínio, doação e voluntariado.
+- Nova página Missão, Visão e Valores.
+- Navegação institucional e menu móvel.
+
+## Evidências
+
+- Comparação lado a lado entre a captura de referência da loja e a implementação.
+- Desktop em 1440 × 1000 e mobile em 375 × 812.
+- Nenhum overflow horizontal nas sete rotas verificadas.
+- Títulos sem estouro de largura.
+- Menu móvel com rolagem própria e submenu institucional funcional.
+- Arquivos das novas imagens respondendo com HTTP 200.
+- Build de produção, typecheck e 15 testes automatizados aprovados.
+
+## Resultado
+
+- A faixa informativa da loja foi removida sem deixar espaço residual.
+- O quarto benefício da loja mantém alinhamento e hierarquia dos demais cards.
+- As novas imagens mantêm proporção e enquadramento adequados.
+- A nova página institucional respeita o container, os tokens e a identidade do portal.
+
+final result: passed
+
+---
+
 # Design QA — premiações e ranking gamificado do Circuito Virtual
 
 ## Evidências
