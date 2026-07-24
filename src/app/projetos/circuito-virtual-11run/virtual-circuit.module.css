@@ -28,6 +28,12 @@
 .steps h3,.modeGrid h3,.awardGrid h3{font-size:1.15rem;margin:18px 0 8px}
 .steps p,.modeGrid p,.awardGrid p{font-size:.9rem;margin:0}
 .modeGrid,.awardGrid{grid-template-columns:repeat(3,1fr)}
+.awardGrid article{display:flex;flex-direction:column;min-height:300px}
+.awardGrid ul{display:grid;gap:11px;margin:18px 0 0;padding:18px 0 0 18px;border-top:1px solid #4a463e;color:#f7f2ea}
+.awardGrid li{padding-left:3px;font-size:.9rem;line-height:1.55}
+.awardGrid li::marker{color:var(--accent-strong)}
+.awardGrid .finalAward{border-color:#74624f;background:#312d27}
+.awardGrid .finalAward h3{max-width:270px}
 .modeGrid article{min-height:230px;display:flex;flex-direction:column}.modeGrid article>svg:last-child{margin-top:auto}
 .awards{background:var(--text);color:var(--surface)}
 .awards .eyebrow,.awards p{color:#c9b8a8}
