@@ -108,25 +108,36 @@ export default function VirtualCircuitPage() {
           <div className={styles.awardGrid}>
             <article>
               <CalendarDays />
-              <span>Edição 2026</span>
-              <h3>1º de julho a 15 de dezembro de 2026</h3>
-              <p>Período oficial para realização e envio das atividades válidas.</p>
+              <span>Mensal</span>
+              <h3>Melhor marca de cada categoria</h3>
+              <ul>
+                <li>Camiseta 11Run para a melhor marca mensal de cada categoria.</li>
+              </ul>
             </article>
             <article>
               <Trophy />
-              <span>Campeões de categoria</span>
-              <h3>Um par de tênis</h3>
-              <p>Para o 1º colocado de cada categoria por idade e gênero.</p>
+              <span>Trimestral · 2 ciclos</span>
+              <h3>01/07 a 30/09 e 01/10 a 15/12</h3>
+              <ul>
+                <li>Tênis para o primeiro de cada categoria.</li>
+                <li>Camiseta 11Run para os três primeiros de cada categoria.</li>
+              </ul>
             </article>
-            <article>
+            <article className={styles.finalAward}>
               <Medal />
-              <span>Top 10 de cada categoria</span>
-              <h3>Camiseta oficial do projeto</h3>
-              <p>Para atletas classificados do 1º ao 10º lugar de cada categoria.</p>
+              <span>Final da edição 2026</span>
+              <h3>Premiação completa por categoria</h3>
+              <ul>
+                <li><strong>R$ 500,00</strong> para o líder de cada categoria.</li>
+                <li>Tênis para o primeiro de cada categoria.</li>
+                <li>Camiseta 11Run para os dez primeiros de cada categoria.</li>
+                <li>Troféu 11Run.</li>
+                <li>Oportunidade de entrar para o 11Run Futuro, exclusiva para atletas de 9, 10 e 11 anos.</li>
+              </ul>
             </article>
           </div>
           <div className={styles.futureCallout}>
-            <div><strong>Oportunidade 11Run Futuro</strong><p>Líderes de 9 e 10 anos poderão ser convidados para avaliação presencial.</p></div>
+            <div><strong>Oportunidade 11Run Futuro</strong><p>Na premiação final, atletas de 9, 10 e 11 anos poderão receber a oportunidade de entrar para o projeto.</p></div>
             <Link href="/onze-futuro">Conheça o 11Run Futuro</Link>
           </div>
         </section>

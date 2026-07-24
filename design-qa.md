@@ -64,6 +64,41 @@ final result: passed
 
 ---
 
+# Design QA — premiações e ranking gamificado do Circuito Virtual
+
+## Evidências
+
+- Referência do ranking: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-dd50f5ca-7894-4ae8-b547-6551f497786e.png`
+- Referência das premiações: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-3923bcba-0fb3-41eb-9a38-af2a9a62c307.png`
+- Implementação desktop do ranking: `.design/circuit-ranking-gamificado-desktop.png`
+- Implementação mobile do ranking: `.design/circuit-ranking-gamificado-mobile.png`
+- Implementação desktop das premiações: `.design/circuit-premiacoes-2026-desktop.png`
+- Comparação lado a lado: `.design/circuit-ranking-source-vs-implementation.png`
+- Viewports: 1440 × 1000 e 390 × 844 CSS px.
+
+## Comparação visual e funcional
+
+- O container central, tipografia, superfícies, bordas e espaçamentos seguem a identidade já existente do portal.
+- O ranking preserva a hierarquia da referência e acrescenta somente os controles e dados solicitados: período, data e premiação atual.
+- Os filtros Mensal, Trimestral e Total da edição alteram o intervalo consultado e mantêm uma indicação visual clara do estado selecionado.
+- A tabela apresenta a data da melhor marca e os ícones de dinheiro, tênis, camiseta e troféu conforme a posição dentro de cada categoria.
+- Os ícones possuem texto acessível e tooltip em foco/hover informando que a premiação é provisória.
+- Desktop e mobile não apresentam overflow horizontal.
+- No mobile, filtros, datas, marcas e premiações permanecem legíveis e operáveis sem sair do container.
+- As três faixas de premiação — mensal, trimestral e final — exibem integralmente os critérios fornecidos.
+
+## Findings
+
+Nenhuma divergência P0, P1 ou P2 permanece no escopo solicitado. Os dados artificiais usados apenas na inspeção local foram removidos antes da publicação.
+
+## Follow-up polish
+
+Nenhum ajuste P3 é necessário para a entrega.
+
+final result: passed
+
+---
+
 # Design QA — Circuito Virtual 11Run
 
 - Página pública desktop: `.design/circuito-virtual-desktop.png`

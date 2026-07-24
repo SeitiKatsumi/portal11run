@@ -701,7 +701,18 @@ export function listCircuitRanking(filters: RankingFilters = {}) {
     type: row.submission_type,
     badge: row.validation_badge || badgeForType(row.submission_type)
   }));
-  return selectBestMarks(rankable).map((item, index) => ({ ...item, position: index + 1, formattedTime: formatCircuitTime(item.timeMs) }));
+  const categoryPositions = new Map<string, number>();
+  return selectBestMarks(rankable).map((item, index) => {
+    const categoryKey = `${item.categoryAge}-${item.gender}`;
+    const categoryPosition = (categoryPositions.get(categoryKey) ?? 0) + 1;
+    categoryPositions.set(categoryKey, categoryPosition);
+    return {
+      ...item,
+      position: index + 1,
+      categoryPosition,
+      formattedTime: formatCircuitTime(item.timeMs)
+    };
+  });
 }
 
 export function badgeForType(type: CircuitSubmissionType) {
