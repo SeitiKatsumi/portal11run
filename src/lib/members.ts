@@ -29,6 +29,9 @@ export type MemberAccount = {
   password_hash: string;
   password_salt: string;
   active: number;
+  profile_photo_url: string | null;
+  medical_certificate_file_id: string | null;
+  medical_certificate_name: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -74,12 +77,18 @@ export type MemberMark = {
   updated_at: string;
 };
 
+export type MemberPerformanceMark = Pick<MemberMark, "id" | "event" | "time" | "date" | "location"> & {
+  editable: boolean;
+  source: "MEMBER" | "RANKING" | "CIRCUIT";
+};
+
 export type MemberDashboardData = {
   account: MemberAccountPublic;
   lead: LeadRecord;
   financialRecords: FinancialRecord[];
   creativeAssets: CreativeAsset[];
   marks: MemberMark[];
+  performanceMarks: MemberPerformanceMark[];
   rankings: RankingRecord[];
   events: MemberEvent[];
 };
@@ -94,6 +103,18 @@ function getDatabase() {
   database.exec("PRAGMA journal_mode = WAL;");
   database.exec("PRAGMA foreign_keys = ON;");
   database.exec(readFileSync(path.join(process.cwd(), "data/schema.sql"), "utf8"));
+  const accountColumns = new Set(
+    (database.prepare("PRAGMA table_info(member_accounts)").all() as Array<{ name: string }>).map((column) => column.name)
+  );
+  if (!accountColumns.has("profile_photo_url")) {
+    database.exec("ALTER TABLE member_accounts ADD COLUMN profile_photo_url TEXT");
+  }
+  if (!accountColumns.has("medical_certificate_file_id")) {
+    database.exec("ALTER TABLE member_accounts ADD COLUMN medical_certificate_file_id TEXT");
+  }
+  if (!accountColumns.has("medical_certificate_name")) {
+    database.exec("ALTER TABLE member_accounts ADD COLUMN medical_certificate_name TEXT");
+  }
   return database;
 }
 
@@ -122,6 +143,63 @@ function verifyPassword(password: string, account: MemberAccount) {
 
 function hashToken(token: string) {
   return createHash("sha256").update(token).digest("hex");
+}
+
+function normalizeAthleteName(value?: string | null) {
+  return String(value ?? "")
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .trim()
+    .toLocaleLowerCase("pt-BR");
+}
+
+function formatMilliseconds(milliseconds: number) {
+  const minutes = Math.floor(milliseconds / 60_000);
+  const seconds = Math.floor((milliseconds % 60_000) / 1000);
+  const hundredths = Math.floor((milliseconds % 1000) / 10);
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(hundredths).padStart(2, "0")}`;
+}
+
+function normalizeMarkTime(value: string) {
+  return value.trim().replace(",", ".").replace(/[^\d:.]/g, "");
+}
+
+function performanceMarkKey(mark: Pick<MemberPerformanceMark, "event" | "time" | "date" | "location">) {
+  return [
+    normalizeMemberMarkEvent(mark.event),
+    normalizeMarkTime(mark.time),
+    mark.date.trim(),
+    mark.location.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLocaleLowerCase("pt-BR").trim()
+  ].join("|");
+}
+
+export function mergeMemberPerformanceMarks(groups: MemberPerformanceMark[][]) {
+  const unique = new Map<string, MemberPerformanceMark>();
+  groups.flat().forEach((mark) => {
+    if (normalizeMemberMarkEvent(mark.event) !== "1000m") return;
+    const key = performanceMarkKey(mark);
+    const existing = unique.get(key);
+    if (!existing || (!existing.editable && mark.editable)) unique.set(key, mark);
+  });
+  return [...unique.values()].sort((a, b) => b.date.localeCompare(a.date) || a.time.localeCompare(b.time));
+}
+
+export function updateMemberProfilePhoto(accountId: string, photoUrl: string) {
+  const cleanUrl = photoUrl.trim();
+  if (!cleanUrl.startsWith("/api/uploads/")) throw new Error("Foto de perfil inválida.");
+  getDatabase()
+    .prepare("UPDATE member_accounts SET profile_photo_url = ?, updated_at = ? WHERE id = ?")
+    .run(cleanUrl, now(), accountId);
+  return cleanUrl;
+}
+
+export function updateMemberMedicalCertificate(accountId: string, fileId: string, originalName: string) {
+  getDatabase()
+    .prepare(
+      "UPDATE member_accounts SET medical_certificate_file_id = ?, medical_certificate_name = ?, updated_at = ? WHERE id = ?"
+    )
+    .run(fileId, originalName.trim(), now(), accountId);
 }
 
 export function listMemberAccounts() {
@@ -232,11 +310,97 @@ export function getMemberDashboard(accountId: string): MemberDashboardData | nul
     .prepare("SELECT * FROM member_marks WHERE account_id = ? ORDER BY datetime(date) DESC, datetime(created_at) DESC")
     .all(account.id) as MemberMark[];
   const rankings = db
-    .prepare("SELECT * FROM rankings WHERE lower(athlete_name) = lower(?) ORDER BY age_group ASC, event ASC, time ASC")
-    .all(lead.athlete_name || lead.name) as RankingRecord[];
+    .prepare("SELECT * FROM rankings ORDER BY age_group ASC, event ASC, time ASC")
+    .all() as RankingRecord[];
+  const athleteNames = new Set([lead.athlete_name, lead.name].map(normalizeAthleteName).filter(Boolean));
+  const matchingRankings = rankings.filter((mark) => athleteNames.has(normalizeAthleteName(mark.athlete_name)));
+  const circuitSubmissions = (
+    db
+      .prepare(
+        `SELECT s.id, s.activity_date, COALESCE(s.verified_time_ms, s.declared_time_ms) AS time_ms,
+                s.city, s.state, a.full_name, a.public_name
+         FROM virtual_circuit_submissions s
+         JOIN virtual_circuit_athletes a ON a.id = s.athlete_id
+         WHERE s.status = 'APPROVED'
+         ORDER BY s.activity_date DESC, s.created_at DESC`
+      )
+      .all() as Array<{
+      id: string;
+      activity_date: string;
+      time_ms: number;
+      city: string;
+      state: string;
+      full_name: string;
+      public_name: string;
+    }>
+  ).filter((row) => athleteNames.has(normalizeAthleteName(row.full_name)) || athleteNames.has(normalizeAthleteName(row.public_name)));
+  const officialCircuitResults = (
+    db
+      .prepare(
+        `SELECT id, public_name, activity_date, time_ms, city, state
+         FROM virtual_circuit_official_results
+         WHERE status = 'APPROVED'
+         ORDER BY activity_date DESC, created_at DESC`
+      )
+      .all() as Array<{
+      id: string;
+      public_name: string;
+      activity_date: string;
+      time_ms: number;
+      city: string;
+      state: string;
+    }>
+  ).filter((row) => athleteNames.has(normalizeAthleteName(row.public_name)));
+  const performanceMarks = mergeMemberPerformanceMarks([
+    marks.map((mark) => ({
+      id: mark.id,
+      event: mark.event,
+      time: mark.time,
+      date: mark.date,
+      location: mark.location,
+      editable: true,
+      source: "MEMBER" as const
+    })),
+    matchingRankings.map((mark) => ({
+        id: `ranking:${mark.id}`,
+        event: mark.event,
+        time: mark.time,
+        date: mark.date,
+        location: mark.location,
+        editable: false,
+        source: "RANKING" as const
+      })),
+    circuitSubmissions.map((mark) => ({
+      id: `circuit:${mark.id}`,
+      event: "1000m",
+      time: formatMilliseconds(mark.time_ms),
+      date: mark.activity_date,
+      location: `${mark.city}/${mark.state}`,
+      editable: false,
+      source: "CIRCUIT" as const
+    })),
+    officialCircuitResults.map((mark) => ({
+      id: `official:${mark.id}`,
+      event: "1000m",
+      time: formatMilliseconds(mark.time_ms),
+      date: mark.activity_date,
+      location: `${mark.city}/${mark.state}`,
+      editable: false,
+      source: "CIRCUIT" as const
+    }))
+  ]);
   const events = listEventsForLead(lead.id, lead.project_type);
 
-  return { account: publicAccount(account), lead, financialRecords, creativeAssets, marks, rankings, events };
+  return {
+    account: publicAccount(account),
+    lead,
+    financialRecords,
+    creativeAssets,
+    marks,
+    performanceMarks,
+    rankings: matchingRankings,
+    events
+  };
 }
 
 type MemberMarkInput = { event: string; time: string; date: string; location: string };
@@ -244,6 +408,7 @@ type MemberMarkInput = { event: string; time: string; date: string; location: st
 function cleanMemberMarkInput(input: MemberMarkInput) {
   const event = normalizeMemberMarkEvent(input.event);
   if (!event) throw new Error("Selecione uma prova válida.");
+  if (event !== "1000m") throw new Error("O painel aceita somente marcas de 1.000 m.");
   const clean = {
     event,
     time: input.time.trim(),

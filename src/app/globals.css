@@ -3011,6 +3011,11 @@ body.modal-open {
   letter-spacing: -0.045em;
 }
 
+.member-top-panel h1 {
+  max-width: 720px;
+  font-size: clamp(2.1rem, 3.5vw, 3.65rem);
+}
+
 .members-login-panel p,
 .member-top-panel p {
   max-width: 680px;
@@ -3039,6 +3044,129 @@ body.modal-open {
   grid-template-columns: 1fr auto;
   gap: 24px;
   align-items: start;
+}
+
+.member-identity {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 34px);
+  align-items: center;
+}
+
+.member-profile-photo {
+  display: grid;
+  gap: 8px;
+  width: 136px;
+}
+
+.member-profile-photo > button {
+  position: relative;
+  width: 136px;
+  height: 136px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 32px;
+  background: var(--surface-muted);
+  color: var(--muted);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.member-profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.member-profile-photo button span {
+  position: absolute;
+  inset: auto 8px 8px;
+  min-height: 32px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: rgba(25, 24, 21, 0.86);
+  color: #fff;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.member-profile-photo > small,
+.member-upload-message {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.member-medical-alert {
+  margin-top: 18px;
+  padding: 18px 20px;
+  border: 1px solid rgba(166, 91, 48, 0.28);
+  border-radius: var(--radius-sm);
+  background: #fff4ea;
+  color: #77401f;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.member-medical-alert div {
+  display: grid;
+  gap: 3px;
+}
+
+.member-medical-alert span {
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.member-highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.member-highlight-grid article {
+  min-height: 178px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.member-highlight-grid article:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-strong);
+}
+
+.member-highlight-grid article > span {
+  margin-top: auto;
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.member-highlight-grid strong {
+  margin-top: 7px;
+  font-size: clamp(1.2rem, 1.8vw, 1.7rem);
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.member-highlight-grid small {
+  margin-top: 8px;
+  color: var(--muted);
+  line-height: 1.4;
 }
 
 .member-grid {
@@ -3115,6 +3243,62 @@ body.modal-open {
   margin-top: 32px;
   padding-top: 30px;
   border-top: 1px solid var(--line);
+}
+
+.member-medical-upload {
+  margin-top: 28px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.member-medical-upload > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.member-medical-upload span {
+  display: grid;
+  gap: 3px;
+}
+
+.member-medical-upload small {
+  color: var(--muted);
+}
+
+.member-medical-upload .member-upload-message {
+  grid-column: 1 / -1;
+}
+
+.member-faq > div {
+  display: grid;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.member-faq details {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  padding: 18px;
+}
+
+.member-faq summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.member-faq p {
+  max-width: 920px;
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
 }
 
 .member-card.wide {
@@ -4055,6 +4239,36 @@ body.modal-open {
   display: inline-grid;
   place-items: center;
   cursor: pointer;
+}
+
+.events-form-actions,
+.events-row-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.events-form-actions {
+  grid-column: 1 / -1;
+}
+
+.events-row-actions button {
+  flex: 0 0 auto;
+}
+
+.member-marks-chart-top {
+  margin-top: 28px;
+  margin-bottom: 24px;
+}
+
+.member-mark-source {
+  width: fit-content;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 12px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 
 .finance-badge {
@@ -6701,9 +6915,58 @@ body.modal-open {
   }
 
   .members-login-panel h1,
-  .member-top-panel h1,
   .transparency-hero h1 {
     font-size: clamp(2.45rem, 13vw, 4.4rem);
+  }
+
+  .member-top-panel h1 {
+    font-size: clamp(1.85rem, 8vw, 2.3rem);
+  }
+
+  .member-identity {
+    grid-template-columns: 92px minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .member-profile-photo,
+  .member-profile-photo > button {
+    width: 92px;
+  }
+
+  .member-profile-photo > button {
+    height: 92px;
+    border-radius: 24px;
+  }
+
+  .member-profile-photo button span {
+    inset: auto 5px 5px;
+    min-height: 27px;
+    font-size: 0;
+  }
+
+  .member-profile-photo button span svg {
+    margin: 0;
+  }
+
+  .member-highlight-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .member-highlight-grid article {
+    min-height: 158px;
+    padding: 16px;
+  }
+
+  .member-medical-upload {
+    grid-template-columns: 1fr;
+  }
+
+  .member-medical-upload .button {
+    width: 100%;
+  }
+
+  .events-row-actions {
+    justify-content: flex-start;
   }
 
   .finance-wide,

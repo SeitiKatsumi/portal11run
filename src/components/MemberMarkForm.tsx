@@ -11,6 +11,8 @@ type Mark = {
   time: string;
   date: string;
   location: string;
+  editable?: boolean;
+  source?: "MEMBER" | "RANKING" | "CIRCUIT";
 };
 
 type MemberMarkFormProps = {
@@ -18,8 +20,8 @@ type MemberMarkFormProps = {
   lockedTo1000m?: boolean;
 };
 
-const emptyForm = { event: "800m", time: "", date: "", location: "" };
-const chartColors = ["#56633a", "#844a21", "#2f6577", "#8a5d72", "#6b6d28", "#3f4a64"];
+const emptyForm = { event: "1000m", time: "", date: "", location: "" };
+const chartColor = "#56633a";
 
 function parseTime(value: string) {
   const normalized = value.trim().replace(",", ".");
@@ -52,7 +54,7 @@ function buildChartData(marks: Mark[]) {
   const validMarks = marks
     .map((mark) => ({ ...mark, normalizedEvent: normalizeMemberMarkEvent(mark.event), seconds: parseTime(mark.time), markDate: new Date(`${mark.date}T12:00:00`) }))
     .filter((mark) => mark.normalizedEvent && mark.seconds !== null && !Number.isNaN(mark.markDate.getTime()) && mark.markDate >= start && mark.markDate <= now);
-  const events = memberMarkEvents.filter((event) => validMarks.some((mark) => mark.normalizedEvent === event));
+  const events = validMarks.some((mark) => mark.normalizedEvent === "1000m") ? ["1000m"] : [];
   const bestByEvent = new Map<string, number>();
   const data = months.map((month) => {
     const row: Record<string, string | number | null> = { month: month.label, monthKey: month.key };
@@ -67,7 +69,7 @@ function buildChartData(marks: Mark[]) {
   return { data, events };
 }
 
-export function MemberMarkForm({ initialMarks = [], lockedTo1000m = false }: MemberMarkFormProps) {
+export function MemberMarkForm({ initialMarks = [], lockedTo1000m = true }: MemberMarkFormProps) {
   const [marks, setMarks] = useState(initialMarks);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ ...emptyForm, event: lockedTo1000m ? "1000m" : emptyForm.event });
@@ -84,7 +86,7 @@ export function MemberMarkForm({ initialMarks = [], lockedTo1000m = false }: Mem
     setEditingId(mark.id);
     setStatus("");
     setForm({
-      event: lockedTo1000m ? "1000m" : (normalizeMemberMarkEvent(mark.event) ?? "800m"),
+      event: lockedTo1000m ? "1000m" : (normalizeMemberMarkEvent(mark.event) ?? "1000m"),
       time: mark.time,
       date: mark.date,
       location: mark.location
@@ -119,6 +121,36 @@ export function MemberMarkForm({ initialMarks = [], lockedTo1000m = false }: Mem
 
   return (
     <>
+      <section className="member-marks-chart member-marks-chart-top" aria-labelledby="member-marks-chart-title">
+        <header>
+          <div>
+            <span className="eyebrow">evolução em 12 meses</span>
+            <h3 id="member-marks-chart-title">Evolução nos 1.000 m</h3>
+          </div>
+          <p>O menor tempo registrado até cada mês.</p>
+        </header>
+        {chart.events.length === 0 ? (
+          <div className="member-chart-empty">Adicione uma marca de 1.000 m para acompanhar sua evolução.</div>
+        ) : (
+          <div className="member-chart-canvas" role="img" aria-label="Gráfico de linha das melhores marcas de 1.000 m nos últimos 12 meses">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chart.data} margin={{ top: 18, right: 20, bottom: 4, left: 4 }} accessibilityLayer>
+                <CartesianGrid vertical={false} stroke="#ddd6ca" strokeDasharray="2 6" />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#7b746a", fontSize: 12 }} />
+                <YAxis reversed width={54} axisLine={false} tickLine={false} tick={{ fill: "#7b746a", fontSize: 12 }} tickFormatter={(value) => formatTime(Number(value))} domain={["dataMin - 3", "dataMax + 3"]} />
+                <Tooltip
+                  contentStyle={{ border: "1px solid #d8d4c9", borderRadius: 14, background: "#fffaf2", boxShadow: "0 12px 32px rgba(31,33,29,.12)" }}
+                  formatter={(value) => [formatTime(Number(value)), "1.000 m"]}
+                  labelStyle={{ color: "#66675f", marginBottom: 8 }}
+                />
+                <Legend formatter={() => "1.000 m"} wrapperStyle={{ paddingTop: 18, fontSize: 12 }} />
+                <Line type="monotone" dataKey="1000m" name="1000m" stroke={chartColor} strokeWidth={2.5} dot={{ r: 3, strokeWidth: 0, fill: chartColor }} activeDot={{ r: 5, strokeWidth: 2, stroke: "#fff" }} connectNulls={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
+      </section>
+
       <form className="member-mark-form" onSubmit={onSubmit}>
         <label>
           <span>Prova</span>
@@ -158,44 +190,16 @@ export function MemberMarkForm({ initialMarks = [], lockedTo1000m = false }: Mem
             <span>{mark.time}</span>
             <span>{mark.date}</span>
             <span>{mark.location}</span>
-            <button className="member-mark-edit" type="button" onClick={() => editMark(mark)}>
-              <Pencil size={15} /> Editar atividade
-            </button>
+            {mark.editable === false ? (
+              <span className="member-mark-source">Marca oficial</span>
+            ) : (
+              <button className="member-mark-edit" type="button" onClick={() => editMark(mark)}>
+                <Pencil size={15} /> Editar atividade
+              </button>
+            )}
           </div>
         ))}
       </div>
-
-      <section className="member-marks-chart" aria-labelledby="member-marks-chart-title">
-        <header>
-          <div>
-            <span className="eyebrow">evolução em 12 meses</span>
-            <h3 id="member-marks-chart-title">Melhores marcas por prova</h3>
-          </div>
-          <p>O menor tempo registrado até cada mês.</p>
-        </header>
-        {chart.events.length === 0 ? (
-          <div className="member-chart-empty">Adicione marcas com data nos últimos 12 meses para acompanhar sua evolução.</div>
-        ) : (
-          <div className="member-chart-canvas" role="img" aria-label="Gráfico de linha das melhores marcas nos últimos 12 meses">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chart.data} margin={{ top: 18, right: 20, bottom: 4, left: 4 }} accessibilityLayer>
-                <CartesianGrid vertical={false} stroke="#ddd6ca" strokeDasharray="2 6" />
-                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#7b746a", fontSize: 12 }} />
-                <YAxis reversed width={54} axisLine={false} tickLine={false} tick={{ fill: "#7b746a", fontSize: 12 }} tickFormatter={(value) => formatTime(Number(value))} domain={["dataMin - 3", "dataMax + 3"]} />
-                <Tooltip
-                  contentStyle={{ border: "1px solid #d8d4c9", borderRadius: 14, background: "#fffaf2", boxShadow: "0 12px 32px rgba(31,33,29,.12)" }}
-                  formatter={(value, name) => [formatTime(Number(value)), formatMemberMarkEvent(String(name))]}
-                  labelStyle={{ color: "#66675f", marginBottom: 8 }}
-                />
-                <Legend formatter={(value) => formatMemberMarkEvent(String(value))} wrapperStyle={{ paddingTop: 18, fontSize: 12 }} />
-                {chart.events.map((event, index) => (
-                  <Line key={event} type="monotone" dataKey={event} name={event} stroke={chartColors[index]} strokeWidth={2.5} dot={{ r: 3, strokeWidth: 0, fill: chartColors[index] }} activeDot={{ r: 5, strokeWidth: 2, stroke: "#fff" }} connectNulls={false} />
-                ))}
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        )}
-      </section>
     </>
   );
 }
