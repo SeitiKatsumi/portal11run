@@ -549,6 +549,25 @@ CREATE TABLE IF NOT EXISTS virtual_circuit_submissions (
   FOREIGN KEY (coach_id) REFERENCES virtual_circuit_coaches(id)
 );
 
+CREATE TABLE IF NOT EXISTS virtual_circuit_official_results (
+  id TEXT PRIMARY KEY,
+  edition_id TEXT NOT NULL,
+  public_name TEXT NOT NULL,
+  category_age INTEGER NOT NULL,
+  gender TEXT NOT NULL CHECK (gender IN ('FEMALE', 'MALE')),
+  activity_date TEXT NOT NULL,
+  time_ms INTEGER NOT NULL,
+  city TEXT NOT NULL,
+  state TEXT NOT NULL,
+  competition_name TEXT NOT NULL,
+  submission_type TEXT NOT NULL DEFAULT 'OFFICIAL_COMPETITION',
+  validation_badge TEXT NOT NULL DEFAULT 'Oficial',
+  status TEXT NOT NULL DEFAULT 'APPROVED',
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (edition_id) REFERENCES virtual_circuit_editions(id)
+);
+
 CREATE TABLE IF NOT EXISTS virtual_circuit_evidence (
   id TEXT PRIMARY KEY,
   submission_id TEXT NOT NULL,
@@ -653,6 +672,8 @@ CREATE INDEX IF NOT EXISTS idx_vc_submissions_ranking
   ON virtual_circuit_submissions (edition_id, status, activity_date, declared_time_ms);
 CREATE INDEX IF NOT EXISTS idx_vc_submissions_athlete
   ON virtual_circuit_submissions (athlete_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_vc_official_results_ranking
+  ON virtual_circuit_official_results (edition_id, status, category_age, gender, time_ms);
 CREATE INDEX IF NOT EXISTS idx_vc_athletes_category
   ON virtual_circuit_athletes (category_age, gender, state);
 CREATE INDEX IF NOT EXISTS idx_vc_audit_entity

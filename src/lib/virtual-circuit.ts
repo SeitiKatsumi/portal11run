@@ -33,6 +33,7 @@ export function getCircuitDatabase() {
   database.exec("PRAGMA foreign_keys = ON;");
   database.exec(readFileSync(path.join(process.cwd(), "data/schema.sql"), "utf8"));
   seedCircuitEdition(database);
+  seedOfficialCircuitResults(database);
   return database;
 }
 
@@ -135,6 +136,71 @@ function seedCircuitEdition(db: DatabaseSync) {
     timestamp,
     timestamp
   );
+}
+
+const officialSeedResults = [
+  ["nikkey-2026-guilherme-hideki-kawakami", "Guilherme Hideki Kawakami", 13, "MALE", 187_650, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-davi-raimundo-zanata", "Davi Raimundo Zanata", 13, "MALE", 196_900, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-daniel-kenzo-hayashi", "Daniel Kenzo Hayashi", 13, "MALE", 198_450, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-felipe-kenji-murayama-xavier", "Felipe Kenji Murayama Xavier", 13, "MALE", 203_260, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-eric-jun-amadatsu", "Eric Jun Amadatsu", 12, "MALE", 207_100, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-felipe-nakashima-kanno", "Felipe Nakashima Kanno", 12, "MALE", 211_610, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-rafael-massayuki-mysuguti", "Rafael Massayuki Mysuguti", 12, "MALE", 217_000, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-murilo-tadao-takahashi", "Murilo Tadao Takahashi", 12, "MALE", 219_240, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-isabella-naomi-c-ota", "Isabella Naomi C. Ota", 13, "FEMALE", 221_080, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-beatriz-shiramizu-romano", "Beatriz Shiramizu Romano", 12, "FEMALE", 221_470, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-julia-ayumi-nagase", "Júlia Ayumi Nagase", 13, "FEMALE", 223_180, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-aime-giaretta-katsumi", "Aimê Giaretta Katsumi", 9, "FEMALE", 225_900, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-gabriela-maya-sakai", "Gabriela Maya Sakai", 12, "FEMALE", 230_970, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-camila-nagata", "Camila Nagata", 13, "FEMALE", 234_540, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-sofia-sumida-guimaraes", "Sofia Sumida Guimarães", 12, "FEMALE", 236_870, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["nikkey-2026-sofia-yamashita-ferreira", "Sofia Yamashita Ferreira", 12, "FEMALE", 239_350, "São Bernardo do Campo", "SP", "Intercolonial Nikkey 2026"],
+  ["cbat-2026-helena-rowe-fernandes", "Helena Rowe Fernandes", 13, "FEMALE", 186_860, "Bragança Paulista", "SP", "Competição oficial CBAt 2026"],
+  ["cbat-2026-tamires-lafond-reho-a-tsere", "Tamires Lafond Reho A Tsere", 13, "FEMALE", 192_390, "Bragança Paulista", "SP", "Competição oficial CBAt 2026"],
+  ["cbat-2026-ana-sophia-brito-de-araujo", "Ana Sophia Brito de Araujo", 13, "FEMALE", 210_940, "Manaus", "AM", "Competição oficial CBAt 2026"],
+  ["cbat-2026-alice-de-oliveira-alves-neves", "Alice de Oliveira Alves Neves", 13, "FEMALE", 218_740, "Bragança Paulista", "SP", "Competição oficial CBAt 2026"],
+  ["cbat-2026-helena-nascimento-de-macedo", "Helena Nascimento de Macedo", 13, "FEMALE", 218_750, "Bragança Paulista", "SP", "Competição oficial CBAt 2026"],
+  ["cbat-2026-aylla-ariely-santana-de-oliveira", "Aylla Ariely Santana de Oliveira", 13, "FEMALE", 229_690, "João Pessoa", "PB", "Competição oficial CBAt 2026"],
+  ["cbat-2026-kassia-de-oliveira-silva", "Kassia de Oliveira Silva", 13, "FEMALE", 231_060, "Local a confirmar", "--", "Competição oficial CBAt 2026"]
+] as const;
+
+function seedOfficialCircuitResults(db: DatabaseSync) {
+  const timestamp = now();
+  const statement = db.prepare(
+    `INSERT INTO virtual_circuit_official_results (
+       id, edition_id, public_name, category_age, gender, activity_date, time_ms,
+       city, state, competition_name, submission_type, validation_badge, status,
+       created_at, updated_at
+     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'OFFICIAL_COMPETITION', 'Oficial', 'APPROVED', ?, ?)
+     ON CONFLICT(id) DO UPDATE SET
+       public_name = excluded.public_name,
+       category_age = excluded.category_age,
+       gender = excluded.gender,
+       activity_date = excluded.activity_date,
+       time_ms = excluded.time_ms,
+       city = excluded.city,
+       state = excluded.state,
+       competition_name = excluded.competition_name,
+       validation_badge = 'Oficial',
+       status = 'APPROVED',
+       updated_at = excluded.updated_at`
+  );
+  for (const [id, publicName, categoryAge, gender, timeMs, city, state, competitionName] of officialSeedResults) {
+    statement.run(
+      id,
+      CIRCUIT_EDITION_ID,
+      publicName,
+      categoryAge,
+      gender,
+      CIRCUIT_ACTIVITY_START,
+      timeMs,
+      city,
+      state,
+      competitionName,
+      timestamp,
+      timestamp
+    );
+  }
 }
 
 function dataSecret() {
@@ -668,58 +734,41 @@ export type RankingFilters = {
 export function listCircuitRanking(filters: RankingFilters = {}) {
   const edition = getCircuitEdition();
   const db = getCircuitDatabase();
-  const clauses = ["s.edition_id = ?", "s.status = 'APPROVED'"];
-  const values: Array<string | number> = [edition.id];
-  if (filters.categoryAge) {
-    clauses.push("a.category_age = ?");
-    values.push(filters.categoryAge);
-  }
-  if (filters.gender) {
-    clauses.push("a.gender = ?");
-    values.push(filters.gender);
-  }
-  if (filters.state) {
-    clauses.push("a.state = ?");
-    values.push(filters.state);
-  }
-  if (filters.type) {
-    clauses.push("s.submission_type = ?");
-    values.push(filters.type);
-  }
-  if (filters.name) {
-    clauses.push("a.public_name LIKE ?");
-    values.push(`%${filters.name.replace(/[%_]/g, "")}%`);
-  }
-  if (filters.start) {
-    clauses.push("s.activity_date >= ?");
-    values.push(filters.start);
-  }
-  if (filters.end) {
-    clauses.push("s.activity_date <= ?");
-    values.push(filters.end);
-  }
-  const rows = db
+  const submissionRows = db
     .prepare(
-      `SELECT s.id, s.athlete_id, a.public_name, a.category_age, a.gender, a.city, a.state,
+      `SELECT s.id, s.athlete_id, a.public_name, a.category_age, a.gender, s.city, s.state,
               s.activity_date, COALESCE(s.verified_time_ms, s.declared_time_ms) AS time_ms,
               s.submission_type, s.validation_badge
        FROM virtual_circuit_submissions s
        JOIN virtual_circuit_athletes a ON a.id = s.athlete_id
-       WHERE ${clauses.join(" AND ")}`
+       WHERE s.edition_id = ? AND s.status = 'APPROVED'`
     )
-    .all(...values) as Array<{
-    id: string;
-    athlete_id: string;
-    public_name: string;
-    category_age: number;
-    gender: CircuitGender;
-    city: string;
-    state: string;
-    activity_date: string;
-    time_ms: number;
-    submission_type: CircuitSubmissionType;
-    validation_badge: string | null;
-  }>;
+    .all(edition.id) as RankingRow[];
+  const officialRows = db
+    .prepare(
+      `SELECT r.id, COALESCE(a.id, 'official:' || r.id) AS athlete_id,
+              r.public_name, r.category_age, r.gender, r.city, r.state,
+              r.activity_date, r.time_ms, r.submission_type, r.validation_badge
+       FROM virtual_circuit_official_results r
+       LEFT JOIN virtual_circuit_athletes a
+         ON lower(trim(a.public_name)) = lower(trim(r.public_name))
+        AND a.category_age = r.category_age
+        AND a.gender = r.gender
+       WHERE r.edition_id = ? AND r.status = 'APPROVED'`
+    )
+    .all(edition.id) as RankingRow[];
+  const rows = [...submissionRows, ...officialRows].filter((row) => {
+    if (filters.categoryAge && row.category_age !== filters.categoryAge) return false;
+    if (filters.gender && row.gender !== filters.gender) return false;
+    if (filters.state && row.state !== filters.state) return false;
+    if (filters.type && row.submission_type !== filters.type) return false;
+    if (filters.name && !row.public_name.toLocaleLowerCase("pt-BR").includes(filters.name.toLocaleLowerCase("pt-BR"))) {
+      return false;
+    }
+    if (filters.start && row.activity_date < filters.start) return false;
+    if (filters.end && row.activity_date > filters.end) return false;
+    return true;
+  });
   const rankable: RankableSubmission[] = rows.map((row) => ({
     id: row.id,
     athleteId: row.athlete_id,
@@ -746,6 +795,20 @@ export function listCircuitRanking(filters: RankingFilters = {}) {
     };
   });
 }
+
+type RankingRow = {
+  id: string;
+  athlete_id: string;
+  public_name: string;
+  category_age: number;
+  gender: CircuitGender;
+  city: string;
+  state: string;
+  activity_date: string;
+  time_ms: number;
+  submission_type: CircuitSubmissionType;
+  validation_badge: string | null;
+};
 
 export function badgeForType(type: CircuitSubmissionType) {
   return type === "OFFICIAL_COMPETITION" ? "Oficial" : type === "TRACK_400M" ? "Pista 400m" : "Percurso Livre";
