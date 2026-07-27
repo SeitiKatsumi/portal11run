@@ -3117,11 +3117,37 @@ body.modal-open {
 .member-medical-alert div {
   display: grid;
   gap: 3px;
+  flex: 1;
 }
 
 .member-medical-alert span {
   font-size: 0.86rem;
   line-height: 1.5;
+}
+
+.member-medical-alert-cta {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 16px;
+  border: 1px solid rgba(119, 64, 31, 0.32);
+  border-radius: 999px;
+  color: #633419;
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: background 180ms ease, color 180ms ease, transform 180ms ease;
+}
+
+.member-medical-alert-cta:hover {
+  background: #633419;
+  color: #fffaf2;
+  transform: translateY(-1px);
+}
+
+#informacoes-cadastro {
+  scroll-margin-top: 120px;
 }
 
 .member-highlight-grid {
@@ -6955,6 +6981,15 @@ body.modal-open {
   .member-highlight-grid article {
     min-height: 158px;
     padding: 16px;
+  }
+
+  .member-medical-alert {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .member-medical-alert-cta {
+    width: 100%;
   }
 
   .member-medical-upload {

@@ -4,6 +4,7 @@ import { useMemo, useState, type FormEvent } from "react";
 import { Pencil, Plus, X } from "lucide-react";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { formatMemberMarkEvent, memberMarkEvents, normalizeMemberMarkEvent } from "@/lib/member-mark-options";
+import { buildMemberMarkChartData } from "@/lib/member-mark-chart";
 
 type Mark = {
   id: string;
@@ -12,7 +13,7 @@ type Mark = {
   date: string;
   location: string;
   editable?: boolean;
-  source?: "MEMBER" | "RANKING" | "CIRCUIT";
+  source?: "MEMBER" | "RANKING";
 };
 
 type MemberMarkFormProps = {
@@ -23,50 +24,11 @@ type MemberMarkFormProps = {
 const emptyForm = { event: "1000m", time: "", date: "", location: "" };
 const chartColor = "#56633a";
 
-function parseTime(value: string) {
-  const normalized = value.trim().replace(",", ".");
-  const parts = normalized.split(":").map(Number);
-  if (parts.some((part) => !Number.isFinite(part))) return null;
-  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
-  if (parts.length === 2) return parts[0] * 60 + parts[1];
-  if (parts.length === 1) return parts[0];
-  return null;
-}
-
 function formatTime(value: number) {
   const minutes = Math.floor(value / 60);
   const seconds = value - minutes * 60;
   const precision = seconds % 1 === 0 ? 0 : 2;
   return `${minutes}:${seconds.toFixed(precision).padStart(precision ? 5 : 2, "0")}`;
-}
-
-function buildChartData(marks: Mark[]) {
-  const now = new Date();
-  const months = Array.from({ length: 12 }, (_, index) => {
-    const date = new Date(now.getFullYear(), now.getMonth() - 11 + index, 1);
-    return {
-      key: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`,
-      label: new Intl.DateTimeFormat("pt-BR", { month: "short" }).format(date).replace(".", ""),
-      end: new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59, 999)
-    };
-  });
-  const start = new Date(now.getFullYear(), now.getMonth() - 11, 1);
-  const validMarks = marks
-    .map((mark) => ({ ...mark, normalizedEvent: normalizeMemberMarkEvent(mark.event), seconds: parseTime(mark.time), markDate: new Date(`${mark.date}T12:00:00`) }))
-    .filter((mark) => mark.normalizedEvent && mark.seconds !== null && !Number.isNaN(mark.markDate.getTime()) && mark.markDate >= start && mark.markDate <= now);
-  const events = validMarks.some((mark) => mark.normalizedEvent === "1000m") ? ["1000m"] : [];
-  const bestByEvent = new Map<string, number>();
-  const data = months.map((month) => {
-    const row: Record<string, string | number | null> = { month: month.label, monthKey: month.key };
-    events.forEach((event) => {
-      validMarks
-        .filter((mark) => mark.normalizedEvent === event && mark.markDate <= month.end)
-        .forEach((mark) => bestByEvent.set(event, Math.min(bestByEvent.get(event) ?? Number.POSITIVE_INFINITY, mark.seconds as number)));
-      row[event] = bestByEvent.get(event) ?? null;
-    });
-    return row;
-  });
-  return { data, events };
 }
 
 export function MemberMarkForm({ initialMarks = [], lockedTo1000m = true }: MemberMarkFormProps) {
@@ -75,7 +37,7 @@ export function MemberMarkForm({ initialMarks = [], lockedTo1000m = true }: Memb
   const [form, setForm] = useState({ ...emptyForm, event: lockedTo1000m ? "1000m" : emptyForm.event });
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
-  const chart = useMemo(() => buildChartData(marks), [marks]);
+  const chart = useMemo(() => buildMemberMarkChartData(marks), [marks]);
 
   function resetForm() {
     setEditingId(null);

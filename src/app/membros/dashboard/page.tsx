@@ -6,7 +6,9 @@ import { MemberLogoutButton } from "@/components/MemberLogoutButton";
 import { MemberMarkForm } from "@/components/MemberMarkForm";
 import { MemberMedicalCertificate } from "@/components/MemberMedicalCertificate";
 import { MemberProfilePhoto } from "@/components/MemberProfilePhoto";
+import { MemberProfileUpdateLink } from "@/components/MemberProfileUpdateLink";
 import { MemberRegistrationEditor } from "@/components/MemberRegistrationEditor";
+import { parseMemberMarkTime } from "@/lib/member-mark-chart";
 import { getMemberBySessionToken, getMemberDashboard, memberRoleLabels } from "@/lib/members";
 
 export const dynamic = "force-dynamic";
@@ -126,13 +128,6 @@ function formatEventDate(date: string, time?: string | null) {
   return time ? `${formatted} às ${time}` : formatted;
 }
 
-function timeToMilliseconds(value: string) {
-  const parts = value.replace(",", ".").split(":");
-  const seconds = Number(parts.pop() ?? 0);
-  const minutes = Number(parts.pop() ?? 0);
-  return (minutes * 60 + seconds) * 1000;
-}
-
 function nextEvenMonthLabel(from = new Date()) {
   const date = new Date(from);
   do {
@@ -159,7 +154,9 @@ export default async function MemberDashboardPage() {
   );
   const receivedTotal = executedRecords.reduce((total, record) => total + record.amount_cents, 0);
   const bestMark = [...dashboard.performanceMarks].sort(
-    (a, b) => timeToMilliseconds(a.time) - timeToMilliseconds(b.time)
+    (a, b) =>
+      (parseMemberMarkTime(a.time) ?? Number.POSITIVE_INFINITY) -
+      (parseMemberMarkTime(b.time) ?? Number.POSITIVE_INFINITY)
   )[0];
   const today = new Date().toISOString().slice(0, 10);
   const upcomingEvents = dashboard.events.filter((event) => event.event_date >= today);
@@ -210,6 +207,7 @@ export default async function MemberDashboardPage() {
             <strong>Atestado médico pendente</strong>
             <span>Envie o atestado de aptidão no bloco “Informações do cadastro” para manter a documentação em dia.</span>
           </div>
+          <MemberProfileUpdateLink />
         </aside>
       ) : null}
 
@@ -327,7 +325,7 @@ export default async function MemberDashboardPage() {
         </article>
 
         <article className="member-card wide member-collapsible-card">
-          <details className="member-details-panel">
+          <details className="member-details-panel" id="informacoes-cadastro">
             <summary>
               <span>
                 <span className="eyebrow">dados cadastrais</span>

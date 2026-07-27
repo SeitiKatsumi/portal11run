@@ -79,7 +79,7 @@ export type MemberMark = {
 
 export type MemberPerformanceMark = Pick<MemberMark, "id" | "event" | "time" | "date" | "location"> & {
   editable: boolean;
-  source: "MEMBER" | "RANKING" | "CIRCUIT";
+  source: "MEMBER" | "RANKING";
 };
 
 export type MemberDashboardData = {
@@ -152,13 +152,6 @@ function normalizeAthleteName(value?: string | null) {
     .replace(/[^\p{L}\p{N}]+/gu, " ")
     .trim()
     .toLocaleLowerCase("pt-BR");
-}
-
-function formatMilliseconds(milliseconds: number) {
-  const minutes = Math.floor(milliseconds / 60_000);
-  const seconds = Math.floor((milliseconds % 60_000) / 1000);
-  const hundredths = Math.floor((milliseconds % 1000) / 10);
-  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(hundredths).padStart(2, "0")}`;
 }
 
 function normalizeMarkTime(value: string) {
@@ -314,43 +307,6 @@ export function getMemberDashboard(accountId: string): MemberDashboardData | nul
     .all() as RankingRecord[];
   const athleteNames = new Set([lead.athlete_name, lead.name].map(normalizeAthleteName).filter(Boolean));
   const matchingRankings = rankings.filter((mark) => athleteNames.has(normalizeAthleteName(mark.athlete_name)));
-  const circuitSubmissions = (
-    db
-      .prepare(
-        `SELECT s.id, s.activity_date, COALESCE(s.verified_time_ms, s.declared_time_ms) AS time_ms,
-                s.city, s.state, a.full_name, a.public_name
-         FROM virtual_circuit_submissions s
-         JOIN virtual_circuit_athletes a ON a.id = s.athlete_id
-         WHERE s.status = 'APPROVED'
-         ORDER BY s.activity_date DESC, s.created_at DESC`
-      )
-      .all() as Array<{
-      id: string;
-      activity_date: string;
-      time_ms: number;
-      city: string;
-      state: string;
-      full_name: string;
-      public_name: string;
-    }>
-  ).filter((row) => athleteNames.has(normalizeAthleteName(row.full_name)) || athleteNames.has(normalizeAthleteName(row.public_name)));
-  const officialCircuitResults = (
-    db
-      .prepare(
-        `SELECT id, public_name, activity_date, time_ms, city, state
-         FROM virtual_circuit_official_results
-         WHERE status = 'APPROVED'
-         ORDER BY activity_date DESC, created_at DESC`
-      )
-      .all() as Array<{
-      id: string;
-      public_name: string;
-      activity_date: string;
-      time_ms: number;
-      city: string;
-      state: string;
-    }>
-  ).filter((row) => athleteNames.has(normalizeAthleteName(row.public_name)));
   const performanceMarks = mergeMemberPerformanceMarks([
     marks.map((mark) => ({
       id: mark.id,
@@ -369,25 +325,7 @@ export function getMemberDashboard(accountId: string): MemberDashboardData | nul
         location: mark.location,
         editable: false,
         source: "RANKING" as const
-      })),
-    circuitSubmissions.map((mark) => ({
-      id: `circuit:${mark.id}`,
-      event: "1000m",
-      time: formatMilliseconds(mark.time_ms),
-      date: mark.activity_date,
-      location: `${mark.city}/${mark.state}`,
-      editable: false,
-      source: "CIRCUIT" as const
-    })),
-    officialCircuitResults.map((mark) => ({
-      id: `official:${mark.id}`,
-      event: "1000m",
-      time: formatMilliseconds(mark.time_ms),
-      date: mark.activity_date,
-      location: `${mark.city}/${mark.state}`,
-      editable: false,
-      source: "CIRCUIT" as const
-    }))
+      }))
   ]);
   const events = listEventsForLead(lead.id, lead.project_type);
 
