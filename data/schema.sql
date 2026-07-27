@@ -617,6 +617,30 @@ CREATE TABLE IF NOT EXISTS virtual_circuit_consents (
   FOREIGN KEY (edition_id) REFERENCES virtual_circuit_editions(id)
 );
 
+CREATE TABLE IF NOT EXISTS virtual_circuit_medical_clearances (
+  id TEXT PRIMARY KEY,
+  edition_id TEXT NOT NULL,
+  athlete_id TEXT NOT NULL,
+  guardian_id TEXT NOT NULL,
+  submission_id TEXT NOT NULL UNIQUE,
+  clearance_method TEXT NOT NULL CHECK (clearance_method IN ('MEDICAL_CERTIFICATE', 'GUARDIAN_COMMITMENT')),
+  certificate_file_id TEXT,
+  status TEXT NOT NULL CHECK (status IN ('SUBMITTED', 'PENDING_CERTIFICATE', 'VERIFIED', 'REJECTED')),
+  guardian_cpf_confirmation_hash TEXT NOT NULL,
+  declaration_text TEXT NOT NULL,
+  document_version TEXT NOT NULL,
+  promised_due_date TEXT,
+  health_data_consent_at TEXT NOT NULL,
+  accepted_at TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (edition_id) REFERENCES virtual_circuit_editions(id),
+  FOREIGN KEY (athlete_id) REFERENCES virtual_circuit_athletes(id),
+  FOREIGN KEY (guardian_id) REFERENCES virtual_circuit_guardians(id),
+  FOREIGN KEY (submission_id) REFERENCES virtual_circuit_submissions(id),
+  FOREIGN KEY (certificate_file_id) REFERENCES virtual_circuit_private_files(id)
+);
+
 CREATE TABLE IF NOT EXISTS virtual_circuit_ranking_snapshots (
   id TEXT PRIMARY KEY,
   edition_id TEXT NOT NULL,
@@ -678,3 +702,5 @@ CREATE INDEX IF NOT EXISTS idx_vc_athletes_category
   ON virtual_circuit_athletes (category_age, gender, state);
 CREATE INDEX IF NOT EXISTS idx_vc_audit_entity
   ON virtual_circuit_audit_logs (entity_type, entity_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_vc_medical_status
+  ON virtual_circuit_medical_clearances (edition_id, status, promised_due_date);

@@ -15,8 +15,8 @@ import {
   type CircuitGender,
   type CircuitSubmissionType,
   type RankableSubmission
-} from "./virtual-circuit-core";
-import { circuitFaq, circuitRegulations, mandatoryConsents } from "./virtual-circuit-content";
+} from "./virtual-circuit-core.ts";
+import { circuitFaq, circuitRegulations, mandatoryConsents } from "./virtual-circuit-content.ts";
 
 export const CIRCUIT_SLUG = "desafio-virtual-1km-11run-futuro-2026";
 export const CIRCUIT_EDITION_ID = "virtual-circuit-2026";
@@ -55,16 +55,6 @@ function seedCircuitEdition(db: DatabaseSync) {
     .prepare("SELECT start_date, regulations_text, faq_json FROM virtual_circuit_editions WHERE id = ?")
     .get(CIRCUIT_EDITION_ID) as { start_date: string; regulations_text: string; faq_json: string } | undefined;
   if (existing) {
-    const currentRegulations = safeJson<string[][]>(existing.regulations_text, []);
-    const currentFaq = safeJson<string[][]>(existing.faq_json, []);
-    const updatedRegulations = currentRegulations.map(([title, text]) => {
-      const replacement = circuitRegulations.find(([currentTitle]) => currentTitle === title);
-      return title === "2. Do período" || title === "3. Dos participantes" ? [...(replacement ?? [title, text])] : [title, text];
-    });
-    const updatedFaq = currentFaq.map(([question, answer]) => {
-      const replacement = circuitFaq.find(([currentQuestion]) => currentQuestion === question);
-      return question === "Quem pode participar?" ? [...(replacement ?? [question, answer])] : [question, answer];
-    });
     db.exec("BEGIN IMMEDIATE;");
     try {
       db.prepare(
@@ -73,8 +63,8 @@ function seedCircuitEdition(db: DatabaseSync) {
          WHERE id = ?`
       ).run(
         CIRCUIT_ACTIVITY_START,
-        JSON.stringify(updatedRegulations),
-        JSON.stringify(updatedFaq),
+        JSON.stringify(circuitRegulations),
+        JSON.stringify(circuitFaq),
         timestamp,
         CIRCUIT_EDITION_ID
       );
@@ -343,6 +333,12 @@ type RegistrationInput = {
     details: Record<string, string | number | boolean | null>;
     evidence: Array<{ type: string; url?: string; privateFileId?: string }>;
   };
+  medical: {
+    method: "MEDICAL_CERTIFICATE" | "GUARDIAN_COMMITMENT";
+    certificateFileId?: string;
+    guardianCpfConfirmation: string;
+    commitmentAccepted?: boolean;
+  };
   consents: Record<string, boolean>;
   meta: { ip?: string; userAgent?: string };
 };
@@ -362,6 +358,23 @@ function assertDocumentOwnerReady(db: DatabaseSync, fileId: string) {
     .prepare("SELECT id, purpose FROM virtual_circuit_private_files WHERE id = ?")
     .get(fileId) as { id: string; purpose: string } | undefined;
   if (!file || file.purpose !== "ATHLETE_DOCUMENT") throw new Error("Envie um documento comprobatório válido.");
+}
+
+function assertMedicalClearanceReady(db: DatabaseSync, input: RegistrationInput) {
+  if (!validateCpf(input.medical.guardianCpfConfirmation)) {
+    throw new Error("Confirme um CPF válido do responsável no termo de aptidão médica.");
+  }
+  if (sensitiveHash(input.medical.guardianCpfConfirmation) !== sensitiveHash(input.guardian.cpf)) {
+    throw new Error("O CPF confirmado no termo deve ser o mesmo CPF do responsável legal.");
+  }
+  if (input.medical.method === "MEDICAL_CERTIFICATE") {
+    const file = db
+      .prepare("SELECT id, purpose FROM virtual_circuit_private_files WHERE id = ?")
+      .get(input.medical.certificateFileId ?? "") as { id: string; purpose: string } | undefined;
+    if (!file || file.purpose !== "MEDICAL_CERTIFICATE") throw new Error("Envie um atestado médico válido.");
+  } else if (input.medical.method !== "GUARDIAN_COMMITMENT" || input.medical.commitmentAccepted !== true) {
+    throw new Error("Aceite o compromisso de envio posterior do atestado médico.");
+  }
 }
 
 function audit(
@@ -424,6 +437,7 @@ export function createCircuitRegistration(input: RegistrationInput) {
     settings.maxAge
   );
   assertDocumentOwnerReady(db, input.athlete.documentFileId);
+  assertMedicalClearanceReady(db, input);
   const requiredMissing = mandatoryConsents.find(([type]) => input.consents[type] !== true);
   if (requiredMissing) throw new Error("Todos os consentimentos obrigatórios precisam ser aceitos.");
   const declaredTimeMs = parseCircuitTime(input.submission.time);
@@ -564,6 +578,40 @@ export function createCircuitRegistration(input: RegistrationInput) {
       timestamp
     );
 
+    const medicalStatus = input.medical.method === "MEDICAL_CERTIFICATE" ? "SUBMITTED" : "PENDING_CERTIFICATE";
+    const promisedDueDate =
+      input.medical.method === "GUARDIAN_COMMITMENT"
+        ? new Date(Math.min(Date.now() + 15 * 86_400_000, new Date(`${edition.end_date}T23:59:59-03:00`).getTime())).toISOString()
+        : null;
+    const medicalDeclaration =
+      input.medical.method === "MEDICAL_CERTIFICATE"
+        ? "Declaro que o atestado anexado corresponde ao atleta cadastrado e autoriza sua participação em corrida ou atividade física."
+        : "Como responsável legal, comprometo-me a enviar o atestado médico do atleta posteriormente. Estou ciente de que a inscrição é condicionada e a marca não poderá ser homologada, premiada ou publicada como aprovada antes do recebimento do documento.";
+    db.prepare(
+      `INSERT INTO virtual_circuit_medical_clearances
+        (id, edition_id, athlete_id, guardian_id, submission_id, clearance_method, certificate_file_id,
+         status, guardian_cpf_confirmation_hash, declaration_text, document_version, promised_due_date,
+         health_data_consent_at, accepted_at, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ).run(
+      randomUUID(),
+      edition.id,
+      athlete.id,
+      guardian.id,
+      submissionId,
+      input.medical.method,
+      input.medical.certificateFileId ?? null,
+      medicalStatus,
+      guardianCpfHash,
+      medicalDeclaration,
+      "medical-clearance-1.0-2026",
+      promisedDueDate,
+      timestamp,
+      timestamp,
+      timestamp,
+      timestamp
+    );
+
     for (const item of evidence) {
       db.prepare(
         `INSERT INTO virtual_circuit_evidence
@@ -607,6 +655,14 @@ export function createCircuitRegistration(input: RegistrationInput) {
       action: "CREATED",
       actor: `guardian:${guardian.id}`,
       after: { status: "UNDER_REVIEW", declaredTimeMs, type: input.submission.type },
+      ip: input.meta.ip
+    });
+    audit(db, {
+      entityType: "medical_clearance",
+      entityId: submissionId,
+      action: medicalStatus === "SUBMITTED" ? "CERTIFICATE_SUBMITTED" : "COMMITMENT_ACCEPTED",
+      actor: `guardian:${guardian.id}`,
+      after: { status: medicalStatus, method: input.medical.method, promisedDueDate },
       ip: input.meta.ip
     });
     db.exec("COMMIT;");
@@ -662,13 +718,17 @@ export function getGuardianDashboard(token?: string | null) {
     validation_badge: string | null;
     correction_message: string | null;
     rejection_reason: string | null;
+    medical_status: string | null;
+    promised_due_date: string | null;
     created_at: string;
   };
   const submissions = db
     .prepare(
       `SELECT s.id, s.athlete_id, s.submission_type, s.activity_date, s.declared_time_ms, s.verified_time_ms,
-              s.status, s.validation_badge, s.correction_message, s.rejection_reason, s.created_at
+              s.status, s.validation_badge, s.correction_message, s.rejection_reason, s.created_at,
+              mc.status AS medical_status, mc.promised_due_date
        FROM virtual_circuit_submissions s
+       LEFT JOIN virtual_circuit_medical_clearances mc ON mc.submission_id = s.id
        WHERE s.guardian_id = ?
        ORDER BY datetime(s.created_at) DESC`
     )
@@ -715,6 +775,87 @@ export function submitCircuitCorrection(token: string | null | undefined, submis
     });
     db.exec("COMMIT;");
     return after;
+  } catch (error) {
+    db.exec("ROLLBACK;");
+    throw error;
+  }
+}
+
+export function attachCircuitMedicalCertificate(
+  token: string | null | undefined,
+  submissionId: string,
+  fileId: string,
+  healthDataConsent: boolean,
+  ip?: string
+) {
+  const guardian = getGuardianByAccessToken(token);
+  if (!guardian) throw new Error("Acesso expirado.");
+  if (!healthDataConsent) throw new Error("Confirme a autorização para o tratamento restrito do atestado médico.");
+  const db = getCircuitDatabase();
+  const file = db
+    .prepare("SELECT id, purpose FROM virtual_circuit_private_files WHERE id = ?")
+    .get(fileId) as { id: string; purpose: string } | undefined;
+  if (!file || file.purpose !== "MEDICAL_CERTIFICATE") throw new Error("Envie um atestado médico válido.");
+  const before = db
+    .prepare("SELECT * FROM virtual_circuit_medical_clearances WHERE submission_id = ? AND guardian_id = ?")
+    .get(submissionId, guardian.id) as Record<string, string | null> | undefined;
+  const timestamp = now();
+  db.exec("BEGIN IMMEDIATE;");
+  try {
+    if (before) {
+      db.prepare(
+        `UPDATE virtual_circuit_medical_clearances
+         SET certificate_file_id = ?, clearance_method = 'MEDICAL_CERTIFICATE', status = 'SUBMITTED',
+             promised_due_date = NULL, health_data_consent_at = ?, updated_at = ?
+         WHERE submission_id = ? AND guardian_id = ?`
+      ).run(fileId, timestamp, timestamp, submissionId, guardian.id);
+    } else {
+      const context = db
+        .prepare(
+          `SELECT s.edition_id, s.athlete_id, g.cpf_hash
+           FROM virtual_circuit_submissions s
+           JOIN virtual_circuit_guardians g ON g.id = s.guardian_id
+           WHERE s.id = ? AND s.guardian_id = ?`
+        )
+        .get(submissionId, guardian.id) as
+        | { edition_id: string; athlete_id: string; cpf_hash: string }
+        | undefined;
+      if (!context) throw new Error("Atividade não encontrada.");
+      db.prepare(
+        `INSERT INTO virtual_circuit_medical_clearances
+          (id, edition_id, athlete_id, guardian_id, submission_id, clearance_method, certificate_file_id,
+           status, guardian_cpf_confirmation_hash, declaration_text, document_version, promised_due_date,
+           health_data_consent_at, accepted_at, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, 'MEDICAL_CERTIFICATE', ?, 'SUBMITTED', ?, ?, ?, NULL, ?, ?, ?, ?)`
+      ).run(
+        randomUUID(),
+        context.edition_id,
+        context.athlete_id,
+        guardian.id,
+        submissionId,
+        fileId,
+        context.cpf_hash,
+        "Autorizo o tratamento restrito do atestado médico para análise da aptidão esportiva do atleta.",
+        "medical-clearance-later-upload-1.0-2026",
+        timestamp,
+        timestamp,
+        timestamp,
+        timestamp
+      );
+    }
+    audit(db, {
+      entityType: "medical_clearance",
+      entityId: submissionId,
+      action: "CERTIFICATE_SUBMITTED_LATER",
+      actor: `guardian:${guardian.id}`,
+      before: before
+        ? { status: before.status, method: before.clearance_method }
+        : { status: "MISSING", method: null },
+      after: { status: "SUBMITTED", method: "MEDICAL_CERTIFICATE" },
+      ip
+    });
+    db.exec("COMMIT;");
+    return { ok: true };
   } catch (error) {
     db.exec("ROLLBACK;");
     throw error;
@@ -857,10 +998,13 @@ export function listCircuitAdminSubmissions(status?: string) {
   const rows = db
     .prepare(
       `SELECT s.*, a.full_name AS athlete_name, a.public_name, a.category_age, a.gender, a.document_file_id,
-              g.full_name AS guardian_name, g.email AS guardian_email, g.phone AS guardian_phone
+              g.full_name AS guardian_name, g.email AS guardian_email, g.phone AS guardian_phone,
+              mc.status AS medical_status, mc.clearance_method, mc.certificate_file_id AS medical_certificate_file_id,
+              mc.promised_due_date
        FROM virtual_circuit_submissions s
        JOIN virtual_circuit_athletes a ON a.id = s.athlete_id
        JOIN virtual_circuit_guardians g ON g.id = s.guardian_id
+       LEFT JOIN virtual_circuit_medical_clearances mc ON mc.submission_id = s.id
        WHERE (? IS NULL OR s.status = ?)
        ORDER BY CASE s.status WHEN 'UNDER_REVIEW' THEN 0 WHEN 'CORRECTION_REQUESTED' THEN 1 ELSE 2 END,
                 datetime(s.created_at) DESC`
@@ -905,6 +1049,14 @@ export function updateCircuitSubmissionStatus(input: {
     | undefined;
   if (!before) throw new Error("Inscrição não encontrada.");
   if (!allowedTransitions[String(before.status)]?.includes(input.status)) throw new Error("Mudança de status não permitida.");
+  if (input.status === "APPROVED") {
+    const clearance = db
+      .prepare("SELECT status FROM virtual_circuit_medical_clearances WHERE submission_id = ?")
+      .get(input.id) as { status: string } | undefined;
+    if (!clearance || !["SUBMITTED", "VERIFIED"].includes(clearance.status)) {
+      throw new Error("A marca só pode ser aprovada depois do envio do atestado médico.");
+    }
+  }
   const reason = cleanText(input.reason, "Justificativa", 1200);
   const verifiedTimeMs = input.verifiedTime ? parseCircuitTime(input.verifiedTime) : before.verified_time_ms;
   const badge = input.status === "APPROVED" ? badgeForType(before.submission_type as CircuitSubmissionType) : before.validation_badge;

@@ -17,6 +17,10 @@ export const circuitFaq = [
   ["Ganhar garante vaga no 11Run Futuro?", "Não. Atletas elegíveis ainda passam por avaliação presencial e homologação da comissão."],
   ["Por que enviar um documento?", "Para confirmar identidade e idade. O arquivo é privado e nunca aparece no ranking."],
   ["Posso corrigir uma inscrição?", "Sim. O responsável pode responder a uma solicitação de correção pelo painel de acompanhamento."]
+  ,["É obrigatório apresentar atestado médico?", "Sim. O responsável pode anexar o atestado no cadastro ou assinar, com confirmação do próprio CPF, o compromisso de enviá-lo depois. Sem o atestado, a inscrição fica condicionada e a marca não pode ser homologada, premiada ou publicada como aprovada."]
+  ,["O que deve constar no atestado?", "O documento deve identificar o atleta, estar legível, ter sido emitido por médico com CRM e declarar aptidão para corrida ou atividade física. Recomenda-se emissão nos últimos 12 meses."]
+  ,["Quem pode ver o atestado?", "Somente a equipe autorizada responsável pela conferência. O arquivo é dado pessoal sensível, fica em armazenamento privado e não aparece no ranking."]
+  ,["Quem responde pela condição de saúde durante a corrida?", "O responsável deve informar corretamente as condições do atleta, seguir orientação médica, garantir preparação e interromper a atividade diante de sintomas. A corrida envolve riscos inerentes; esse reconhecimento não elimina responsabilidades que a lei atribua à organização ou a terceiros."]
 ] as const;
 
 export const circuitRegulations = [
@@ -41,6 +45,10 @@ export const circuitRegulations = [
   ["19. Dos dados pessoais", "Os dados são usados para identidade, idade, validação, contato, ranking e premiações. CPF, documentos, contatos e evidências não são públicos."],
   ["20. Da imagem e vídeo", "A análise privada da evidência, publicação no ranking e uso promocional são consentimentos separados. A autorização promocional é opcional."],
   ["21. Das decisões", "Casos não previstos serão analisados pela comissão. O regulamento pode ser atualizado para aumentar segurança e igualdade sem retirar direitos adquiridos."]
+  ,["22. Da aptidão médica", "A participação exige atestado médico legível que identifique o atleta, contenha identificação e CRM do médico e declare aptidão para corrida ou atividade física. Recomenda-se documento emitido nos últimos 12 meses. A comissão pode solicitar atualização ou esclarecimentos."]
+  ,["23. Do envio posterior", "Na ausência do atestado no cadastro, o pai, mãe, tutor ou responsável legal poderá confirmar o próprio CPF e assinar compromisso de envio posterior. A inscrição ficará condicionada e a marca não poderá ser homologada, premiada ou publicada como aprovada até o recebimento do documento."]
+  ,["24. Da saúde e dos riscos", "O responsável declara que as informações de saúde são verdadeiras, compromete-se a observar orientação médica, preparação adequada e sinais de alerta, e reconhece os riscos inerentes à corrida antes, durante e após a atividade. Deve interromper a participação diante de dor, mal-estar ou recomendação médica. O aceite não exclui responsabilidades que a legislação atribua à organização ou a terceiros."]
+  ,["25. Dos dados de saúde", "O atestado e qualquer informação de saúde são dados pessoais sensíveis, tratados apenas para segurança, elegibilidade e validação, com acesso restrito, armazenamento privado e retenção limitada. Não são publicados no ranking."]
 ] as const;
 
 export const mandatoryConsents = [
@@ -53,4 +61,6 @@ export const mandatoryConsents = [
   ["REGULATIONS", "Li e aceito o regulamento."],
   ["ACTIVITY_AUTHENTICITY", "Declaro que a atividade foi realizada pelo atleta cadastrado."],
   ["PUBLIC_EVIDENCE", "Confirmo que os links permanecerão públicos durante a análise."]
+  ,["HEALTH_DATA_PROCESSING", "Autorizo, de forma específica e destacada, o tratamento privado do atestado e dos dados de saúde estritamente necessários à segurança e validação da participação."]
+  ,["HEALTH_RISK_ACKNOWLEDGMENT", "Declaro que informei corretamente a condição de saúde do atleta, seguirei orientação médica e interromperei a atividade diante de sintomas. Reconheço os riscos inerentes à corrida antes, durante e após a atividade, sem excluir responsabilidades previstas em lei."]
 ] as const;

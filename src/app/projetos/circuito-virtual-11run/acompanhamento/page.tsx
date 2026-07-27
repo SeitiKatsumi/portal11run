@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { CircuitCorrectionForm } from "@/components/CircuitCorrectionForm";
+import { CircuitMedicalCertificateUpload } from "@/components/CircuitMedicalCertificateUpload";
 import { getGuardianDashboard } from "@/lib/virtual-circuit";
 import styles from "../virtual-circuit.module.css";
 
@@ -35,6 +36,11 @@ export default async function GuardianCircuitPage() {
             {dashboard.submissions.map((submission) => <details key={String(submission.id)}>
               <summary>{submission.formattedTime} · {submission.activity_date} · {statusLabels[String(submission.status)] || submission.status}</summary>
               <p>Modalidade: {String(submission.submission_type).replaceAll("_", " ")}.</p>
+              {!["SUBMITTED", "VERIFIED"].includes(String(submission.medical_status)) ? <div className={styles.medicalPending}>
+                <strong>Atestado médico pendente</strong>
+                <p>A inscrição está condicionada e a marca não será homologada até o envio do documento.</p>
+                <CircuitMedicalCertificateUpload submissionId={String(submission.id)} />
+              </div> : <p><strong>Aptidão médica:</strong> atestado recebido.</p>}
               {submission.correction_message ? <p><strong>Correção solicitada:</strong> {submission.correction_message}</p> : null}
               {submission.status === "CORRECTION_REQUESTED" ? <CircuitCorrectionForm submissionId={submission.id} /> : null}
               {submission.rejection_reason ? <p><strong>Justificativa:</strong> {submission.rejection_reason}</p> : null}

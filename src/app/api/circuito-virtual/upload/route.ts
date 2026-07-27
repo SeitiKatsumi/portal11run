@@ -23,6 +23,10 @@ export async function POST(request: Request) {
     const form = await request.formData();
     if (String(form.get("website") ?? "")) return NextResponse.json({ ok: true });
     const file = form.get("file");
+    const purpose = String(form.get("purpose") ?? "ATHLETE_DOCUMENT");
+    if (!["ATHLETE_DOCUMENT", "MEDICAL_CERTIFICATE"].includes(purpose)) {
+      return NextResponse.json({ ok: false, error: "Finalidade de arquivo inválida." }, { status: 400 });
+    }
     if (!(file instanceof File)) return NextResponse.json({ ok: false, error: "Selecione um arquivo." }, { status: 400 });
     if (file.size <= 0 || file.size > 10 * 1024 * 1024) {
       return NextResponse.json({ ok: false, error: "O arquivo deve ter até 10 MB." }, { status: 400 });
@@ -43,7 +47,7 @@ export async function POST(request: Request) {
       mimeType: file.type,
       sizeBytes: file.size,
       sha256: createHash("sha256").update(bytes).digest("hex"),
-      purpose: "ATHLETE_DOCUMENT"
+      purpose
     });
     return NextResponse.json({ ok: true, fileId, fileName: file.name });
   } catch (error) {
