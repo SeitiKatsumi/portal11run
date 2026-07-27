@@ -7,6 +7,7 @@ export type MemberEvent = {
   id: string;
   title: string;
   project_type: string;
+  event_type: "teste" | "prova" | "outro";
   event_date: string;
   event_time: string | null;
   location: string | null;
@@ -34,6 +35,7 @@ function getDatabase() {
 const memberEventColumns: Record<string, string> = {
   title: "TEXT NOT NULL DEFAULT ''",
   project_type: "TEXT NOT NULL DEFAULT 'todos'",
+  event_type: "TEXT NOT NULL DEFAULT 'outro'",
   event_date: "TEXT NOT NULL DEFAULT ''",
   event_time: "TEXT",
   location: "TEXT",
@@ -72,6 +74,34 @@ function normalizeParticipants(value: unknown) {
   return value.map((item) => String(item).trim()).filter(Boolean);
 }
 
+function cleanMemberEventInput(input: {
+  title: string;
+  project_type: string;
+  event_type?: string;
+  event_date: string;
+  event_time?: string;
+  location?: string;
+  description?: string;
+  participants?: string[];
+}) {
+  const clean = {
+    title: input.title.trim(),
+    project_type: input.project_type.trim() || "todos",
+    event_type: ["teste", "prova"].includes(input.event_type ?? "")
+      ? (input.event_type as "teste" | "prova")
+      : ("outro" as const),
+    event_date: input.event_date.trim(),
+    event_time: input.event_time?.trim() || null,
+    location: input.location?.trim() || null,
+    description: input.description?.trim() || null,
+    participants: normalizeParticipants(input.participants)
+  };
+  if (!clean.title || !clean.event_date || clean.participants.length === 0) {
+    throw new Error("Informe título, data e pelo menos um atleta participante.");
+  }
+  return clean;
+}
+
 export function listMemberEvents() {
   return getDatabase()
     .prepare("SELECT * FROM member_events ORDER BY date(event_date) ASC, event_time ASC, datetime(created_at) DESC")
@@ -94,31 +124,21 @@ export function listEventsForLead(leadId: string, projectType: string) {
 export function createMemberEvent(input: {
   title: string;
   project_type: string;
+  event_type?: string;
   event_date: string;
   event_time?: string;
   location?: string;
   description?: string;
   participants?: string[];
 }) {
-  const clean = {
-    title: input.title.trim(),
-    project_type: input.project_type.trim() || "todos",
-    event_date: input.event_date.trim(),
-    event_time: input.event_time?.trim() || null,
-    location: input.location?.trim() || null,
-    description: input.description?.trim() || null,
-    participants: normalizeParticipants(input.participants)
-  };
-
-  if (!clean.title || !clean.event_date || clean.participants.length === 0) {
-    throw new Error("Informe título, data e pelo menos um atleta participante.");
-  }
+  const clean = cleanMemberEventInput(input);
 
   const timestamp = now();
   const record: MemberEvent = {
     id: randomUUID(),
     title: clean.title,
     project_type: clean.project_type,
+    event_type: clean.event_type,
     event_date: clean.event_date,
     event_time: clean.event_time,
     location: clean.location,
@@ -131,15 +151,16 @@ export function createMemberEvent(input: {
   getDatabase()
     .prepare(
       `INSERT INTO member_events (
-        id, title, project_type, event_date, event_time, location, description, participants_json, created_at, updated_at
+        id, title, project_type, event_type, event_date, event_time, location, description, participants_json, created_at, updated_at
       ) VALUES (
-        $id, $title, $project_type, $event_date, $event_time, $location, $description, $participants_json, $created_at, $updated_at
+        $id, $title, $project_type, $event_type, $event_date, $event_time, $location, $description, $participants_json, $created_at, $updated_at
       )`
     )
     .run({
       $id: record.id,
       $title: record.title,
       $project_type: record.project_type,
+      $event_type: record.event_type,
       $event_date: record.event_date,
       $event_time: record.event_time,
       $location: record.location,
@@ -150,6 +171,50 @@ export function createMemberEvent(input: {
     });
 
   return record;
+}
+
+export function updateMemberEvent(
+  id: string,
+  input: {
+    title: string;
+    project_type: string;
+    event_type?: string;
+    event_date: string;
+    event_time?: string;
+    location?: string;
+    description?: string;
+    participants?: string[];
+  }
+) {
+  const existing = getDatabase().prepare("SELECT * FROM member_events WHERE id = ?").get(id) as MemberEvent | undefined;
+  if (!existing) throw new Error("Evento não encontrado.");
+  const updated = {
+    ...cleanMemberEventInput(input),
+    id,
+    created_at: existing.created_at,
+    updated_at: now()
+  };
+  getDatabase()
+    .prepare(
+      `UPDATE member_events
+       SET title = $title, project_type = $project_type, event_type = $event_type, event_date = $event_date,
+           event_time = $event_time, location = $location, description = $description,
+           participants_json = $participants_json, updated_at = $updated_at
+       WHERE id = $id`
+    )
+    .run({
+      $id: id,
+      $title: updated.title,
+      $project_type: updated.project_type,
+      $event_type: updated.event_type,
+      $event_date: updated.event_date,
+      $event_time: updated.event_time,
+      $location: updated.location,
+      $description: updated.description,
+      $participants_json: JSON.stringify(updated.participants),
+      $updated_at: updated.updated_at
+    });
+  return getDatabase().prepare("SELECT * FROM member_events WHERE id = ?").get(id) as MemberEvent;
 }
 
 export function deleteMemberEvent(id: string) {

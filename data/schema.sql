@@ -83,6 +83,9 @@ CREATE TABLE IF NOT EXISTS member_accounts (
   password_hash TEXT NOT NULL,
   password_salt TEXT NOT NULL,
   active INTEGER NOT NULL DEFAULT 1,
+  profile_photo_url TEXT,
+  medical_certificate_file_id TEXT,
+  medical_certificate_name TEXT,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL,
   FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
@@ -160,6 +163,7 @@ CREATE TABLE IF NOT EXISTS member_events (
   id TEXT PRIMARY KEY,
   title TEXT NOT NULL,
   project_type TEXT NOT NULL DEFAULT 'todos',
+  event_type TEXT NOT NULL DEFAULT 'outro',
   event_date TEXT NOT NULL,
   event_time TEXT,
   location TEXT,

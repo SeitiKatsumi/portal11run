@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { CalendarCheck2, Flag, ShieldAlert, Timer, WalletCards } from "lucide-react";
 import { MemberLogoutButton } from "@/components/MemberLogoutButton";
 import { MemberMarkForm } from "@/components/MemberMarkForm";
+import { MemberMedicalCertificate } from "@/components/MemberMedicalCertificate";
+import { MemberProfilePhoto } from "@/components/MemberProfilePhoto";
 import { MemberRegistrationEditor } from "@/components/MemberRegistrationEditor";
 import { getMemberBySessionToken, getMemberDashboard, memberRoleLabels } from "@/lib/members";
 
@@ -123,6 +126,21 @@ function formatEventDate(date: string, time?: string | null) {
   return time ? `${formatted} às ${time}` : formatted;
 }
 
+function timeToMilliseconds(value: string) {
+  const parts = value.replace(",", ".").split(":");
+  const seconds = Number(parts.pop() ?? 0);
+  const minutes = Number(parts.pop() ?? 0);
+  return (minutes * 60 + seconds) * 1000;
+}
+
+function nextEvenMonthLabel(from = new Date()) {
+  const date = new Date(from);
+  do {
+    date.setMonth(date.getMonth() + 1, 1);
+  } while ((date.getMonth() + 1) % 2 !== 0);
+  return new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" }).format(date);
+}
+
 export default async function MemberDashboardPage() {
   const account = getMemberBySessionToken((await cookies()).get("member_session")?.value);
   if (!account) redirect("/login");
@@ -140,6 +158,15 @@ export default async function MemberDashboardPage() {
     (record) => !executedStatuses.has(normalizeStatus(record.status)),
   );
   const receivedTotal = executedRecords.reduce((total, record) => total + record.amount_cents, 0);
+  const bestMark = [...dashboard.performanceMarks].sort(
+    (a, b) => timeToMilliseconds(a.time) - timeToMilliseconds(b.time)
+  )[0];
+  const today = new Date().toISOString().slice(0, 10);
+  const upcomingEvents = dashboard.events.filter((event) => event.event_date >= today);
+  const nextRace =
+    upcomingEvents.find((event) => event.event_type === "prova") ??
+    upcomingEvents.find((event) => event.event_type !== "teste");
+  const nextTest = upcomingEvents.find((event) => event.event_type === "teste");
 
   const renderFinancialRecord = (record: (typeof dashboard.financialRecords)[number]) => (
     <div className="member-finance-item" key={record.id}>
@@ -162,54 +189,58 @@ export default async function MemberDashboardPage() {
   return (
     <main className="members-dashboard">
       <section className="member-top-panel">
-        <div>
-          <span className="eyebrow">{memberRoleLabels[dashboard.account.role]}</span>
-          <h1>{athleteName}</h1>
-          <p>
-            Dashboard restrito com dados cadastrais, direitos do projeto, financeiro, criativos, eventos e marcas enviadas
-            para acompanhamento.
-          </p>
+        <div className="member-identity">
+          <MemberProfilePhoto initialUrl={dashboard.account.profile_photo_url} athleteName={athleteName} />
+          <div>
+            <span className="eyebrow">{memberRoleLabels[dashboard.account.role]}</span>
+            <h1>{athleteName}</h1>
+            <p>
+              Dashboard restrito com dados cadastrais, direitos do projeto, financeiro, criativos, eventos e marcas
+              enviadas para acompanhamento.
+            </p>
+          </div>
         </div>
         <MemberLogoutButton />
       </section>
 
-      <section className="member-grid">
-        <article className="member-card wide member-collapsible-card">
-          <details className="member-details-panel">
-            <summary>
-              <span>
-                <span className="eyebrow">dados cadastrais</span>
-                <strong>Informações do cadastro</strong>
-              </span>
-              <em>Abrir painel</em>
-            </summary>
-            <dl className="member-data-list">
-              {Object.entries(payload)
-                .filter(([key, value]) => !hiddenFields.has(key) && value !== undefined && value !== "")
-                .map(([key, value]) => (
-                  <div key={key}>
-                    <dt>{fieldLabels[key] ?? key.replaceAll("_", " ")}</dt>
-                    <dd>{formatValue(value)}</dd>
-                  </div>
-                ))}
-            </dl>
-            <MemberRegistrationEditor payload={payload} />
-            <section className="member-benefits-panel" aria-labelledby="member-benefits-title">
-              <span className="eyebrow">materiais e benefícios</span>
-              <h2 id="member-benefits-title">Direitos do projeto</h2>
-              <div className="member-list">
-                {Object.keys(receipts).length === 0 ? <p>Nenhum direito cadastrado ainda.</p> : null}
-                {Object.entries(receipts).map(([item, hasRight]) => (
-                  <div key={item}>
-                    <span>{item}</span>
-                    <strong>{hasRight ? "Tem direito" : "Não tem direito"}</strong>
-                  </div>
-                ))}
-              </div>
-            </section>
-          </details>
-        </article>
+      {!dashboard.account.medical_certificate_file_id ? (
+        <aside className="member-medical-alert">
+          <ShieldAlert size={22} />
+          <div>
+            <strong>Atestado médico pendente</strong>
+            <span>Envie o atestado de aptidão no bloco “Informações do cadastro” para manter a documentação em dia.</span>
+          </div>
+        </aside>
+      ) : null}
 
+      <section className="member-highlight-grid" aria-label="Destaques do atleta">
+        <article>
+          <Timer size={22} />
+          <span>Melhor marca nos 1.000 m</span>
+          <strong>{bestMark?.time ?? "Sem marca"}</strong>
+          <small>{bestMark ? `${formatDate(bestMark.date)} · ${bestMark.location}` : "Registre a primeira marca"}</small>
+        </article>
+        <article>
+          <WalletCards size={22} />
+          <span>Benefícios já recebidos</span>
+          <strong>{formatMoney(receivedTotal)}</strong>
+          <small>{executedRecords.length} lançamento(s) confirmado(s)</small>
+        </article>
+        <article>
+          <Flag size={22} />
+          <span>Próxima prova ou desafio</span>
+          <strong>{nextRace?.title ?? "A programar"}</strong>
+          <small>{nextRace ? formatEventDate(nextRace.event_date, nextRace.event_time) : "Nenhuma prova futura vinculada"}</small>
+        </article>
+        <article>
+          <CalendarCheck2 size={22} />
+          <span>Próximo teste de 1.000 m</span>
+          <strong>{nextTest?.title ?? nextEvenMonthLabel()}</strong>
+          <small>{nextTest ? formatEventDate(nextTest.event_date, nextTest.event_time) : "Teste obrigatório nos meses pares"}</small>
+        </article>
+      </section>
+
+      <section className="member-grid">
         <article className="member-card wide">
           <span className="eyebrow">financeiro</span>
           <h2>Benefícios Recebidos</h2>
@@ -280,18 +311,80 @@ export default async function MemberDashboardPage() {
 
         <article className="member-card wide">
           <span className="eyebrow">ranking e marcas</span>
-          <h2>Inserir marca de teste ou prova</h2>
+          <h2>Evolução e marcas de 1.000 m</h2>
           <MemberMarkForm
-            initialMarks={dashboard.marks.map((mark) => ({
+            initialMarks={dashboard.performanceMarks.map((mark) => ({
               id: mark.id,
               event: mark.event,
               time: mark.time,
               date: mark.date,
               location: mark.location,
+              editable: mark.editable,
+              source: mark.source,
             }))}
+            lockedTo1000m
           />
         </article>
 
+        <article className="member-card wide member-collapsible-card">
+          <details className="member-details-panel">
+            <summary>
+              <span>
+                <span className="eyebrow">dados cadastrais</span>
+                <strong>Informações do cadastro</strong>
+              </span>
+              <em>Abrir painel</em>
+            </summary>
+            <MemberMedicalCertificate initialName={dashboard.account.medical_certificate_name} />
+            <dl className="member-data-list">
+              {Object.entries(payload)
+                .filter(([key, value]) => !hiddenFields.has(key) && value !== undefined && value !== "")
+                .map(([key, value]) => (
+                  <div key={key}>
+                    <dt>{fieldLabels[key] ?? key.replaceAll("_", " ")}</dt>
+                    <dd>{formatValue(value)}</dd>
+                  </div>
+                ))}
+            </dl>
+            <MemberRegistrationEditor payload={payload} />
+            <section className="member-benefits-panel" aria-labelledby="member-benefits-title">
+              <span className="eyebrow">materiais e benefícios</span>
+              <h2 id="member-benefits-title">Direitos do projeto</h2>
+              <div className="member-list">
+                {Object.keys(receipts).length === 0 ? <p>Nenhum direito cadastrado ainda.</p> : null}
+                {Object.entries(receipts).map(([item, hasRight]) => (
+                  <div key={item}>
+                    <span>{item}</span>
+                    <strong>{hasRight ? "Tem direito" : "Não tem direito"}</strong>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </details>
+        </article>
+
+        <article className="member-card wide member-faq">
+          <span className="eyebrow">perguntas frequentes</span>
+          <h2>FAQ do 11 Futuro</h2>
+          <div>
+            <details>
+              <summary>Por quanto tempo o projeto acontece?</summary>
+              <p>O 11 Futuro tem duração por tempo indeterminado. Atividades, calendário e participação podem ser revistos conforme planejamento técnico e operacional.</p>
+            </details>
+            <details>
+              <summary>O atestado de aptidão médica é obrigatório?</summary>
+              <p>Sim. O responsável deve manter um atestado válido e atualizado, informando qualquer mudança relevante na saúde do atleta antes de treinos, testes, eventos ou provas.</p>
+            </details>
+            <details>
+              <summary>Quem responde pela participação do menor?</summary>
+              <p>Os pais ou responsáveis legais assumem integral responsabilidade pela autorização, condições de saúde, deslocamento, acompanhamento e ocorrências antes, durante e depois de qualquer treino, teste, evento ou prova relacionada ao projeto.</p>
+            </details>
+            <details>
+              <summary>Quando são realizados os testes de 1.000 m?</summary>
+              <p>O acompanhamento prevê um teste de 1.000 m nos meses pares. Datas e locais são comunicados no painel conforme disponibilidade e planejamento técnico.</p>
+            </details>
+          </div>
+        </article>
       </section>
     </main>
   );
