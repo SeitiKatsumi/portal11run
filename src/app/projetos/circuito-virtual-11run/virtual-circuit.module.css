@@ -20,6 +20,7 @@
 .heroImage>div{position:absolute;right:22px;bottom:22px;width:180px;padding:16px;border:1px solid rgb(255 255 255/.35);border-radius:16px;background:rgb(33 31 27/.86);color:#fff}
 .heroImage strong,.heroImage span{display:block}.heroImage strong{font-size:1.8rem}.heroImage span{font-size:.75rem;margin-top:4px}
 .section{padding:clamp(30px,5vw,64px)}
+.medicalNotice{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start;margin-bottom:28px;padding:18px;border:1px solid var(--line);border-radius:16px;background:var(--surface-muted)}.medicalNotice svg{color:var(--accent-strong)}.medicalNotice strong{font-size:1rem}.medicalNotice p{margin:5px 0 0;max-width:900px;font-size:.86rem}
 .splitHeading{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:start}
 .splitHeading h2{margin-top:12px}
 .steps,.modeGrid,.awardGrid{display:grid;gap:12px;margin-top:32px}

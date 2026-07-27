@@ -13,6 +13,8 @@ export default function PrivacyPage() {
         <p>Coletamos apenas os dados necessários para cadastro, autenticação, validação esportiva, ranking, comunicação, premiações, segurança e cumprimento de obrigações legais. Dados sensíveis, documentos, contatos e evidências nunca são exibidos publicamente.</p>
         <h2>Crianças e adolescentes</h2>
         <p>A participação de menores exige consentimento específico e destacado do responsável legal. Evidências e documentos são armazenados em área privada e acessados somente por pessoas autorizadas.</p>
+        <h2>Atestados e dados de saúde</h2>
+        <p>Atestados médicos e informações de saúde são dados pessoais sensíveis. No Circuito Virtual 11Run, eles são tratados mediante autorização específica e destacada do responsável, exclusivamente para segurança, aptidão e validação da participação. O acesso é restrito à equipe autorizada, os arquivos não aparecem no ranking e são eliminados quando deixam de ser necessários, observadas as obrigações legais e a defesa de direitos.</p>
         <h2>Compartilhamento e segurança</h2>
         <p>Os dados podem ser processados por fornecedores essenciais de infraestrutura, sempre com acesso limitado à finalidade contratada. Utilizamos controle de acesso, criptografia, registros de auditoria e proteção de arquivos.</p>
         <h2>Retenção e direitos</h2>

@@ -84,7 +84,7 @@ export default function VirtualCircuitPage() {
           <div className={styles.steps}>
             {[
               ["01", "Faça seu teste", "Corra 1.000 metros em competição, pista ou percurso aberto."],
-              ["02", "Envie as informações", "Cadastre o atleta e anexe os links ou documentos necessários."],
+              ["02", "Comprove a aptidão", "Envie o atestado médico ou assine o compromisso formal de envio posterior."],
               ["03", "Aguarde a validação", "A comissão 11Run confere a marca e pode solicitar correções."],
               ["04", "Entre no ranking", "A melhor marca aprovada aparece na categoria correspondente."]
             ].map(([number, title, text]) => (
@@ -152,6 +152,13 @@ export default function VirtualCircuitPage() {
         </section>
 
         <section className={styles.section} id="inscricao">
+          <div className={styles.medicalNotice}>
+            <ShieldCheck size={24} />
+            <div>
+              <strong>Segurança antes da marca</strong>
+              <p>O atestado médico é obrigatório. Ele pode ser anexado agora ou enviado depois mediante compromisso do responsável com confirmação de CPF. Sem o documento, a inscrição permanece condicionada e a marca não será homologada.</p>
+            </div>
+          </div>
           <CircuitRegistration startDate={edition.start_date} endDate={edition.end_date} />
         </section>
 
