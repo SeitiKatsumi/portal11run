@@ -220,23 +220,6 @@ export default async function MemberDashboardPage() {
         <MemberLogoutButton />
       </section>
 
-      <section className="member-card wide">
-        <span className="eyebrow">ranking e marcas</span>
-        <h2>Evolução e marcas de 1.000 m</h2>
-        <MemberMarkForm
-          initialMarks={dashboard.performanceMarks.map((mark) => ({
-            id: mark.id,
-            event: mark.event,
-            time: mark.time,
-            date: mark.date,
-            location: mark.location,
-            editable: mark.editable,
-            source: mark.source,
-          }))}
-          lockedTo1000m
-        />
-      </section>
-
       {!dashboard.account.medical_certificate_file_id ? (
         <aside className="member-medical-alert">
           <ShieldAlert size={22} />
@@ -273,6 +256,23 @@ export default async function MemberDashboardPage() {
           <strong>{nextTest?.title ?? nextEvenMonthLabel()}</strong>
           <small>{nextTest ? formatEventDate(nextTest.event_date, nextTest.event_time) : "Teste obrigatório nos meses pares"}</small>
         </article>
+      </section>
+
+      <section className="member-card wide">
+        <span className="eyebrow">ranking e marcas</span>
+        <h2>Evolução e marcas de 1.000 m</h2>
+        <MemberMarkForm
+          initialMarks={dashboard.performanceMarks.map((mark) => ({
+            id: mark.id,
+            event: mark.event,
+            time: mark.time,
+            date: mark.date,
+            location: mark.location,
+            editable: mark.editable,
+            source: mark.source,
+          }))}
+          lockedTo1000m
+        />
       </section>
 
       <section className="member-grid">
