@@ -136,6 +136,15 @@ function nextEvenMonthLabel(from = new Date()) {
   return new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" }).format(date);
 }
 
+function currentDateInSaoPaulo() {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+}
+
 export default async function MemberDashboardPage() {
   const account = getMemberBySessionToken((await cookies()).get("member_session")?.value);
   if (!account) redirect("/login");
@@ -158,8 +167,10 @@ export default async function MemberDashboardPage() {
       (parseMemberMarkTime(a.time) ?? Number.POSITIVE_INFINITY) -
       (parseMemberMarkTime(b.time) ?? Number.POSITIVE_INFINITY)
   )[0];
-  const today = new Date().toISOString().slice(0, 10);
-  const upcomingEvents = dashboard.events.filter((event) => event.event_date >= today);
+  const today = currentDateInSaoPaulo();
+  const eventsByDate = [...dashboard.events].sort((a, b) => a.event_date.localeCompare(b.event_date));
+  const upcomingEvents = eventsByDate.filter((event) => event.event_date >= today);
+  const finalizedEvents = eventsByDate.filter((event) => event.event_date < today).reverse();
   const nextRace =
     upcomingEvents.find((event) => event.event_type === "prova") ??
     upcomingEvents.find((event) => event.event_type !== "teste");
@@ -180,6 +191,15 @@ export default async function MemberDashboardPage() {
         </small>
         {record.description ? <p>{record.description}</p> : null}
       </section>
+    </div>
+  );
+
+  const renderEvent = (event: (typeof dashboard.events)[number]) => (
+    <div key={event.id}>
+      <strong>{event.title}</strong>
+      <span>{formatEventDate(event.event_date, event.event_time)}</span>
+      <span>{event.location || "Local a confirmar"}</span>
+      <em>{event.description || "Orientações em breve."}</em>
     </div>
   );
 
@@ -257,6 +277,34 @@ export default async function MemberDashboardPage() {
 
       <section className="member-grid">
         <article className="member-card wide">
+          <span className="eyebrow">agenda</span>
+          <h2>Eventos</h2>
+          <div className="member-event-groups">
+            <section className="member-event-group" aria-labelledby="eventos-proximos">
+              <header>
+                <h3 id="eventos-proximos">Próximos</h3>
+                <span className="member-event-count">{upcomingEvents.length}</span>
+              </header>
+              <div className="member-table member-events-table">
+                {upcomingEvents.length === 0 ? <p>Nenhum próximo evento vinculado.</p> : null}
+                {upcomingEvents.map(renderEvent)}
+              </div>
+            </section>
+
+            <section className="member-event-group" aria-labelledby="eventos-finalizados">
+              <header>
+                <h3 id="eventos-finalizados">Finalizados</h3>
+                <span className="member-event-count">{finalizedEvents.length}</span>
+              </header>
+              <div className="member-table member-events-table">
+                {finalizedEvents.length === 0 ? <p>Nenhum evento finalizado.</p> : null}
+                {finalizedEvents.map(renderEvent)}
+              </div>
+            </section>
+          </div>
+        </article>
+
+        <article className="member-card wide">
           <span className="eyebrow">financeiro</span>
           <h2>Benefícios Recebidos</h2>
           <div className="member-finance-columns">
@@ -305,22 +353,6 @@ export default async function MemberDashboardPage() {
                 </div>
               </div>
             </section>
-          </div>
-        </article>
-
-        <article className="member-card wide">
-          <span className="eyebrow">agenda</span>
-          <h2>Próximos eventos</h2>
-          <div className="member-table member-events-table">
-            {dashboard.events.length === 0 ? <p>Nenhum evento vinculado a este atleta ainda.</p> : null}
-            {dashboard.events.map((event) => (
-              <div key={event.id}>
-                <strong>{event.title}</strong>
-                <span>{formatEventDate(event.event_date, event.event_time)}</span>
-                <span>{event.location || "Local a confirmar"}</span>
-                <em>{event.description || "Orientações em breve."}</em>
-              </div>
-            ))}
           </div>
         </article>
 

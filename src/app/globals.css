@@ -3502,6 +3502,48 @@ body.modal-open {
   grid-template-columns: 1.2fr 0.75fr 1fr 1.3fr;
 }
 
+.member-event-groups {
+  display: grid;
+  gap: 30px;
+  margin-top: 28px;
+}
+
+.member-event-group {
+  display: grid;
+  gap: 12px;
+}
+
+.member-event-group > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+
+.member-event-group h3 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.member-event-count {
+  display: inline-grid;
+  min-width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.member-event-group .member-table {
+  margin-top: 0;
+}
+
 .member-edit-box {
   display: grid;
   gap: 14px;
