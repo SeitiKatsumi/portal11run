@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
+import Link from "next/link";
 import { redirect } from "next/navigation";
-import { CalendarCheck2, Flag, ShieldAlert, Timer, WalletCards } from "lucide-react";
+import { ArrowLeft, CalendarCheck2, Camera, Eye, Flag, ShieldAlert, Timer, WalletCards } from "lucide-react";
 import { MemberLogoutButton } from "@/components/MemberLogoutButton";
 import { MemberMarkForm } from "@/components/MemberMarkForm";
 import { MemberMedicalCertificate } from "@/components/MemberMedicalCertificate";
@@ -9,7 +10,7 @@ import { MemberProfilePhoto } from "@/components/MemberProfilePhoto";
 import { MemberProfileUpdateLink } from "@/components/MemberProfileUpdateLink";
 import { MemberRegistrationEditor } from "@/components/MemberRegistrationEditor";
 import { parseMemberMarkTime } from "@/lib/member-mark-chart";
-import { getMemberBySessionToken, getMemberDashboard, memberRoleLabels } from "@/lib/members";
+import { getMemberBySessionToken, getMemberDashboard, getMemberDashboardByLeadId, memberRoleLabels } from "@/lib/members";
 
 export const dynamic = "force-dynamic";
 
@@ -145,12 +146,22 @@ function currentDateInSaoPaulo() {
   }).format(new Date());
 }
 
-export default async function MemberDashboardPage() {
-  const account = getMemberBySessionToken((await cookies()).get("member_session")?.value);
-  if (!account) redirect("/login");
+export default async function MemberDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ preview?: string }>;
+}) {
+  const previewLeadId = (await searchParams).preview?.trim();
+  const previewMode = Boolean(previewLeadId);
+  const account = previewMode ? null : getMemberBySessionToken((await cookies()).get("member_session")?.value);
+  if (!previewMode && !account) redirect("/login");
 
-  const dashboard = getMemberDashboard(account.id);
-  if (!dashboard) redirect("/login");
+  const dashboard = previewLeadId
+    ? getMemberDashboardByLeadId(previewLeadId)
+    : account
+      ? getMemberDashboard(account.id)
+      : null;
+  if (!dashboard) redirect(previewMode ? "/admin/cadastros" : "/login");
 
   const payload = parseJson<Record<string, string | boolean | string[]>>(dashboard.lead.payload_json, {});
   const receipts = parseJson<Record<string, boolean>>(dashboard.lead.receipts_json, {});
@@ -205,9 +216,37 @@ export default async function MemberDashboardPage() {
 
   return (
     <main className="members-dashboard">
+      {previewMode ? (
+        <aside className="member-admin-preview-bar">
+          <div>
+            <Eye size={19} />
+            <span>
+              <strong>Prévia administrativa</strong>
+              Visão do atleta em modo somente leitura
+            </span>
+          </div>
+          <Link className="button ghost" href="/admin/cadastros">
+            <ArrowLeft size={17} />
+            Voltar aos cadastros
+          </Link>
+        </aside>
+      ) : null}
       <section className="member-top-panel">
         <div className="member-identity">
-          <MemberProfilePhoto initialUrl={dashboard.account.profile_photo_url} athleteName={athleteName} />
+          {previewMode ? (
+            <div className="member-profile-photo member-profile-photo-preview" aria-label={`Foto de perfil de ${athleteName}`}>
+              <div>
+                {dashboard.account.profile_photo_url ? (
+                  <img src={dashboard.account.profile_photo_url} alt={`Foto de perfil de ${athleteName}`} />
+                ) : (
+                  <Camera size={28} />
+                )}
+                <span><Camera size={16} /> Foto de perfil</span>
+              </div>
+            </div>
+          ) : (
+            <MemberProfilePhoto initialUrl={dashboard.account.profile_photo_url} athleteName={athleteName} />
+          )}
           <div>
             <span className="eyebrow">{memberRoleLabels[dashboard.account.role]}</span>
             <h1>{athleteName}</h1>
@@ -217,7 +256,11 @@ export default async function MemberDashboardPage() {
             </p>
           </div>
         </div>
-        <MemberLogoutButton />
+        {previewMode ? (
+          <span className="member-preview-readonly">Somente leitura</span>
+        ) : (
+          <MemberLogoutButton />
+        )}
       </section>
 
       {!dashboard.account.medical_certificate_file_id ? (
@@ -227,7 +270,7 @@ export default async function MemberDashboardPage() {
             <strong>Atestado médico pendente</strong>
             <span>Envie o atestado de aptidão no bloco “Informações do cadastro” para manter a documentação em dia.</span>
           </div>
-          <MemberProfileUpdateLink />
+          {!previewMode ? <MemberProfileUpdateLink /> : null}
         </aside>
       ) : null}
 
@@ -272,6 +315,7 @@ export default async function MemberDashboardPage() {
             source: mark.source,
           }))}
           lockedTo1000m
+          readOnly={previewMode}
         />
       </section>
 
@@ -365,7 +409,7 @@ export default async function MemberDashboardPage() {
               </span>
               <em>Abrir painel</em>
             </summary>
-            <MemberMedicalCertificate initialName={dashboard.account.medical_certificate_name} />
+            {!previewMode ? <MemberMedicalCertificate initialName={dashboard.account.medical_certificate_name} /> : null}
             <dl className="member-data-list">
               {Object.entries(payload)
                 .filter(([key, value]) => !hiddenFields.has(key) && value !== undefined && value !== "")
@@ -376,7 +420,7 @@ export default async function MemberDashboardPage() {
                   </div>
                 ))}
             </dl>
-            <MemberRegistrationEditor payload={payload} />
+            {!previewMode ? <MemberRegistrationEditor payload={payload} /> : null}
             <section className="member-benefits-panel" aria-labelledby="member-benefits-title">
               <span className="eyebrow">materiais e benefícios</span>
               <h2 id="member-benefits-title">Direitos do projeto</h2>

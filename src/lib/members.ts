@@ -341,6 +341,14 @@ export function getMemberDashboard(accountId: string): MemberDashboardData | nul
   };
 }
 
+export function getMemberDashboardByLeadId(leadId: string): MemberDashboardData | null {
+  const account = getDatabase()
+    .prepare("SELECT id FROM member_accounts WHERE lead_id = ? AND active = 1")
+    .get(leadId) as { id: string } | undefined;
+
+  return account ? getMemberDashboard(account.id) : null;
+}
+
 type MemberMarkInput = { event: string; time: string; date: string; location: string };
 
 function cleanMemberMarkInput(input: MemberMarkInput) {
