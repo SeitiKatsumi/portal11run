@@ -2966,6 +2966,11 @@ body.modal-open {
   color: var(--muted);
 }
 
+.member-dashboard-preview-link {
+  width: 100%;
+  text-align: center;
+}
+
 .member-active-check {
   display: flex !important;
   align-items: center;
@@ -2988,6 +2993,48 @@ body.modal-open {
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+.member-admin-preview-bar {
+  min-height: 76px;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.member-admin-preview-bar > div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.member-admin-preview-bar span {
+  display: grid;
+  gap: 3px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.member-admin-preview-bar strong {
+  color: var(--ink);
+  font-size: 0.92rem;
+}
+
+.member-preview-readonly {
+  align-self: start;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .members-login-panel,
@@ -3077,6 +3124,33 @@ body.modal-open {
   display: grid;
   place-items: center;
   cursor: pointer;
+}
+
+.member-profile-photo-preview > div {
+  position: relative;
+  width: 136px;
+  height: 136px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 32px;
+  background: var(--surface-muted);
+  display: grid;
+  place-items: center;
+}
+
+.member-profile-photo-preview > div > span {
+  position: absolute;
+  inset: auto 8px 8px;
+  min-height: 32px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  background: rgba(31, 30, 27, 0.86);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.7rem;
+  font-weight: 700;
 }
 
 .member-profile-photo img {
@@ -7007,6 +7081,18 @@ body.modal-open {
     width: 92px;
   }
 
+  .member-profile-photo-preview > div {
+    width: 92px;
+    height: 92px;
+    border-radius: 24px;
+  }
+
+  .member-profile-photo-preview > div > span {
+    inset: auto 5px 5px;
+    min-height: 27px;
+    font-size: 0;
+  }
+
   .member-profile-photo > button {
     height: 92px;
     border-radius: 24px;
@@ -7076,6 +7162,15 @@ body.modal-open {
   }
 
   .member-mark-actions .button {
+    width: 100%;
+  }
+
+  .member-admin-preview-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .member-admin-preview-bar .button {
     width: 100%;
   }
 

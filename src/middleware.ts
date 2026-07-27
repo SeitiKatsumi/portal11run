@@ -30,6 +30,11 @@ function parseBasicAuth(header: string | null) {
 }
 
 export function middleware(request: NextRequest) {
+  const isMemberDashboard = request.nextUrl.pathname === "/membros/dashboard";
+  const isAdminPreview = isMemberDashboard && Boolean(request.nextUrl.searchParams.get("preview"));
+
+  if (isMemberDashboard && !isAdminPreview) return NextResponse.next();
+
   const adminPassword = process.env.ADMIN_PASSWORD;
   if (!adminPassword) return missingAdminPassword();
 
@@ -43,5 +48,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"]
+  matcher: ["/admin/:path*", "/api/admin/:path*", "/membros/dashboard"]
 };

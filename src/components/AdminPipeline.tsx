@@ -695,6 +695,17 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
                             <button className="button primary" type="submit" disabled={updating === lead.id}>
                               {memberAccount ? "Atualizar acesso" : "Liberar dashboard"}
                             </button>
+                            {memberAccount ? (
+                              <a
+                                className="admin-view-button member-dashboard-preview-link"
+                                href={`/membros/dashboard?preview=${encodeURIComponent(lead.id)}`}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                <Eye size={16} />
+                                Visualizar painel do atleta
+                              </a>
+                            ) : null}
                           </>
                         )}
                       </form>

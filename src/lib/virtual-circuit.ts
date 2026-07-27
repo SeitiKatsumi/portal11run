@@ -162,18 +162,7 @@ function seedOfficialCircuitResults(db: DatabaseSync) {
        city, state, competition_name, submission_type, validation_badge, status,
        created_at, updated_at
      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'OFFICIAL_COMPETITION', 'Oficial', 'APPROVED', ?, ?)
-     ON CONFLICT(id) DO UPDATE SET
-       public_name = excluded.public_name,
-       category_age = excluded.category_age,
-       gender = excluded.gender,
-       activity_date = excluded.activity_date,
-       time_ms = excluded.time_ms,
-       city = excluded.city,
-       state = excluded.state,
-       competition_name = excluded.competition_name,
-       validation_badge = 'Oficial',
-       status = 'APPROVED',
-       updated_at = excluded.updated_at`
+     ON CONFLICT(id) DO NOTHING`
   );
   for (const [id, publicName, categoryAge, gender, timeMs, city, state, competitionName] of officialSeedResults) {
     statement.run(
@@ -1015,6 +1004,115 @@ export function listCircuitAdminSubmissions(status?: string) {
     formattedTime: formatCircuitTime(Number(row.verified_time_ms ?? row.declared_time_ms)),
     activityData: safeJson(row.activity_data_json as string, {})
   }));
+}
+
+export type CircuitOfficialResult = {
+  id: string;
+  public_name: string;
+  category_age: number;
+  gender: CircuitGender;
+  activity_date: string;
+  time_ms: number;
+  formattedTime: string;
+  city: string;
+  state: string;
+  competition_name: string;
+  validation_badge: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export function listCircuitAdminOfficialResults() {
+  const db = getCircuitDatabase();
+  const rows = db
+    .prepare(
+      `SELECT id, public_name, category_age, gender, activity_date, time_ms, city, state,
+              competition_name, validation_badge, status, created_at, updated_at
+       FROM virtual_circuit_official_results
+       WHERE edition_id = ?
+       ORDER BY category_age DESC, gender, time_ms ASC, public_name`
+    )
+    .all(CIRCUIT_EDITION_ID) as Omit<CircuitOfficialResult, "formattedTime">[];
+  return rows.map((row) => ({ ...row, formattedTime: formatCircuitTime(row.time_ms) }));
+}
+
+export function updateCircuitAdminOfficialResult(input: {
+  id: string;
+  publicName: string;
+  categoryAge: number;
+  gender: CircuitGender;
+  activityDate: string;
+  time: string;
+  city: string;
+  state: string;
+  competitionName: string;
+  actor: string;
+  ip?: string;
+}) {
+  const db = getCircuitDatabase();
+  const before = db
+    .prepare("SELECT * FROM virtual_circuit_official_results WHERE id = ? AND edition_id = ?")
+    .get(input.id, CIRCUIT_EDITION_ID) as Record<string, string | number | null> | undefined;
+  if (!before) throw new Error("Resultado oficial não encontrado.");
+  if (!Number.isInteger(input.categoryAge) || input.categoryAge < 9 || input.categoryAge > 13) {
+    throw new Error("A categoria deve estar entre 9 e 13 anos.");
+  }
+  if (!["FEMALE", "MALE"].includes(input.gender)) throw new Error("Gênero esportivo inválido.");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(input.activityDate)) throw new Error("Data inválida.");
+  const state = cleanText(input.state, "Estado", 2).toUpperCase();
+  if (!/^[A-Z-]{2}$/.test(state)) throw new Error("UF inválida.");
+  const timestamp = now();
+  const values = {
+    publicName: normalizePublicName(cleanText(input.publicName, "Nome público")),
+    categoryAge: input.categoryAge,
+    gender: input.gender,
+    activityDate: input.activityDate,
+    timeMs: parseCircuitTime(input.time),
+    city: cleanText(input.city, "Cidade", 120),
+    state,
+    competitionName: cleanText(input.competitionName, "Competição", 180)
+  };
+  db.exec("BEGIN IMMEDIATE;");
+  try {
+    db.prepare(
+      `UPDATE virtual_circuit_official_results
+       SET public_name = ?, category_age = ?, gender = ?, activity_date = ?, time_ms = ?,
+           city = ?, state = ?, competition_name = ?, validation_badge = 'Oficial',
+           status = 'APPROVED', updated_at = ?
+       WHERE id = ? AND edition_id = ?`
+    ).run(
+      values.publicName,
+      values.categoryAge,
+      values.gender,
+      values.activityDate,
+      values.timeMs,
+      values.city,
+      values.state,
+      values.competitionName,
+      timestamp,
+      input.id,
+      CIRCUIT_EDITION_ID
+    );
+    const after = db
+      .prepare("SELECT * FROM virtual_circuit_official_results WHERE id = ?")
+      .get(input.id);
+    audit(db, {
+      entityType: "official_result",
+      entityId: input.id,
+      action: "UPDATED",
+      actor: input.actor,
+      before,
+      after,
+      reason: "Edição manual pelo painel administrativo.",
+      ip: input.ip
+    });
+    db.exec("COMMIT;");
+    return { ...after, formattedTime: formatCircuitTime(values.timeMs) };
+  } catch (error) {
+    db.exec("ROLLBACK;");
+    throw error;
+  }
 }
 
 export function getCircuitAdminSubmission(id: string) {

@@ -19,6 +19,7 @@ type Mark = {
 type MemberMarkFormProps = {
   initialMarks?: Mark[];
   lockedTo1000m?: boolean;
+  readOnly?: boolean;
 };
 
 const emptyForm = { event: "1000m", time: "", date: "", location: "" };
@@ -31,7 +32,7 @@ function formatTime(value: number) {
   return `${minutes}:${seconds.toFixed(precision).padStart(precision ? 5 : 2, "0")}`;
 }
 
-export function MemberMarkForm({ initialMarks = [], lockedTo1000m = true }: MemberMarkFormProps) {
+export function MemberMarkForm({ initialMarks = [], lockedTo1000m = true, readOnly = false }: MemberMarkFormProps) {
   const [marks, setMarks] = useState(initialMarks);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState({ ...emptyForm, event: lockedTo1000m ? "1000m" : emptyForm.event });
@@ -113,7 +114,7 @@ export function MemberMarkForm({ initialMarks = [], lockedTo1000m = true }: Memb
         )}
       </section>
 
-      <form className="member-mark-form" onSubmit={onSubmit}>
+      {!readOnly ? <form className="member-mark-form" onSubmit={onSubmit}>
         <label>
           <span>Prova</span>
           <select value={form.event} onChange={(event) => setForm((current) => ({ ...current, event: event.target.value }))} disabled={lockedTo1000m}>
@@ -142,7 +143,7 @@ export function MemberMarkForm({ initialMarks = [], lockedTo1000m = true }: Memb
             {loading ? "Salvando..." : editingId ? "Salvar atividade" : "Adicionar marca"}
           </button>
         </div>
-      </form>
+      </form> : null}
 
       <div className="member-table member-marks-table">
         {marks.length === 0 ? <p>Nenhuma marca enviada ainda.</p> : null}
@@ -152,7 +153,7 @@ export function MemberMarkForm({ initialMarks = [], lockedTo1000m = true }: Memb
             <span>{mark.time}</span>
             <span>{mark.date}</span>
             <span>{mark.location}</span>
-            {mark.editable === false ? (
+            {mark.editable === false || readOnly ? (
               <span className="member-mark-source">Marca oficial</span>
             ) : (
               <button className="member-mark-edit" type="button" onClick={() => editMark(mark)}>
