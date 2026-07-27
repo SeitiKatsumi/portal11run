@@ -2984,6 +2984,12 @@ body.modal-open {
   padding: 150px 0 96px;
 }
 
+.members-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
 .members-login-panel,
 .member-top-panel,
 .member-card {
@@ -3103,7 +3109,7 @@ body.modal-open {
 }
 
 .member-medical-alert {
-  margin-top: 18px;
+  margin-top: 0;
   padding: 18px 20px;
   border: 1px solid rgba(166, 91, 48, 0.28);
   border-radius: var(--radius-sm);
@@ -3154,7 +3160,7 @@ body.modal-open {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
-  margin-top: 18px;
+  margin-top: 0;
 }
 
 .member-highlight-grid article {
@@ -3199,7 +3205,7 @@ body.modal-open {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
-  margin-top: 18px;
+  margin-top: 0;
 }
 
 .member-card {
