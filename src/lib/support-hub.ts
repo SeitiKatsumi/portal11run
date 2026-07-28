@@ -329,15 +329,16 @@ export async function createSponsorshipLead(input: Record<string, unknown>) {
     project_interest: text(input.projectInterest, 180) || null,
     message: text(input.message, 3000) || null,
     best_contact_time: text(input.bestContactTime, 120) || null,
+    origin: text(input.origin, 180) || "Site 11RUN",
     consent_at: consent(input.consent)
   };
   getSupportDatabase().prepare(
     `INSERT INTO support_sponsorship_leads (
       id, protocol, name, company, role, email, phone, city, state, supporter_type, support_types_json,
-      estimated_value_cents, periodicity, project_interest, message, best_contact_time, consent_at, created_at, updated_at
+      estimated_value_cents, periodicity, project_interest, message, best_contact_time, origin, consent_at, created_at, updated_at
     ) VALUES (
       $id, $protocol, $name, $company, $role, $email, $phone, $city, $state, $supporter_type, $support_types_json,
-      $estimated_value_cents, $periodicity, $project_interest, $message, $best_contact_time, $consent_at, $created_at, $updated_at
+      $estimated_value_cents, $periodicity, $project_interest, $message, $best_contact_time, $origin, $consent_at, $created_at, $updated_at
     )`
   ).run({ ...Object.fromEntries(Object.entries(record).map(([key, value]) => [`$${key}`, value])), $created_at: now, $updated_at: now });
   history("sponsorship", id, "Cadastro criado", "site");

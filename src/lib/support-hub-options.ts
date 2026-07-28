@@ -6,9 +6,12 @@ export const sponsorshipStatuses = [
   "Proposta enviada",
   "Em negociação",
   "Patrocínio aprovado",
+  "Parceiro",
   "Apoio ativo",
   "Não aprovado",
+  "Sem interesse",
   "Sem retorno",
+  "Arquivado",
   "Encerrado"
 ] as const;
 

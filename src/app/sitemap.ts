@@ -14,6 +14,7 @@ const routes = [
   "/institucional/diretrizes-aos-atletas",
   "/apoie",
   "/apoie-o-projeto",
+  "/apoie-o-projeto/solucoes-de-marketing",
   "/apoie/patrocine",
   "/apoie/doacao",
   "/apoie/voluntariado",

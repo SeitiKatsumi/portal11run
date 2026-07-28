@@ -101,6 +101,7 @@ export const navItems: NavItem[] = [
     children: [
       { label: "Loja 11Run", href: "/apoie-o-projeto" },
       { label: "Patrocine o Projeto", href: "/apoie/patrocine" },
+      { label: "Soluções de Marketing", href: "/apoie-o-projeto/solucoes-de-marketing" },
       { label: "Faça uma Doação", href: "/apoie/doacao" },
       { label: "Seja um Voluntário", href: "/apoie/voluntariado" }
     ]

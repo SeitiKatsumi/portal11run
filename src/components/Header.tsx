@@ -19,6 +19,7 @@ const navIcons: Record<string, LucideIcon> = {
   "/apoie": HandHeart,
   "/apoie-o-projeto": ShoppingBag,
   "/apoie/patrocine": HeartHandshake,
+  "/apoie-o-projeto/solucoes-de-marketing": BarChart3,
   "/apoie/doacao": Gift,
   "/apoie/voluntariado": UserRound,
   "/institucional/missao-visao-valores": Compass,

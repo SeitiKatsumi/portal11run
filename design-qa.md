@@ -64,6 +64,41 @@ final result: passed
 
 ---
 
+# Design QA — Soluções de Marketing
+
+- Briefing: `C:\Users\User-PC\.codex\attachments\580d28e2-5c55-4e38-b36e-fa871eae3086\pasted-text.txt`
+- Desktop: `C:\Users\User-PC\Documents\11run Portal 2\.design\marketing-solutions-desktop.png`
+- Mobile: `C:\Users\User-PC\Documents\11run Portal 2\.design\marketing-solutions-mobile.png`
+- Viewports: 1265 × 712 e 390 × 844 CSS px, densidade 1.
+
+## Verificações
+
+- Apenas um H1; hierarquia H2/H3 coerente e conteúdo semântico.
+- Container do portal preservado em desktop e mobile.
+- `scrollWidth` igual ao `clientWidth` nos dois breakpoints; nenhum overflow horizontal da página.
+- Hero mantém contraste, imagem real otimizada, CTAs claros e badges legíveis.
+- Comparativo Futuro × Master passa para blocos verticais no mobile.
+- Processo usa trilho com scroll snap no mobile, sem comprimir o texto.
+- Formulário reorganiza para uma coluna, preserva labels, consentimento e áreas de toque.
+- Mockup do dashboard identifica explicitamente os dados como ilustrativos.
+- Nenhum erro no console durante a navegação e inspeção.
+
+## Superfícies obrigatórias
+
+- Tipografia: família do portal, pesos leves em títulos e corpos com entrelinha confortável.
+- Espaçamento: ritmo amplo, cards consistentes e alinhamento compartilhado com header e footer.
+- Cores: preto, branco, cinza e acento institucional; contraste aprovado visualmente.
+- Imagens: WebP real da 11Run, carregado sem falha e com texto alternativo.
+- Conteúdo: evita garantias, diferencia curto e longo prazo e explicita proteção dos jovens atletas.
+
+## Findings
+
+Nenhum problema P0, P1 ou P2 permanece no escopo da landing page.
+
+final result: passed
+
+---
+
 # Design QA — Jornada 11Run Futuro
 
 - Source visual truth: `C:\Users\User-PC\AppData\Local\Temp\codex-clipboard-7393c291-a1c0-45a5-8f2d-7c0a16a08b30.png`
