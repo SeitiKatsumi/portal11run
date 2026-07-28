@@ -5,8 +5,14 @@ import { listSponsors } from "@/lib/sponsors";
 import { sponsorCategories } from "@/lib/sponsor-categories";
 
 const footerSponsorCategories = sponsorCategories;
+const footerExcludedLinks = new Set(["/politica-de-privacidade"]);
 
 type FooterSponsorCategory = (typeof footerSponsorCategories)[number];
+
+type FooterNavGroup = {
+  title: string;
+  links: NavItem[];
+};
 
 type FooterSponsor = {
   id: string;
@@ -98,12 +104,50 @@ function getFooterSponsors(): FooterSponsor[] {
   }
 }
 
+function flattenNavLeaves(item: NavItem): NavItem[] {
+  return item.children?.length
+    ? item.children.flatMap(flattenNavLeaves)
+    : item.href.startsWith("/") && !footerExcludedLinks.has(item.href)
+      ? [item]
+      : [];
+}
+
+function uniqueLinks(items: NavItem[]): NavItem[] {
+  const seen = new Set<string>();
+
+  return items.filter((item) => {
+    if (seen.has(item.href)) return false;
+    seen.add(item.href);
+    return true;
+  });
+}
+
+function getFooterNavGroups(): FooterNavGroup[] {
+  const sectionItems = navItems.filter((item) => item.children?.length);
+  const mainSections = sectionItems.slice(0, 3).map((item) => ({
+    title: item.label,
+    links: uniqueLinks(flattenNavLeaves(item))
+  }));
+  const remainingNavigation = [
+    ...navItems.filter((item) => !item.children?.length && item.href.startsWith("/")),
+    ...sectionItems.slice(3).flatMap(flattenNavLeaves)
+  ];
+
+  return [
+    ...mainSections,
+    {
+      title: "Acesso e suporte",
+      links: uniqueLinks([
+        ...remainingNavigation,
+        { label: "Meu Painel", href: "/meu-painel" },
+        { label: "Política de Privacidade", href: "/politica-de-privacidade" }
+      ])
+    }
+  ];
+}
+
 export function Footer() {
-  const flattenLinks = (items: NavItem[]): NavItem[] =>
-    items.flatMap((item) => (item.children?.length ? flattenLinks(item.children) : [item]));
-  const footerLinks = flattenLinks(navItems).filter(
-    (item) => item.href.startsWith("/") && item.href !== "/politica-de-privacidade"
-  );
+  const footerNavGroups = getFooterNavGroups();
   const sponsors = getFooterSponsors();
   const sponsorGroups = footerSponsorCategories
     .map((category) => ({
@@ -131,23 +175,25 @@ export function Footer() {
         </div>
       </section>
 
-      <div>
-        <img src="/assets/logos/onzerun-menu.png" alt="11RUN" className="footer-logo" />
-        <p>Ecossistema de desenvolvimento esportivo, alto rendimento e oportunidades para corredores.</p>
-      </div>
-      <div>
-        <strong>Links</strong>
-        {footerLinks.map((item) => (
-          <Link href={item.href} key={item.href}>
-            {item.label}
-          </Link>
-        ))}
-      </div>
-      <div>
-        <strong>Contato</strong>
-        <span>E-mail, Instagram e WhatsApp em breve.</span>
-        <span>11RUN Brazil</span>
-        <Link href="/politica-de-privacidade">Política de Privacidade</Link>
+      <div className="footer-main">
+        <div className="footer-brand-block">
+          <img src="/assets/logos/onzerun-menu.png" alt="11RUN" className="footer-logo" />
+          <p>Ecossistema de desenvolvimento esportivo, alto rendimento e oportunidades para corredores.</p>
+          <span>11RUN Brasil</span>
+        </div>
+
+        <nav className="footer-nav-grid" aria-label="Navegação do rodapé">
+          {footerNavGroups.map((group) => (
+            <section className="footer-nav-column" key={group.title}>
+              <strong>{group.title}</strong>
+              {group.links.map((item) => (
+                <Link href={item.href} key={item.href}>
+                  {item.label}
+                </Link>
+              ))}
+            </section>
+          ))}
+        </nav>
       </div>
     </footer>
   );

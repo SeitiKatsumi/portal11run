@@ -142,6 +142,11 @@ main {
   color: var(--muted);
 }
 
+.home-site-header .nav-dropdown-menu svg,
+.home-site-header .nav-nested-menu svg {
+  color: var(--accent-strong);
+}
+
 .brand img,
 .footer-logo {
   filter: grayscale(1) brightness(0);
@@ -4868,12 +4873,10 @@ body.modal-open {
 }
 
 .site-footer {
-  width: min(calc(100% - 32px), var(--max));
+  width: min(calc(100% - 48px), var(--max));
   margin: 0 auto 28px;
   padding: 36px;
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  gap: 32px;
+  display: block;
   color: var(--muted);
 }
 
@@ -4941,16 +4944,68 @@ body.modal-open {
   object-position: center;
 }
 
+.footer-main {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) minmax(0, 3.1fr);
+  gap: clamp(32px, 5vw, 72px);
+  padding-top: clamp(30px, 4vw, 46px);
+}
+
+.footer-brand-block {
+  min-width: 0;
+}
+
+.footer-brand-block p {
+  max-width: 330px;
+  margin: 0 0 20px;
+  line-height: 1.55;
+}
+
+.footer-brand-block > span {
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.footer-nav-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(22px, 3vw, 42px);
+  min-width: 0;
+}
+
+.footer-nav-column {
+  min-width: 0;
+}
+
 .site-footer strong {
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .site-footer a,
 .site-footer span {
   display: block;
   margin: 9px 0;
+}
+
+.footer-nav-column a {
+  width: fit-content;
+  color: var(--muted);
+  line-height: 1.35;
+  text-decoration: none;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.footer-nav-column a:hover,
+.footer-nav-column a:focus-visible {
+  color: var(--text);
+  transform: translateX(3px);
 }
 
 .futuro-landing {
@@ -7140,6 +7195,21 @@ body.modal-open {
 
   .footer-sponsors-grid {
     gap: 10px;
+  }
+
+  .footer-main {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .footer-brand-block {
+    padding-bottom: 26px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .footer-nav-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 30px 18px;
   }
 
   .footer-sponsor-card {
