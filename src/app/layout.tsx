@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   },
   description:
     "Portal oficial da 11RUN, conectando App 11Run, Onze Futuro, 11 Master, Circuito Futuro 11 e oportunidades internacionais para corredores.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://portal11run.com.br")
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://11run.com.br")
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

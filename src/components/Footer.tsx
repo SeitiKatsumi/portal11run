@@ -101,7 +101,9 @@ function getFooterSponsors(): FooterSponsor[] {
 export function Footer() {
   const flattenLinks = (items: NavItem[]): NavItem[] =>
     items.flatMap((item) => (item.children?.length ? flattenLinks(item.children) : [item]));
-  const footerLinks = flattenLinks(navItems).filter((item) => item.href.startsWith("/"));
+  const footerLinks = flattenLinks(navItems).filter(
+    (item) => item.href.startsWith("/") && item.href !== "/politica-de-privacidade"
+  );
   const sponsors = getFooterSponsors();
   const sponsorGroups = footerSponsorCategories
     .map((category) => ({

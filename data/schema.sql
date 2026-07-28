@@ -52,6 +52,8 @@ CREATE TABLE IF NOT EXISTS chat_leads (
   status TEXT NOT NULL DEFAULT 'em_atendimento_ia',
   ai_enabled INTEGER NOT NULL DEFAULT 1,
   summary TEXT,
+  privacy_consent_at TEXT,
+  privacy_notice_version TEXT,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );

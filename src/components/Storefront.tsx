@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import {
   ArrowRight,
   BadgeCheck,
@@ -552,6 +553,10 @@ export function Storefront({
             {paymentMethod === "pix"
               ? "O Pix será gerado diretamente para a mesma conta oficial das doações 11RUN."
               : "Você será direcionado ao ambiente seguro da Stripe para pagar com cartão."}
+          </small>
+          <small>
+            Ao continuar, seus dados serão usados para processar o pedido, pagamento e entrega conforme a{" "}
+            <Link href="/politica-de-privacidade" target="_blank">Política de Privacidade</Link>.
           </small>
         </footer>
       </aside>
