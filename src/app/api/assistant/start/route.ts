@@ -12,16 +12,31 @@ export async function POST(request: Request) {
   const name = clean(body && typeof body === "object" ? (body as { name?: unknown }).name : "");
   const email = clean(body && typeof body === "object" ? (body as { email?: unknown }).email : "");
   const whatsapp = clean(body && typeof body === "object" ? (body as { whatsapp?: unknown }).whatsapp : "");
+  const privacyConsent =
+    body && typeof body === "object" ? (body as { privacyConsent?: unknown }).privacyConsent : false;
 
   if (!name || !email || !whatsapp) {
     return NextResponse.json({ error: "Informe nome, e-mail e WhatsApp para iniciar." }, { status: 400 });
+  }
+
+  if (privacyConsent !== true && privacyConsent !== "on") {
+    return NextResponse.json(
+      { error: "Confirme a Política de Privacidade para iniciar o atendimento." },
+      { status: 400 }
+    );
   }
 
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ error: "Informe um e-mail válido." }, { status: 400 });
   }
 
-  const lead = createChatLead({ name, email, whatsapp });
+  const lead = createChatLead({
+    name,
+    email,
+    whatsapp,
+    privacyConsentAt: new Date().toISOString(),
+    privacyNoticeVersion: "2.0-2026-07-28"
+  });
   if (!lead) return NextResponse.json({ error: "Não foi possível iniciar o atendimento." }, { status: 500 });
 
   const message = `Olá, ${lead.name}. Envie sua pergunta sobre Onze Futuro, Circuito Futuro 11, 11 Master, Bolsas ou App 11Run. Se a IA estiver ligada no painel, ela responde com base no conteúdo do site; se não estiver, a equipe assume por aqui.`;

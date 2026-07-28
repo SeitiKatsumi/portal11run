@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2, Send, ShieldCheck, Upload } from "lucide-react";
 import { formProjects, type FormProjectSlug } from "@/lib/content";
@@ -461,14 +462,20 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
           </div>
           <label className="accept">
             <input type="checkbox" name="accepted_terms" required />
-            <span>Li, compreendi e aceito integralmente o termo acima.</span>
+            <span>
+              Li, compreendi e aceito integralmente o termo acima e a{" "}
+              <Link href="/politica-de-privacidade" target="_blank">Política de Privacidade</Link>.
+            </span>
           </label>
         </section>
       ) : null}
 
       <label className="accept">
         <input type="checkbox" name="accepted_contact" required />
-        <span>Aceito receber contato da equipe 11RUN sobre este envio.</span>
+        <span>
+          Aceito receber contato da equipe 11RUN sobre este envio, conforme a{" "}
+          <Link href="/politica-de-privacidade" target="_blank">Política de Privacidade</Link>.
+        </span>
       </label>
 
       {error ? <p className="form-error">{error}</p> : null}

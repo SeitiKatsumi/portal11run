@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { Bot, Loader2, MessageCircle, Send, X } from "lucide-react";
 
 type StoredLead = { leadId: string; name: string };
@@ -113,6 +114,13 @@ export function RunAssistant() {
               <input name="name" placeholder="Nome" required />
               <input name="email" type="email" placeholder="E-mail" required />
               <input name="whatsapp" placeholder="WhatsApp" required />
+              <label className="assistant-consent">
+                <input name="privacyConsent" type="checkbox" required />
+                <span>
+                  Autorizo o uso destes dados para atendimento e aceito a{" "}
+                  <Link href="/politica-de-privacidade" target="_blank">Política de Privacidade</Link>.
+                </span>
+              </label>
               {error ? <span>{error}</span> : null}
               <button className="button primary" type="submit" disabled={loading}>
                 {loading ? <Loader2 className="spin" size={16} /> : <Send size={16} />}

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, ChevronDown, ChevronRight, Compass, Flag, Gift, Globe2, HandHeart, HeartHandshake, Home, Medal, Menu, ShoppingBag, Trophy, UserRound, X } from "lucide-react";
+import { BarChart3, ChevronDown, ChevronRight, Compass, Flag, Gift, Globe2, HandHeart, HeartHandshake, Home, Medal, Menu, ShieldCheck, ShoppingBag, Trophy, UserRound, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { navItems } from "@/lib/content";
@@ -21,7 +21,8 @@ const navIcons: Record<string, LucideIcon> = {
   "/apoie/patrocine": HeartHandshake,
   "/apoie/doacao": Gift,
   "/apoie/voluntariado": UserRound,
-  "/institucional/missao-visao-valores": Compass
+  "/institucional/missao-visao-valores": Compass,
+  "/politica-de-privacidade": ShieldCheck
 };
 
 export function Header() {

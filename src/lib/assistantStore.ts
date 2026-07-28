@@ -34,6 +34,8 @@ export type ChatLead = {
   status: ChatStatus;
   ai_enabled: number;
   summary: string | null;
+  privacy_consent_at: string | null;
+  privacy_notice_version: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -90,6 +92,8 @@ function getDb() {
       status TEXT NOT NULL DEFAULT 'em_atendimento_ia',
       ai_enabled INTEGER NOT NULL DEFAULT 1,
       summary TEXT,
+      privacy_consent_at TEXT,
+      privacy_notice_version TEXT,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
     );
@@ -128,6 +132,8 @@ const chatLeadColumns: Record<string, string> = {
   status: "TEXT NOT NULL DEFAULT 'em_atendimento_ia'",
   ai_enabled: "INTEGER NOT NULL DEFAULT 1",
   summary: "TEXT",
+  privacy_consent_at: "TEXT",
+  privacy_notice_version: "TEXT",
   created_at: "TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z'",
   updated_at: "TEXT NOT NULL DEFAULT '1970-01-01T00:00:00.000Z'"
 };
@@ -183,14 +189,33 @@ export function isChatStatus(value: unknown): value is ChatStatus {
   return typeof value === "string" && chatStatuses.includes(value as ChatStatus);
 }
 
-export function createChatLead(input: { name: string; email: string; whatsapp: string }) {
+export function createChatLead(input: {
+  name: string;
+  email: string;
+  whatsapp: string;
+  privacyConsentAt: string;
+  privacyNoticeVersion: string;
+}) {
   const id = crypto.randomUUID();
   const createdAt = now();
   getDb()
     .prepare(
-      "INSERT INTO chat_leads (id, name, email, whatsapp, status, ai_enabled, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+      `INSERT INTO chat_leads
+        (id, name, email, whatsapp, status, ai_enabled, privacy_consent_at, privacy_notice_version, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
     )
-    .run(id, input.name, input.email, input.whatsapp, "em_atendimento_ia", 1, createdAt, createdAt);
+    .run(
+      id,
+      input.name,
+      input.email,
+      input.whatsapp,
+      "em_atendimento_ia",
+      1,
+      input.privacyConsentAt,
+      input.privacyNoticeVersion,
+      createdAt,
+      createdAt
+    );
   return getChatLead(id);
 }
 
