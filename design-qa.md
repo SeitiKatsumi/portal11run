@@ -64,6 +64,65 @@ final result: passed
 
 ---
 
+# Design QA — Jornada 11Run Futuro
+
+- Source visual truth: `C:\Users\User-PC\AppData\Local\Temp\codex-clipboard-7393c291-a1c0-45a5-8f2d-7c0a16a08b30.png`
+- Implementation screenshot: `C:\Users\User-PC\Documents\11run Portal 2\.design\journey-desktop-implemented.png`
+- Combined comparison: `C:\Users\User-PC\Documents\11run Portal 2\.design\journey-comparison.png`
+- Source pixels: 1959 × 879.
+- Implementation pixels: 1265 × 712.
+- CSS viewport: 1265 × 712, device scale factor 1.
+- State: modo “Ver por idade”, 12 anos selecionado.
+
+## Full-view comparison evidence
+
+A referência mostrava dez colunas comprimidas, rótulos sobrepostos e fluxo institucional quebrado. A implementação apresenta um carrossel com cartões, scroll snap, controles anterior/próximo, indicação de idade e painel de detalhes independente. `scrollWidth` e `clientWidth` medem 1265 px, sem overflow horizontal da página.
+
+## Focused-region comparison evidence
+
+A comparação combinada concentra a linha do tempo e o painel de detalhes, que eram as áreas críticas. Os rótulos agora têm largura estável, hierarquia por número e nome, e a etapa selecionada permanece identificável sem depender apenas de cor.
+
+## Required fidelity surfaces
+
+- Fonts and typography: família e pesos existentes preservados; números ganham escala de leitura e rótulos deixam de usar texto vertical.
+- Spacing and layout rhythm: cards com largura previsível, gaps de 10 px, painel contido e alinhado ao detalhe.
+- Colors and visual tokens: somente tokens existentes de superfície, linha, texto, muted e accent.
+- Image quality and assets: nenhuma nova imagem ou aproximação gráfica; ícones Lucide existentes preservados.
+- Copy and content: conteúdo de 10 a 15 anos preservado; 16 a 19 anos atualizado para explicitar alto nível no Brasil ou bolsas no exterior.
+
+## Comparison history
+
+### Iteration 1
+
+- [P1] Rótulos e etapas se sobrepunham no desktop.
+  - Fix: substituição da grade rígida de dez colunas por carrossel responsivo com cartões e scroll snap.
+  - Post-fix evidence: quatro etapas aparecem integralmente no viewport e as demais ficam acessíveis por rolagem e controles.
+- [P1] Fluxo institucional quebrava em caixas estreitas.
+  - Fix: trilho horizontal de pills com largura intrínseca e rolagem.
+  - Post-fix evidence: cada etapa mantém texto completo e área de toque de pelo menos 48 px.
+- [P2] Não havia navegação explícita entre idades.
+  - Fix: botões anterior/próximo, indicador “12 de 19 anos” e rolagem automática para a seleção.
+  - Post-fix evidence: interação avançou de 12 para 13 anos e atualizou o painel; console sem erros.
+
+## Interaction verification
+
+- Botão “Próxima idade” avança a seleção e atualiza o detalhe.
+- Dez etapas permanecem disponíveis no DOM e acessíveis por teclado.
+- Nenhum erro de console na interação testada.
+- Regras mobile incluem cards de até 72vw, snap horizontal, controles de 40 px e fluxo institucional rolável dentro do container.
+
+## Findings
+
+Nenhuma divergência P0, P1 ou P2 permanece no escopo da jornada.
+
+## Follow-up polish
+
+A emulação estreita do navegador integrado não aplicou o override abaixo de 1265 px nesta sessão; o breakpoint mobile foi validado por regras responsivas, typecheck e build, sem evidência visual adicional nesta rodada.
+
+final result: passed
+
+---
+
 # QA complementar — Institucional, apoios, circuitos e loja
 
 ## Escopo validado

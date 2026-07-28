@@ -18,7 +18,7 @@ import {
   Users,
   X
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./future-journey.module.css";
 
 type ViewMode = "idade" | "instituicao" | "oportunidade";
@@ -41,10 +41,10 @@ const journey: JourneyAge[] = [
   { age: 13, label: "Transição preparada", phase: "Transição acompanhada", lead: "11Run Futuro + IVCL/Orcampi", support: "Família e equipe técnica", opportunities: ["Histórico esportivo organizado", "Conexão com estrutura federada", "Planejamento de continuidade"], next: "Ingressar na estrutura federada quando houver aderência e critérios.", zone: 2 },
   { age: 14, label: "Estrutura federada", phase: "Desenvolvimento federado", lead: "IVCL/Orcampi", support: "11Run em apoio complementar", opportunities: ["Treinamento técnico", "Competições federadas", "Provas Sub-16, conforme regulamento"], next: "Construir regularidade, rotina e histórico homologado.", zone: 3 },
   { age: 15, label: "Histórico em construção", phase: "Desenvolvimento federado", lead: "IVCL/Orcampi", support: "11Run: materiais, conteúdo e visibilidade", opportunities: ["Marcas homologadas", "Maturidade competitiva", "Portfólio esportivo"], next: "Consolidar a trajetória antes de ampliar horizontes.", zone: 3 },
-  { age: 16, label: "Perfil internacional iniciado", phase: "Preparação internacional", lead: "11Run Bolsas", support: "IVCL/Orcampi e família", opportunities: ["Organização acadêmica", "Idiomas e documentação", "Portfólio, vídeos e resultados"], next: "Mapear possibilidades compatíveis com o perfil.", zone: 4 },
-  { age: 17, label: "Candidaturas em preparação", phase: "Preparação de candidatura", lead: "11Run Bolsas", support: "Família, escola e estrutura esportiva", opportunities: ["Contato com instituições", "Elegibilidade acadêmica e esportiva", "Preparação de candidaturas"], next: "Acompanhar janelas e requisitos sem promessa de aprovação.", zone: 4 },
-  { age: 18, label: "Janelas de oportunidade", phase: "Oportunidades possíveis", lead: "11Run Bolsas", support: "Instituições educacionais e esportivas", opportunities: ["Processos seletivos", "Bolsas compatíveis com o perfil", "Continuidade esportiva e educacional"], next: "Avaliar cada oportunidade com atleta e família.", zone: 4 },
-  { age: 19, label: "Próximos caminhos", phase: "Continuidade", lead: "Atleta e família", support: "Rede 11Run e instituições parceiras", opportunities: ["Novas janelas", "Continuidade acadêmica", "Continuidade esportiva"], next: "Seguir construindo caminhos possíveis no Brasil e no mundo.", zone: 4 }
+  { age: 16, label: "Escolha de caminhos", phase: "Brasil ou exterior", lead: "Atleta, família e Rede 11Run", support: "IVCL/Orcampi, escola e parceiros", opportunities: ["Ambiente competitivo de alto nível no Brasil", "Preparação acadêmica e esportiva para bolsas", "Portfólio, vídeos, resultados e plano individual"], next: "Escolher o ambiente que melhor sustenta a evolução do atleta.", zone: 4 },
+  { age: 17, label: "Caminho em preparação", phase: "Desenvolvimento competitivo", lead: "Rede 11Run e estrutura escolhida", support: "Família, escola e equipe técnica", opportunities: ["Calendário competitivo no Brasil", "Elegibilidade e candidaturas internacionais", "Evolução esportiva e acadêmica acompanhada"], next: "Preparar cada oportunidade sem interromper o desenvolvimento.", zone: 4 },
+  { age: 18, label: "Janelas de oportunidade", phase: "Brasil e exterior", lead: "Atleta, família e Rede 11Run", support: "Instituições educacionais e esportivas", opportunities: ["Equipes e centros competitivos no Brasil", "Bolsas compatíveis com o perfil no exterior", "Continuidade esportiva e educacional"], next: "Avaliar onde há o melhor ambiente competitivo e humano.", zone: 4 },
+  { age: 19, label: "Continuidade de alto nível", phase: "Projeto esportivo de longo prazo", lead: "Atleta e estrutura escolhida", support: "Rede 11Run e instituições parceiras", opportunities: ["Alto rendimento no Brasil", "Experiência acadêmica e esportiva no exterior", "Novas janelas de desenvolvimento"], next: "Seguir evoluindo no Brasil ou no mundo, com propósito e suporte.", zone: 4 }
 ];
 
 const responsibilities = [
@@ -56,7 +56,7 @@ const responsibilities = [
 const opportunityGroups = [
   { title: "Base", ages: "10–13", text: "Circuito 11Run Futuro, testes de 1.000 m e experiências compatíveis com a idade." },
   { title: "Estrutura federada", ages: "13–15", text: "Competições, marcas homologadas e construção de histórico sob condução técnica do IVCL/Orcampi." },
-  { title: "Novos caminhos", ages: "16–19", text: "Preparação acadêmica e esportiva para candidaturas e oportunidades compatíveis com cada perfil." }
+  { title: "Brasil ou exterior", ages: "16–19", text: "Continuidade em um ambiente competitivo no Brasil ou preparação acadêmica e esportiva para bolsas no exterior, conforme o perfil e os objetivos do atleta." }
 ];
 
 const ecosystem = [
@@ -81,6 +81,7 @@ export function FutureJourneySection() {
   const [playing, setPlaying] = useState(false);
   const [playbackIndex, setPlaybackIndex] = useState(0);
   const [ecosystemItem, setEcosystemItem] = useState(0);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   const current = useMemo(
     () => journey.find((item) => item.age === selectedAge) ?? journey[0],
@@ -117,6 +118,18 @@ export function FutureJourneySection() {
       setSelectedAge(playbackAges[next]);
       return next;
     });
+  }
+
+  function selectAge(age: number) {
+    setSelectedAge(age);
+    const checkpoint = trackRef.current?.querySelector<HTMLElement>(`[data-age="${age}"]`);
+    checkpoint?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "nearest", inline: "center" });
+  }
+
+  function moveAge(delta: number) {
+    const index = journey.findIndex((item) => item.age === selectedAge);
+    const next = journey[Math.min(journey.length - 1, Math.max(0, index + delta))];
+    if (next) selectAge(next.age);
   }
 
   return (
@@ -165,20 +178,43 @@ export function FutureJourneySection() {
             animate={{ opacity: 1, y: 0 }}
             exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
           >
-            <div className={styles.track} aria-label="Idades da jornada de 10 a 19 anos">
-              <div className={styles.trackLine} aria-hidden="true" />
-              {journey.map((item) => (
-                <button
-                  key={item.age}
-                  type="button"
-                  aria-current={selectedAge === item.age ? "step" : undefined}
-                  className={`${styles.checkpoint} ${styles[`zone${item.zone}`]} ${selectedAge === item.age ? styles.activeCheckpoint : ""}`}
-                  onClick={() => setSelectedAge(item.age)}
-                >
-                  <span>{item.age}</span>
-                  <small>{item.label}</small>
-                </button>
-              ))}
+            <div className={styles.timelinePanel}>
+              <div className={styles.timelineHeader}>
+                <div>
+                  <span className={styles.timelineKicker}>Linha do tempo</span>
+                  <strong>Selecione uma idade</strong>
+                </div>
+                <div className={styles.timelineControls}>
+                  <button type="button" aria-label="Idade anterior" disabled={selectedAge === 10} onClick={() => moveAge(-1)}>
+                    <ChevronLeft aria-hidden="true" />
+                  </button>
+                  <span aria-live="polite">{selectedAge} de 19 anos</span>
+                  <button type="button" aria-label="Próxima idade" disabled={selectedAge === 19} onClick={() => moveAge(1)}>
+                    <ChevronRight aria-hidden="true" />
+                  </button>
+                </div>
+              </div>
+              <div ref={trackRef} className={styles.track} aria-label="Idades da jornada de 10 a 19 anos">
+                <div className={styles.trackLine} aria-hidden="true" />
+                {journey.map((item) => (
+                  <button
+                    key={item.age}
+                    data-age={item.age}
+                    type="button"
+                    aria-current={selectedAge === item.age ? "step" : undefined}
+                    aria-label={`${item.age} anos: ${item.label}`}
+                    className={`${styles.checkpoint} ${styles[`zone${item.zone}`]} ${selectedAge === item.age ? styles.activeCheckpoint : ""}`}
+                    onClick={() => selectAge(item.age)}
+                  >
+                    <span>{item.age}</span>
+                    <small>{item.label}</small>
+                  </button>
+                ))}
+              </div>
+              <div className={styles.timelineHint} aria-hidden="true">
+                <span>Deslize para explorar</span>
+                <ArrowRight size={15} />
+              </div>
             </div>
             <JourneyDetail current={current} />
           </motion.div>
@@ -207,11 +243,11 @@ export function FutureJourneySection() {
       </p>
 
       <div className={styles.flow} aria-label="Fluxo institucional da jornada">
-        {["11Run Futuro", "Base 10–13", "Transição acompanhada", "IVCL/Orcampi", "Desenvolvimento federado", "11Run Bolsas", "Oportunidades internacionais"].map((item, index) => (
+        {["11Run Futuro", "Base 10–13", "Transição acompanhada", "IVCL/Orcampi", "Desenvolvimento federado", "Escolha aos 16+", "Brasil ou exterior"].map((item, index) => (
           <button
             key={item}
             type="button"
-            onClick={() => setSelectedAge(index < 2 ? 11 : index < 5 ? 14 : 17)}
+            onClick={() => selectAge(index < 2 ? 11 : index < 5 ? 14 : 17)}
           >
             <span>{item}</span>
             {index < 6 && <ArrowRight size={15} aria-hidden="true" />}
@@ -274,11 +310,11 @@ export function FutureJourneySection() {
         <div>
           <span className={styles.eyebrow}>Visão de longo prazo</span>
           <h3>Não acompanhamos apenas uma temporada. Construímos caminhos.</h3>
-          <p>A jornada começa na base, continua na estrutura federada e pode alcançar novas oportunidades no Brasil e no mundo.</p>
+          <p>A jornada começa na base, continua na estrutura federada e, a partir dos 16 anos, apoia a escolha entre um ambiente competitivo no Brasil ou oportunidades acadêmicas e esportivas no exterior.</p>
           <div className={styles.indicators}>
             <span><strong>10–13</strong> Formação de base</span>
             <span><strong>13–15</strong> Transição e desenvolvimento federado</span>
-            <span><strong>16–19</strong> Preparação e oportunidades</span>
+            <span><strong>16–19</strong> Alto nível no Brasil ou bolsas no exterior</span>
           </div>
         </div>
         <div className={styles.ctaActions}>

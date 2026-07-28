@@ -81,7 +81,8 @@ export const navItems: NavItem[] = [
         children: [
           { label: "Missão e Valores", href: "/institucional/missao-visao-valores" },
           { label: "Branding", href: "/institucional/branding" },
-          { label: "Política de Privacidade", href: "/politica-de-privacidade" }
+          { label: "Política de Privacidade", href: "/politica-de-privacidade" },
+          { label: "Diretrizes aos Atletas", href: "/institucional/diretrizes-aos-atletas" }
         ]
       },
       {

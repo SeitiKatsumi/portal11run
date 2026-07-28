@@ -23,6 +23,7 @@ const navIcons: Record<string, LucideIcon> = {
   "/apoie/voluntariado": UserRound,
   "/institucional/missao-visao-valores": Compass,
   "/institucional/branding": Palette,
+  "/institucional/diretrizes-aos-atletas": ShieldCheck,
   "/politica-de-privacidade": ShieldCheck
 };
 

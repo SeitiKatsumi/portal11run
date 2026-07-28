@@ -11,6 +11,7 @@ const routes = [
   "/institucional/missao-visao-valores",
   "/institucional/seiti-katsumi",
   "/institucional/alex-sandro-lopes",
+  "/institucional/diretrizes-aos-atletas",
   "/apoie",
   "/apoie-o-projeto",
   "/apoie/patrocine",
