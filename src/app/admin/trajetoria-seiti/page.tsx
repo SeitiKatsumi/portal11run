@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SeitiFamilySlider } from "@/components/SeitiFamilySlider";
+import { ArrowUpRight, BrainCircuit, Medal, PanelsTopLeft } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -148,6 +149,29 @@ const personalBests = [
   ["Meia maratona", "1h04min"]
 ];
 
+const leadershipPillars = [
+  {
+    title: "Alto rendimento",
+    text: "A pista ensinou disciplina, leitura de contexto, consistência e decisão sob pressão — fundamentos que hoje orientam a gestão da 11RUN.",
+    icon: Medal,
+  },
+  {
+    title: "Branding e publicidade",
+    text: "Mais de duas décadas entre Brasil e Japão conectam estratégia, posicionamento, identidade, narrativa e construção de valor para marcas.",
+    icon: PanelsTopLeft,
+  },
+  {
+    title: "Inteligência artificial",
+    text: "À frente da Elevenmind, Seiti integra inteligência artificial, dados e automação à estratégia de comunicação e à gestão de marcas.",
+    icon: BrainCircuit,
+  },
+  {
+    title: "Gestão da 11RUN",
+    text: "A vivência esportiva encontra repertório empresarial para criar projetos sustentáveis, comunicação responsável e oportunidades reais para atletas.",
+    icon: ArrowUpRight,
+  },
+] as const;
+
 export default function AdminTrajetoriaSeitiPage() {
   return (
     <main className="admin-panel seiti-story-page">
@@ -168,6 +192,46 @@ export default function AdminTrajetoriaSeitiPage() {
           <span>Japão</span>
           <span>IVCL/Orcampi</span>
         </aside>
+      </section>
+
+      <section className="seiti-leadership" aria-labelledby="seiti-leadership-title">
+        <div className="seiti-leadership-heading">
+          <div>
+            <span className="eyebrow">Da pista à estratégia</span>
+            <h2 id="seiti-leadership-title">O encontro entre alto rendimento, branding e tecnologia.</h2>
+          </div>
+          <div className="seiti-leadership-intro">
+            <p>
+              A trajetória de Seiti Katsumi foi construída entre o atletismo de alto rendimento no Brasil e no Japão e
+              uma carreira internacional em branding, marketing e publicidade.
+            </p>
+            <p>
+              Hoje, à frente da Elevenmind, transforma esse repertório em estratégia, inteligência artificial aplicada
+              e sistemas de comunicação capazes de organizar marcas, comunidades e projetos com visão de longo prazo.
+            </p>
+          </div>
+        </div>
+
+        <div className="seiti-leadership-grid">
+          {leadershipPillars.map(({ title, text, icon: Icon }) => (
+            <article key={title}>
+              <Icon size={23} strokeWidth={1.5} aria-hidden="true" />
+              <h3>{title}</h3>
+              <p>{text}</p>
+            </article>
+          ))}
+        </div>
+
+        <div className="seiti-leadership-close">
+          <p>
+            É essa combinação que o prepara para gerir a 11RUN: ele conhece por dentro as exigências, oportunidades e
+            vulnerabilidades da vida de atleta e, ao mesmo tempo, domina as ferramentas necessárias para construir
+            posicionamento, relacionamento, captação, governança e sustentabilidade.
+          </p>
+          <a href="https://elevenmind.com.br/" target="_blank" rel="noreferrer">
+            Conheça a Elevenmind <ArrowUpRight size={17} aria-hidden="true" />
+          </a>
+        </div>
       </section>
 
       <section className="seiti-story-timeline" aria-label="Linha do tempo da trajetória">

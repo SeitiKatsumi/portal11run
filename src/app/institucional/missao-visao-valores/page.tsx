@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
+  ArrowUpRight,
   BarChart3,
   BookOpenCheck,
   CalendarDays,
@@ -161,6 +162,66 @@ export default function InstitutionalMissionVisionValuesPage() {
             sizes="(max-width: 820px) calc(100vw - 64px), 420px"
           />
         </figure>
+      </section>
+
+      <section className={`${styles.panel} ${styles.leadership}`} aria-labelledby="lideranca-title">
+        <div className={styles.leadershipHeading}>
+          <div>
+            <Eyebrow>Liderança e gestão</Eyebrow>
+            <h2 id="lideranca-title">A experiência de quem viveu a pista e aprendeu a construir marcas.</h2>
+          </div>
+          <div>
+            <p>
+              Seiti Katsumi conhece o esporte sob duas perspectivas que raramente caminham juntas: a do atleta que
+              viveu o alto rendimento no Brasil e no Japão e a do estrategista que construiu uma carreira
+              internacional em branding, marketing e publicidade.
+            </p>
+            <p>
+              Essa combinação transforma experiência em gestão. A disciplina da pista, a leitura de longo prazo e o
+              entendimento real da jornada do atleta encontram estratégia de marca, tecnologia, comunicação e
+              inteligência artificial.
+            </p>
+          </div>
+        </div>
+
+        <div className={styles.leadershipGrid}>
+          <article>
+            <span>01</span>
+            <h3>Legitimidade esportiva</h3>
+            <p>Decisões guiadas por quem conhece treinamento, competição, formação, oportunidades e limites da carreira.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Marca com propósito</h3>
+            <p>Posicionamento, narrativa e identidade para transformar a 11RUN em uma comunidade reconhecida e confiável.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>IA aplicada à gestão</h3>
+            <p>Dados, automação e inteligência artificial para qualificar comunicação, acompanhamento e tomada de decisão.</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Visão sustentável</h3>
+            <p>Uma estrutura preparada para conectar atletas, famílias, treinadores, parceiros e patrocinadores no longo prazo.</p>
+          </article>
+        </div>
+
+        <div className={styles.leadershipClose}>
+          <p>
+            À frente da Elevenmind, Seiti leva para a 11RUN o repertório de quem trabalha com estratégia de marcas e
+            inteligência artificial sem perder o vínculo humano com a pista. O objetivo não é apenas comunicar um
+            projeto, mas construir as condições para que ele cresça com clareza, credibilidade e impacto real.
+          </p>
+          <div className={styles.actions}>
+            <Link className={styles.primaryButton} href="/institucional/seiti-katsumi">
+              Conheça a trajetória de Seiti
+            </Link>
+            <a className={styles.secondaryButton} href="https://elevenmind.com.br/" target="_blank" rel="noreferrer">
+              Conheça a Elevenmind <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
+          </div>
+        </div>
       </section>
 
       <section className={`${styles.panel} ${styles.legacy}`} aria-labelledby="legado-title">
