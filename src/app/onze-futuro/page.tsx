@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { FeatureBanner } from "@/components/FeatureBanner";
+import { FutureJourneySection } from "@/components/FutureJourney/FutureJourneySection";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { Reveal } from "@/components/Reveal";
 import { getPublicAthleteProfileByFirstName } from "@/lib/leads";
@@ -463,6 +464,8 @@ export default function Page() {
           <strong>O Onze Futuro não antecipa pressão. Ele antecipa base.</strong>
         </div>
       </section>
+
+      <FutureJourneySection />
 
       <section className="futuro-section">
         <SectionHeader
