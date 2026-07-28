@@ -80,6 +80,7 @@ export const navItems: NavItem[] = [
         href: "#sobre-o-projeto",
         children: [
           { label: "Missão e Valores", href: "/institucional/missao-visao-valores" },
+          { label: "Branding", href: "/institucional/branding" },
           { label: "Política de Privacidade", href: "/politica-de-privacidade" }
         ]
       },
