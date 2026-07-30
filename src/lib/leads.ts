@@ -276,7 +276,6 @@ export function validateLead(payload: LeadPayload, options?: { photoCount?: numb
     if (!isValidCpf(String(payload.guardian_cpf))) return { ok: false, error: "CPF do responsável inválido." };
     if (!isValidCpf(String(payload.term_acceptor_cpf))) return { ok: false, error: "CPF de quem aceitou o termo inválido." };
     if (payload.accepted_terms !== true) return { ok: false, error: "O termo de autorização precisa ser aceito." };
-    if (options?.paymentReceiptCount !== 1) return { ok: false, error: "Envie o comprovante de pagamento da inscrição." };
   }
 
   if (payload.project_type === "11-regional") {

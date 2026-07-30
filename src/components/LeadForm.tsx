@@ -113,11 +113,12 @@ const termsByProject: Partial<Record<FormProjectSlug, { title: string; clauses: 
     title: "Termo de autorização e regulamento do Circuito Futuro 11",
     clauses: [
       "O responsável legal autoriza a participação do atleta no Circuito Futuro 11, em provas de meio-fundo e fundo organizadas pela 11RUN.",
-      "As provas seguem referência técnica das regras oficiais do atletismo, com distâncias progressivas de 800 m, 1000 m, 1200 m e 1500 m adaptadas às faixas etárias do projeto.",
+      "As provas seguem referência técnica das regras oficiais do atletismo, com distâncias de 800 m, 1.000 m e 1.500 m adaptadas às categorias do projeto.",
       "As faixas do circuito consideram sempre a idade que o atleta completa no ano da competição.",
-      "As provas por idade são: 10 anos - 800 m, 11 anos - 1000 m, 12 anos - 1200 m e 13 anos - 1500 m.",
+      "As provas de 2027 são: Sub 10 (9 anos) - 800 m; Sub 11 (10 anos) - 800 m; Sub 12 (11 anos) - 1.000 m; Sub 13 (12 anos) - 1.000 m; e Sub 14 (13 anos) - 1.500 m.",
+      "A temporada de 2027 terá etapas em fevereiro, abril, junho, agosto e a Finalíssima em outubro.",
       "Cada prova terá limite de 20 atletas por bateria/prova, podendo haver organização por ordem de inscrição, categoria ou critério técnico.",
-      "O valor de inscrição é de R$ 50,00 por etapa ou R$ 150,00 para as 4 etapas, com necessidade de envio de comprovante de pagamento.",
+      "Valores, lotes, condições de pagamento, locais e horários serão informados pela organização antes da abertura de cada etapa.",
       "A participação no ranking depende de inscrição confirmada, presença na etapa, resultado válido e conferência da organização.",
       "Toda responsabilidade por condições de saúde, deslocamento, autorização familiar e acompanhamento do atleta é dos pais ou responsáveis legais.",
       "A organização pode ajustar horários, baterias, regulamento, locais e calendário para preservar segurança, logística e qualidade técnica."
@@ -239,12 +240,10 @@ function getBirthDateLimits(project: FormProjectSlug) {
   }
 
   if (project === "circuito-futuro-11") {
-    const max = new Date(now.getFullYear() - 10, 11, 31);
-    const min = new Date(now.getFullYear() - 13, 0, 1);
     return {
-      min: format(min),
-      max: format(max),
-      help: "A categoria considera a idade que o atleta completa no ano da competição."
+      min: "2014-01-01",
+      max: "2018-12-31",
+      help: "Temporada 2027: Sub 10 a Sub 14, para nascidos de 2018 a 2014."
     };
   }
 
@@ -257,7 +256,6 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [photoCount, setPhotoCount] = useState(0);
-  const [receiptName, setReceiptName] = useState("");
   const birthDateLimits = useMemo(() => getBirthDateLimits(project), [project]);
   const requiredFields = requiredByProject[project];
   const projectFields = useMemo<Field[]>(() => [...baseFields, ...(config.fields as readonly Field[])], [config.fields]);
@@ -317,8 +315,6 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
     }
 
     if (project === "circuito-futuro-11") {
-      const receipt = formData.get("payment_receipt");
-      if (!(receipt instanceof File) || receipt.size === 0) return "Envie o comprovante de pagamento da inscrição.";
       if (
         !isValidCpf(String(formData.get("athlete_cpf") ?? "")) ||
         !isValidCpf(String(formData.get("guardian_cpf") ?? "")) ||
@@ -418,24 +414,6 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
         </section>
       ) : null}
 
-      {project === "circuito-futuro-11" ? (
-        <section className="photo-upload-box">
-          <div>
-            <Upload size={20} />
-            <strong>Comprovante de pagamento</strong>
-            <p>Inscrição: R$ 50,00 por etapa ou R$ 150,00 para as 4 etapas.</p>
-          </div>
-          <input
-            type="file"
-            name="payment_receipt"
-            accept="image/*,.pdf"
-            required
-            onChange={(event) => setReceiptName(event.currentTarget.files?.[0]?.name ?? "")}
-          />
-          <span>{receiptName || "Nenhum comprovante selecionado"}</span>
-        </section>
-      ) : null}
-
       {term ? (
         <section className="terms-box">
           <div className="terms-heading">
@@ -482,7 +460,7 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
 
       <button className="button primary submit-button" type="submit" disabled={loading}>
         {loading ? <Loader2 className="spin" size={18} /> : <Send size={18} />}
-        {project === "circuito-futuro-11" ? "Enviar inscrição" : "Enviar formulário"}
+        {project === "circuito-futuro-11" ? "Enviar pré-inscrição" : "Enviar formulário"}
       </button>
     </form>
   );

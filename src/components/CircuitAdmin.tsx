@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import type { CircuitOfficialResult } from "@/lib/virtual-circuit";
+import { CIRCUIT_CATEGORY_AGES, circuitCategoryLabel, circuitCategoryName } from "@/lib/virtual-circuit-category";
 import styles from "./CircuitAdmin.module.css";
 
 type Metrics = {
@@ -215,7 +216,7 @@ export function CircuitAdmin({
           {items.map((item) => (
             <button className={styles.row} key={item.id} onClick={() => openSubmission(item.id)}>
               <strong>{item.athlete_name}</strong>
-              <span>{item.category_age} anos · {item.gender === "FEMALE" ? "F" : "M"}</span>
+              <span>{circuitCategoryName(item.category_age)} · {item.category_age} anos · {item.gender === "FEMALE" ? "F" : "M"}</span>
               <b>{item.formattedTime}</b>
               <span>{item.submission_type.replaceAll("_", " ")}</span>
               <em>{labels[item.status] || item.status}</em>
@@ -246,7 +247,7 @@ export function CircuitAdmin({
               onClick={() => openOfficial(item)}
             >
               <strong>{item.public_name}</strong>
-              <span>{item.category_age} anos · {item.gender === "FEMALE" ? "F" : "M"}</span>
+              <span>{circuitCategoryName(item.category_age)} · {item.category_age} anos · {item.gender === "FEMALE" ? "F" : "M"}</span>
               <span>{new Date(`${item.activity_date}T12:00:00`).toLocaleDateString("pt-BR")}</span>
               <span>{item.city}/{item.state}</span>
               <b>{item.formattedTime}</b>
@@ -264,23 +265,23 @@ export function CircuitAdmin({
             <h2>{active.athlete_name}</h2>
             <div className={styles.details}>
               <p><small>Nome público</small><strong>{active.public_name}</strong></p>
-              <p><small>Categoria</small><strong>{active.category_age} anos · {active.gender === "FEMALE" ? "Feminino" : "Masculino"}</strong></p>
+              <p><small>Categoria</small><strong>{circuitCategoryLabel(active.category_age)} · {active.gender === "FEMALE" ? "Feminino" : "Masculino"}</strong></p>
               <p><small>Marca declarada</small><strong>{active.formattedTime}</strong></p>
               <p><small>Atividade</small><strong>{active.activity_date} · {active.city}/{active.state}</strong></p>
               <p><small>Responsável</small><strong>{active.guardian_name}</strong><span>{active.guardian_email} · {active.guardian_phone}</span></p>
               <p><small>Status</small><strong>{labels[active.status] || active.status}</strong></p>
               <p>
-                <small>Aptidão médica</small>
-                <strong>{active.medical_status === "PENDING_CERTIFICATE" ? "Atestado pendente" : active.medical_status ? "Atestado recebido" : "Não informado"}</strong>
-                {active.promised_due_date ? <span>Compromisso até {new Date(active.promised_due_date).toLocaleDateString("pt-BR")}</span> : null}
+                <small>Saúde e responsabilidade</small>
+                <strong>{active.medical_status === "VERIFIED" ? "Termo do responsável aceito" : "Atestado dispensado pela regra atual"}</strong>
+                <span>A homologação não depende de documento médico.</span>
               </p>
             </div>
             <div className={styles.evidence}>
               <strong>Evidências privadas</strong>
               <div><span>Documento de identidade e idade</span><a href={`/api/admin/circuito-virtual/files/${active.document_file_id}`} target="_blank" rel="noreferrer">Baixar documento</a></div>
               {active.medical_certificate_file_id
-                ? <div><span>Atestado médico · dado sensível</span><a href={`/api/admin/circuito-virtual/files/${active.medical_certificate_file_id}`} target="_blank" rel="noreferrer">Abrir atestado</a></div>
-                : <div><span>Atestado médico pendente — aprovação bloqueada</span></div>}
+                ? <div><span>Documento médico enviado antes da mudança de regra · não obrigatório</span><a href={`/api/admin/circuito-virtual/files/${active.medical_certificate_file_id}`} target="_blank" rel="noreferrer">Abrir arquivo histórico</a></div>
+                : null}
               {active.evidence?.map((item) => (
                 <div key={item.id}>
                   <span>{item.evidence_type.replaceAll("_", " ")}</span>
@@ -293,7 +294,7 @@ export function CircuitAdmin({
             <label>Justificativa obrigatória<textarea rows={4} value={reason} onChange={(event) => setReason(event.target.value)} placeholder="Registre as evidências e o motivo da decisão." /></label>
             {error && <p className={styles.error}>{error}</p>}
             <div className={styles.actions}>
-              <button disabled={busy || active.medical_status === "PENDING_CERTIFICATE" || !active.medical_status} onClick={() => decide("APPROVED")}><CheckCircle2 />Aprovar</button>
+              <button disabled={busy} onClick={() => decide("APPROVED")}><CheckCircle2 />Aprovar</button>
               <button disabled={busy} onClick={() => decide("CORRECTION_REQUESTED")}><ShieldAlert />Pedir correção</button>
               <button disabled={busy} onClick={() => decide("REJECTED")}><XCircle />Rejeitar</button>
             </div>
@@ -311,9 +312,9 @@ export function CircuitAdmin({
               <label className={styles.fullField}>Nome público
                 <input value={officialDraft.publicName} onChange={(event) => setOfficialDraft({ ...officialDraft, publicName: event.target.value })} />
               </label>
-              <label>Idade/categoria
+              <label>Categoria 2026
                 <select value={officialDraft.categoryAge} onChange={(event) => setOfficialDraft({ ...officialDraft, categoryAge: event.target.value })}>
-                  {[9, 10, 11, 12, 13].map((age) => <option key={age} value={age}>{age} anos</option>)}
+                  {CIRCUIT_CATEGORY_AGES.map((age) => <option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}
                 </select>
               </label>
               <label>Gênero esportivo

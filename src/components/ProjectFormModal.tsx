@@ -31,9 +31,9 @@ const modalCopy: Record<FormProjectSlug, { label: string; title: string; text: s
     text: "Informe dados do atleta master, documentos, endereço, redes sociais, provas, resultados e confirmação de raio de 40 km de Itatiba."
   },
   "circuito-futuro-11": {
-    label: "Inscreva-se",
-    title: "Inscrição Circuito Futuro 11",
-    text: "Informe dados do responsável, atleta, prova, plano de inscrição, comprovante de pagamento e aceite do termo de autorização."
+    label: "Pré-inscreva-se",
+    title: "Pré-inscrição Circuito Futuro 11 · 2027",
+    text: "Informe os dados do responsável e do atleta, escolha a categoria de 2027 e aceite o termo de autorização para registrar a pré-inscrição."
   },
   bolsas: {
     label: "Cadastrar interesse",

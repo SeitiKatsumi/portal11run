@@ -1,7 +1,8 @@
 "use client";
 
-import { Check, ChevronLeft, ChevronRight, FileCheck2, FileHeart, Info, LoaderCircle, LockKeyhole, Send, ShieldAlert } from "lucide-react";
+import { Check, ChevronLeft, ChevronRight, FileCheck2, HeartHandshake, Info, LoaderCircle, LockKeyhole, Send, ShieldAlert } from "lucide-react";
 import { useMemo, useState } from "react";
+import { circuitCategoryLabel } from "@/lib/virtual-circuit-category";
 import styles from "./CircuitUI.module.css";
 
 const UFS = ["AC","AL","AP","AM","BA","CE","DF","ES","GO","MA","MT","MS","MG","PA","PB","PR","PE","PI","RJ","RN","RS","RO","RR","SC","SP","SE","TO"];
@@ -15,21 +16,19 @@ const consentItems = [
   ["REGULATIONS", "Li e aceito o regulamento da edição."],
   ["ACTIVITY_AUTHENTICITY", "Declaro que a atividade foi realizada pelo atleta cadastrado."],
   ["PUBLIC_EVIDENCE", "Confirmo que os links permanecerão públicos durante a análise."]
-  ,["HEALTH_DATA_PROCESSING", "Autorizo, de forma específica e destacada, o tratamento privado do atestado e dos dados de saúde estritamente necessários à segurança e validação da participação."]
-  ,["HEALTH_RISK_ACKNOWLEDGMENT", "Declaro que informei corretamente a condição de saúde do atleta, seguirei orientação médica e interromperei a atividade diante de sintomas. Reconheço os riscos inerentes à corrida antes, durante e após a atividade, sem excluir responsabilidades previstas em lei."]
 ] as const;
 
 type FormState = Record<string, string | boolean>;
 
 const initial: FormState = {
   athleteState: "SP", gender: "FEMALE", guardianRelationship: "Mãe", type: "OFFICIAL_COMPETITION",
-  activityState: "SP", mediaPromotion: false, medicalMethod: "MEDICAL_CERTIFICATE", medicalCommitment: false
+  activityState: "SP", mediaPromotion: false, medicalMethod: "GUARDIAN_COMMITMENT", medicalCommitment: false
 };
 
 function category(birthDate: string) {
   const year = Number(birthDate.slice(0, 4));
   const age = 2026 - year;
-  return age >= 9 && age <= 13 ? `${age} anos` : "Fora das categorias desta edição";
+  return age >= 9 && age <= 13 ? circuitCategoryLabel(age) : "Fora das categorias Sub 10 a Sub 14 desta edição";
 }
 
 export function CircuitRegistration({ startDate, endDate }: { startDate: string; endDate: string }) {
@@ -38,9 +37,6 @@ export function CircuitRegistration({ startDate, endDate }: { startDate: string;
   const [fileId, setFileId] = useState("");
   const [fileName, setFileName] = useState("");
   const [uploading, setUploading] = useState(false);
-  const [medicalFileId, setMedicalFileId] = useState("");
-  const [medicalFileName, setMedicalFileName] = useState("");
-  const [medicalUploading, setMedicalUploading] = useState(false);
   const [sending, setSending] = useState(false);
   const [message, setMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
   const set = (key: string, value: string | boolean) => setData((current) => ({ ...current, [key]: value }));
@@ -57,21 +53,6 @@ export function CircuitRegistration({ startDate, endDate }: { startDate: string;
     setFileId(result.fileId); setFileName(result.fileName);
   }
 
-  async function uploadMedicalCertificate(file?: File) {
-    if (!file) return;
-    setMedicalUploading(true); setMessage(null);
-    const body = new FormData();
-    body.set("file", file);
-    body.set("purpose", "MEDICAL_CERTIFICATE");
-    body.set("website", "");
-    const response = await fetch("/api/circuito-virtual/upload", { method: "POST", body });
-    const result = await response.json();
-    setMedicalUploading(false);
-    if (!response.ok) return setMessage({ type: "error", text: result.error || "Falha no upload do atestado." });
-    setMedicalFileId(result.fileId);
-    setMedicalFileName(result.fileName);
-  }
-
   function validateStep() {
     const required: Record<number, string[]> = {
       1: ["athleteFullName","athletePublicName","athleteCpf","athleteBirthDate","athleteCity","athleteState","gender"],
@@ -86,13 +67,10 @@ export function CircuitRegistration({ startDate, endDate }: { startDate: string;
     if (step === 1 && !fileId) { setMessage({ type: "error", text: "Envie o documento comprobatório do atleta." }); return false; }
     if (step === 2) {
       if (!data.medicalGuardianCpf) {
-        setMessage({ type: "error", text: "Confirme o CPF do responsável na seção de aptidão médica." }); return false;
+        setMessage({ type: "error", text: "Confirme o CPF do responsável para assinar o termo." }); return false;
       }
-      if (data.medicalMethod === "MEDICAL_CERTIFICATE" && !medicalFileId) {
-        setMessage({ type: "error", text: "Envie o atestado médico ou selecione o compromisso de envio posterior." }); return false;
-      }
-      if (data.medicalMethod === "GUARDIAN_COMMITMENT" && data.medicalCommitment !== true) {
-        setMessage({ type: "error", text: "Aceite o compromisso formal de envio posterior do atestado." }); return false;
+      if (data.medicalCommitment !== true) {
+        setMessage({ type: "error", text: "Leia e aceite o termo de saúde e responsabilidade." }); return false;
       }
     }
     if (step === 4) {
@@ -135,8 +113,7 @@ export function CircuitRegistration({ startDate, endDate }: { startDate: string;
         email: data.guardianEmail, phone: data.guardianPhone, birthDate: data.guardianBirthDate
       },
       medical: {
-        method: data.medicalMethod,
-        certificateFileId: medicalFileId || undefined,
+        method: "GUARDIAN_COMMITMENT",
         guardianCpfConfirmation: data.medicalGuardianCpf,
         commitmentAccepted: data.medicalCommitment === true
       },
@@ -154,7 +131,11 @@ export function CircuitRegistration({ startDate, endDate }: { startDate: string;
         },
         evidence
       },
-      consents: Object.fromEntries([...consentItems.map(([key]) => [key, data[key] === true]), ["MEDIA_PROMOTION", data.mediaPromotion === true]]),
+      consents: Object.fromEntries([
+        ...consentItems.map(([key]) => [key, data[key] === true]),
+        ["GUARDIAN_HEALTH_RESPONSIBILITY", data.medicalCommitment === true],
+        ["MEDIA_PROMOTION", data.mediaPromotion === true]
+      ]),
       meta: {}
     };
     const response = await fetch("/api/circuito-virtual/register", {
@@ -178,11 +159,11 @@ export function CircuitRegistration({ startDate, endDate }: { startDate: string;
         </div>
         <div className={styles.stepLabel}>Etapa {step} de 6</div>
         {step === 1 && <StepAthlete data={data} set={set} category={athleteCategory} uploadDocument={uploadDocument} uploading={uploading} fileName={fileName} />}
-        {step === 2 && <StepGuardian data={data} set={set} uploadMedicalCertificate={uploadMedicalCertificate} medicalUploading={medicalUploading} medicalFileName={medicalFileName} />}
+        {step === 2 && <StepGuardian data={data} set={set} />}
         {step === 3 && <StepType data={data} set={set} />}
         {step === 4 && <StepActivity data={data} set={set} startDate={startDate} endDate={endDate} />}
         {step === 5 && <StepConsents data={data} set={set} />}
-        {step === 6 && <Review data={data} category={athleteCategory} fileName={fileName} medicalFileName={medicalFileName} startDate={startDate} />}
+        {step === 6 && <Review data={data} category={athleteCategory} fileName={fileName} startDate={startDate} />}
         {message && <div className={message.type === "error" ? styles.error : styles.success} role="status">{message.text}</div>}
         <div className={styles.formActions}>
           {step > 1 && <button type="button" className={styles.back} onClick={() => { setMessage(null); setStep((value) => value - 1); }}><ChevronLeft size={17}/>Voltar</button>}
@@ -211,17 +192,12 @@ function StepAthlete({ data,set,category,uploadDocument,uploading,fileName }: St
     <div className={styles.categoryBox}><span>Categoria calculada</span><strong>{category}</strong></div>
   </div><label className={styles.upload}><LockKeyhole/><span><strong>Documento comprobatório *</strong><small>PDF, JPG ou PNG · até 10 MB · armazenamento privado</small></span><input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={(e)=>uploadDocument(e.target.files?.[0])}/><b>{uploading ? "Enviando..." : fileName || "Escolher arquivo"}</b></label></div>;
 }
-function StepGuardian({data,set,uploadMedicalCertificate,medicalUploading,medicalFileName}:StepProps & { uploadMedicalCertificate:(f?:File)=>void; medicalUploading:boolean; medicalFileName:string }){return <div><h3>Responsável legal e aptidão médica</h3><div className={styles.fieldGrid}><Input label="Nome completo" name="guardianFullName" data={data} set={set}/><Input label="CPF" name="guardianCpf" data={data} set={set}/><Input label="Relação com o atleta" name="guardianRelationship" data={data} set={set}/><Input label="Data de nascimento" name="guardianBirthDate" data={data} set={set} type="date"/><Input label="E-mail" name="guardianEmail" data={data} set={set} type="email"/><Input label="WhatsApp" name="guardianPhone" data={data} set={set}/></div>
+function StepGuardian({data,set}:StepProps){return <div><h3>Responsável legal e declaração de saúde</h3><div className={styles.fieldGrid}><Input label="Nome completo" name="guardianFullName" data={data} set={set}/><Input label="CPF" name="guardianCpf" data={data} set={set}/><Input label="Relação com o atleta" name="guardianRelationship" data={data} set={set}/><Input label="Data de nascimento" name="guardianBirthDate" data={data} set={set} type="date"/><Input label="E-mail" name="guardianEmail" data={data} set={set} type="email"/><Input label="WhatsApp" name="guardianPhone" data={data} set={set}/></div>
   <div className={styles.medicalSection}>
-    <div className={styles.medicalHeading}><FileHeart/><div><strong>Atestado médico obrigatório</strong><span>Escolha como comprovar a aptidão do atleta.</span></div></div>
-    <div className={styles.medicalChoices}>
-      <button type="button" className={data.medicalMethod==="MEDICAL_CERTIFICATE"?styles.selected:""} onClick={()=>set("medicalMethod","MEDICAL_CERTIFICATE")}><strong>Enviar agora</strong><span>Atestado legível, com identificação do atleta, assinatura e CRM do médico.</span></button>
-      <button type="button" className={data.medicalMethod==="GUARDIAN_COMMITMENT"?styles.selected:""} onClick={()=>set("medicalMethod","GUARDIAN_COMMITMENT")}><strong>Enviar depois</strong><span>Assine o compromisso. A marca não será homologada antes do envio.</span></button>
-    </div>
-    {data.medicalMethod==="MEDICAL_CERTIFICATE" ? <label className={styles.upload}><LockKeyhole/><span><strong>Atestado médico *</strong><small>PDF, JPG ou PNG · até 10 MB · acesso restrito</small></span><input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={(e)=>uploadMedicalCertificate(e.target.files?.[0])}/><b>{medicalUploading?"Enviando...":medicalFileName||"Escolher arquivo"}</b></label> :
-      <label className={styles.commitment}><input type="checkbox" checked={data.medicalCommitment===true} onChange={(e)=>set("medicalCommitment",e.target.checked)}/><span><strong>Compromisso formal de envio posterior *</strong> Como responsável legal, comprometo-me a enviar o atestado. Estou ciente de que a inscrição é condicionada e a marca não poderá ser homologada, premiada ou publicada como aprovada antes do recebimento.</span></label>}
+    <div className={styles.medicalHeading}><HeartHandshake/><div><strong>Termo obrigatório do responsável</strong><span>Não é necessário apresentar atestado médico.</span></div></div>
+    <label className={styles.commitment}><input type="checkbox" checked={data.medicalCommitment===true} onChange={(e)=>set("medicalCommitment",e.target.checked)}/><span><strong>Li, compreendi e aceito o termo de saúde e responsabilidade *</strong> Como pai, mãe, tutor ou responsável legal, declaro que a criança está, na data do teste, em boas condições gerais de saúde para realizar a atividade. Assumo integral responsabilidade pela autorização, preparação, supervisão contínua, hidratação, vestuário, condições climáticas, escolha e segurança do percurso, deslocamentos e por qualquer ocorrência, acidente, lesão, mal-estar ou consequência antes, durante ou depois do teste. Comprometo-me a interromper imediatamente a atividade diante de dor, falta de ar fora do esperado, tontura, desmaio, mal-estar ou qualquer sinal de risco e a buscar orientação profissional quando houver dúvida sobre a saúde da criança.</span></label>
     <div className={styles.cpfConfirmation}><Input label="Confirme o CPF do responsável para assinar" name="medicalGuardianCpf" data={data} set={set} placeholder="000.000.000-00"/></div>
-    <div className={styles.safetyNotice}><ShieldAlert/><span>A corrida envolve riscos inerentes. O responsável deve seguir orientação médica, garantir preparação adequada e interromper a atividade diante de dor, mal-estar ou qualquer sinal de alerta.</span></div>
+    <div className={styles.safetyNotice}><ShieldAlert/><span>A participação é virtual. A 11Run não escolhe nem fiscaliza presencialmente o local ou a execução do teste. O aceite registra a responsabilidade do responsável legal, sem afastar direitos e deveres que não possam ser excluídos por lei.</span></div>
   </div>
   <details className={styles.optional}><summary>Adicionar treinador ou responsável técnico (opcional)</summary><div className={styles.fieldGrid}><Input label="Nome" name="coachName" data={data} set={set} required={false}/><Input label="CPF" name="coachCpf" data={data} set={set} required={false}/><Input label="CREF" name="coachCref" data={data} set={set} required={false}/><Input label="Estado do CREF" name="coachCrefState" data={data} set={set} required={false}/><Input label="Clube, escola ou assessoria" name="coachOrganization" data={data} set={set} required={false}/><Input label="E-mail" name="coachEmail" data={data} set={set} type="email" required={false}/></div></details></div>}
 function StepType({data,set}:StepProps){return <div><h3>Como esta marca foi obtida?</h3><div className={styles.typeCards}>{[["OFFICIAL_COMPETITION","Competição oficial","Resultado público de federação ou organização."],["TRACK_400M","Pista oficial de 400m","Teste de 2,5 voltas com vídeo público."],["OPEN_COURSE","Percurso aberto","Atividade no Strava, vídeo e altimetria."]].map(([value,title,text])=><button type="button" key={value} className={data.type===value?styles.selected:""} onClick={()=>set("type",value)}><FileCheck2/><strong>{title}</strong><span>{text}</span></button>)}</div></div>}
@@ -239,8 +215,8 @@ function StepActivity({data,set,startDate,endDate}:StepProps & { startDate:strin
   </div>
 }
 function StepConsents({data,set}:StepProps){return <div><h3>Regulamento e consentimentos</h3><p className={styles.hint}>Cada aceite é registrado com versão, data, IP e navegador.</p><div className={styles.consents}>{consentItems.map(([key,text])=><label key={key}><input type="checkbox" checked={data[key]===true} onChange={(e)=>set(key,e.target.checked)}/><span>{text}</span></label>)}<label className={styles.optionalConsent}><input type="checkbox" checked={data.mediaPromotion===true} onChange={(e)=>set("mediaPromotion",e.target.checked)}/><span><strong>Opcional:</strong> autorizo o uso de imagens e vídeos em comunicações institucionais da 11Run.</span></label></div><a className={styles.regulationLink} href="#regulamento">Ler regulamento completo</a></div>}
-function Review({data,category,fileName,medicalFileName,startDate}:{data:FormState;category:string;fileName:string;medicalFileName:string;startDate:string}){
+function Review({data,category,fileName,startDate}:{data:FormState;category:string;fileName:string;startDate:string}){
   const submittedDate = String(data.activityDate ?? "");
   const activityDate = submittedDate && submittedDate < startDate ? startDate : submittedDate;
-  return <div><h3>Revise antes de enviar</h3><div className={styles.review}><article><span>Atleta</span><strong>{String(data.athletePublicName)}</strong><small>{category} · {String(data.athleteCity)}/{String(data.athleteState)}</small></article><article><span>Responsável</span><strong>{String(data.guardianFullName)}</strong><small>{String(data.guardianEmail)}</small></article><article><span>Atividade</span><strong>{String(data.activityTime)} nos 1.000 m</strong><small>{activityDate} · {String(data.activityCity)}/{String(data.activityState)}</small>{activityDate !== submittedDate && <small className={styles.adjustedDate}>Data ajustada para o início oficial da edição.</small>}</article><article><span>Documento</span><strong>{fileName}</strong><small>Privado e acessível somente à comissão.</small></article><article><span>Aptidão médica</span><strong>{data.medicalMethod==="MEDICAL_CERTIFICATE" ? medicalFileName : "Compromisso de envio posterior"}</strong><small>{data.medicalMethod==="MEDICAL_CERTIFICATE" ? "Atestado recebido em armazenamento privado." : "A marca ficará condicionada até o envio do atestado."}</small></article></div></div>
+  return <div><h3>Revise antes de enviar</h3><div className={styles.review}><article><span>Atleta</span><strong>{String(data.athletePublicName)}</strong><small>{category} · {String(data.athleteCity)}/{String(data.athleteState)}</small></article><article><span>Responsável</span><strong>{String(data.guardianFullName)}</strong><small>{String(data.guardianEmail)}</small></article><article><span>Atividade</span><strong>{String(data.activityTime)} nos 1.000 m</strong><small>{activityDate} · {String(data.activityCity)}/{String(data.activityState)}</small>{activityDate !== submittedDate && <small className={styles.adjustedDate}>Data ajustada para o início oficial da edição.</small>}</article><article><span>Documento</span><strong>{fileName}</strong><small>Privado e acessível somente à comissão.</small></article><article><span>Termo do responsável</span><strong>Saúde e responsabilidade declaradas</strong><small>CPF confirmado e aceite obrigatório registrado.</small></article></div></div>
 }

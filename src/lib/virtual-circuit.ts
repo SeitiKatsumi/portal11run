@@ -349,20 +349,15 @@ function assertDocumentOwnerReady(db: DatabaseSync, fileId: string) {
   if (!file || file.purpose !== "ATHLETE_DOCUMENT") throw new Error("Envie um documento comprobatório válido.");
 }
 
-function assertMedicalClearanceReady(db: DatabaseSync, input: RegistrationInput) {
+function assertGuardianHealthDeclaration(input: RegistrationInput) {
   if (!validateCpf(input.medical.guardianCpfConfirmation)) {
-    throw new Error("Confirme um CPF válido do responsável no termo de aptidão médica.");
+    throw new Error("Confirme um CPF válido do responsável no termo de saúde e responsabilidade.");
   }
   if (sensitiveHash(input.medical.guardianCpfConfirmation) !== sensitiveHash(input.guardian.cpf)) {
     throw new Error("O CPF confirmado no termo deve ser o mesmo CPF do responsável legal.");
   }
-  if (input.medical.method === "MEDICAL_CERTIFICATE") {
-    const file = db
-      .prepare("SELECT id, purpose FROM virtual_circuit_private_files WHERE id = ?")
-      .get(input.medical.certificateFileId ?? "") as { id: string; purpose: string } | undefined;
-    if (!file || file.purpose !== "MEDICAL_CERTIFICATE") throw new Error("Envie um atestado médico válido.");
-  } else if (input.medical.method !== "GUARDIAN_COMMITMENT" || input.medical.commitmentAccepted !== true) {
-    throw new Error("Aceite o compromisso de envio posterior do atestado médico.");
+  if (input.medical.method !== "GUARDIAN_COMMITMENT" || input.medical.commitmentAccepted !== true) {
+    throw new Error("Leia e aceite o termo de saúde e responsabilidade do responsável legal.");
   }
 }
 
@@ -426,7 +421,7 @@ export function createCircuitRegistration(input: RegistrationInput) {
     settings.maxAge
   );
   assertDocumentOwnerReady(db, input.athlete.documentFileId);
-  assertMedicalClearanceReady(db, input);
+  assertGuardianHealthDeclaration(input);
   const requiredMissing = mandatoryConsents.find(([type]) => input.consents[type] !== true);
   if (requiredMissing) throw new Error("Todos os consentimentos obrigatórios precisam ser aceitos.");
   const declaredTimeMs = parseCircuitTime(input.submission.time);
@@ -567,15 +562,10 @@ export function createCircuitRegistration(input: RegistrationInput) {
       timestamp
     );
 
-    const medicalStatus = input.medical.method === "MEDICAL_CERTIFICATE" ? "SUBMITTED" : "PENDING_CERTIFICATE";
-    const promisedDueDate =
-      input.medical.method === "GUARDIAN_COMMITMENT"
-        ? new Date(Math.min(Date.now() + 15 * 86_400_000, new Date(`${edition.end_date}T23:59:59-03:00`).getTime())).toISOString()
-        : null;
+    const medicalStatus = "VERIFIED";
+    const promisedDueDate = null;
     const medicalDeclaration =
-      input.medical.method === "MEDICAL_CERTIFICATE"
-        ? "Declaro que o atestado anexado corresponde ao atleta cadastrado e autoriza sua participação em corrida ou atividade física."
-        : "Como responsável legal, comprometo-me a enviar o atestado médico do atleta posteriormente. Estou ciente de que a inscrição é condicionada e a marca não poderá ser homologada, premiada ou publicada como aprovada antes do recebimento do documento.";
+      "Como pai, mãe, tutor ou responsável legal, declaro que a criança está, na data do teste, em boas condições gerais de saúde para realizar a atividade. Assumo integral responsabilidade pela autorização, preparação, supervisão contínua, hidratação, vestuário, condições climáticas, escolha e segurança do percurso, deslocamentos e por qualquer ocorrência, acidente, lesão, mal-estar ou consequência antes, durante ou depois do teste. Comprometo-me a interromper imediatamente a atividade diante de dor, falta de ar fora do esperado, tontura, desmaio, mal-estar ou qualquer sinal de risco e a buscar orientação profissional quando houver dúvida sobre a saúde da criança.";
     db.prepare(
       `INSERT INTO virtual_circuit_medical_clearances
         (id, edition_id, athlete_id, guardian_id, submission_id, clearance_method, certificate_file_id,
@@ -588,12 +578,12 @@ export function createCircuitRegistration(input: RegistrationInput) {
       athlete.id,
       guardian.id,
       submissionId,
-      input.medical.method,
-      input.medical.certificateFileId ?? null,
+      "GUARDIAN_COMMITMENT",
+      null,
       medicalStatus,
       guardianCpfHash,
       medicalDeclaration,
-      "medical-clearance-1.0-2026",
+      "guardian-health-responsibility-2.0-2026",
       promisedDueDate,
       timestamp,
       timestamp,
@@ -649,9 +639,9 @@ export function createCircuitRegistration(input: RegistrationInput) {
     audit(db, {
       entityType: "medical_clearance",
       entityId: submissionId,
-      action: medicalStatus === "SUBMITTED" ? "CERTIFICATE_SUBMITTED" : "COMMITMENT_ACCEPTED",
+      action: "GUARDIAN_HEALTH_RESPONSIBILITY_ACCEPTED",
       actor: `guardian:${guardian.id}`,
-      after: { status: medicalStatus, method: input.medical.method, promisedDueDate },
+      after: { status: medicalStatus, method: "GUARDIAN_COMMITMENT", promisedDueDate: null },
       ip: input.meta.ip
     });
     db.exec("COMMIT;");
@@ -1147,14 +1137,6 @@ export function updateCircuitSubmissionStatus(input: {
     | undefined;
   if (!before) throw new Error("Inscrição não encontrada.");
   if (!allowedTransitions[String(before.status)]?.includes(input.status)) throw new Error("Mudança de status não permitida.");
-  if (input.status === "APPROVED") {
-    const clearance = db
-      .prepare("SELECT status FROM virtual_circuit_medical_clearances WHERE submission_id = ?")
-      .get(input.id) as { status: string } | undefined;
-    if (!clearance || !["SUBMITTED", "VERIFIED"].includes(clearance.status)) {
-      throw new Error("A marca só pode ser aprovada depois do envio do atestado médico.");
-    }
-  }
   const reason = cleanText(input.reason, "Justificativa", 1200);
   const verifiedTimeMs = input.verifiedTime ? parseCircuitTime(input.verifiedTime) : before.verified_time_ms;
   const badge = input.status === "APPROVED" ? badgeForType(before.submission_type as CircuitSubmissionType) : before.validation_badge;

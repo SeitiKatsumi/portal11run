@@ -119,7 +119,7 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
         actions={[
           isApp
             ? { label: project.cta, href: project.formHref }
-            : { label: project.key === "circuito-futuro-11" ? "Inscreva-se" : "Abrir formulário", modalProject: project.key },
+            : { label: project.key === "circuito-futuro-11" ? "Pré-inscreva-se" : "Abrir formulário", modalProject: project.key },
           { label: "Voltar ao portal", href: "/" }
         ]}
       />
@@ -138,10 +138,11 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
 function CircuitoDetails() {
   const rankings = listRankings();
   const ageEvents = [
-    { age: "10 anos", event: "800m" },
-    { age: "11 anos", event: "1000m" },
-    { age: "12 anos", event: "1200m" },
-    { age: "13 anos", event: "1500m" }
+    { category: "Sub 10", age: "9 anos em 2027", birthYear: "Nascidos em 2018", event: "800 m" },
+    { category: "Sub 11", age: "10 anos em 2027", birthYear: "Nascidos em 2017", event: "800 m" },
+    { category: "Sub 12", age: "11 anos em 2027", birthYear: "Nascidos em 2016", event: "1.000 m" },
+    { category: "Sub 13", age: "12 anos em 2027", birthYear: "Nascidos em 2015", event: "1.000 m" },
+    { category: "Sub 14", age: "13 anos em 2027", birthYear: "Nascidos em 2014", event: "1.500 m" }
   ];
 
   return (
@@ -149,15 +150,15 @@ function CircuitoDetails() {
       <section className="section">
         <SectionTitle
           eyebrow="ranking e faixas etárias"
-          title="Cada idade tem sua prova. Cada tempo constrói ranking."
-          text="A categoria considera sempre a idade que o atleta completa no ano da competição. Cada prova terá limite inicial de 20 atletas."
+          title="Sub 10 a Sub 14. Distâncias adequadas a cada categoria."
+          text="A categoria considera a idade que o atleta completa no ano vigente. Em 2027, atletas nascidos de 2018 a 2014 competem nas categorias abaixo. Cada prova terá limite inicial de 20 atletas."
         />
         <div className="feature-grid compact">
           {ageEvents.map((item) => (
-            <article className="feature-card" key={item.age}>
-              <span className="eyebrow">{item.age}</span>
+            <article className="feature-card" key={item.category}>
+              <span className="eyebrow">{item.category}</span>
               <h3>{item.event}</h3>
-              <p>Prova oficial da faixa etria no Circuito Futuro 11.</p>
+              <p><strong>{item.age}</strong><br />{item.birthYear}</p>
             </article>
           ))}
         </div>
@@ -167,12 +168,12 @@ function CircuitoDetails() {
         <SectionTitle
           eyebrow="regulamento técnico"
           title="Meio-fundo e fundo com regra clara desde a base."
-          text="O circuito usa como referência as regras oficiais do atletismo para provas de meio-fundo e fundo, com distâncias progressivas de 800m, 1000m, 1200m e 1500m por idade, segurança e logística."
+          text="O circuito usa como referência as regras oficiais do atletismo para provas de pista, com 800 m no Sub 10 e Sub 11, 1.000 m no Sub 12 e Sub 13 e 1.500 m no Sub 14."
         />
         <div className="editorial-block">
-          <p>As inscrições dependem de autorização do responsável, comprovante de pagamento e aceite do regulamento.</p>
-          <p>O valor é de R$ 50,00 por etapa ou R$ 150,00 para as 4 etapas. A organização poderá ajustar baterias, horários e ordem de largada conforme número de atletas e condições de pista.</p>
-          <p>Resultados válidos entram no ranking por idade e prova, considerando nome do atleta, tempo, data e local.</p>
+          <p>As inscrições dependem de autorização do responsável, confirmação da vaga e aceite do regulamento de cada etapa.</p>
+          <p>A temporada terá cinco etapas: fevereiro, abril, junho, agosto e a Finalíssima em outubro de 2027. Valores, lotes e condições de inscrição serão publicados antes da abertura de cada etapa.</p>
+          <p>Resultados válidos entram no ranking por categoria e prova, considerando nome do atleta, tempo, data e local.</p>
         </div>
       </section>
 

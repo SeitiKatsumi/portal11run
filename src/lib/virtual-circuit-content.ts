@@ -1,9 +1,9 @@
 export const circuitFaq = [
-  ["Quem pode participar?", "Crianças brasileiras que completem entre 9 e 13 anos no ano da edição e possuam autorização de um responsável legal. Podem residir no Brasil ou no exterior."],
+  ["Quem pode participar?", "Atletas brasileiros das categorias Sub 10 a Sub 14, com autorização de um responsável legal, residentes no Brasil ou no exterior. Em 2026, isso corresponde aos nascidos de 2017 a 2013."],
   ["Preciso morar perto de uma pista?", "Não. São aceitas competições oficiais, pistas de 400 metros e percursos abertos."],
   ["A participação é gratuita?", "Sim, nesta primeira edição a participação é gratuita."],
   ["Posso participar mais de uma vez?", "Sim. Apenas a melhor marca aprovada será considerada em cada período."],
-  ["Como minha categoria será definida?", "Pela idade que o atleta completa durante o ano da edição."],
+  ["Como minha categoria será definida?", "Pelo ano de nascimento e pela idade que o atleta completa em 2026: Sub 10 = nascidos em 2017 (9 anos); Sub 11 = 2016 (10 anos); Sub 12 = 2015 (11 anos); Sub 13 = 2014 (12 anos); e Sub 14 = 2013 (13 anos). A categoria não muda no decorrer da edição."],
   ["Posso correr acompanhado?", "Sim. É permitido correr em grupo ou com um pacer humano, sem auxílio físico ou motorizado."],
   ["Um treinador pode enviar a atividade?", "Sim, desde que exista autorização do pai, mãe ou responsável legal."],
   ["O vídeo precisa estar público?", "Sim. Ele deve permanecer público até a conclusão da análise."],
@@ -16,17 +16,18 @@ export const circuitFaq = [
   ["Como funcionam as premiações?", "Cada prêmio segue o período, as categorias e os critérios publicados no regulamento da edição."],
   ["Ganhar garante vaga no 11Run Futuro?", "Não. Atletas elegíveis ainda passam por avaliação presencial e homologação da comissão."],
   ["Por que enviar um documento?", "Para confirmar identidade e idade. O arquivo é privado e nunca aparece no ranking."],
-  ["Posso corrigir uma inscrição?", "Sim. O responsável pode responder a uma solicitação de correção pelo painel de acompanhamento."]
-  ,["É obrigatório apresentar atestado médico?", "Sim. O responsável pode anexar o atestado no cadastro ou assinar, com confirmação do próprio CPF, o compromisso de enviá-lo depois. Sem o atestado, a inscrição fica condicionada e a marca não pode ser homologada, premiada ou publicada como aprovada."]
-  ,["O que deve constar no atestado?", "O documento deve identificar o atleta, estar legível, ter sido emitido por médico com CRM e declarar aptidão para corrida ou atividade física. Recomenda-se emissão nos últimos 12 meses."]
-  ,["Quem pode ver o atestado?", "Somente a equipe autorizada responsável pela conferência. O arquivo é dado pessoal sensível, fica em armazenamento privado e não aparece no ranking."]
-  ,["Quem responde pela condição de saúde durante a corrida?", "O responsável deve informar corretamente as condições do atleta, seguir orientação médica, garantir preparação e interromper a atividade diante de sintomas. A corrida envolve riscos inerentes; esse reconhecimento não elimina responsabilidades que a lei atribua à organização ou a terceiros."]
+  ["Posso corrigir uma inscrição?", "Sim. O responsável pode responder a uma solicitação de correção pelo painel de acompanhamento."],
+  ["É obrigatório apresentar atestado médico?", "Não. O Desafio Virtual não exige atestado médico. Para participar, o pai, a mãe, o tutor ou o responsável legal deve confirmar o próprio CPF e aceitar o termo de saúde e responsabilidade antes do envio da atividade."],
+  ["O que o responsável declara no termo?", "Declara que a criança está, na data do teste, em boas condições gerais de saúde e assume integral responsabilidade pela autorização, preparação, supervisão, hidratação, escolha do local e por ocorrências antes, durante e depois da atividade."],
+  ["Quem deve acompanhar o teste?", "A criança deve ser acompanhada por um adulto responsável, em local seguro, com percurso adequado, hidratação disponível e condições compatíveis com a idade e o preparo do atleta."],
+  ["Quando a atividade deve ser interrompida?", "Imediatamente diante de dor, falta de ar fora do esperado, tontura, desmaio, mal-estar, alteração incomum ou qualquer outro sinal de risco. Em caso de dúvida sobre a saúde da criança, o responsável deve buscar orientação profissional antes do teste."],
+  ["A 11Run acompanha o teste presencialmente?", "Não. A participação é virtual e a 11Run não escolhe, fiscaliza ou controla presencialmente o local, a preparação ou a execução da atividade. Essas decisões e a supervisão são de responsabilidade do pai, mãe, tutor ou responsável legal."]
 ] as const;
 
 export const circuitRegulations = [
   ["1. Do projeto", "O Circuito Virtual 11Run incentiva a corrida, acompanha a evolução e amplia oportunidades para crianças de todo o Brasil. A primeira edição chama-se Desafio Virtual 1km 11Run Futuro."],
   ["2. Do período", "A edição será realizada de 1º de agosto a 15 de dezembro de 2026. As inscrições já estão abertas; atividades com data anterior ao início serão registradas como realizadas em 1º de agosto de 2026. Fechamentos mensais, trimestrais e finais seguirão as datas publicadas."],
-  ["3. Dos participantes", "Podem participar exclusivamente crianças brasileiras que completem 9, 10, 11, 12 ou 13 anos em 2026, residentes no Brasil ou no exterior. A categoria é definida pelo ano de nascimento e permanece durante toda a edição."],
+  ["3. Dos participantes e categorias", "Podem participar exclusivamente atletas brasileiros das categorias Sub 10 a Sub 14, residentes no Brasil ou no exterior. Para toda a edição de 2026, a classificação é fixa: Sub 10 — nascidos em 2017, que completam 9 anos em 2026; Sub 11 — nascidos em 2016, que completam 10 anos; Sub 12 — nascidos em 2015, que completam 11 anos; Sub 13 — nascidos em 2014, que completam 12 anos; Sub 14 — nascidos em 2013, que completam 13 anos. A categoria é definida pelo ano de nascimento e não muda na data do aniversário."],
   ["4. Da autorização", "A participação exige autorização expressa do responsável legal. Treinadores podem auxiliar o envio, mas não substituem esse consentimento."],
   ["5. Da distância", "Todos os resultados devem corresponder a 1.000 metros. Distâncias inferiores não serão aceitas."],
   ["6. Das formas de participação", "São aceitas marcas de competição oficial, teste em pista oficial de 400 metros e teste em percurso aberto, cada uma com comprovação própria."],
@@ -36,7 +37,7 @@ export const circuitRegulations = [
   ["10. Do acompanhamento", "É permitido correr acompanhado, em grupo ou com pacer humano. É proibido auxílio físico, revezamento, transporte parcial ou vantagem motorizada."],
   ["11. Das tentativas", "O atleta pode enviar quantas atividades desejar. Apenas a melhor marca aprovada em cada período participa da classificação."],
   ["12. Da validação", "A comissão pode solicitar novas informações, vídeo, acesso temporário, correção ou novo teste. Nenhuma rejeição automática é definitiva sem revisão humana."],
-  ["13. Do ranking", "O ranking é separado por idade e gênero. Apenas marcas aprovadas geram posição e direito a premiação."],
+  ["13. Do ranking", "O ranking é separado pelas categorias Sub 10, Sub 11, Sub 12, Sub 13 e Sub 14 e por gênero esportivo. Apenas marcas aprovadas geram posição e direito a premiação."],
   ["14. Dos desempates", "Prevalecem menor tempo, maior nível de comprovação e marca realizada primeiro. A comissão pode solicitar teste em posições premiadas."],
   ["15. Das premiações", "Prêmios dependem da homologação, conferência documental e cumprimento do regulamento. Itens podem ser substituídos por equivalentes."],
   ["16. Do teste final", "Finalistas e candidatos ao 11Run Futuro podem ser convocados para teste presencial. Despesas só serão cobertas quando expressamente informado."],
@@ -44,11 +45,11 @@ export const circuitRegulations = [
   ["18. Da desclassificação", "Fraude, dados falsos, documentos falsos, atividade de terceiros, edição impeditiva do vídeo, distância inferior, descida indevida ou auxílio proibido podem causar desclassificação."],
   ["19. Dos dados pessoais", "Os dados são usados para identidade, idade, validação, contato, ranking e premiações. CPF, documentos, contatos e evidências não são públicos."],
   ["20. Da imagem e vídeo", "A análise privada da evidência, publicação no ranking e uso promocional são consentimentos separados. A autorização promocional é opcional."],
-  ["21. Das decisões", "Casos não previstos serão analisados pela comissão. O regulamento pode ser atualizado para aumentar segurança e igualdade sem retirar direitos adquiridos."]
-  ,["22. Da aptidão médica", "A participação exige atestado médico legível que identifique o atleta, contenha identificação e CRM do médico e declare aptidão para corrida ou atividade física. Recomenda-se documento emitido nos últimos 12 meses. A comissão pode solicitar atualização ou esclarecimentos."]
-  ,["23. Do envio posterior", "Na ausência do atestado no cadastro, o pai, mãe, tutor ou responsável legal poderá confirmar o próprio CPF e assinar compromisso de envio posterior. A inscrição ficará condicionada e a marca não poderá ser homologada, premiada ou publicada como aprovada até o recebimento do documento."]
-  ,["24. Da saúde e dos riscos", "O responsável declara que as informações de saúde são verdadeiras, compromete-se a observar orientação médica, preparação adequada e sinais de alerta, e reconhece os riscos inerentes à corrida antes, durante e após a atividade. Deve interromper a participação diante de dor, mal-estar ou recomendação médica. O aceite não exclui responsabilidades que a legislação atribua à organização ou a terceiros."]
-  ,["25. Dos dados de saúde", "O atestado e qualquer informação de saúde são dados pessoais sensíveis, tratados apenas para segurança, elegibilidade e validação, com acesso restrito, armazenamento privado e retenção limitada. Não são publicados no ranking."]
+  ["21. Das decisões", "Casos não previstos serão analisados pela comissão. O regulamento pode ser atualizado para aumentar segurança e igualdade sem retirar direitos adquiridos."],
+  ["22. Do termo de saúde e responsabilidade", "Não é exigido atestado médico para participar. O pai, a mãe, o tutor ou o responsável legal deve confirmar o próprio CPF e aceitar o termo declarando que a criança está, na data do teste, em boas condições gerais de saúde para realizar a atividade."],
+  ["23. Da responsabilidade do responsável legal", "O responsável legal assume integral responsabilidade pela decisão de autorizar a participação e por todos os cuidados antes, durante e depois do teste, incluindo preparação, supervisão contínua, hidratação, vestuário, condições climáticas, escolha e segurança do percurso, deslocamentos e atendimento diante de qualquer intercorrência."],
+  ["24. Da segurança e interrupção", "A atividade deve ocorrer sob acompanhamento de um adulto responsável e ser interrompida imediatamente diante de dor, falta de ar fora do esperado, tontura, desmaio, mal-estar, alteração incomum ou qualquer sinal de risco. Em caso de dúvida sobre a condição de saúde da criança, o responsável deve buscar orientação profissional antes da realização do teste."],
+  ["25. Do caráter virtual", "A 11Run recebe e analisa as evidências enviadas, mas não escolhe, fiscaliza ou controla presencialmente o local, a preparação ou a execução da atividade. O aceite do termo registra a declaração e as responsabilidades do responsável legal, sem afastar direitos e deveres que não possam ser excluídos pela legislação aplicável."]
 ] as const;
 
 export const mandatoryConsents = [
@@ -60,7 +61,6 @@ export const mandatoryConsents = [
   ["RANKING_PUBLICATION", "Autorizo a publicação do nome público, cidade, estado, categoria e marca no ranking."],
   ["REGULATIONS", "Li e aceito o regulamento."],
   ["ACTIVITY_AUTHENTICITY", "Declaro que a atividade foi realizada pelo atleta cadastrado."],
-  ["PUBLIC_EVIDENCE", "Confirmo que os links permanecerão públicos durante a análise."]
-  ,["HEALTH_DATA_PROCESSING", "Autorizo, de forma específica e destacada, o tratamento privado do atestado e dos dados de saúde estritamente necessários à segurança e validação da participação."]
-  ,["HEALTH_RISK_ACKNOWLEDGMENT", "Declaro que informei corretamente a condição de saúde do atleta, seguirei orientação médica e interromperei a atividade diante de sintomas. Reconheço os riscos inerentes à corrida antes, durante e após a atividade, sem excluir responsabilidades previstas em lei."]
+  ["PUBLIC_EVIDENCE", "Confirmo que os links permanecerão públicos durante a análise."],
+  ["GUARDIAN_HEALTH_RESPONSIBILITY", "Declaro que a criança está em boas condições gerais de saúde e assumo integral responsabilidade pela autorização, preparação, supervisão e por ocorrências antes, durante e depois do teste."]
 ] as const;

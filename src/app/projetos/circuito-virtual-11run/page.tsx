@@ -4,16 +4,17 @@ import { CalendarDays, CheckCircle2, Clock3, MapPin, Medal, Route, ShieldCheck, 
 import { CircuitRegistration } from "@/components/CircuitRegistration";
 import { CircuitRanking } from "@/components/CircuitRanking";
 import { getCircuitEdition } from "@/lib/virtual-circuit";
+import { CIRCUIT_CATEGORY_AGES, circuitCategoryBirthYear, circuitCategoryName } from "@/lib/virtual-circuit-category";
 import styles from "./virtual-circuit.module.css";
 
 export const metadata: Metadata = {
   title: "Circuito Virtual 11Run | Desafio Nacional de 1.000 Metros",
   description:
-    "Crianças brasileiras de 9 a 13 anos, residentes no Brasil ou no exterior, podem registrar sua marca nos 1.000 metros e participar do ranking.",
+    "Atletas brasileiros das categorias Sub 10 a Sub 14, residentes no Brasil ou no exterior, podem registrar sua marca nos 1.000 metros e participar do ranking.",
   alternates: { canonical: "/projetos/circuito-virtual-11run" },
   openGraph: {
     title: "Desafio Virtual 1km 11Run Futuro",
-    description: "Primeira competição virtual para atletas de 9 a 13 anos.",
+    description: "Primeira competição virtual para as categorias Sub 10 a Sub 14.",
     images: ["/assets/circuito-virtual/hero-atletas-2026.webp"]
   }
 };
@@ -43,7 +44,7 @@ export default function VirtualCircuitPage() {
           <div className={styles.heroCopy}>
             <span className={styles.eyebrow}>Circuito Virtual 11Run</span>
             <h1>Desafio Virtual 1km 11Run Futuro</h1>
-            <p className={styles.lead}>Para atletas brasileiros de 9 a 13 anos, residentes no Brasil ou no exterior.</p>
+            <p className={styles.lead}>Para atletas brasileiros das categorias Sub 10 a Sub 14, residentes no Brasil ou no exterior.</p>
             <p>Corra 1.000 metros, registre sua atividade e participe de um ranking nacional criado para incentivar e descobrir novos talentos.</p>
             <div className={styles.heroActions}>
               <a className={styles.primaryButton} href="#inscricao">Registrar atividade</a>
@@ -67,6 +68,26 @@ export default function VirtualCircuitPage() {
           </div>
         </section>
 
+        <section className={styles.categoryGuide} aria-labelledby="categorias-2026">
+          <div>
+            <span className={styles.eyebrow}>Categorias da edição 2026</span>
+            <h2 id="categorias-2026">A categoria é definida pelo ano de nascimento.</h2>
+            <p>Exemplo: quem nasceu em 2017 completa 9 anos em 2026 e compete na categoria Sub 10.</p>
+          </div>
+          <div className={styles.categoryRail}>
+            <div className={styles.categoryList}>
+              {CIRCUIT_CATEGORY_AGES.map((age) => (
+                <article key={age}>
+                  <strong>{circuitCategoryName(age)}</strong>
+                  <span>{age} anos em 2026</span>
+                  <small>Nascidos em {circuitCategoryBirthYear(age)}</small>
+                </article>
+              ))}
+            </div>
+            <span className={styles.categorySwipeHint}>Deslize para ver todas as categorias →</span>
+          </div>
+        </section>
+
         <section className={styles.section}>
           <span className={styles.eyebrow}>Uma iniciativa nacional</span>
           <div className={styles.splitHeading}>
@@ -84,7 +105,7 @@ export default function VirtualCircuitPage() {
           <div className={styles.steps}>
             {[
               ["01", "Faça seu teste", "Corra 1.000 metros em competição, pista ou percurso aberto."],
-              ["02", "Comprove a aptidão", "Envie o atestado médico ou assine o compromisso formal de envio posterior."],
+              ["02", "Aceite o termo", "O responsável declara as condições de saúde e assume os cuidados antes, durante e depois do teste."],
               ["03", "Aguarde a validação", "A comissão 11Run confere a marca e pode solicitar correções."],
               ["04", "Entre no ranking", "A melhor marca aprovada aparece na categoria correspondente."]
             ].map(([number, title, text]) => (
@@ -137,12 +158,12 @@ export default function VirtualCircuitPage() {
                 <li>Troféu 11Run para os três primeiros de cada categoria.</li>
                 <li>Certificado físico para os cinco primeiros de cada categoria.</li>
                 <li>Certificado digital para todos os concluintes com marca validada no ranking.</li>
-                <li>Oportunidade de entrar para o 11Run Futuro, exclusiva para atletas de 9, 10 e 11 anos.</li>
+                <li>Oportunidade de entrar para o 11Run Futuro, exclusiva para as categorias Sub 10, Sub 11 e Sub 12.</li>
               </ul>
             </article>
           </div>
           <div className={styles.futureCallout}>
-            <div><strong>Oportunidade 11Run Futuro</strong><p>Na premiação final, atletas de 9, 10 e 11 anos poderão receber a oportunidade de entrar para o projeto.</p></div>
+            <div><strong>Oportunidade 11Run Futuro</strong><p>Na premiação final, atletas das categorias Sub 10, Sub 11 e Sub 12 poderão receber a oportunidade de entrar para o projeto.</p></div>
             <Link href="/onze-futuro">Conheça o 11Run Futuro</Link>
           </div>
         </section>
@@ -155,8 +176,8 @@ export default function VirtualCircuitPage() {
           <div className={styles.medicalNotice}>
             <ShieldCheck size={24} />
             <div>
-              <strong>Segurança antes da marca</strong>
-              <p>O atestado médico é obrigatório. Ele pode ser anexado agora ou enviado depois mediante compromisso do responsável com confirmação de CPF. Sem o documento, a inscrição permanece condicionada e a marca não será homologada.</p>
+              <strong>Termo obrigatório do responsável</strong>
+              <p>Não exigimos atestado médico. O pai, a mãe, o tutor ou o responsável legal deve confirmar o CPF, declarar que a criança está em boas condições gerais de saúde e assumir integral responsabilidade pela preparação, supervisão e por ocorrências antes, durante e depois do teste.</p>
             </div>
           </div>
           <CircuitRegistration startDate={edition.start_date} endDate={edition.end_date} />

@@ -246,18 +246,17 @@ export const projects: ProjectPage[] = [
     imageAlt: "Atleta 11RUN sentada em uma pista de atletismo",
     body: [
       "O futuro do meio-fundo e fundo começa na pista.",
-      "Vem aí o Circuito Futuro 11, o primeiro circuito de desenvolvimento competitivo em pista para crianças e pré-adolescentes de 10 a 13 anos."
+      "Vem aí o Circuito Futuro 11, o circuito de desenvolvimento competitivo em pista para atletas das categorias Sub 10 a Sub 14."
     ],
     href: "/circuito-futuro-11",
     formHref: "/cadastro/circuito-futuro-11",
-    cta: "Inscreva-se",
+    cta: "Pré-inscreva-se",
     icon: Route,
     features: [
-      "4 etapas na região de Campinas",
-      "10 anos - 800m",
-      "11 anos - 1000m",
-      "12 anos - 1200m",
-      "13 anos - 1500m",
+      "5 etapas na temporada 2027",
+      "Sub 10 e Sub 11 - 800m",
+      "Sub 12 e Sub 13 - 1.000m",
+      "Sub 14 - 1.500m",
       "Categorias masculino e feminino",
       "Ranking por prova e idade",
       "Limite de 20 atletas por prova",
@@ -266,9 +265,10 @@ export const projects: ProjectPage[] = [
     timeline: [
       { label: "Inscrições", detail: "a partir de 01 de agosto de 2026" },
       { label: "Etapa 1", detail: "fevereiro de 2027" },
-      { label: "Etapa 2", detail: "julho de 2027" },
-      { label: "Etapa 3", detail: "setembro de 2027" },
-      { label: "Etapa 4", detail: "novembro de 2027" }
+      { label: "Etapa 2", detail: "abril de 2027" },
+      { label: "Etapa 3", detail: "junho de 2027" },
+      { label: "Etapa 4", detail: "agosto de 2027" },
+      { label: "Etapa 5 · Finalíssima", detail: "outubro de 2027" }
     ],
     banner: {
       eyebrow: "Circuito Futuro 11 · estreia em 2027",
@@ -278,7 +278,7 @@ export const projects: ProjectPage[] = [
     metadata: {
       title: "Circuito Futuro 11",
       description:
-        "Circuito infantil de meio-fundo e fundo em pista. A categoria considera a idade que o atleta completa no ano da competição."
+        "Circuito infantil de pista em cinco etapas, das categorias Sub 10 a Sub 14, com provas de 800 m, 1.000 m e 1.500 m."
     }
   },
   {
@@ -355,7 +355,7 @@ export const ecosystemCards = [
   },
   {
     title: "Circuito Futuro 11",
-    text: "Circuito infantil de meio-fundo em pista para crianças e pré-adolescentes de 10 a 13 anos.",
+    text: "Circuito infantil de pista em 2027 para as categorias Sub 10 a Sub 14, com cinco etapas e distâncias progressivas.",
     href: "/circuito-futuro-11",
     cta: "Conhecer o Circuito Futuro 11",
     icon: Flag
@@ -455,7 +455,7 @@ export const formProjects = {
   "circuito-futuro-11": {
     label: "Circuito Futuro 11",
     projectType: "circuito-futuro-11",
-    title: "Inscrição Circuito Futuro 11",
+    title: "Pré-inscrição Circuito Futuro 11 · Temporada 2027",
     fields: [
       { name: "guardian_name", label: "Nome do responsável" },
       { name: "guardian_cpf", label: "CPF do responsável" },
@@ -468,15 +468,21 @@ export const formProjects = {
       { name: "birth_date", label: "Data de nascimento", type: "date" },
       {
         name: "race_event",
-        label: "Prova / faixa etária",
+        label: "Categoria / prova de 2027",
         type: "select",
-        options: ["10 anos - 800m", "11 anos - 1000m", "12 anos - 1200m", "13 anos - 1500m"]
+        options: [
+          "Sub 10 - 9 anos no ano - 800m",
+          "Sub 11 - 10 anos no ano - 800m",
+          "Sub 12 - 11 anos no ano - 1.000m",
+          "Sub 13 - 12 anos no ano - 1.000m",
+          "Sub 14 - 13 anos no ano - 1.500m"
+        ]
       },
       {
         name: "payment_plan",
         label: "Plano de inscrição",
         type: "select",
-        options: ["R$ 50,00 por etapa", "R$ 150,00 para as 4 etapas"]
+        options: ["Inscrição por etapa - valor a confirmar", "Pacote da temporada - valor a confirmar"]
       },
       { name: "team", label: "Equipe ou escola" },
       { name: "social_link", label: "Perfil de redes sociais" }

@@ -4,7 +4,13 @@ import { useState } from "react";
 import { Trash2 } from "lucide-react";
 import type { RankingRecord } from "@/lib/rankings";
 
-const events = ["10 anos - 800m", "11 anos - 1000m", "12 anos - 1200m", "13 anos - 1500m"];
+const events = [
+  "Sub 10 - 9 anos - 800m",
+  "Sub 11 - 10 anos - 800m",
+  "Sub 12 - 11 anos - 1000m",
+  "Sub 13 - 12 anos - 1000m",
+  "Sub 14 - 13 anos - 1500m"
+];
 
 export function RankingAdmin({ initialRankings }: { initialRankings: RankingRecord[] }) {
   const [rankings, setRankings] = useState(initialRankings);

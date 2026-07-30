@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { CircuitCorrectionForm } from "@/components/CircuitCorrectionForm";
-import { CircuitMedicalCertificateUpload } from "@/components/CircuitMedicalCertificateUpload";
 import { getGuardianDashboard } from "@/lib/virtual-circuit";
+import { circuitCategoryLabel } from "@/lib/virtual-circuit-category";
 import styles from "../virtual-circuit.module.css";
 
 export const metadata: Metadata = { title: "Acompanhamento | Circuito Virtual 11Run", robots: { index: false, follow: false } };
@@ -29,18 +29,14 @@ export default async function GuardianCircuitPage() {
           <p>Responsável: <strong>{dashboard.guardian.full_name}</strong> · {dashboard.guardian.email}</p>
           <div className={styles.steps}>
             {dashboard.athletes.map((athlete) => <article key={String(athlete.id)}>
-              <span>Atleta</span><h3>{athlete.public_name}</h3><p>{athlete.category_age} anos · {athlete.gender === "FEMALE" ? "Feminino" : "Masculino"} · {athlete.city}/{athlete.state}</p>
+              <span>Atleta</span><h3>{athlete.public_name}</h3><p>{circuitCategoryLabel(Number(athlete.category_age))} · {athlete.gender === "FEMALE" ? "Feminino" : "Masculino"} · {athlete.city}/{athlete.state}</p>
             </article>)}
           </div>
           <div className={styles.accordion}>
             {dashboard.submissions.map((submission) => <details key={String(submission.id)}>
               <summary>{submission.formattedTime} · {submission.activity_date} · {statusLabels[String(submission.status)] || submission.status}</summary>
               <p>Modalidade: {String(submission.submission_type).replaceAll("_", " ")}.</p>
-              {!["SUBMITTED", "VERIFIED"].includes(String(submission.medical_status)) ? <div className={styles.medicalPending}>
-                <strong>Atestado médico pendente</strong>
-                <p>A inscrição está condicionada e a marca não será homologada até o envio do documento.</p>
-                <CircuitMedicalCertificateUpload submissionId={String(submission.id)} />
-              </div> : <p><strong>Aptidão médica:</strong> atestado recebido.</p>}
+              <p><strong>Saúde e responsabilidade:</strong> o atestado médico não é exigido. A atividade segue a declaração e a supervisão do responsável legal.</p>
               {submission.correction_message ? <p><strong>Correção solicitada:</strong> {submission.correction_message}</p> : null}
               {submission.status === "CORRECTION_REQUESTED" ? <CircuitCorrectionForm submissionId={submission.id} /> : null}
               {submission.rejection_reason ? <p><strong>Justificativa:</strong> {submission.rejection_reason}</p> : null}

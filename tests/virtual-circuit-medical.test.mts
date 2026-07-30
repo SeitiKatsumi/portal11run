@@ -56,48 +56,50 @@ function registration(medical: Record<string, unknown>) {
   });
 }
 
-test("compromisso do responsável bloqueia homologação até o envio do atestado", () => {
+test("termo do responsável permite homologação sem atestado", () => {
   const created = registration({
     method: "GUARDIAN_COMMITMENT",
     guardianCpfConfirmation: "111.444.777-35",
     commitmentAccepted: true
   });
-  assert.throws(
-    () => circuit.updateCircuitSubmissionStatus({
-      id: created.submissionId,
-      status: "APPROVED",
-      reason: "Resultado conferido.",
-      actor: "admin:test"
-    }),
-    /atestado médico/
-  );
-  circuit
-    .getCircuitDatabase()
-    .prepare("DELETE FROM virtual_circuit_medical_clearances WHERE submission_id = ?")
-    .run(created.submissionId);
-  circuit.attachCircuitMedicalCertificate(
-    created.accessToken,
-    created.submissionId,
-    privateFile("MEDICAL_CERTIFICATE"),
-    true,
-    "127.0.0.1"
-  );
   const approved = circuit.updateCircuitSubmissionStatus({
     id: created.submissionId,
     status: "APPROVED",
-    reason: "Resultado e atestado conferidos.",
+    reason: "Resultado e termo do responsável conferidos.",
     actor: "admin:test"
   }) as Record<string, unknown>;
   assert.equal(approved.status, "APPROVED");
 });
 
-test("confirmação médica exige o mesmo CPF do responsável", () => {
+test("termo de responsabilidade exige o mesmo CPF do responsável", () => {
+  assert.throws(
+    () => registration({
+      method: "GUARDIAN_COMMITMENT",
+      guardianCpfConfirmation: "529.982.247-25",
+      commitmentAccepted: true
+    }),
+    /mesmo CPF/
+  );
+});
+
+test("termo de saúde e responsabilidade é obrigatório", () => {
+  assert.throws(
+    () => registration({
+      method: "GUARDIAN_COMMITMENT",
+      guardianCpfConfirmation: "111.444.777-35",
+      commitmentAccepted: false
+    }),
+    /termo de saúde e responsabilidade/
+  );
+});
+
+test("atestado médico não substitui o termo do responsável", () => {
   assert.throws(
     () => registration({
       method: "MEDICAL_CERTIFICATE",
       certificateFileId: privateFile("MEDICAL_CERTIFICATE"),
-      guardianCpfConfirmation: "529.982.247-25"
+      guardianCpfConfirmation: "111.444.777-35"
     }),
-    /mesmo CPF/
+    /termo de saúde e responsabilidade/
   );
 });

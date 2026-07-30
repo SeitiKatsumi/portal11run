@@ -1014,6 +1014,10 @@ main > div:first-child > .feature-banner {
   margin-top: 58px;
 }
 
+.feature-grid.compact {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
 .feature-card,
 .project-card {
   min-height: 214px;
