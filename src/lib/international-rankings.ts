@@ -20,7 +20,7 @@ let database: DatabaseSync | undefined;
 
 const sourceKeys = {
   NO: "minfriidrett-2026",
-  US: "usatf-jo-2026"
+  US: "usatf-jo-2026-v2"
 } as const;
 
 function now() {
@@ -89,6 +89,12 @@ function hashResult(input: {
 export function listInternationalRankings(query: InternationalRankingQuery) {
   const db = getDatabase();
   const config = internationalCategoryConfig(query);
+  const sync = db.prepare(
+    `SELECT id, status, message, created_at, started_at, completed_at
+     FROM international_ranking_jobs
+     WHERE country = ? AND source_key = ? AND season = ? AND gender = ? AND age_key = ? AND event_meters = ?
+     ORDER BY datetime(created_at) DESC LIMIT 1`
+  ).get(query.country, query.sourceKey, query.season, query.gender, query.ageKey, query.event) as Record<string, unknown> | undefined;
   const published = db.prepare(
     `SELECT * FROM international_ranking_imports
      WHERE country = ? AND source_key = ? AND season = ? AND gender = ? AND age_key = ? AND event_meters = ? AND published = 1
@@ -131,6 +137,7 @@ export function listInternationalRankings(query: InternationalRankingQuery) {
     season: query.season,
     source: internationalSourceInfo(query.country),
     config,
+    sync: sync ?? null,
     import: published ?? null,
     count: results.length,
     results,

@@ -19,6 +19,9 @@ type EventRound = {
   statusFormatted?: string;
   completed_at?: string;
   completed_last_updated?: string;
+  dayName?: string;
+  start_time?: string;
+  am_pm?: string;
 };
 
 type EventRecord = {
@@ -27,6 +30,7 @@ type EventRecord = {
 
 type ResultAthlete = {
   age?: number;
+  athlete_status?: string;
   fname?: string;
   lname?: string;
   gender?: string;
@@ -37,6 +41,19 @@ type ResultAthlete = {
   teamName?: string;
   teamsAbbr?: string;
   status?: string;
+};
+
+type ResultRecord = Record<string, unknown> & {
+  performanceList?: ResultAthlete[];
+};
+
+type SelectedUsaRows = {
+  rows: ResultAthlete[];
+  round?: EventRound;
+  roundKey: string;
+  roundLabel: string;
+  sourceStatus: string;
+  usesEntryMarks: boolean;
 };
 
 const divisionNames: Record<UsaAgeKey, string> = {
@@ -83,6 +100,97 @@ function flattenResults(value: unknown): ResultAthlete[] {
   });
 }
 
+function validPerformance(row: ResultAthlete) {
+  const mark = row.mark?.trim();
+  return Boolean(
+    row.fname
+    && row.lname
+    && mark
+    && !["NT", "DNS", "DNF", "DQ", "SCR"].includes(mark.toUpperCase())
+    && !row.status
+    && !row.athlete_status
+    && runningPerformanceToMilliseconds(mark) !== undefined
+  );
+}
+
+function sortedRows(rows: ResultAthlete[], useOfficialPlace: boolean) {
+  return rows
+    .filter(validPerformance)
+    .sort((a, b) => {
+      const aPlace = Number(a.place ?? a.placeFormatted ?? 0);
+      const bPlace = Number(b.place ?? b.placeFormatted ?? 0);
+      if (useOfficialPlace && aPlace > 0 && bPlace > 0) return aPlace - bPlace;
+      const aTime = runningPerformanceToMilliseconds(String(a.mark));
+      const bTime = runningPerformanceToMilliseconds(String(b.mark));
+      return Number(aTime ?? Number.POSITIVE_INFINITY) - Number(bTime ?? Number.POSITIVE_INFINITY);
+    })
+    .slice(0, 100);
+}
+
+function labelForRound(roundKey: string) {
+  return roundKey === "Final" ? "Final" : "Preliminar";
+}
+
+export function selectUsaRankingRows(
+  rounds: Record<string, EventRound>,
+  resultRecord: ResultRecord
+): SelectedUsaRows {
+  const officialRounds = ["Final", "Prelim"]
+    .filter((key) => rounds[key])
+    .map((key) => ({
+      key,
+      round: rounds[key],
+      rows: sortedRows(flattenResults(resultRecord[key]), true)
+    }));
+  const completed = officialRounds.find((item) => item.round?.statusFormatted === "Done" && item.rows.length);
+  const withPublishedMarks = officialRounds.find((item) => item.rows.length);
+  const selected = completed ?? withPublishedMarks;
+
+  if (selected) {
+    const completedRound = selected.round?.statusFormatted === "Done";
+    return {
+      rows: selected.rows,
+      round: selected.round,
+      roundKey: selected.key,
+      roundLabel: labelForRound(selected.key),
+      sourceStatus: completedRound
+        ? (selected.key === "Final" ? "Resultado final" : "Resultado preliminar")
+        : `Resultados parciais · ${selected.round?.statusFormatted ?? "Em andamento"}`,
+      usesEntryMarks: false
+    };
+  }
+
+  const entryRows = sortedRows(
+    Array.isArray(resultRecord.performanceList) ? resultRecord.performanceList : [],
+    false
+  );
+  const scheduledKey = rounds.Prelim ? "Prelim" : "Final";
+  return {
+    rows: entryRows,
+    round: rounds[scheduledKey],
+    roundKey: scheduledKey,
+    roundLabel: "Marcas de entrada",
+    sourceStatus: entryRows.length ? "Inscritos e marcas de entrada" : "Aguardando publicação da lista oficial",
+    usesEntryMarks: true
+  };
+}
+
+function scheduledLabel(round?: EventRound) {
+  if (!round?.dayName && !round?.start_time) return undefined;
+  const weekdays: Record<string, string> = {
+    Monday: "segunda-feira",
+    Tuesday: "terça-feira",
+    Wednesday: "quarta-feira",
+    Thursday: "quinta-feira",
+    Friday: "sexta-feira",
+    Saturday: "sábado",
+    Sunday: "domingo"
+  };
+  const day = round.dayName ? (weekdays[round.dayName] ?? round.dayName) : "";
+  const time = [round.start_time, round.am_pm].filter(Boolean).join(" ");
+  return [day, time].filter(Boolean).join(", ");
+}
+
 export class UsaRankingProvider {
   async fetchRanking(input: {
     season: number;
@@ -111,23 +219,11 @@ export class UsaRankingProvider {
     if (!candidate) throw new Error("A prova não foi localizada no programa oficial da USATF.");
     const [eventKey, eventRecord] = candidate;
     const rounds = eventRecord.rounds ?? {};
-    const finalDone = rounds.Final?.statusFormatted === "Done";
-    const prelimDone = rounds.Prelim?.statusFormatted === "Done";
-    const roundKey = finalDone ? "Final" : prelimDone ? "Prelim" : "Final";
-    const round = rounds[roundKey];
-    const resultRecord = await fetchJson<Record<string, unknown>>(`${DATABASE_ROOT}/results/${eventKey}.json`);
-    const rawRows = flattenResults(resultRecord[roundKey]);
-    const validRows = rawRows
-      .filter((row) => row.fname && row.lname && row.mark && row.mark !== "NT" && row.mark !== "DNS" && !row.status)
-      .sort((a, b) => {
-        const aPlace = Number(a.place ?? a.placeFormatted ?? 0);
-        const bPlace = Number(b.place ?? b.placeFormatted ?? 0);
-        if (aPlace > 0 && bPlace > 0) return aPlace - bPlace;
-        return Number(a.markOriginal ?? Number.POSITIVE_INFINITY) - Number(b.markOriginal ?? Number.POSITIVE_INFINITY);
-      })
-      .slice(0, 100);
+    const resultRecord = await fetchJson<ResultRecord>(`${DATABASE_ROOT}/results/${eventKey}.json`);
+    const selected = selectUsaRankingRows(rounds, resultRecord);
+    const scheduled = selected.usesEntryMarks ? scheduledLabel(selected.round) : undefined;
 
-    const rows = validRows.map((row, index) => {
+    const rows = selected.rows.map((row, index) => {
       const performance = String(row.mark);
       const associationCode = row.teamName?.match(/^(\d{2})\s/)?.[1];
       return {
@@ -140,21 +236,19 @@ export class UsaRankingProvider {
         regionName: associationCode ? `Associação USATF ${associationCode}` : undefined,
         meetName: "USATF National Junior Olympic Track & Field Championships",
         meetLocation: "Norwalk, Califórnia",
-        performanceDate: round?.completed_at?.slice(0, 10),
-        roundLabel: roundKey === "Final" ? "Final" : "Preliminar",
-        sourceStatus: round?.statusFormatted ?? "Em andamento"
+        performanceDate: selected.round?.completed_at?.slice(0, 10),
+        performanceDateOriginal: scheduled,
+        roundLabel: selected.roundLabel,
+        sourceStatus: selected.sourceStatus
       };
     });
 
-    const status = round?.statusFormatted === "Done"
-      ? (roundKey === "Final" ? "Resultado final" : "Resultado preliminar")
-      : "Lista de largada";
     return {
-      sourceUrl: `${LIVE_RESULTS_URL}/${eventKey}/${roundKey}`,
-      sourceUpdatedAt: round?.completed_last_updated,
+      sourceUrl: `${LIVE_RESULTS_URL}/${eventKey}/${selected.roundKey}`,
+      sourceUpdatedAt: selected.round?.completed_last_updated,
       ageLabel: ageLabels[input.ageKey],
-      roundLabel: roundKey === "Final" ? "Final" : "Preliminar",
-      sourceStatus: status,
+      roundLabel: selected.roundLabel,
+      sourceStatus: selected.sourceStatus,
       rows
     };
   }

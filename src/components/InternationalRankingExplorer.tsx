@@ -47,6 +47,14 @@ type RankingResponse = {
     sourceUrl: string;
     supportingSources: Array<{ name: string; url: string }>;
   };
+  sync: {
+    id: string;
+    status: string;
+    message: string | null;
+    created_at: string;
+    started_at: string | null;
+    completed_at: string | null;
+  } | null;
   import: {
     id: string;
     source_url: string;
@@ -155,7 +163,13 @@ export function InternationalRankingExplorer({ country }: { country: Country }) 
   }, [load]);
 
   useEffect(() => {
-    if (!data?.config.available || data.import || emptyPolls.current >= 10) return;
+    if (
+      !data?.config.available
+      || data.import
+      || data.sync?.status === "error"
+      || data.sync?.status === "completed"
+      || emptyPolls.current >= 10
+    ) return;
     emptyPolls.current += 1;
     const timer = window.setTimeout(() => void load(true), 4000);
     return () => window.clearTimeout(timer);
@@ -203,6 +217,9 @@ export function InternationalRankingExplorer({ country }: { country: Country }) 
   const ageLabel = ages[country].find(([key]) => key === age)?.[1] ?? age;
   const countryLabel = country === "NO" ? "Noruega" : "EUA";
   const sourceState = data?.import?.status ?? (country === "US" ? "Competição em andamento" : "Ranking nacional");
+  const showingEntryMarks = country === "US" && data?.import?.round_label === "Marcas de entrada";
+  const firstSyncFailed = !data?.import && data?.sync?.status === "error";
+  const firstSyncFinishedEmpty = !data?.import && data?.sync?.status === "completed";
 
   return (
     <>
@@ -268,6 +285,12 @@ export function InternationalRankingExplorer({ country }: { country: Country }) 
           <span>{job.message}</span>
         </div> : null}
         {error ? <div className={`${styles.statusBar} ${styles.statusError}`}><span>{error}</span></div> : null}
+        {!loading && showingEntryMarks ? (
+          <div className={styles.statusBar}>
+            <Clock3 size={17} />
+            <span><strong>Resultados ainda não publicados.</strong> Exibindo os inscritos ordenados pelas marcas de entrada oficiais. A tabela será atualizada automaticamente quando a prova terminar.</span>
+          </div>
+        ) : null}
 
         {loading ? <div className={styles.skeletons}>{Array.from({ length: 6 }).map((_, index) => <span key={index} />)}</div> : null}
         {!loading && data && !data.config.available ? (
@@ -276,7 +299,13 @@ export function InternationalRankingExplorer({ country }: { country: Country }) 
         {!loading && data?.config.available && data.import && !data.results.length ? (
           <div className={styles.empty}><Database size={26} /><strong>Nenhuma marca publicada nesta combinação</strong><p>{data.import.status}. A 11Run continuará consultando a fonte sem criar resultados artificiais.</p></div>
         ) : null}
-        {!loading && data?.config.available && !data.import ? (
+        {!loading && data?.config.available && firstSyncFailed ? (
+          <div className={styles.empty}><Database size={26} /><strong>Fonte temporariamente indisponível</strong><p>{data.sync?.message ?? "Não foi possível concluir a consulta agora."} Use “Atualizar ranking” para tentar novamente.</p></div>
+        ) : null}
+        {!loading && data?.config.available && firstSyncFinishedEmpty ? (
+          <div className={styles.empty}><Database size={26} /><strong>Lista oficial ainda não publicada</strong><p>A prova está prevista no programa, mas a fonte ainda não disponibilizou inscritos ou marcas. A 11Run continuará acompanhando.</p></div>
+        ) : null}
+        {!loading && data?.config.available && !data.import && !firstSyncFailed && !firstSyncFinishedEmpty ? (
           <div className={styles.empty}><LoaderCircle className={styles.spinning} size={26} /><strong>Primeira sincronização em andamento</strong><p>A fonte está sendo consultada. Os resultados aparecerão aqui automaticamente.</p></div>
         ) : null}
 
@@ -284,10 +313,10 @@ export function InternationalRankingExplorer({ country }: { country: Country }) 
           <>
             <div className={styles.desktopTable}>
               <table>
-                <thead><tr><th>Pos.</th><th>Marca</th><th>Atleta</th><th>Clube / equipe</th><th>{country === "NO" ? "Nascimento" : "Associação"}</th><th>Competição / local</th><th>Fase / data</th><th>Fonte</th></tr></thead>
+                <thead><tr><th>{showingEntryMarks ? "Ordem" : "Pos."}</th><th>Marca</th><th>Atleta</th><th>Clube / equipe</th><th>{country === "NO" ? "Nascimento" : "Associação"}</th><th>Competição / local</th><th>Fase / data</th><th>Fonte</th></tr></thead>
                 <tbody>{data.results.map((row) => (
                   <tr key={row.id}>
-                    <td><span className={`${styles.position} ${medalClass(row.display_position)}`}>{row.display_position}</span><small>Fonte #{row.position}</small></td>
+                    <td><span className={`${styles.position} ${medalClass(showingEntryMarks ? 0 : row.display_position)}`}>{row.display_position}</span><small>{showingEntryMarks ? "Entrada oficial" : `Fonte #${row.position}`}</small></td>
                     <td><strong className={styles.performance}>{row.performance}</strong></td>
                     <td><span className={styles.officialName}>{row.athlete_name}</span>{row.athlete_age ? <small>{row.athlete_age} anos</small> : null}</td>
                     <td><span>{row.team_name ?? "—"}</span></td>
@@ -303,13 +332,13 @@ export function InternationalRankingExplorer({ country }: { country: Country }) 
             <div className={styles.mobileCards}>
               {data.results.map((row) => (
                 <article key={row.id}>
-                  <header><span className={`${styles.position} ${medalClass(row.display_position)}`}>{row.display_position}</span><strong className={styles.performance}>{row.performance}</strong><span>{row.round_label ?? "Ranking"}</span></header>
+                  <header><span className={`${styles.position} ${medalClass(showingEntryMarks ? 0 : row.display_position)}`}>{row.display_position}</span><strong className={styles.performance}>{row.performance}</strong><span>{row.round_label ?? "Ranking"}</span></header>
                   <div className={styles.mobileName}><strong>{row.athlete_name}</strong><span>{row.team_name ?? "Sem equipe informada"}</span></div>
                   <dl>
                     <div><dt>Categoria</dt><dd>{ageLabel}{row.athlete_age ? ` · ${row.athlete_age} anos` : ""}</dd></div>
                     <div><dt>{country === "NO" ? "Nascimento" : "Associação"}</dt><dd>{country === "NO" ? formatDate(row.birth_date, row.birth_date_original) : row.region_name ?? "—"}</dd></div>
                     <div><dt>Competição</dt><dd>{row.meet_name ?? "—"}</dd></div>
-                    <div><dt>Local / data</dt><dd>{row.meet_location ?? formatDate(row.performance_date, row.performance_date_original)}</dd></div>
+                    <div><dt>Local / data</dt><dd>{row.meet_location ?? "—"}<small>{formatDate(row.performance_date, row.performance_date_original)}</small></dd></div>
                   </dl>
                   <footer className={styles.proofs}><a href={row.source_url} target="_blank" rel="noopener noreferrer"><ArrowUpRight size={16} /> Abrir fonte</a></footer>
                 </article>

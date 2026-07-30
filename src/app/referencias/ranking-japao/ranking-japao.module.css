@@ -470,6 +470,10 @@
   font-size: 0.8rem;
 }
 
+.statusBar strong {
+  color: var(--text);
+}
+
 .statusError {
   border-color: color-mix(in srgb, var(--jp-red) 35%, var(--line));
   color: var(--jp-red);
@@ -939,6 +943,12 @@
     margin: 4px 0 0;
     overflow-wrap: anywhere;
     font-size: 0.78rem;
+  }
+
+  .mobileCards dd small {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
   }
 
   .mobileCards footer {
