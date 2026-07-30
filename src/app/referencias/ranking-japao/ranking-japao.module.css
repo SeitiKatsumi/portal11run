@@ -511,8 +511,14 @@
   font-size: 0.68rem;
 }
 
-.romaji {
+.officialName {
   font-weight: 600;
+}
+
+.reviewStatus {
+  color: color-mix(in srgb, var(--muted) 78%, transparent) !important;
+  font-size: 0.61rem !important;
+  letter-spacing: 0.01em;
 }
 
 .position {
@@ -632,6 +638,25 @@
   border-top: 1px solid var(--line);
   color: var(--muted);
   font-size: 0.72rem;
+}
+
+.namePolicy {
+  display: flex;
+  margin-top: 18px;
+  padding: 12px 14px;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-muted);
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.45;
+}
+
+.namePolicy svg {
+  flex: 0 0 auto;
+  color: var(--accent-strong);
 }
 
 .syncMeta strong {
@@ -794,6 +819,10 @@
   .mobileName span {
     color: var(--muted);
     font-size: 0.72rem;
+  }
+
+  .mobileName .reviewStatus {
+    order: 2;
   }
 
   .mobileCards dl {

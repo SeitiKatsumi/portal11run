@@ -6,6 +6,7 @@ import {
   FileImage,
   FileText,
   Globe2,
+  Languages,
   LoaderCircle,
   RefreshCw,
   Search,
@@ -75,6 +76,21 @@ function medalClass(position: number) {
   if (position === 2) return styles.silver;
   if (position === 3) return styles.bronze;
   return "";
+}
+
+function isLatinText(value: string | null) {
+  return Boolean(value && !/[\u3040-\u30ff\u3400-\u9fff]/u.test(value));
+}
+
+function officialNamePresentation(displayName: string | null, originalName: string | null) {
+  const original = originalName?.trim() || "—";
+  if (displayName?.trim()) {
+    return { primary: displayName.trim(), secondary: original, reviewed: true };
+  }
+  if (isLatinText(original)) {
+    return { primary: original, secondary: "", reviewed: true };
+  }
+  return { primary: original, secondary: "Nome oficial · leitura em revisão", reviewed: false };
 }
 
 export function JapanRankingExplorer() {
@@ -283,40 +299,62 @@ export function JapanRankingExplorer() {
               <table>
                 <thead><tr><th>Pos.</th><th>Marca</th><th>Atleta</th><th>Prefeitura</th><th>Escola / Clube</th><th>Referência</th><th>Data</th><th>Pontos</th><th>Comprovação</th></tr></thead>
                 <tbody>
-                  {data.results.map((row) => (
+                  {data.results.map((row) => {
+                    const athlete = officialNamePresentation(row.athlete_name_display, row.athlete_name_japanese);
+                    const teamName = officialNamePresentation(row.team_name_display, row.team_japanese);
+                    return (
                     <tr key={row.id}>
                       <td><span className={`${styles.position} ${medalClass(row.display_position)}`}>{row.display_position}</span><small>JAAF #{row.position}</small></td>
                       <td><strong className={styles.performance}>{row.performance}</strong></td>
-                      <td><span className={styles.romaji}>{row.athlete_name_display ?? "Romaji pendente"}</span><small lang="ja">{row.athlete_name_japanese}</small></td>
+                      <td>
+                        <span className={styles.officialName} lang={athlete.reviewed ? undefined : "ja"}>{athlete.primary}</span>
+                        {athlete.secondary ? <small className={athlete.reviewed ? "" : styles.reviewStatus} lang={athlete.reviewed ? "ja" : undefined}>{athlete.secondary}</small> : null}
+                      </td>
                       <td><span>{row.prefecture_portuguese ?? row.prefecture_japanese ?? "—"}</span>{row.prefecture_portuguese ? <small lang="ja">{row.prefecture_japanese}</small> : null}</td>
-                      <td><span className={styles.romaji}>{row.team_name_display ?? "Revisão pendente"}</span><small lang="ja">{row.team_japanese ?? "—"}</small></td>
+                      <td>
+                        <span className={styles.officialName} lang={teamName.reviewed ? undefined : "ja"}>{teamName.primary}</span>
+                        {teamName.secondary ? <small className={teamName.reviewed ? "" : styles.reviewStatus} lang={teamName.reviewed ? "ja" : undefined}>{teamName.secondary}</small> : null}
+                      </td>
                       <td><span>{row.reference_age} anos</span><small lang="ja">{row.school_year}年</small></td>
                       <td><span>{formatDate(row.performance_date)}</span><small lang="ja">{row.performance_date_original}</small></td>
                       <td>{row.points ?? "—"}</td>
                       <td><div className={styles.proofs}>{row.proof_image_url ? <a href={row.proof_image_url} target="_blank" rel="noopener noreferrer" aria-label="Ver imagem na JAAF"><FileImage size={16} /></a> : null}{row.proof_pdf_url ? <a href={row.proof_pdf_url} target="_blank" rel="noopener noreferrer" aria-label="Ver PDF na JAAF"><FileText size={16} /></a> : null}<a href={row.source_url} target="_blank" rel="noopener noreferrer" aria-label="Abrir fonte oficial"><ArrowUpRight size={16} /></a></div></td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
 
             <div className={styles.mobileCards}>
-              {data.results.map((row) => (
+              {data.results.map((row) => {
+                const athlete = officialNamePresentation(row.athlete_name_display, row.athlete_name_japanese);
+                const teamName = officialNamePresentation(row.team_name_display, row.team_japanese);
+                return (
                 <article key={row.id}>
                   <header><span className={`${styles.position} ${medalClass(row.display_position)}`}>{row.display_position}</span><strong className={styles.performance}>{row.performance}</strong><span>JAAF #{row.position} · {row.points ? `${row.points} pts` : "sem pontos"}</span></header>
-                  <div className={styles.mobileName}><span>{row.athlete_name_display ?? "Romaji pendente"}</span><strong lang="ja">{row.athlete_name_japanese}</strong></div>
+                  <div className={styles.mobileName}>
+                    <strong lang={athlete.reviewed ? undefined : "ja"}>{athlete.primary}</strong>
+                    {athlete.secondary ? <span className={athlete.reviewed ? "" : styles.reviewStatus} lang={athlete.reviewed ? "ja" : undefined}>{athlete.secondary}</span> : null}
+                  </div>
                   <dl>
-                    <div><dt>Escola / clube</dt><dd>{row.team_name_display ?? row.team_japanese ?? "—"}</dd></div>
+                    <div><dt>Escola / clube</dt><dd lang={teamName.reviewed ? undefined : "ja"}>{teamName.primary}</dd></div>
                     <div><dt>Prefeitura</dt><dd>{row.prefecture_portuguese ?? row.prefecture_japanese ?? "—"}</dd></div>
                     <div><dt>Categoria</dt><dd>{row.reference_age} anos · {row.school_year}年</dd></div>
                     <div><dt>Data</dt><dd>{formatDate(row.performance_date)}</dd></div>
                   </dl>
                   <footer className={styles.proofs}>{row.proof_image_url ? <a href={row.proof_image_url} target="_blank" rel="noopener noreferrer"><FileImage size={16} /> Imagem</a> : null}{row.proof_pdf_url ? <a href={row.proof_pdf_url} target="_blank" rel="noopener noreferrer"><FileText size={16} /> PDF</a> : null}<a href={row.source_url} target="_blank" rel="noopener noreferrer"><ArrowUpRight size={16} /> Fonte</a></footer>
                 </article>
-              ))}
+                );
+              })}
             </div>
           </>
         )}
+
+        <div className={styles.namePolicy}>
+          <Languages size={16} aria-hidden="true" />
+          <span>Nomes oficiais em japonês são preservados. O romaji aparece somente após uma leitura confiável ou revisão humana.</span>
+        </div>
 
         <footer className={styles.syncMeta}>
           <span>Atualização JAAF: <strong>{data?.import?.source_updated_at ?? "Aguardando fonte"}</strong></span>
