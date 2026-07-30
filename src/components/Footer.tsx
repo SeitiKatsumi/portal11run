@@ -124,19 +124,23 @@ function uniqueLinks(items: NavItem[]): NavItem[] {
 
 function getFooterNavGroups(): FooterNavGroup[] {
   const sectionItems = navItems.filter((item) => item.children?.length);
-  const mainSections = sectionItems.slice(0, 3).map((item) => ({
-    title: item.label,
-    links: uniqueLinks(flattenNavLeaves(item))
-  }));
+  const namedSections = ["Projetos", "Institucional", "Apoie o Projeto"];
+  const mainSections = namedSections
+    .map((label) => sectionItems.find((item) => item.label === label))
+    .filter((item): item is NavItem => Boolean(item))
+    .map((item) => ({ title: item.label, links: uniqueLinks(flattenNavLeaves(item)) }));
+  const referenceLinks = sectionItems
+    .filter((item) => !namedSections.includes(item.label))
+    .flatMap(flattenNavLeaves);
   const remainingNavigation = [
     ...navItems.filter((item) => !item.children?.length && item.href.startsWith("/")),
-    ...sectionItems.slice(3).flatMap(flattenNavLeaves)
+    ...referenceLinks
   ];
 
   return [
     ...mainSections,
     {
-      title: "Acesso e suporte",
+      title: "Referências e suporte",
       links: uniqueLinks([
         ...remainingNavigation,
         { label: "Meu Painel", href: "/meu-painel" },
@@ -194,6 +198,13 @@ export function Footer() {
             </section>
           ))}
         </nav>
+      </div>
+
+      <div className="footer-elevenmind">
+        <span>Projeto idealizado, realizado e mantido pela</span>
+        <a href="https://elevenmind.com.br/" target="_blank" rel="noopener noreferrer">
+          Elevenmind
+        </a>
       </div>
     </footer>
   );

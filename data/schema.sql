@@ -710,3 +710,122 @@ CREATE INDEX IF NOT EXISTS idx_vc_audit_entity
   ON virtual_circuit_audit_logs (entity_type, entity_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_vc_medical_status
   ON virtual_circuit_medical_clearances (edition_id, status, promised_due_date);
+
+CREATE TABLE IF NOT EXISTS japan_ranking_seasons (
+  year INTEGER PRIMARY KEY,
+  base_url TEXT NOT NULL,
+  active INTEGER NOT NULL DEFAULT 1,
+  current INTEGER NOT NULL DEFAULT 0,
+  refresh_hour INTEGER NOT NULL DEFAULT 5,
+  refresh_interval_hours INTEGER NOT NULL DEFAULT 24,
+  last_automatic_check_at TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS japan_ranking_event_configs (
+  id TEXT PRIMARY KEY,
+  season INTEGER NOT NULL,
+  event_meters INTEGER NOT NULL CHECK (event_meters IN (800, 1500, 3000)),
+  gender TEXT NOT NULL CHECK (gender IN ('M', 'F')),
+  event_id INTEGER,
+  type_id INTEGER NOT NULL DEFAULT 1,
+  active INTEGER NOT NULL DEFAULT 1,
+  source_note TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE (season, event_meters, gender),
+  FOREIGN KEY (season) REFERENCES japan_ranking_seasons(year)
+);
+
+CREATE TABLE IF NOT EXISTS japan_ranking_imports (
+  id TEXT PRIMARY KEY,
+  season INTEGER NOT NULL,
+  event_meters INTEGER NOT NULL,
+  gender TEXT NOT NULL,
+  school_year INTEGER NOT NULL,
+  reference_age INTEGER NOT NULL,
+  source_url TEXT NOT NULL,
+  source_updated_at TEXT,
+  status TEXT NOT NULL,
+  record_count INTEGER NOT NULL DEFAULT 0,
+  diagnostic TEXT,
+  published INTEGER NOT NULL DEFAULT 0,
+  started_at TEXT NOT NULL,
+  completed_at TEXT,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS japan_ranking_results (
+  id TEXT PRIMARY KEY,
+  import_batch_id TEXT NOT NULL,
+  dedupe_key TEXT NOT NULL,
+  season INTEGER NOT NULL,
+  source_url TEXT NOT NULL,
+  source_updated_at TEXT,
+  gender TEXT NOT NULL,
+  event_meters INTEGER NOT NULL,
+  school_year INTEGER NOT NULL,
+  reference_age INTEGER NOT NULL,
+  position INTEGER NOT NULL,
+  points REAL,
+  performance TEXT NOT NULL,
+  performance_milliseconds INTEGER,
+  athlete_name_japanese TEXT NOT NULL,
+  athlete_name_kana TEXT,
+  athlete_name_romaji TEXT,
+  athlete_romaji_confidence REAL,
+  athlete_display_override TEXT,
+  prefecture_japanese TEXT,
+  prefecture_portuguese TEXT,
+  team_japanese TEXT,
+  team_kana TEXT,
+  team_romaji TEXT,
+  team_display_override TEXT,
+  performance_date_original TEXT,
+  performance_date TEXT,
+  proof_image_url TEXT,
+  proof_pdf_url TEXT,
+  blocked INTEGER NOT NULL DEFAULT 0,
+  collected_at TEXT NOT NULL,
+  UNIQUE (import_batch_id, dedupe_key),
+  FOREIGN KEY (import_batch_id) REFERENCES japan_ranking_imports(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS japan_ranking_jobs (
+  id TEXT PRIMARY KEY,
+  kind TEXT NOT NULL,
+  season INTEGER NOT NULL,
+  event_meters INTEGER,
+  gender TEXT,
+  reference_age INTEGER,
+  status TEXT NOT NULL,
+  progress INTEGER NOT NULL DEFAULT 0,
+  total INTEGER NOT NULL DEFAULT 1,
+  message TEXT,
+  requested_by TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  started_at TEXT,
+  completed_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS japan_ranking_corrections (
+  id TEXT PRIMARY KEY,
+  entity_type TEXT NOT NULL CHECK (entity_type IN ('athlete', 'team')),
+  original_text TEXT NOT NULL,
+  display_text TEXT NOT NULL,
+  confidence REAL NOT NULL DEFAULT 1,
+  updated_by TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE (entity_type, original_text)
+);
+
+CREATE INDEX IF NOT EXISTS idx_japan_rankings_public
+  ON japan_ranking_results (season, gender, reference_age, event_meters, position);
+CREATE INDEX IF NOT EXISTS idx_japan_rankings_batch
+  ON japan_ranking_results (import_batch_id);
+CREATE INDEX IF NOT EXISTS idx_japan_imports_lookup
+  ON japan_ranking_imports (season, gender, reference_age, event_meters, published, created_at);
+CREATE INDEX IF NOT EXISTS idx_japan_jobs_created
+  ON japan_ranking_jobs (created_at);

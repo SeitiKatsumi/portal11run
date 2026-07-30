@@ -5012,6 +5012,34 @@ body.modal-open {
   transform: translateX(3px);
 }
 
+.footer-elevenmind {
+  display: flex;
+  margin-top: clamp(30px, 4vw, 46px);
+  padding-top: 22px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  border-top: 1px solid var(--line);
+  font-size: 0.82rem;
+}
+
+.footer-elevenmind span,
+.footer-elevenmind a {
+  margin: 0;
+}
+
+.footer-elevenmind a {
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+.footer-elevenmind a:hover,
+.footer-elevenmind a:focus-visible {
+  color: var(--accent-strong);
+}
+
 .futuro-landing {
   padding-top: 118px;
 }
@@ -7209,6 +7237,10 @@ body.modal-open {
   .footer-brand-block {
     padding-bottom: 26px;
     border-bottom: 1px solid var(--line);
+  }
+
+  .footer-elevenmind {
+    flex-wrap: wrap;
   }
 
   .footer-nav-grid {

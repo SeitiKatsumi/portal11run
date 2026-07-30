@@ -133,3 +133,15 @@ Caminho no Host: gerenciado pelo CapRover
 O container usa `SQLITE_PATH=/data/portal11run.sqlite`, então o banco fica preservado entre deploys.
 
 As avaliações enviadas pelo formulário “Treine com o Alex” ficam disponíveis em `/admin/alex-lopes` e são persistidas em `/data/alex-lopes-applications.json`. Áudios opcionais são armazenados no diretório configurado por `UPLOAD_DIR` (`/data/uploads` no container).
+
+## Referências internacionais — JAAF
+
+A página pública fica em `/referencias/ranking-japao` e consulta somente lotes validados no SQLite. A coleta da fonte oficial acontece no backend, com allowlist para `jaaf.or.jp`, timeout, fila persistida e preservação do último lote publicado.
+
+- Painel: `/admin/referencias-japao`
+- Consulta: `GET /api/references/japan-rankings`
+- Atualização de uma categoria: `POST /api/references/japan-rankings/refresh`
+- Atualização completa: `POST /api/admin/references/japan-rankings/refresh-all`
+- Rotina diária: `POST /api/cron/references/japan-rankings`
+
+Configure `CRON_SECRET` e programe uma chamada diária ao endpoint de rotina com o cabeçalho `Authorization: Bearer <CRON_SECRET>`. A frequência efetiva também pode ser ajustada no painel; a API pública faz uma verificação de segurança caso a rotina externa esteja atrasada.

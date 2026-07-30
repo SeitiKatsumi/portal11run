@@ -1,0 +1,402 @@
+.spin {
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.notice {
+  display: flex;
+  margin-top: 16px;
+  padding: 13px 15px;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-muted);
+  color: var(--accent-strong);
+  font-size: 0.82rem;
+}
+
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.kpis article {
+  display: grid;
+  min-height: 130px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.kpis span,
+.kpis small {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.kpis strong {
+  align-self: end;
+  font-size: 2.7rem;
+  font-weight: 350;
+}
+
+.sectionTitle {
+  display: flex;
+  margin: 32px 0 14px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.seasonForm {
+  display: grid;
+  grid-template-columns: auto minmax(260px, 1fr) 120px 150px auto auto auto;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 16px;
+  align-items: end;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.seasonForm > div span,
+.seasonForm label > span {
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+
+.seasonForm h2 {
+  margin: 3px 0 0;
+  font-size: 1.25rem;
+  font-weight: 450;
+}
+
+.seasonForm label {
+  display: grid;
+  gap: 5px;
+}
+
+.seasonForm input {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-muted);
+  color: var(--text);
+  font: inherit;
+}
+
+.seasonForm .inlineCheck {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.seasonForm .inlineCheck input {
+  width: 16px;
+  min-height: 16px;
+}
+
+.seasonForm button {
+  display: inline-flex;
+  min-height: 40px;
+  padding: 8px 12px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--text);
+  border-radius: 10px;
+  background: var(--text);
+  color: var(--surface);
+  font: inherit;
+  font-size: 0.75rem;
+}
+
+.sectionTitle span {
+  color: var(--accent-strong);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.sectionTitle h2 {
+  margin: 4px 0 0;
+  font-size: 1.65rem;
+  font-weight: 400;
+}
+
+.sectionTitle p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.sectionTitle button,
+.configCard button,
+.pendingList button,
+.history button {
+  display: inline-flex;
+  min-height: 38px;
+  padding: 8px 12px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.76rem;
+}
+
+.configGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.configCard {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+}
+
+.configCard header,
+.configCard footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.configCard header > div {
+  display: grid;
+  gap: 3px;
+}
+
+.configCard header span,
+.configCard label > span {
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+
+.configCard header strong {
+  font-size: 1.3rem;
+}
+
+.configCard em,
+.history em {
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.64rem;
+  font-style: normal;
+}
+
+.configCard em.ok,
+.history em.ok {
+  border-color: #98b4a5;
+  color: #34775a;
+}
+
+.warning {
+  border-color: #c9a59c !important;
+  color: #8b3f33 !important;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.configCard label {
+  display: grid;
+  gap: 5px;
+}
+
+.configCard input,
+.configCard textarea,
+.pendingList input {
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-muted);
+  color: var(--text);
+  font: inherit;
+}
+
+.configCard textarea {
+  resize: vertical;
+}
+
+.configCard .check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.configCard .check input {
+  width: 16px;
+  min-height: 16px;
+}
+
+.configCard footer small {
+  color: var(--muted);
+}
+
+.twoColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.pendingList,
+.jobs,
+.history {
+  display: grid;
+  gap: 8px;
+}
+
+.pendingList form {
+  display: grid;
+  grid-template-columns: minmax(100px, 0.42fr) 1fr auto;
+  gap: 8px;
+  padding: 10px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.pendingList form > div {
+  display: grid;
+}
+
+.pendingList small,
+.jobs span,
+.history span {
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+
+.jobs article {
+  display: flex;
+  padding: 12px;
+  align-items: flex-start;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.jobs article > div {
+  display: grid;
+  gap: 3px;
+}
+
+.jobs strong {
+  font-size: 0.78rem;
+  font-weight: 550;
+}
+
+.history article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  gap: 10px;
+  padding: 12px 14px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.history article > div {
+  display: grid;
+  gap: 3px;
+}
+
+.history a {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--text);
+}
+
+@media (max-width: 980px) {
+  .kpis,
+  .configGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .twoColumns {
+    grid-template-columns: 1fr;
+  }
+
+  .seasonForm {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .seasonForm > div,
+  .seasonForm .wide {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 620px) {
+  .kpis,
+  .configGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionTitle {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .seasonForm {
+    grid-template-columns: 1fr;
+  }
+
+  .seasonForm > div,
+  .seasonForm .wide {
+    grid-column: auto;
+  }
+
+  .pendingList form {
+    grid-template-columns: 1fr auto;
+  }
+
+  .pendingList form > div {
+    grid-column: 1 / -1;
+  }
+
+  .history article {
+    grid-template-columns: 1fr auto;
+  }
+}

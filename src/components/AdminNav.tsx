@@ -13,6 +13,7 @@ const adminItems = [
   { href: "/admin/eventos", label: "Eventos", icon: CalendarDays },
   { href: "/admin/ranking", label: "Ranking", icon: Trophy },
   { href: "/admin/circuito-virtual", label: "Circuito Virtual", icon: Globe2 },
+  { href: "/admin/referencias-japao", label: "Referências Japão", icon: Globe2 },
   { href: "/admin/loja", label: "Loja e pedidos", icon: ShoppingBag },
   { href: "/admin/branding", label: "Branding", icon: Palette },
   { href: "/admin/atendimento", label: "Chat e IA", icon: Bot },

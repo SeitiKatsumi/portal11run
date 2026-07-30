@@ -722,6 +722,36 @@
   color: var(--text);
 }
 
+.journeyMilestones {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  max-width: 760px;
+  margin-top: 22px;
+}
+
+.journeyMilestones span {
+  display: flex;
+  min-height: 64px;
+  margin: 0;
+  padding: 13px 14px;
+  align-items: flex-start;
+  gap: 9px;
+  border: 1px solid color-mix(in srgb, var(--surface) 22%, transparent);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface) 5%, transparent);
+  color: color-mix(in srgb, var(--surface) 74%, transparent);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.journeyMilestones strong {
+  flex: 0 0 auto;
+  color: var(--surface);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
 .indicators {
   display: flex;
   gap: 6px;
@@ -992,6 +1022,14 @@
 
   .finalCta {
     padding: 28px 20px;
+  }
+
+  .journeyMilestones {
+    grid-template-columns: 1fr;
+  }
+
+  .journeyMilestones span {
+    min-height: 0;
   }
 
   .ctaActions {

@@ -311,7 +311,7 @@ export function FutureJourneySection() {
           <span className={styles.eyebrow}>Visão de longo prazo</span>
           <h3>Não acompanhamos apenas uma temporada. Construímos caminhos.</h3>
           <p>A jornada começa na base, continua na estrutura federada e, a partir dos 16 anos, apoia a escolha entre um ambiente competitivo no Brasil ou oportunidades acadêmicas e esportivas no exterior.</p>
-          <div className={styles.indicators}>
+          <div className={styles.journeyMilestones} aria-label="Fases da jornada esportiva">
             <span><strong>10–13</strong> Formação de base</span>
             <span><strong>13–15</strong> Transição e desenvolvimento federado</span>
             <span><strong>16–19</strong> Alto nível no Brasil ou bolsas no exterior</span>

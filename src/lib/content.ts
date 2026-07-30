@@ -96,6 +96,13 @@ export const navItems: NavItem[] = [
     ]
   },
   {
+    label: "Referências",
+    href: "/referencias/ranking-japao",
+    children: [
+      { label: "Ranking no Japão", href: "/referencias/ranking-japao" }
+    ]
+  },
+  {
     label: "Apoie o Projeto",
     href: "/apoie",
     children: [
