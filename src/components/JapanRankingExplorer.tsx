@@ -25,10 +25,12 @@ type RankingResult = {
   performance: string;
   athlete_name_japanese: string;
   athlete_name_display: string | null;
+  athlete_reading_source: "manual" | "ai" | null;
   prefecture_japanese: string | null;
   prefecture_portuguese: string | null;
   team_japanese: string | null;
   team_name_display: string | null;
+  team_reading_source: "manual" | "ai" | null;
   reference_age: number;
   school_year: number;
   performance_date: string | null;
@@ -82,15 +84,21 @@ function isLatinText(value: string | null) {
   return Boolean(value && !/[\u3040-\u30ff\u3400-\u9fff]/u.test(value));
 }
 
-function officialNamePresentation(displayName: string | null, originalName: string | null) {
+function officialNamePresentation(
+  displayName: string | null,
+  originalName: string | null,
+  source: "manual" | "ai" | null
+) {
   const original = originalName?.trim() || "—";
   if (displayName?.trim()) {
-    return { primary: displayName.trim(), secondary: original, reviewed: true };
+    return {
+      primary: original,
+      secondary: `${displayName.trim()} · ${source === "manual" ? "leitura revisada" : "leitura provável; pode variar"}`,
+      reviewed: source === "manual"
+    };
   }
-  if (isLatinText(original)) {
-    return { primary: original, secondary: "", reviewed: true };
-  }
-  return { primary: original, secondary: "Nome oficial · leitura em revisão", reviewed: false };
+  if (isLatinText(original)) return { primary: original, secondary: "", reviewed: true };
+  return { primary: original, secondary: "Preparando leitura provável…", reviewed: false };
 }
 
 export function JapanRankingExplorer() {
@@ -110,6 +118,7 @@ export function JapanRankingExplorer() {
   const [error, setError] = useState("");
   const [job, setJob] = useState<{ id: string; status: string; message: string } | null>(null);
   const emptyPolls = useRef(0);
+  const readingPolls = useRef(0);
 
   const updateUrl = useCallback((patch: Record<string, string>) => {
     const next = new URLSearchParams(params.toString());
@@ -135,7 +144,7 @@ export function JapanRankingExplorer() {
     if (!silent) setLoading(true);
     setError("");
     try {
-      const response = await fetch(`/api/references/japan-rankings?${apiQuery}`);
+      const response = await fetch(`/api/references/japan-rankings?${apiQuery}`, { cache: "no-store" });
       const payload = await response.json();
       if (!response.ok) throw new Error(payload.error ?? "Não foi possível carregar o ranking.");
       setData(payload);
@@ -160,7 +169,19 @@ export function JapanRankingExplorer() {
 
   useEffect(() => {
     emptyPolls.current = 0;
+    readingPolls.current = 0;
   }, [age, event, gender]);
+
+  useEffect(() => {
+    const hasPendingReading = data?.results.some((row) =>
+      (!row.athlete_name_display && !isLatinText(row.athlete_name_japanese))
+      || (!row.team_name_display && !isLatinText(row.team_japanese))
+    );
+    if (!hasPendingReading || readingPolls.current >= 12) return;
+    readingPolls.current += 1;
+    const timer = window.setTimeout(() => void load(true), 4500);
+    return () => window.clearTimeout(timer);
+  }, [data, load]);
 
   useEffect(() => {
     if (!job || terminalJobs.has(job.status)) return;
@@ -300,20 +321,20 @@ export function JapanRankingExplorer() {
                 <thead><tr><th>Pos.</th><th>Marca</th><th>Atleta</th><th>Prefeitura</th><th>Escola / Clube</th><th>Referência</th><th>Data</th><th>Pontos</th><th>Comprovação</th></tr></thead>
                 <tbody>
                   {data.results.map((row) => {
-                    const athlete = officialNamePresentation(row.athlete_name_display, row.athlete_name_japanese);
-                    const teamName = officialNamePresentation(row.team_name_display, row.team_japanese);
+                    const athlete = officialNamePresentation(row.athlete_name_display, row.athlete_name_japanese, row.athlete_reading_source);
+                    const teamName = officialNamePresentation(row.team_name_display, row.team_japanese, row.team_reading_source);
                     return (
                     <tr key={row.id}>
                       <td><span className={`${styles.position} ${medalClass(row.display_position)}`}>{row.display_position}</span><small>JAAF #{row.position}</small></td>
                       <td><strong className={styles.performance}>{row.performance}</strong></td>
                       <td>
-                        <span className={styles.officialName} lang={athlete.reviewed ? undefined : "ja"}>{athlete.primary}</span>
-                        {athlete.secondary ? <small className={athlete.reviewed ? "" : styles.reviewStatus} lang={athlete.reviewed ? "ja" : undefined}>{athlete.secondary}</small> : null}
+                        <span className={styles.officialName} lang={isLatinText(athlete.primary) ? undefined : "ja"}>{athlete.primary}</span>
+                        {athlete.secondary ? <small className={styles.reviewStatus}>{athlete.secondary}</small> : null}
                       </td>
                       <td><span>{row.prefecture_portuguese ?? row.prefecture_japanese ?? "—"}</span>{row.prefecture_portuguese ? <small lang="ja">{row.prefecture_japanese}</small> : null}</td>
                       <td>
-                        <span className={styles.officialName} lang={teamName.reviewed ? undefined : "ja"}>{teamName.primary}</span>
-                        {teamName.secondary ? <small className={teamName.reviewed ? "" : styles.reviewStatus} lang={teamName.reviewed ? "ja" : undefined}>{teamName.secondary}</small> : null}
+                        <span className={styles.officialName} lang={isLatinText(teamName.primary) ? undefined : "ja"}>{teamName.primary}</span>
+                        {teamName.secondary ? <small className={styles.reviewStatus}>{teamName.secondary}</small> : null}
                       </td>
                       <td><span>{row.reference_age} anos</span><small lang="ja">{row.school_year}年</small></td>
                       <td><span>{formatDate(row.performance_date)}</span><small lang="ja">{row.performance_date_original}</small></td>
@@ -328,17 +349,17 @@ export function JapanRankingExplorer() {
 
             <div className={styles.mobileCards}>
               {data.results.map((row) => {
-                const athlete = officialNamePresentation(row.athlete_name_display, row.athlete_name_japanese);
-                const teamName = officialNamePresentation(row.team_name_display, row.team_japanese);
+                const athlete = officialNamePresentation(row.athlete_name_display, row.athlete_name_japanese, row.athlete_reading_source);
+                const teamName = officialNamePresentation(row.team_name_display, row.team_japanese, row.team_reading_source);
                 return (
                 <article key={row.id}>
                   <header><span className={`${styles.position} ${medalClass(row.display_position)}`}>{row.display_position}</span><strong className={styles.performance}>{row.performance}</strong><span>JAAF #{row.position} · {row.points ? `${row.points} pts` : "sem pontos"}</span></header>
                   <div className={styles.mobileName}>
-                    <strong lang={athlete.reviewed ? undefined : "ja"}>{athlete.primary}</strong>
-                    {athlete.secondary ? <span className={athlete.reviewed ? "" : styles.reviewStatus} lang={athlete.reviewed ? "ja" : undefined}>{athlete.secondary}</span> : null}
+                    <strong lang={isLatinText(athlete.primary) ? undefined : "ja"}>{athlete.primary}</strong>
+                    {athlete.secondary ? <span className={styles.reviewStatus}>{athlete.secondary}</span> : null}
                   </div>
                   <dl>
-                    <div><dt>Escola / clube</dt><dd lang={teamName.reviewed ? undefined : "ja"}>{teamName.primary}</dd></div>
+                    <div><dt>Escola / clube</dt><dd><span lang={isLatinText(teamName.primary) ? undefined : "ja"}>{teamName.primary}</span>{teamName.secondary ? <small className={styles.reviewStatus}>{teamName.secondary}</small> : null}</dd></div>
                     <div><dt>Prefeitura</dt><dd>{row.prefecture_portuguese ?? row.prefecture_japanese ?? "—"}</dd></div>
                     <div><dt>Categoria</dt><dd>{row.reference_age} anos · {row.school_year}年</dd></div>
                     <div><dt>Data</dt><dd>{formatDate(row.performance_date)}</dd></div>
@@ -353,7 +374,7 @@ export function JapanRankingExplorer() {
 
         <div className={styles.namePolicy}>
           <Languages size={16} aria-hidden="true" />
-          <span>Nomes oficiais em japonês são preservados. O romaji aparece somente após uma leitura confiável ou revisão humana.</span>
+          <span>O kanji da fonte permanece em destaque. As leituras em romaji são estimativas rápidas e podem variar em nomes próprios; correções humanas revisadas têm prioridade.</span>
         </div>
 
         <footer className={styles.syncMeta}>

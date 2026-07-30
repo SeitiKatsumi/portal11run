@@ -7,7 +7,12 @@ import {
   type JapanEvent,
   type JapanGender
 } from "@/lib/japan-ranking-core";
-import { getCurrentJapanSeason, listJapanRankings, queueAutomaticJapanRankingsIfDue } from "@/lib/japan-rankings";
+import {
+  getCurrentJapanSeason,
+  listJapanRankings,
+  queueAutomaticJapanRankingsIfDue,
+  queueJapanProbableReadings
+} from "@/lib/japan-rankings";
 
 export const dynamic = "force-dynamic";
 
@@ -32,5 +37,7 @@ export function GET(request: NextRequest) {
     prefecture: params.get("prefecture")?.trim() || undefined
   });
   setTimeout(() => queueAutomaticJapanRankingsIfDue(), 0);
+  const importId = data.import && typeof data.import.id === "string" ? data.import.id : null;
+  if (importId) setTimeout(() => queueJapanProbableReadings(importId), 0);
   return NextResponse.json(data, { headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=300" } });
 }

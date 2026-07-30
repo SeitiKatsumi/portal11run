@@ -17,6 +17,8 @@ const navIcons: Record<string, LucideIcon> = {
   "/projetos/circuito-virtual-11run": Globe2,
   "/bolsas": Globe2,
   "/referencias/ranking-japao": Globe2,
+  "/referencias/ranking-noruega": Globe2,
+  "/referencias/ranking-eua": Globe2,
   "/apoie": HandHeart,
   "/apoie-o-projeto": ShoppingBag,
   "/apoie/patrocine": HeartHandshake,

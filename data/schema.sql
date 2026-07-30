@@ -829,3 +829,100 @@ CREATE INDEX IF NOT EXISTS idx_japan_imports_lookup
   ON japan_ranking_imports (season, gender, reference_age, event_meters, published, created_at);
 CREATE INDEX IF NOT EXISTS idx_japan_jobs_created
   ON japan_ranking_jobs (created_at);
+
+CREATE TABLE IF NOT EXISTS japan_ranking_ai_readings (
+  id TEXT PRIMARY KEY,
+  entity_type TEXT NOT NULL CHECK (entity_type IN ('athlete', 'team')),
+  original_text TEXT NOT NULL,
+  probable_romaji TEXT,
+  confidence REAL,
+  model TEXT,
+  status TEXT NOT NULL DEFAULT 'pending',
+  error_message TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE (entity_type, original_text)
+);
+
+CREATE INDEX IF NOT EXISTS idx_japan_ai_readings_status
+  ON japan_ranking_ai_readings (status, updated_at);
+
+CREATE TABLE IF NOT EXISTS international_ranking_imports (
+  id TEXT PRIMARY KEY,
+  country TEXT NOT NULL CHECK (country IN ('NO', 'US')),
+  source_key TEXT NOT NULL,
+  season INTEGER NOT NULL,
+  event_meters INTEGER NOT NULL,
+  gender TEXT NOT NULL CHECK (gender IN ('M', 'F')),
+  age_key TEXT NOT NULL,
+  age_label TEXT NOT NULL,
+  round_label TEXT,
+  source_url TEXT NOT NULL,
+  source_updated_at TEXT,
+  status TEXT NOT NULL,
+  record_count INTEGER NOT NULL DEFAULT 0,
+  diagnostic TEXT,
+  published INTEGER NOT NULL DEFAULT 0,
+  started_at TEXT NOT NULL,
+  completed_at TEXT,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS international_ranking_results (
+  id TEXT PRIMARY KEY,
+  import_batch_id TEXT NOT NULL,
+  dedupe_key TEXT NOT NULL,
+  country TEXT NOT NULL CHECK (country IN ('NO', 'US')),
+  source_key TEXT NOT NULL,
+  season INTEGER NOT NULL,
+  source_url TEXT NOT NULL,
+  gender TEXT NOT NULL CHECK (gender IN ('M', 'F')),
+  event_meters INTEGER NOT NULL,
+  age_key TEXT NOT NULL,
+  age_label TEXT NOT NULL,
+  athlete_age INTEGER,
+  position INTEGER NOT NULL,
+  performance TEXT NOT NULL,
+  performance_milliseconds INTEGER,
+  athlete_name TEXT NOT NULL,
+  team_name TEXT,
+  region_name TEXT,
+  birth_date TEXT,
+  birth_date_original TEXT,
+  meet_name TEXT,
+  meet_location TEXT,
+  performance_date TEXT,
+  performance_date_original TEXT,
+  round_label TEXT,
+  source_status TEXT,
+  collected_at TEXT NOT NULL,
+  UNIQUE (import_batch_id, dedupe_key),
+  FOREIGN KEY (import_batch_id) REFERENCES international_ranking_imports(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS international_ranking_jobs (
+  id TEXT PRIMARY KEY,
+  country TEXT NOT NULL CHECK (country IN ('NO', 'US')),
+  source_key TEXT NOT NULL,
+  season INTEGER NOT NULL,
+  event_meters INTEGER NOT NULL,
+  gender TEXT NOT NULL CHECK (gender IN ('M', 'F')),
+  age_key TEXT NOT NULL,
+  status TEXT NOT NULL,
+  progress INTEGER NOT NULL DEFAULT 0,
+  total INTEGER NOT NULL DEFAULT 1,
+  message TEXT,
+  requested_by TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  started_at TEXT,
+  completed_at TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_international_rankings_public
+  ON international_ranking_results (country, season, gender, age_key, event_meters, position);
+CREATE INDEX IF NOT EXISTS idx_international_rankings_batch
+  ON international_ranking_results (import_batch_id);
+CREATE INDEX IF NOT EXISTS idx_international_imports_lookup
+  ON international_ranking_imports (country, source_key, season, gender, age_key, event_meters, published, created_at);
+CREATE INDEX IF NOT EXISTS idx_international_jobs_created
+  ON international_ranking_jobs (created_at);

@@ -121,7 +121,11 @@
   position: relative;
   z-index: 1;
   display: grid;
-  min-height: 360px;
+  width: min(100%, 460px);
+  min-height: 0;
+  aspect-ratio: 1;
+  align-self: center;
+  justify-self: center;
   place-items: center;
   border: 1px solid var(--line);
   border-radius: 50%;
@@ -242,6 +246,14 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
+}
+
+.ageMapWide {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.ageMapFour {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .ageMap article {
@@ -672,6 +684,60 @@
   padding: clamp(24px, 4vw, 42px);
 }
 
+.sourceDirectory {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.7fr) minmax(0, 1.3fr);
+  gap: clamp(24px, 5vw, 64px);
+  margin-top: 18px;
+  padding: clamp(28px, 5vw, 58px);
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) + 4px);
+  background: var(--surface);
+}
+
+.sourceDirectory h2 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 4rem);
+  font-weight: 350;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.sourceDirectory p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.sourceDirectory > div:last-child {
+  display: grid;
+  gap: 10px;
+}
+
+.sourceDirectory a {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.65fr) minmax(160px, 1fr) auto;
+  min-height: 82px;
+  padding: 18px 20px;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-muted);
+  color: var(--text);
+  text-decoration: none;
+  transition: transform 160ms ease, border-color 160ms ease;
+}
+
+.sourceDirectory a:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.sourceDirectory a span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
 .privacy span {
   color: var(--accent-strong);
   font-size: 0.72rem;
@@ -696,14 +762,16 @@
 
 @media (max-width: 980px) {
   .hero,
-  .conversion {
+  .conversion,
+  .sourceDirectory {
     grid-template-columns: 1fr;
   }
 
   .orbit {
-    min-height: 300px;
-    aspect-ratio: 1.8;
-    border-radius: 999px;
+    width: min(100%, 420px);
+    min-height: 0;
+    aspect-ratio: 1;
+    border-radius: 50%;
   }
 
   .metrics {
@@ -729,7 +797,8 @@
   .hero,
   .conversion,
   .filters,
-  .rankingPanel {
+  .rankingPanel,
+  .sourceDirectory {
     padding: 24px 18px;
   }
 
@@ -738,7 +807,8 @@
   }
 
   .orbit {
-    min-height: 260px;
+    width: min(100%, 320px);
+    min-height: 0;
     aspect-ratio: 1;
     border-radius: 50%;
   }
@@ -746,6 +816,15 @@
   .metrics,
   .ageMap {
     grid-template-columns: 1fr;
+  }
+
+  .sourceDirectory a {
+    grid-template-columns: 1fr auto;
+  }
+
+  .sourceDirectory a span {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
 
   .metrics article {

@@ -19,6 +19,7 @@ const COOLDOWN_MS = 15 * 60 * 1000;
 const provider = new JaafRankingProvider();
 let database: DatabaseSync | undefined;
 const runningJobs = new Set<string>();
+const runningReadingBatches = new Set<string>();
 
 type EventConfigRow = {
   id: string;
@@ -147,14 +148,20 @@ export function listJapanRankings(query: JapanRankingQuery) {
   const results = published ? db.prepare(
     `SELECT * FROM (
        SELECT r.*,
-        COALESCE(ac.display_text, r.athlete_name_romaji) AS athlete_name_display,
-        COALESCE(tc.display_text, r.team_romaji) AS team_name_display,
+        COALESCE(ac.display_text, ar.probable_romaji, r.athlete_name_romaji) AS athlete_name_display,
+        CASE WHEN ac.display_text IS NOT NULL THEN 'manual' WHEN ar.probable_romaji IS NOT NULL THEN 'ai' ELSE NULL END AS athlete_reading_source,
+        COALESCE(tc.display_text, tr.probable_romaji, r.team_romaji) AS team_name_display,
+        CASE WHEN tc.display_text IS NOT NULL THEN 'manual' WHEN tr.probable_romaji IS NOT NULL THEN 'ai' ELSE NULL END AS team_reading_source,
         ROW_NUMBER() OVER (ORDER BY r.position ASC, r.performance_milliseconds ASC, r.id ASC) AS display_position
        FROM japan_ranking_results r
        LEFT JOIN japan_ranking_corrections ac
          ON ac.entity_type = 'athlete' AND ac.original_text = r.athlete_name_japanese
+       LEFT JOIN japan_ranking_ai_readings ar
+         ON ar.entity_type = 'athlete' AND ar.original_text = r.athlete_name_japanese AND ar.status = 'completed'
        LEFT JOIN japan_ranking_corrections tc
          ON tc.entity_type = 'team' AND tc.original_text = r.team_japanese
+       LEFT JOIN japan_ranking_ai_readings tr
+         ON tr.entity_type = 'team' AND tr.original_text = r.team_japanese AND tr.status = 'completed'
        WHERE r.import_batch_id = ? AND r.blocked = 0
      ) ranked
      ${clauses.length ? `WHERE ${clauses.join(" AND ")}` : ""}
@@ -373,9 +380,192 @@ export function getJapanRankingAdminData() {
       `SELECT athlete_name_japanese AS original_text, COUNT(*) AS occurrences
        FROM japan_ranking_results r JOIN japan_ranking_imports i ON i.id = r.import_batch_id
        LEFT JOIN japan_ranking_corrections c ON c.entity_type = 'athlete' AND c.original_text = r.athlete_name_japanese
-       WHERE i.published = 1 AND c.id IS NULL GROUP BY athlete_name_japanese ORDER BY occurrences DESC LIMIT 100`
+       LEFT JOIN japan_ranking_ai_readings a ON a.entity_type = 'athlete' AND a.original_text = r.athlete_name_japanese AND a.status = 'completed'
+       WHERE i.published = 1 AND c.id IS NULL AND a.id IS NULL GROUP BY athlete_name_japanese ORDER BY occurrences DESC LIMIT 100`
     ).all()
   };
+}
+
+function containsJapanese(value: string) {
+  return /[\u3040-\u30ff\u3400-\u9fff]/u.test(value);
+}
+
+function responseOutputText(payload: unknown) {
+  if (!payload || typeof payload !== "object") return "";
+  const direct = (payload as { output_text?: unknown }).output_text;
+  if (typeof direct === "string") return direct;
+  const output = (payload as { output?: unknown[] }).output;
+  if (!Array.isArray(output)) return "";
+  return output.flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const content = (item as { content?: unknown[] }).content;
+    if (!Array.isArray(content)) return [];
+    return content.map((part) => {
+      if (!part || typeof part !== "object") return "";
+      const text = (part as { text?: unknown }).text;
+      return typeof text === "string" ? text : "";
+    });
+  }).join("");
+}
+
+async function requestProbableReadings(items: Array<{ id: string; type: "athlete" | "team"; text: string }>) {
+  const apiKey = process.env.OPENAI_API_KEY?.trim();
+  if (!apiKey) throw new Error("A chave OpenAI existente não está disponível no ambiente do servidor.");
+  const model = process.env.OPENAI_TRANSLITERATION_MODEL?.trim()
+    || process.env.OPENAI_MODEL?.trim()
+    || "gpt-4.1-mini";
+  const response = await fetch("https://api.openai.com/v1/responses", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model,
+      store: false,
+      input: [
+        {
+          role: "system",
+          content: "Você é especialista em nomes próprios japoneses. Forneça a leitura em romaji mais provável de cada texto, em ordem natural e sem traduzir nomes próprios. Escolas e clubes devem receber uma romanização curta e legível. Leituras de nomes próprios podem variar; não invente dados além da leitura. Preserve cada id exatamente."
+        },
+        { role: "user", content: JSON.stringify(items) }
+      ],
+      text: {
+        format: {
+          type: "json_schema",
+          name: "japanese_probable_readings",
+          strict: true,
+          schema: {
+            type: "object",
+            properties: {
+              items: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    id: { type: "string" },
+                    probableRomaji: { type: "string" },
+                    confidence: { type: "number" }
+                  },
+                  required: ["id", "probableRomaji", "confidence"],
+                  additionalProperties: false
+                }
+              }
+            },
+            required: ["items"],
+            additionalProperties: false
+          }
+        }
+      },
+      max_output_tokens: 5000
+    }),
+    signal: AbortSignal.timeout(45_000)
+  });
+  if (!response.ok) {
+    const errorBody = await response.text();
+    throw new Error(`A geração de leituras respondeu com HTTP ${response.status}: ${errorBody.slice(0, 180)}`);
+  }
+  const payload = await response.json();
+  const parsed = JSON.parse(responseOutputText(payload)) as {
+    items?: Array<{ id?: string; probableRomaji?: string; confidence?: number }>;
+  };
+  return {
+    model,
+    items: Array.isArray(parsed.items) ? parsed.items : []
+  };
+}
+
+async function runProbableReadings(importBatchId: string, jobId: string) {
+  if (runningReadingBatches.has(importBatchId)) return;
+  runningReadingBatches.add(importBatchId);
+  const db = getDatabase();
+  try {
+    setJob(jobId, { status: "processing", started_at: isoNow(), message: "Preparando leituras prováveis..." });
+    const candidates = db.prepare(
+      `SELECT entity_type, original_text FROM (
+         SELECT 'athlete' AS entity_type, r.athlete_name_japanese AS original_text
+         FROM japan_ranking_results r
+         LEFT JOIN japan_ranking_corrections c ON c.entity_type = 'athlete' AND c.original_text = r.athlete_name_japanese
+         LEFT JOIN japan_ranking_ai_readings a ON a.entity_type = 'athlete' AND a.original_text = r.athlete_name_japanese AND a.status = 'completed'
+         WHERE r.import_batch_id = ? AND c.id IS NULL AND a.id IS NULL
+         UNION
+         SELECT 'team' AS entity_type, r.team_japanese AS original_text
+         FROM japan_ranking_results r
+         LEFT JOIN japan_ranking_corrections c ON c.entity_type = 'team' AND c.original_text = r.team_japanese
+         LEFT JOIN japan_ranking_ai_readings a ON a.entity_type = 'team' AND a.original_text = r.team_japanese AND a.status = 'completed'
+         WHERE r.import_batch_id = ? AND r.team_japanese IS NOT NULL AND c.id IS NULL AND a.id IS NULL
+       ) WHERE original_text IS NOT NULL`
+    ).all(importBatchId, importBatchId) as Array<{ entity_type: "athlete" | "team"; original_text: string }>;
+    const filtered = candidates.filter((item) => containsJapanese(item.original_text));
+    if (!filtered.length) {
+      setJob(jobId, { status: "completed", progress: 1, total: 1, message: "Todas as leituras já estão disponíveis.", completed_at: isoNow() });
+      return;
+    }
+    setJob(jobId, { total: filtered.length, progress: 0 });
+    let completed = 0;
+    for (let offset = 0; offset < filtered.length; offset += 40) {
+      const batch = filtered.slice(offset, offset + 40).map((item) => ({
+        id: createHash("sha256").update(`${item.entity_type}|${item.original_text}`).digest("hex").slice(0, 20),
+        type: item.entity_type,
+        text: item.original_text
+      }));
+      const lookup = new Map(batch.map((item) => [item.id, item]));
+      const generated = await requestProbableReadings(batch);
+      const stamp = isoNow();
+      const save = db.prepare(
+        `INSERT INTO japan_ranking_ai_readings
+         (id, entity_type, original_text, probable_romaji, confidence, model, status, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, 'completed', ?, ?)
+         ON CONFLICT(entity_type, original_text) DO UPDATE SET
+           probable_romaji = excluded.probable_romaji, confidence = excluded.confidence,
+           model = excluded.model, status = 'completed', error_message = NULL, updated_at = excluded.updated_at`
+      );
+      for (const result of generated.items) {
+        const original = result.id ? lookup.get(result.id) : undefined;
+        const reading = result.probableRomaji?.replace(/\s+/g, " ").trim();
+        if (!original || !reading || reading.length > 160 || containsJapanese(reading)) continue;
+        save.run(
+          randomUUID(), original.type, original.text, reading,
+          Math.min(1, Math.max(0, Number(result.confidence) || 0.5)),
+          generated.model, stamp, stamp
+        );
+      }
+      completed += batch.length;
+      setJob(jobId, { progress: completed, message: `${Math.min(completed, filtered.length)} de ${filtered.length} leituras preparadas.` });
+    }
+    setJob(jobId, { status: "completed", progress: filtered.length, message: "Leituras prováveis disponíveis.", completed_at: isoNow() });
+  } catch (error) {
+    setJob(jobId, {
+      status: "error",
+      message: error instanceof Error ? error.message : "Não foi possível gerar as leituras prováveis.",
+      completed_at: isoNow()
+    });
+  } finally {
+    runningReadingBatches.delete(importBatchId);
+  }
+}
+
+export function queueJapanProbableReadings(importBatchId: string, requestedBy = "automatic") {
+  if (!importBatchId || runningReadingBatches.has(importBatchId)) return null;
+  const db = getDatabase();
+  const target = db.prepare(
+    "SELECT season, event_meters, gender, reference_age FROM japan_ranking_imports WHERE id = ? AND published = 1"
+  ).get(importBatchId) as { season: number; event_meters: number; gender: string; reference_age: number } | undefined;
+  if (!target) return null;
+  const recent = db.prepare(
+    `SELECT id FROM japan_ranking_jobs WHERE kind = 'readings' AND season = ? AND event_meters = ?
+     AND gender = ? AND reference_age = ? AND status = 'completed' AND datetime(created_at) >= datetime(?)
+     ORDER BY datetime(created_at) DESC LIMIT 1`
+  ).get(target.season, target.event_meters, target.gender, target.reference_age, new Date(Date.now() - 30 * 60 * 1000).toISOString());
+  if (recent) return recent;
+  const id = randomUUID();
+  db.prepare(
+    `INSERT INTO japan_ranking_jobs
+     (id, kind, season, event_meters, gender, reference_age, status, progress, total, message, requested_by, created_at)
+     VALUES (?, 'readings', ?, ?, ?, ?, 'queued', 0, 1, 'Leituras prováveis na fila.', ?, ?)`
+  ).run(id, target.season, target.event_meters, target.gender, target.reference_age, requestedBy, isoNow());
+  setTimeout(() => void runProbableReadings(importBatchId, id), 0);
+  return getJapanRankingJob(id);
 }
 
 export function updateJapanRankingConfig(input: {
