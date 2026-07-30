@@ -2,6 +2,7 @@ import { createHash, randomUUID } from "node:crypto";
 import { mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { getChatSettings } from "@/lib/assistantStore";
 import { JaafRankingProvider } from "@/lib/jaaf-ranking-provider";
 import { prefectureInPortuguese } from "@/lib/japan-prefectures";
 import {
@@ -409,9 +410,11 @@ function responseOutputText(payload: unknown) {
 }
 
 async function requestProbableReadings(items: Array<{ id: string; type: "athlete" | "team"; text: string }>) {
-  const apiKey = process.env.OPENAI_API_KEY?.trim();
+  const settings = getChatSettings();
+  const apiKey = settings.openai_api_key?.trim() || process.env.OPENAI_API_KEY?.trim();
   if (!apiKey) throw new Error("A chave OpenAI existente não está disponível no ambiente do servidor.");
   const model = process.env.OPENAI_TRANSLITERATION_MODEL?.trim()
+    || settings.openai_model?.trim()
     || process.env.OPENAI_MODEL?.trim()
     || "gpt-4.1-mini";
   const response = await fetch("https://api.openai.com/v1/responses", {

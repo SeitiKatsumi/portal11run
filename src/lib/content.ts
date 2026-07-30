@@ -97,11 +97,11 @@ export const navItems: NavItem[] = [
   },
   {
     label: "Referências",
-    href: "/referencias/ranking-japao",
+    href: "/referencias/ranking-eua",
     children: [
+      { label: "Ranking nos EUA", href: "/referencias/ranking-eua" },
       { label: "Ranking no Japão", href: "/referencias/ranking-japao" },
-      { label: "Ranking na Noruega", href: "/referencias/ranking-noruega" },
-      { label: "Ranking nos EUA", href: "/referencias/ranking-eua" }
+      { label: "Ranking na Noruega", href: "/referencias/ranking-noruega" }
     ]
   },
   {

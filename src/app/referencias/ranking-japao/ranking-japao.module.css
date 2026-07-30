@@ -252,6 +252,20 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.ageMapWide article {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.ageMap.ageMapWide strong {
+  max-width: 100%;
+  font-size: clamp(2.4rem, 3vw, 3.35rem);
+  letter-spacing: -0.065em;
+  line-height: 0.92;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
 .ageMapFour {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
