@@ -13,11 +13,11 @@ const BASE_URL = `https://${NORWAY_HOST}/php/LandsStatistikk.php`;
 const USER_AGENT = "11RunInternationalReferences/1.0 (+https://11run.com.br/referencias/ranking-noruega)";
 
 const classIds: Record<InternationalGender, Record<NorwayAgeKey, number>> = {
-  M: { "13": 4, "14": 5, "15": 6, "16": 7 },
-  F: { "13": 15, "14": 16, "15": 17, "16": 18 }
+  M: { "13": 4, "14": 5, "15": 6, "16": 7, "17": 8, "18-19": 9 },
+  F: { "13": 15, "14": 16, "15": 17, "16": 18, "17": 19, "18-19": 20 }
 };
 
-const eventIds: Record<InternationalEvent, number> = { 800: 9, 1500: 11, 3000: 13 };
+const eventIds: Partial<Record<InternationalEvent, number>> = { 800: 9, 1500: 11, 3000: 13, 5000: 14 };
 
 function norwegianDateToIso(value: string, season: number) {
   const match = value.trim().match(/^(\d{1,2})\.(\d{1,2})\.(\d{2}|\d{4})$/);
@@ -40,9 +40,11 @@ export function buildNorwayRankingUrl(input: {
   ageKey: NorwayAgeKey;
   event: InternationalEvent;
 }) {
+  const eventId = eventIds[input.event];
+  if (!eventId) throw new Error("Esta prova não integra o ranking norueguês selecionado.");
   const url = new URL(BASE_URL);
   url.searchParams.set("showclass", String(classIds[input.gender][input.ageKey]));
-  url.searchParams.set("showevent", String(eventIds[input.event]));
+  url.searchParams.set("showevent", String(eventId));
   url.searchParams.set("outdoor", "Y");
   url.searchParams.set("showseason", String(input.season));
   url.searchParams.set("showclub", "0");
@@ -86,7 +88,7 @@ export function parseNorwayRankingHtml(
       performance,
       performanceMilliseconds: runningPerformanceToMilliseconds(performance),
       athleteName,
-      athleteAge: Number(ageKey),
+      athleteAge: ageKey === "18-19" ? undefined : Number(ageKey),
       teamName: teamName || undefined,
       birthDate: norwegianDateToIso(birthOriginal, season),
       birthDateOriginal: birthOriginal || undefined,

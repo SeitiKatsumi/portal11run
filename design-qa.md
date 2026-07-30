@@ -64,6 +64,48 @@ final result: passed
 
 ---
 
+# Design QA — navegação Referências / Rankings
+
+- Fonte visual: `C:\Users\User-PC\AppData\Local\Temp\codex-clipboard-0a8bd448-8fd7-4657-b9b1-b00722424aea.png`
+- Implementação: `C:\Users\User-PC\Documents\11run Portal 2\.design\rankings-menu-desktop.png`
+- Comparação combinada: `C:\Users\User-PC\Documents\11run Portal 2\.design\rankings-menu-comparison.png`
+- Fonte: 1380 × 353 px.
+- Implementação: 1265 × 712 px; viewport CSS interno informado pelo navegador: 1280 × 720, densidade 1.
+- Normalização: a implementação foi ampliada proporcionalmente para 1380 px de largura e recortada na mesma altura da referência.
+- Estado: `Referências` aberto e segunda camada `Rankings` expandida.
+
+## Comparação visual
+
+- A identidade da referência foi preservada: superfícies claras, borda fina, raios amplos, tipografia compacta em caixa alta, ícones lineares e sombra suave.
+- A alteração de arquitetura é intencional: a referência exibia os países diretamente; a implementação mostra primeiro `Rankings` e abre os sete rankings em uma segunda camada lateral.
+- O submenu secundário permanece dentro do viewport, sem overflow horizontal da página (`scrollWidth` igual a `clientWidth`, ambos 1265 px na área útil).
+- Brasil aparece primeiro, seguido por EUA, Japão, Noruega, Quênia, Uganda e Mundial.
+
+## Superfícies obrigatórias
+
+- Tipografia: família, pesos, espaçamento entre letras e hierarquia do cabeçalho preservados.
+- Espaçamento e ritmo: menus com 10 px de padding, itens de 38 px, raio do portal e corredor de 7 px entre camadas.
+- Cores e tokens: `--surface`, `--surface-muted`, `--line`, `--text`, `--muted` e `--accent-strong`, sem degradê.
+- Imagens e ícones: logo original preservado; ícones existentes da biblioteca Lucide, sem aproximações ou placeholders.
+- Conteúdo: rótulo `Rankings` e todos os destinos solicitados estão presentes e semanticamente agrupados.
+
+## Interações verificadas
+
+- Clique em `Referências` abre a primeira camada.
+- Clique ou hover em `Rankings` abre a segunda camada.
+- Foco por teclado mantém os dois níveis acessíveis e expõe `aria-expanded`.
+- No mobile, a mesma hierarquia usa `details/summary`, rolagem própria e fechamento ao selecionar um destino.
+- O override visual estreito do navegador integrado não alterou o viewport nesta sessão; a estrutura mobile foi conferida pelo DOM, pelas regras do breakpoint de 1060 px, pelo typecheck e pelo build.
+- Nenhum erro de console foi encontrado no estado testado.
+
+## Findings
+
+Nenhuma divergência P0, P1 ou P2 permanece no escopo solicitado. A diferença estrutural em relação à captura é o próprio requisito desta rodada.
+
+final result: passed
+
+---
+
 # Design QA — Soluções de Marketing
 
 - Briefing: `C:\Users\User-PC\.codex\attachments\580d28e2-5c55-4e38-b36e-fa871eae3086\pasted-text.txt`

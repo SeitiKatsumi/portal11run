@@ -97,11 +97,21 @@ export const navItems: NavItem[] = [
   },
   {
     label: "Referências",
-    href: "/referencias/ranking-eua",
+    href: "/referencias/ranking-brasil",
     children: [
-      { label: "Ranking nos EUA", href: "/referencias/ranking-eua" },
-      { label: "Ranking no Japão", href: "/referencias/ranking-japao" },
-      { label: "Ranking na Noruega", href: "/referencias/ranking-noruega" }
+      {
+        label: "Rankings",
+        href: "#rankings",
+        children: [
+          { label: "Ranking no Brasil", href: "/referencias/ranking-brasil" },
+          { label: "Ranking nos EUA", href: "/referencias/ranking-eua" },
+          { label: "Ranking no Japão", href: "/referencias/ranking-japao" },
+          { label: "Ranking na Noruega", href: "/referencias/ranking-noruega" },
+          { label: "Ranking no Quênia", href: "/referencias/ranking-quenia" },
+          { label: "Ranking em Uganda", href: "/referencias/ranking-uganda" },
+          { label: "Ranking Mundial", href: "/referencias/ranking-mundial" }
+        ]
+      }
     ]
   },
   {

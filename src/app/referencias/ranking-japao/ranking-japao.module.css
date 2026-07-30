@@ -391,7 +391,7 @@
 
 .secondaryFilters {
   display: grid;
-  grid-template-columns: 1fr 1fr 0.8fr auto;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 10px;
   margin-top: 12px;
 }
@@ -474,6 +474,29 @@
   color: var(--text);
 }
 
+.coverageBar {
+  display: flex;
+  margin-top: 20px;
+  padding: 14px 16px;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-muted);
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.coverageBar svg {
+  flex: 0 0 auto;
+  color: #34775a;
+}
+
+.coverageBar strong {
+  color: var(--text);
+}
+
 .statusError {
   border-color: color-mix(in srgb, var(--jp-red) 35%, var(--line));
   color: var(--jp-red);
@@ -496,7 +519,7 @@
 
 .desktopTable table {
   width: 100%;
-  min-width: 1130px;
+  min-width: 1240px;
   border-collapse: collapse;
 }
 
@@ -543,6 +566,19 @@
 
 .officialName {
   font-weight: 600;
+}
+
+.sourceBadge {
+  display: inline-flex !important;
+  width: fit-content;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--accent-strong);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .reviewStatus {
@@ -754,6 +790,29 @@
 .sourceDirectory a span {
   color: var(--muted);
   font-size: 0.78rem;
+}
+
+.sourceDirectory a > div {
+  display: grid;
+  gap: 7px;
+}
+
+.sourceDirectory a span small {
+  display: block;
+  margin-top: 6px;
+  color: var(--accent-strong);
+  font-size: 0.68rem;
+  font-weight: 650;
+}
+
+.sourceStatus {
+  width: fit-content;
+  padding: 4px 7px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 600;
 }
 
 .privacy span {

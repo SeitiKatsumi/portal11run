@@ -1,0 +1,33 @@
+name: Atualizar rankings internacionais
+
+on:
+  schedule:
+    - cron: "15 8 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Emitir credencial temporária do GitHub
+        id: oidc
+        run: |
+          response="$(curl --silent --show-error --fail \
+            --header "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=https%3A%2F%2F11run.com.br%2Fapi%2Fcron%2Freferences%2Fall-rankings")"
+          token="$(printf '%s' "$response" | jq --raw-output '.value')"
+          test -n "$token"
+          echo "::add-mask::$token"
+          echo "token=$token" >> "$GITHUB_OUTPUT"
+
+      - name: Acionar atualização diária
+        run: |
+          curl --fail-with-body --retry 3 --retry-delay 10 \
+            --request POST \
+            --header "Authorization: Bearer ${{ steps.oidc.outputs.token }}" \
+            https://11run.com.br/api/cron/references/all-rankings

@@ -79,9 +79,16 @@ function seedHome(db: DatabaseSync) {
        )`
   ).run(
     "/assets/home/homevideo.mp4",
-    "O maior ecossistema de amor ao fundismo do mundo",
+    "Ecossistema de Inteligência aplicada ao fundismo no Brasil",
     timestamp
   );
+
+  db.prepare(
+    `UPDATE home_settings
+     SET hero_title = ?, updated_at = ?
+     WHERE id = 'primary'
+       AND hero_title = 'O maior ecossistema de amor ao fundismo do mundo'`
+  ).run("Ecossistema de Inteligência aplicada ao fundismo no Brasil", timestamp);
 
   db.prepare(
     `UPDATE home_settings

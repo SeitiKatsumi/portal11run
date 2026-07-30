@@ -4,7 +4,12 @@ import {
   buildJaafRankingUrl,
   parseJaafRankingHtml
 } from "../src/lib/jaaf-ranking-provider.ts";
-import { jaafDateToIso, performanceToMilliseconds } from "../src/lib/japan-ranking-core.ts";
+import {
+  jaafDateToIso,
+  japanSchoolLevel,
+  performanceToMilliseconds,
+  referenceAgeToSchoolYear
+} from "../src/lib/japan-ranking-core.ts";
 
 test("monta somente URLs oficiais da JAAF", () => {
   const url = buildJaafRankingUrl({
@@ -33,6 +38,24 @@ test("normaliza marca e data japonesas", () => {
   assert.equal(performanceToMilliseconds("2:05.59"), 125_590);
   assert.equal(performanceToMilliseconds("59.42"), 59_420);
   assert.equal(jaafDateToIso("6月20日", 2026), "2026-06-20");
+});
+
+test("converte o colegial japonês até a referência Sub-20", () => {
+  assert.equal(japanSchoolLevel(14), "junior");
+  assert.equal(japanSchoolLevel(17), "high");
+  assert.equal(referenceAgeToSchoolYear(15), 1);
+  assert.equal(referenceAgeToSchoolYear(17), 3);
+  const url = buildJaafRankingUrl({
+    baseUrl: "https://www.jaaf.or.jp/remote/highschool/2026/ranking/",
+    season: 2026,
+    event: 5000,
+    eventId: 106,
+    typeId: 1,
+    gender: "M",
+    schoolYear: 3
+  });
+  assert.match(url, /highschool/);
+  assert.match(url, /event_id=106/);
 });
 
 test("parser identifica colunas pelo cabeçalho e preserva o japonês", () => {

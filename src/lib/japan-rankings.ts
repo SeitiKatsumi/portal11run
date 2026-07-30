@@ -9,6 +9,7 @@ import {
   japanAges,
   japanEvents,
   japanGenders,
+  japanSchoolLevel,
   referenceAgeToSchoolYear,
   type JapanAge,
   type JapanEvent,
@@ -55,12 +56,50 @@ function getDatabase() {
   database.exec("PRAGMA journal_mode = WAL;");
   database.exec("PRAGMA foreign_keys = ON;");
   database.exec(readFileSync(path.join(process.cwd(), "data/schema.sql"), "utf8"));
+  migrateJapanEventConfig(database);
   const seasonColumns = database.prepare("PRAGMA table_info(japan_ranking_seasons)").all() as Array<{ name: string }>;
   if (!seasonColumns.some((column) => column.name === "refresh_interval_hours")) {
     database.exec("ALTER TABLE japan_ranking_seasons ADD COLUMN refresh_interval_hours INTEGER NOT NULL DEFAULT 24;");
   }
   seedJapanRankingConfiguration(database);
   return database;
+}
+
+function migrateJapanEventConfig(db: DatabaseSync) {
+  const table = db.prepare(
+    "SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'japan_ranking_event_configs'"
+  ).get() as { sql?: string } | undefined;
+  if (!table?.sql || table.sql.includes("5000")) return;
+  db.exec("PRAGMA foreign_keys = OFF;");
+  try {
+    db.exec(`
+      BEGIN IMMEDIATE;
+      ALTER TABLE japan_ranking_event_configs RENAME TO japan_ranking_event_configs_legacy;
+      CREATE TABLE japan_ranking_event_configs (
+        id TEXT PRIMARY KEY,
+        season INTEGER NOT NULL,
+        event_meters INTEGER NOT NULL CHECK (event_meters IN (800, 1500, 3000, 5000)),
+        gender TEXT NOT NULL CHECK (gender IN ('M', 'F')),
+        event_id INTEGER,
+        type_id INTEGER NOT NULL DEFAULT 1,
+        active INTEGER NOT NULL DEFAULT 1,
+        source_note TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        UNIQUE (season, event_meters, gender),
+        FOREIGN KEY (season) REFERENCES japan_ranking_seasons(year)
+      );
+      INSERT INTO japan_ranking_event_configs
+        SELECT * FROM japan_ranking_event_configs_legacy;
+      DROP TABLE japan_ranking_event_configs_legacy;
+      COMMIT;
+    `);
+  } catch (error) {
+    try { db.exec("ROLLBACK;"); } catch {}
+    throw error;
+  } finally {
+    db.exec("PRAGMA foreign_keys = ON;");
+  }
 }
 
 function seedJapanRankingConfiguration(db: DatabaseSync) {
@@ -75,18 +114,45 @@ function seedJapanRankingConfiguration(db: DatabaseSync) {
     [800, "M", 104, 1, null],
     [1500, "M", 105, 1, null],
     [3000, "M", 144, 1, null],
+    [5000, "M", 106, 1, "Disponível no ranking colegial masculino da JAAF."],
     [800, "F", 124, 1, null],
     [1500, "F", 125, 1, null],
-    [3000, "F", null, 0, "Os 3.000 m femininos não constam no seletor oficial escolar da JAAF em 2026."]
+    [3000, "F", 149, 1, "Disponível no ranking colegial feminino da JAAF."],
+    [5000, "F", null, 0, "Os 5.000 m femininos não constam no ranking colegial conectado da JAAF em 2026."]
   ];
   const insert = db.prepare(
-    `INSERT OR IGNORE INTO japan_ranking_event_configs
+    `INSERT INTO japan_ranking_event_configs
       (id, season, event_meters, gender, event_id, type_id, active, source_note, created_at, updated_at)
-     VALUES (?, 2026, ?, ?, ?, 1, ?, ?, ?, ?)`
+     VALUES (?, 2026, ?, ?, ?, 1, ?, ?, ?, ?)
+     ON CONFLICT(id) DO UPDATE SET
+       event_id = excluded.event_id,
+       active = excluded.active,
+       source_note = excluded.source_note,
+       updated_at = excluded.updated_at`
   );
   for (const [event, gender, eventId, active, note] of configs) {
     insert.run(`2026-${gender}-${event}`, event, gender, eventId, active, note, now, now);
   }
+}
+
+function categoryAvailability(age: JapanAge, event: JapanEvent, gender: JapanGender, config?: EventConfigRow) {
+  if (!config?.active || !config.event_id) {
+    return { available: false, note: config?.source_note ?? "Categoria ainda não configurada." };
+  }
+  const level = japanSchoolLevel(age);
+  if (level === "junior" && ((gender === "F" && event === 3000) || event === 5000)) {
+    return { available: false, note: "Esta prova não consta no ranking ginasial oficial da JAAF para a categoria selecionada." };
+  }
+  if (level === "high" && ((gender === "M" && event === 3000) || (gender === "F" && event === 5000))) {
+    return { available: false, note: "Esta prova não consta no ranking colegial oficial da JAAF para a categoria selecionada." };
+  }
+  return { available: true, note: config.source_note };
+}
+
+function sourceUrlForAge(baseUrl: string, age: JapanAge) {
+  const level = japanSchoolLevel(age);
+  if (level === "high") return baseUrl.replace("/juniorhighschool/", "/highschool/");
+  return baseUrl.replace("/highschool/", "/juniorhighschool/");
 }
 
 function getSeason(year: number) {
@@ -124,6 +190,7 @@ export function getCurrentJapanSeason() {
 export function listJapanRankings(query: JapanRankingQuery) {
   const db = getDatabase();
   const config = getEventConfig(query.season, query.event, query.gender);
+  const availability = categoryAvailability(query.age, query.event, query.gender, config);
   const published = db.prepare(
     `SELECT * FROM japan_ranking_imports
      WHERE season = ? AND gender = ? AND reference_age = ? AND event_meters = ? AND published = 1
@@ -153,7 +220,7 @@ export function listJapanRankings(query: JapanRankingQuery) {
         CASE WHEN ac.display_text IS NOT NULL THEN 'manual' WHEN ar.probable_romaji IS NOT NULL THEN 'ai' ELSE NULL END AS athlete_reading_source,
         COALESCE(tc.display_text, tr.probable_romaji, r.team_romaji) AS team_name_display,
         CASE WHEN tc.display_text IS NOT NULL THEN 'manual' WHEN tr.probable_romaji IS NOT NULL THEN 'ai' ELSE NULL END AS team_reading_source,
-        ROW_NUMBER() OVER (ORDER BY r.position ASC, r.performance_milliseconds ASC, r.id ASC) AS display_position
+        ROW_NUMBER() OVER (ORDER BY COALESCE(r.performance_milliseconds, 999999999) ASC, r.position ASC, r.id ASC) AS display_position
        FROM japan_ranking_results r
        LEFT JOIN japan_ranking_corrections ac
          ON ac.entity_type = 'athlete' AND ac.original_text = r.athlete_name_japanese
@@ -179,9 +246,9 @@ export function listJapanRankings(query: JapanRankingQuery) {
   return {
     season: query.season,
     config: config ? {
-      available: Boolean(config.active && config.event_id),
+      available: availability.available,
       eventId: config.event_id,
-      note: config.source_note
+      note: availability.note
     } : { available: false, eventId: null, note: "Categoria ainda não configurada." },
     import: published ?? null,
     count: results.length,
@@ -202,13 +269,14 @@ async function refreshOne(jobId: string, query: Omit<JapanRankingQuery, "limit" 
   const db = getDatabase();
   const season = getSeason(query.season);
   const config = getEventConfig(query.season, query.event, query.gender);
+  const availability = categoryAvailability(query.age, query.event, query.gender, config);
   if (!season) throw new Error("Temporada não encontrada ou inativa.");
-  if (!config?.active || !config.event_id) throw new Error(config?.source_note ?? "Categoria indisponível na fonte oficial.");
+  if (!config?.event_id || !availability.available) throw new Error(availability.note ?? "Categoria indisponível na fonte oficial.");
 
   setJob(jobId, { status: "fetching", message: "Verificando fonte oficial...", started_at: isoNow() });
   const schoolYear = referenceAgeToSchoolYear(query.age);
   const collected = await provider.fetchRanking({
-    baseUrl: season.base_url,
+    baseUrl: sourceUrlForAge(season.base_url, query.age),
     season: query.season,
     event: query.event,
     eventId: config.event_id,
@@ -299,8 +367,9 @@ export function queueJapanRankingRefresh(
   if (recent) return { job: recent, recent: true };
 
   const config = getEventConfig(query.season, query.event, query.gender);
-  if (!config?.active || !config.event_id) {
-    throw new Error(config?.source_note ?? "Categoria indisponível na fonte oficial.");
+  const availability = categoryAvailability(query.age, query.event, query.gender, config);
+  if (!config?.event_id || !availability.available) {
+    throw new Error(availability.note ?? "Categoria indisponível na fonte oficial.");
   }
   const id = randomUUID();
   const now = isoNow();
@@ -328,6 +397,7 @@ async function runAllJob(id: string, season: number) {
         const config = getEventConfig(season, event, gender);
         if (!config?.active || !config.event_id) continue;
         for (const age of japanAges) {
+          if (!categoryAvailability(age, event, gender, config).available) continue;
           try {
             await refreshOne(id, { season, gender, event, age });
           } catch (error) {
@@ -349,9 +419,15 @@ async function runAllJob(id: string, season: number) {
 
 export function queueAllJapanRankings(season = getCurrentJapanSeason(), requestedBy = "admin") {
   const db = getDatabase();
-  const activeCount = (db.prepare(
-    "SELECT COUNT(*) AS count FROM japan_ranking_event_configs WHERE season = ? AND active = 1 AND event_id IS NOT NULL"
-  ).get(season) as { count: number }).count * 3;
+  let activeCount = 0;
+  for (const gender of japanGenders) {
+    for (const event of japanEvents) {
+      const config = getEventConfig(season, event, gender);
+      for (const age of japanAges) {
+        if (categoryAvailability(age, event, gender, config).available) activeCount += 1;
+      }
+    }
+  }
   const id = randomUUID();
   db.prepare(
     `INSERT INTO japan_ranking_jobs

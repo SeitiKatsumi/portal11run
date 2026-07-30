@@ -1,15 +1,20 @@
-export const internationalEvents = [800, 1500, 3000] as const;
+export const internationalEvents = [800, 1500, 2000, 3000, 5000, 10000] as const;
 export const internationalGenders = ["M", "F"] as const;
-export const internationalCountries = ["NO", "US"] as const;
-export const norwayAgeKeys = ["13", "14", "15", "16"] as const;
+export const internationalCountries = ["BR", "KE", "NO", "UG", "US", "WORLD"] as const;
+export const brazilAgeKeys = ["sub16", "sub18"] as const;
+export const norwayAgeKeys = ["13", "14", "15", "16", "17", "18-19"] as const;
 export const usaAgeKeys = ["8-under", "9-10", "11-12", "13-14", "15-16", "17-18"] as const;
+export const worldAthleticsYouthAgeKeys = ["u18", "u20"] as const;
+export const worldAthleticsAgeKeys = ["u18", "u20", "senior"] as const;
 
 export type InternationalEvent = (typeof internationalEvents)[number];
 export type InternationalGender = (typeof internationalGenders)[number];
 export type InternationalCountry = (typeof internationalCountries)[number];
+export type BrazilAgeKey = (typeof brazilAgeKeys)[number];
 export type NorwayAgeKey = (typeof norwayAgeKeys)[number];
 export type UsaAgeKey = (typeof usaAgeKeys)[number];
-export type InternationalAgeKey = NorwayAgeKey | UsaAgeKey;
+export type WorldAthleticsAgeKey = (typeof worldAthleticsAgeKeys)[number];
+export type InternationalAgeKey = BrazilAgeKey | NorwayAgeKey | UsaAgeKey | WorldAthleticsAgeKey;
 
 export type InternationalRankingQuery = {
   country: InternationalCountry;
@@ -22,6 +27,7 @@ export type InternationalRankingQuery = {
   search?: string;
   team?: string;
   region?: string;
+  resultSource?: string;
 };
 
 export type ParsedInternationalRanking = {
@@ -46,25 +52,38 @@ export type ParsedInternationalRanking = {
     performanceDateOriginal?: string;
     roundLabel?: string;
     sourceStatus?: string;
+    sourceKey?: string;
+    sourceUrl?: string;
   }>;
 };
 
 export const countryAgeKeys: Record<InternationalCountry, readonly InternationalAgeKey[]> = {
+  BR: brazilAgeKeys,
+  KE: worldAthleticsYouthAgeKeys,
   NO: norwayAgeKeys,
-  US: usaAgeKeys
+  UG: worldAthleticsYouthAgeKeys,
+  US: usaAgeKeys,
+  WORLD: worldAthleticsAgeKeys
 };
 
 export const ageLabels: Record<InternationalAgeKey, string> = {
+  sub16: "Sub-16",
+  sub18: "Sub-18",
   "13": "13 anos",
   "14": "14 anos",
   "15": "15 anos",
   "16": "16 anos",
+  "17": "17 anos",
+  "18-19": "Sub-20 (18–19 anos)",
   "8-under": "8 anos e abaixo",
   "9-10": "9–10 anos",
   "11-12": "11–12 anos",
   "13-14": "13–14 anos",
   "15-16": "15–16 anos",
-  "17-18": "17–18 anos"
+  "17-18": "Sub-20 (17–18 anos)",
+  u18: "Sub-18",
+  u20: "Sub-20",
+  senior: "Adulto"
 };
 
 export function isInternationalCountry(value: unknown): value is InternationalCountry {

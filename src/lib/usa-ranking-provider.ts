@@ -71,6 +71,9 @@ function expectedGenderWord(gender: InternationalGender, ageKey: UsaAgeKey) {
 }
 
 export function usaCategoryAvailability(ageKey: UsaAgeKey, event: InternationalEvent) {
+  if (![800, 1500, 3000].includes(event)) {
+    return { available: false, note: "A referência juvenil conectada dos EUA disponibiliza 800 m, 1.500 m e 3.000 m." };
+  }
   if (event === 3000 && (ageKey === "8-under" || ageKey === "9-10")) {
     return { available: false, note: "Os 3.000 m não constam no programa oficial da USATF para esta faixa etária." };
   }
@@ -239,7 +242,9 @@ export class UsaRankingProvider {
         performanceDate: selected.round?.completed_at?.slice(0, 10),
         performanceDateOriginal: scheduled,
         roundLabel: selected.roundLabel,
-        sourceStatus: selected.sourceStatus
+        sourceStatus: selected.sourceStatus,
+        sourceKey: "usatf-national-jo-2026",
+        sourceUrl: `${LIVE_RESULTS_URL}/${eventKey}/${selected.roundKey}`
       };
     });
 

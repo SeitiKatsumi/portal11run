@@ -13,6 +13,8 @@ import {
   queueInternationalRankingRefresh,
   sourceKeyForCountry
 } from "@/lib/international-rankings";
+import { refreshBrazilRanking } from "@/lib/brazil-rankings";
+import { refreshWorldAthleticsRanking } from "@/lib/world-athletics-rankings";
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,6 +30,33 @@ export async function POST(request: NextRequest) {
       || !isInternationalEvent(body.event)
     ) {
       return NextResponse.json({ error: "Parâmetros de atualização inválidos." }, { status: 400 });
+    }
+    if (country === "BR") {
+      const snapshot = await refreshBrazilRanking({
+        season: Number(body.season),
+        gender: String(body.gender).toUpperCase() as InternationalGender,
+        ageKey: String(body.age) as "sub16" | "sub18",
+        event: Number(body.event) as InternationalEvent
+      });
+      return NextResponse.json({
+        status: "completed",
+        recent: false,
+        message: `${snapshot.record_count} marcas oficiais da CBAt organizadas.`
+      });
+    }
+    if (country === "KE" || country === "UG" || country === "WORLD") {
+      const snapshot = await refreshWorldAthleticsRanking({
+        scope: country,
+        season: Number(body.season),
+        gender: String(body.gender).toUpperCase() as InternationalGender,
+        ageKey: String(body.age) as "u18" | "u20" | "senior",
+        event: Number(body.event) as InternationalEvent
+      });
+      return NextResponse.json({
+        status: "completed",
+        recent: false,
+        message: `${snapshot.record_count} melhores tempos oficiais organizados.`
+      });
     }
     const result = queueInternationalRankingRefresh({
       country,

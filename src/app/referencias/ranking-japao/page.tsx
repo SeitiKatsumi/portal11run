@@ -7,7 +7,7 @@ import styles from "./ranking-japao.module.css";
 
 export const metadata: Metadata = {
   title: "Ranking de Atletismo de Base no Japão | 11Run",
-  description: "Confira rankings japoneses de 800 m, 1.500 m e 3.000 m para jovens de 12, 13 e 14 anos, organizados e apresentados em português pela tecnologia 11Run."
+  description: "Rankings escolares japoneses de 800 m a 5.000 m, do ginasial ao Sub-20, organizados em português pela tecnologia 11Run."
 };
 
 export default function JapanRankingPage() {
@@ -22,9 +22,9 @@ export default function JapanRankingPage() {
           <span className={styles.eyebrow}><Radio size={14} /> Dados internacionais</span>
           <h1>Ranking do Atletismo de Base no Japão</h1>
           <p className={styles.lead}>A tecnologia 11Run aproxima nossos atletas das principais referências mundiais.</p>
-          <p>A 11Run consulta os rankings oficiais do atletismo escolar japonês, organiza os resultados e converte as categorias para a realidade brasileira. Os resultados esportivos não são alterados: a tecnologia apenas coleta, estrutura e apresenta a informação com mais clareza.</p>
+          <p>A 11Run consulta as bases oficiais ginasial e colegial da JAAF, organiza os resultados e converte as séries em idades de referência. Os resultados esportivos não são alterados: a tecnologia apenas coleta, estrutura e apresenta a informação com mais clareza.</p>
           <a className={styles.sourceButton} href="https://www.jaaf.or.jp/remote/juniorhighschool/2026/ranking/" target="_blank" rel="noopener noreferrer">
-            Acessar fonte oficial <ArrowUpRight size={17} />
+            Ranking ginasial JAAF <ArrowUpRight size={17} />
           </a>
         </div>
         <div className={styles.orbit} aria-hidden="true">
@@ -35,7 +35,7 @@ export default function JapanRankingPage() {
         <div className={styles.metrics}>
           <article><Globe2 size={18} /><span>Fonte oficial</span><strong>JAAF</strong></article>
           <article><Database size={18} /><span>Temporada</span><strong>2026</strong></article>
-          <article><Radio size={18} /><span>Por ranking</span><strong>Até 100 atletas</strong></article>
+          <article><Radio size={18} /><span>Cobertura</span><strong>Ginasial ao Sub-20</strong></article>
           <article><Languages size={18} /><span>Camada 11Run</span><strong>Organizado em português</strong></article>
         </div>
       </section>
@@ -46,12 +46,11 @@ export default function JapanRankingPage() {
           <h2>Como convertemos as categorias japonesas</h2>
           <p>No Japão, os rankings escolares são organizados por ano escolar. Para facilitar a leitura no Brasil, a 11Run adota uma idade de referência, preservando sempre a série original.</p>
         </div>
-        <div className={styles.ageMap}>
-          <article><strong>12</strong><span>anos</span><small><b lang="ja">1年 / 1年生</b>Ichi-nensei</small></article>
-          <article><strong>13</strong><span>anos</span><small><b lang="ja">2年 / 2年生</b>Ni-nensei</small></article>
-          <article><strong>14</strong><span>anos</span><small><b lang="ja">3年 / 3年生</b>San-nensei</small></article>
+        <div className={`${styles.ageMap} ${styles.ageMapWide}`}>
+          {[12, 13, 14].map((age, index) => <article key={age}><strong>{age}</strong><span>anos</span><small><b lang="ja">{index + 1}年 · ginasial</b>JAAF junior high</small></article>)}
+          {[15, 16, 17].map((age, index) => <article key={age}><strong>{age}</strong><span>{age === 17 ? "Sub-20" : "anos"}</span><small><b lang="ja">{index + 1}年 · colegial</b>JAAF high school</small></article>)}
         </div>
-        <p className={styles.note}>Essa é uma equivalência de referência adotada pela 11Run. Como o calendário escolar japonês começa em abril, atletas da mesma série podem apresentar pequenas diferenças de idade e data de nascimento.</p>
+        <p className={styles.note}>Essa é uma equivalência de referência adotada pela 11Run. As provas variam por nível e gênero: 800 m e 1.500 m são amplas; 3.000 m e 5.000 m aparecem somente onde a JAAF as publica. Como o calendário escolar começa em abril, atletas da mesma série podem apresentar pequenas diferenças de idade.</p>
       </section>
 
       <Suspense fallback={<div className={styles.loading}>Preparando filtros internacionais...</div>}>
@@ -60,7 +59,7 @@ export default function JapanRankingPage() {
 
       <section className={styles.privacy}>
         <span>Transparência da fonte</span>
-        <p>Os resultados apresentados são informações esportivas públicas disponibilizadas pela JAAF. A 11Run atua como uma plataforma independente de organização e referência, sem vínculo institucional ou representação oficial da federação japonesa. Em caso de divergência, prevalece sempre a informação publicada na fonte original.</p>
+        <p>Os resultados apresentados vêm dos rankings ginasial e colegial disponibilizados pela JAAF. A 11Run atua como plataforma independente de organização e referência, sem vínculo institucional ou representação oficial. Em caso de divergência, prevalece sempre a informação publicada na fonte original.</p>
       </section>
     </main>
   );

@@ -134,14 +134,14 @@ O container usa `SQLITE_PATH=/data/portal11run.sqlite`, então o banco fica pres
 
 As avaliações enviadas pelo formulário “Treine com o Alex” ficam disponíveis em `/admin/alex-lopes` e são persistidas em `/data/alex-lopes-applications.json`. Áudios opcionais são armazenados no diretório configurado por `UPLOAD_DIR` (`/data/uploads` no container).
 
-## Referências internacionais — JAAF
+## Referências e rankings internacionais
 
-A página pública fica em `/referencias/ranking-japao` e consulta somente lotes validados no SQLite. A coleta da fonte oficial acontece no backend, com allowlist para `jaaf.or.jp`, timeout, fila persistida e preservação do último lote publicado.
+O menu `Referências > Rankings` reúne Brasil, EUA, Japão, Noruega, Quênia, Uganda e o ranking mundial. As páginas exibem até os 100 melhores tempos das provas de meio-fundo e fundo em pista, sem pontuação editorial.
 
 - Painel: `/admin/referencias-japao`
 - Consulta: `GET /api/references/japan-rankings`
 - Atualização de uma categoria: `POST /api/references/japan-rankings/refresh`
 - Atualização completa: `POST /api/admin/references/japan-rankings/refresh-all`
-- Rotina diária: `POST /api/cron/references/japan-rankings`
+- Rotina diária unificada: `POST /api/cron/references/all-rankings`
 
-Configure `CRON_SECRET` e programe uma chamada diária ao endpoint de rotina com o cabeçalho `Authorization: Bearer <CRON_SECRET>`. A frequência efetiva também pode ser ajustada no painel; a API pública faz uma verificação de segurança caso a rotina externa esteja atrasada.
+O workflow `.github/workflows/daily-rankings.yml` executa às 08h15 UTC (05h15 em Brasília) e autentica cada chamada com uma credencial OIDC temporária e restrita ao repositório e ao workflow. `CRON_SECRET` continua aceito como alternativa para agendadores externos já existentes.

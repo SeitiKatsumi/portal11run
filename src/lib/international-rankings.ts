@@ -3,24 +3,25 @@ import { mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import {
-  ageLabels,
   type InternationalRankingQuery,
   type NorwayAgeKey,
   type UsaAgeKey
 } from "@/lib/international-ranking-core";
 import { NorwayRankingProvider } from "@/lib/norway-ranking-provider";
-import { UsaRankingProvider, usaCategoryAvailability } from "@/lib/usa-ranking-provider";
+import { usaCategoryAvailability } from "@/lib/usa-ranking-provider";
+import { UsaUnifiedRankingProvider } from "@/lib/usa-unified-ranking-provider";
+import { connectedUsaRankingSources, usaRankingSources } from "@/lib/usa-ranking-sources";
 
 const COOLDOWN_MS = 10 * 60 * 1000;
 const STALE_MS = 6 * 60 * 60 * 1000;
 const norwayProvider = new NorwayRankingProvider();
-const usaProvider = new UsaRankingProvider();
+const usaProvider = new UsaUnifiedRankingProvider();
 const runningJobs = new Set<string>();
 let database: DatabaseSync | undefined;
 
 const sourceKeys = {
   NO: "minfriidrett-2026",
-  US: "usatf-jo-2026-v2"
+  US: "usa-unified-2026-v3"
 } as const;
 
 function now() {
@@ -44,10 +45,22 @@ export function sourceKeyForCountry(country: "NO" | "US") {
 
 export function internationalCategoryConfig(query: Pick<InternationalRankingQuery, "country" | "ageKey" | "event">) {
   if (query.country === "US") return usaCategoryAvailability(query.ageKey as UsaAgeKey, query.event);
+  if (query.country === "NO" && query.event === 2000) {
+    return { available: false, note: "Os 2.000 m não integram esta consulta nacional norueguesa." };
+  }
   return { available: true, note: null };
 }
 
-export function internationalSourceInfo(country: "NO" | "US") {
+export function internationalSourceInfo(country: InternationalRankingQuery["country"]) {
+  if (country === "BR") {
+    return {
+      key: "cbat-ranking-2026",
+      name: "Ranking Brasileiro CBAt 2026",
+      authority: "Confederação Brasileira de Atletismo",
+      sourceUrl: "https://cbat.org.br/ranking?ano=2026&ranking=0",
+      supportingSources: []
+    };
+  }
   if (country === "NO") {
     return {
       key: sourceKeys.NO,
@@ -59,14 +72,10 @@ export function internationalSourceInfo(country: "NO" | "US") {
   }
   return {
     key: sourceKeys.US,
-    name: "USATF National Junior Olympics 2026",
-    authority: "Resultados oficiais da competição",
-    sourceUrl: "https://www.usatf.org/events/2026/2026-usatf-national-junior-olympic-track-field-cha",
-    supportingSources: [
-      { name: "USATF Youth", url: "https://www.usatf.org/programs/youth" },
-      { name: "Athletic.net", url: "https://www.athletic.net/TrackAndField/Division/Top.aspx?Meet=644030" },
-      { name: "AAU Results & Rankings", url: "https://www.aausports.org/track-and-field/resultsrankings/" }
-    ]
+    name: "Ranking juvenil unificado dos EUA",
+    authority: "Marcas oficiais USATF + AAU",
+    sourceUrl: "https://www.usatf.org/programs/youth",
+    supportingSources: usaRankingSources.map((source) => ({ name: source.name, url: source.sourceUrl }))
   };
 }
 
@@ -115,6 +124,10 @@ export function listInternationalRankings(query: InternationalRankingQuery) {
     clauses.push("ranked.region_name = ?");
     values.push(query.region);
   }
+  if (query.resultSource) {
+    clauses.push("ranked.source_key = ?");
+    values.push(query.resultSource);
+  }
   values.push(Math.min(100, Math.max(1, query.limit ?? 100)));
   const results = published ? db.prepare(
     `SELECT * FROM (
@@ -141,7 +154,8 @@ export function listInternationalRankings(query: InternationalRankingQuery) {
     import: published ?? null,
     count: results.length,
     results,
-    regions
+    regions,
+    resultSources: query.country === "US" ? connectedUsaRankingSources() : []
   };
 }
 
@@ -153,7 +167,7 @@ function setJob(id: string, fields: Record<string, string | number | null>) {
   ).run(...entries.map(([, value]) => value), id);
 }
 
-async function refreshOne(jobId: string, query: Omit<InternationalRankingQuery, "limit" | "search" | "team" | "region">) {
+async function refreshOne(jobId: string, query: Omit<InternationalRankingQuery, "limit" | "search" | "team" | "region" | "resultSource">) {
   const config = internationalCategoryConfig(query);
   if (!config.available) throw new Error(config.note ?? "Categoria indisponível na fonte.");
   setJob(jobId, { status: "fetching", message: "Consultando a fonte de referência...", started_at: now() });
@@ -203,7 +217,7 @@ async function refreshOne(jobId: string, query: Omit<InternationalRankingQuery, 
           ageKey: query.ageKey, athlete: row.athleteName, performance: row.performance,
           date: row.performanceDate, team: row.teamName
         }),
-        query.country, query.sourceKey, query.season, collected.sourceUrl, query.gender, query.event,
+        query.country, row.sourceKey ?? query.sourceKey, query.season, row.sourceUrl ?? collected.sourceUrl, query.gender, query.event,
         query.ageKey, collected.ageLabel, row.athleteAge ?? null, row.position, row.performance,
         row.performanceMilliseconds ?? null, row.athleteName, row.teamName ?? null, row.regionName ?? null,
         row.birthDate ?? null, row.birthDateOriginal ?? null, row.meetName ?? null, row.meetLocation ?? null,
@@ -230,7 +244,7 @@ async function refreshOne(jobId: string, query: Omit<InternationalRankingQuery, 
   });
 }
 
-async function runJob(id: string, query: Omit<InternationalRankingQuery, "limit" | "search" | "team" | "region">) {
+async function runJob(id: string, query: Omit<InternationalRankingQuery, "limit" | "search" | "team" | "region" | "resultSource">) {
   if (runningJobs.has(id)) return;
   runningJobs.add(id);
   try {
@@ -247,7 +261,7 @@ async function runJob(id: string, query: Omit<InternationalRankingQuery, "limit"
 }
 
 export function queueInternationalRankingRefresh(
-  query: Omit<InternationalRankingQuery, "limit" | "search" | "team" | "region">,
+  query: Omit<InternationalRankingQuery, "limit" | "search" | "team" | "region" | "resultSource">,
   requestedBy = "public"
 ) {
   const db = getDatabase();
@@ -278,7 +292,7 @@ export function queueInternationalRankingRefresh(
 }
 
 export function queueInternationalRankingIfDue(
-  query: Omit<InternationalRankingQuery, "limit" | "search" | "team" | "region">
+  query: Omit<InternationalRankingQuery, "limit" | "search" | "team" | "region" | "resultSource">
 ) {
   const latest = getDatabase().prepare(
     `SELECT completed_at FROM international_ranking_imports

@@ -21,7 +21,6 @@ type RankingResult = {
   id: string;
   position: number;
   display_position: number;
-  points: number | null;
   performance: string;
   athlete_name_japanese: string;
   athlete_name_display: string | null;
@@ -56,9 +55,12 @@ type RankingResponse = {
 };
 
 const ageLabels: Record<number, string> = {
-  12: "12 anos — 1年 / Ichi-nensei",
-  13: "13 anos — 2年 / Ni-nensei",
-  14: "14 anos — 3年 / San-nensei"
+  12: "12 anos — ginasial 1年",
+  13: "13 anos — ginasial 2年",
+  14: "14 anos — ginasial 3年",
+  15: "15 anos — colegial 1年",
+  16: "16 anos — colegial 2年",
+  17: "Sub-20 · 17 anos — colegial 3年"
 };
 
 const terminalJobs = new Set(["completed", "unchanged", "error"]);
@@ -107,9 +109,9 @@ export function JapanRankingExplorer() {
   const params = useSearchParams();
   const gender = params.get("genero") === "feminino" ? "F" : "M";
   const parsedAge = Number(params.get("idade"));
-  const age = [12, 13, 14].includes(parsedAge) ? parsedAge : 12;
+  const age = [12, 13, 14, 15, 16, 17].includes(parsedAge) ? parsedAge : 12;
   const parsedEvent = Number(params.get("prova"));
-  const event = [800, 1500, 3000].includes(parsedEvent) ? parsedEvent : 800;
+  const event = [800, 1500, 3000, 5000].includes(parsedEvent) ? parsedEvent : 800;
   const [search, setSearch] = useState(params.get("busca") ?? "");
   const [team, setTeam] = useState(params.get("equipe") ?? "");
   const [prefecture, setPrefecture] = useState(params.get("prefeitura") ?? "");
@@ -241,7 +243,7 @@ export function JapanRankingExplorer() {
           <label>
             <span>Idade de referência</span>
             <select value={age} onChange={(e) => updateUrl({ idade: e.target.value })}>
-              {[12, 13, 14].map((value) => <option key={value} value={value}>{ageLabels[value]}</option>)}
+              {[12, 13, 14, 15, 16, 17].map((value) => <option key={value} value={value}>{ageLabels[value]}</option>)}
             </select>
           </label>
           <label>
@@ -250,6 +252,7 @@ export function JapanRankingExplorer() {
               <option value={800}>800 m</option>
               <option value={1500}>1.500 m</option>
               <option value={3000}>3.000 m</option>
+              <option value={5000}>5.000 m</option>
             </select>
           </label>
         </div>
@@ -318,14 +321,14 @@ export function JapanRankingExplorer() {
           <>
             <div className={styles.desktopTable}>
               <table>
-                <thead><tr><th>Pos.</th><th>Marca</th><th>Atleta</th><th>Prefeitura</th><th>Escola / Clube</th><th>Referência</th><th>Data</th><th>Pontos</th><th>Comprovação</th></tr></thead>
+                <thead><tr><th>Pos.</th><th>Marca</th><th>Atleta</th><th>Prefeitura</th><th>Escola / Clube</th><th>Referência</th><th>Data</th><th>Comprovação</th></tr></thead>
                 <tbody>
                   {data.results.map((row) => {
                     const athlete = officialNamePresentation(row.athlete_name_display, row.athlete_name_japanese, row.athlete_reading_source);
                     const teamName = officialNamePresentation(row.team_name_display, row.team_japanese, row.team_reading_source);
                     return (
                     <tr key={row.id}>
-                      <td><span className={`${styles.position} ${medalClass(row.display_position)}`}>{row.display_position}</span><small>JAAF #{row.position}</small></td>
+                      <td><span className={`${styles.position} ${medalClass(row.display_position)}`}>{row.display_position}</span><small>por tempo</small></td>
                       <td><strong className={styles.performance}>{row.performance}</strong></td>
                       <td>
                         <span className={styles.officialName} lang={isLatinText(athlete.primary) ? undefined : "ja"}>{athlete.primary}</span>
@@ -338,7 +341,6 @@ export function JapanRankingExplorer() {
                       </td>
                       <td><span>{row.reference_age} anos</span><small lang="ja">{row.school_year}年</small></td>
                       <td><span>{formatDate(row.performance_date)}</span><small lang="ja">{row.performance_date_original}</small></td>
-                      <td>{row.points ?? "—"}</td>
                       <td><div className={styles.proofs}>{row.proof_image_url ? <a href={row.proof_image_url} target="_blank" rel="noopener noreferrer" aria-label="Ver imagem na JAAF"><FileImage size={16} /></a> : null}{row.proof_pdf_url ? <a href={row.proof_pdf_url} target="_blank" rel="noopener noreferrer" aria-label="Ver PDF na JAAF"><FileText size={16} /></a> : null}<a href={row.source_url} target="_blank" rel="noopener noreferrer" aria-label="Abrir fonte oficial"><ArrowUpRight size={16} /></a></div></td>
                     </tr>
                     );
@@ -353,7 +355,7 @@ export function JapanRankingExplorer() {
                 const teamName = officialNamePresentation(row.team_name_display, row.team_japanese, row.team_reading_source);
                 return (
                 <article key={row.id}>
-                  <header><span className={`${styles.position} ${medalClass(row.display_position)}`}>{row.display_position}</span><strong className={styles.performance}>{row.performance}</strong><span>JAAF #{row.position} · {row.points ? `${row.points} pts` : "sem pontos"}</span></header>
+                  <header><span className={`${styles.position} ${medalClass(row.display_position)}`}>{row.display_position}</span><strong className={styles.performance}>{row.performance}</strong><span>Melhor tempo oficial</span></header>
                   <div className={styles.mobileName}>
                     <strong lang={isLatinText(athlete.primary) ? undefined : "ja"}>{athlete.primary}</strong>
                     {athlete.secondary ? <span className={styles.reviewStatus}>{athlete.secondary}</span> : null}

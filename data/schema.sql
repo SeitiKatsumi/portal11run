@@ -726,7 +726,7 @@ CREATE TABLE IF NOT EXISTS japan_ranking_seasons (
 CREATE TABLE IF NOT EXISTS japan_ranking_event_configs (
   id TEXT PRIMARY KEY,
   season INTEGER NOT NULL,
-  event_meters INTEGER NOT NULL CHECK (event_meters IN (800, 1500, 3000)),
+  event_meters INTEGER NOT NULL CHECK (event_meters IN (800, 1500, 3000, 5000)),
   gender TEXT NOT NULL CHECK (gender IN ('M', 'F')),
   event_id INTEGER,
   type_id INTEGER NOT NULL DEFAULT 1,
@@ -926,3 +926,42 @@ CREATE INDEX IF NOT EXISTS idx_international_imports_lookup
   ON international_ranking_imports (country, source_key, season, gender, age_key, event_meters, published, created_at);
 CREATE INDEX IF NOT EXISTS idx_international_jobs_created
   ON international_ranking_jobs (created_at);
+
+CREATE TABLE IF NOT EXISTS brazil_ranking_snapshots (
+  id TEXT PRIMARY KEY,
+  season INTEGER NOT NULL,
+  gender TEXT NOT NULL CHECK (gender IN ('M', 'F')),
+  age_key TEXT NOT NULL CHECK (age_key IN ('sub16', 'sub18')),
+  event_meters INTEGER NOT NULL CHECK (event_meters IN (800, 1500, 2000, 3000, 5000)),
+  source_url TEXT NOT NULL,
+  source_updated_at TEXT,
+  status TEXT NOT NULL,
+  record_count INTEGER NOT NULL DEFAULT 0,
+  rows_json TEXT NOT NULL,
+  published INTEGER NOT NULL DEFAULT 1,
+  completed_at TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_brazil_rankings_lookup
+  ON brazil_ranking_snapshots (season, gender, age_key, event_meters, published, created_at);
+
+CREATE TABLE IF NOT EXISTS world_athletics_ranking_snapshots (
+  id TEXT PRIMARY KEY,
+  scope TEXT NOT NULL CHECK (scope IN ('KE', 'UG', 'WORLD')),
+  season INTEGER NOT NULL,
+  gender TEXT NOT NULL CHECK (gender IN ('M', 'F')),
+  age_key TEXT NOT NULL CHECK (age_key IN ('u18', 'u20', 'senior')),
+  event_meters INTEGER NOT NULL CHECK (event_meters IN (800, 1500, 3000, 5000, 10000)),
+  source_url TEXT NOT NULL,
+  source_updated_at TEXT,
+  status TEXT NOT NULL,
+  record_count INTEGER NOT NULL DEFAULT 0,
+  rows_json TEXT NOT NULL,
+  published INTEGER NOT NULL DEFAULT 1,
+  completed_at TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_world_athletics_rankings_lookup
+  ON world_athletics_ranking_snapshots (scope, season, gender, age_key, event_meters, published, created_at);

@@ -1,6 +1,6 @@
-export const japanEvents = [800, 1500, 3000] as const;
+export const japanEvents = [800, 1500, 3000, 5000] as const;
 export const japanGenders = ["M", "F"] as const;
-export const japanAges = [12, 13, 14] as const;
+export const japanAges = [12, 13, 14, 15, 16, 17] as const;
 
 export type JapanEvent = (typeof japanEvents)[number];
 export type JapanGender = (typeof japanGenders)[number];
@@ -36,8 +36,14 @@ export type ParsedJapanRanking = {
   }>;
 };
 
-export const referenceAgeToSchoolYear = (age: JapanAge) => (age - 11) as JapanSchoolYear;
-export const schoolYearToReferenceAge = (year: JapanSchoolYear) => (year + 11) as JapanAge;
+export const referenceAgeToSchoolYear = (age: JapanAge) => (
+  age <= 14 ? age - 11 : age - 14
+) as JapanSchoolYear;
+export const schoolYearToReferenceAge = (year: JapanSchoolYear, level: "junior" | "high" = "junior") => (
+  year + (level === "junior" ? 11 : 14)
+) as JapanAge;
+
+export const japanSchoolLevel = (age: JapanAge) => age <= 14 ? "junior" as const : "high" as const;
 
 export function isJapanEvent(value: unknown): value is JapanEvent {
   return japanEvents.includes(Number(value) as JapanEvent);
