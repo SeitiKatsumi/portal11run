@@ -151,7 +151,10 @@ const officialSeedResults = [
   ["cbat-2026-alice-de-oliveira-alves-neves", "Alice de Oliveira Alves Neves", 13, "FEMALE", 218_740, "Bragança Paulista", "SP", "Competição oficial CBAt 2026"],
   ["cbat-2026-helena-nascimento-de-macedo", "Helena Nascimento de Macedo", 13, "FEMALE", 218_750, "Bragança Paulista", "SP", "Competição oficial CBAt 2026"],
   ["cbat-2026-aylla-ariely-santana-de-oliveira", "Aylla Ariely Santana de Oliveira", 13, "FEMALE", 229_690, "João Pessoa", "PB", "Competição oficial CBAt 2026"],
-  ["cbat-2026-kassia-de-oliveira-silva", "Kassia de Oliveira Silva", 13, "FEMALE", 231_060, "Local a confirmar", "--", "Competição oficial CBAt 2026"]
+  ["cbat-2026-kassia-de-oliveira-silva", "Kassia de Oliveira Silva", 13, "FEMALE", 231_060, "Local a confirmar", "--", "Competição oficial CBAt 2026"],
+  ["cbat-2026-143732-kaua-gabriel-silveira-costa", "Kaua Gabriel Silveira Costa", 13, "MALE", 199_870, "Londrina", "PR", "Competição oficial CBAt 2026 · IPEC Londrina FEL"],
+  ["cbat-2026-142098-luiz-miguel-da-silva-santana", "Luiz Miguel da Silva Santana", 13, "MALE", 216_160, "Bragança Paulista", "SP", "Competição oficial CBAt 2026 · EAF - Jaguarari"],
+  ["cbat-2026-145831-jhonatas-lucino-dos-santos-silva", "Jhonatas Lucino dos Santos Silva", 13, "MALE", 241_330, "João Pessoa", "PB", "Competição oficial CBAt 2026 · ONG"]
 ] as const;
 
 function seedOfficialCircuitResults(db: DatabaseSync) {
