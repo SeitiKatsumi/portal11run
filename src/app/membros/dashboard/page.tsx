@@ -250,10 +250,6 @@ export default async function MemberDashboardPage({
           <div>
             <span className="eyebrow">{memberRoleLabels[dashboard.account.role]}</span>
             <h1>{athleteName}</h1>
-            <p>
-              Dashboard restrito com dados cadastrais, direitos do projeto, financeiro, criativos, eventos e marcas
-              enviadas para acompanhamento.
-            </p>
           </div>
         </div>
         {previewMode ? (
