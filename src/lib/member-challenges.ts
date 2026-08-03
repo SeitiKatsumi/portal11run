@@ -230,8 +230,8 @@ function benefitFor(value: number, bands: ChallengeSettings["schoolBands"]) {
 }
 
 function challengeSecret() {
-  const secret = process.env.CHALLENGE_DATA_KEY || process.env.VIRTUAL_CIRCUIT_DATA_KEY;
-  if (!secret) throw new Error("CHALLENGE_DATA_KEY não configurada no servidor.");
+  const secret = process.env.CHALLENGE_DATA_KEY || process.env.VIRTUAL_CIRCUIT_DATA_KEY || process.env.ADMIN_PASSWORD;
+  if (!secret) throw new Error("A proteção dos documentos está temporariamente indisponível. Tente novamente mais tarde.");
   return createHash("sha256").update(secret).digest();
 }
 

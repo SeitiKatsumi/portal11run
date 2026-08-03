@@ -94,6 +94,34 @@ test("somente ideias validadas aparecem no ranking anonimizado", () => {
   assert.equal(ranking[0].validIdeas, 1);
 });
 
+test("protege documentos usando a credencial administrativa como fallback de produção", async () => {
+  const originalChallengeKey = process.env.CHALLENGE_DATA_KEY;
+  const originalVirtualCircuitKey = process.env.VIRTUAL_CIRCUIT_DATA_KEY;
+  const originalAdminPassword = process.env.ADMIN_PASSWORD;
+  const originalPrivateDirectory = process.env.CHALLENGE_PRIVATE_UPLOAD_DIR;
+  delete process.env.CHALLENGE_DATA_KEY;
+  delete process.env.VIRTUAL_CIRCUIT_DATA_KEY;
+  process.env.ADMIN_PASSWORD = "test-only-admin-fallback-not-used-in-production";
+  process.env.CHALLENGE_PRIVATE_UPLOAD_DIR = path.join(temporaryDirectory, "challenge-private");
+
+  try {
+    const originalBytes = Buffer.from("%PDF-1.4\nplano de assiduidade\n%%EOF");
+    const upload = new File([originalBytes], "assiduidade.pdf", { type: "application/pdf" });
+    const saved = await challenges.saveChallengeFile("account-test", upload, "ATTENDANCE_PLAN");
+    const restored = await challenges.readChallengeFile(saved.id);
+    assert.deepEqual(restored.bytes, originalBytes);
+  } finally {
+    if (originalChallengeKey === undefined) delete process.env.CHALLENGE_DATA_KEY;
+    else process.env.CHALLENGE_DATA_KEY = originalChallengeKey;
+    if (originalVirtualCircuitKey === undefined) delete process.env.VIRTUAL_CIRCUIT_DATA_KEY;
+    else process.env.VIRTUAL_CIRCUIT_DATA_KEY = originalVirtualCircuitKey;
+    if (originalAdminPassword === undefined) delete process.env.ADMIN_PASSWORD;
+    else process.env.ADMIN_PASSWORD = originalAdminPassword;
+    if (originalPrivateDirectory === undefined) delete process.env.CHALLENGE_PRIVATE_UPLOAD_DIR;
+    else process.env.CHALLENGE_PRIVATE_UPLOAD_DIR = originalPrivateDirectory;
+  }
+});
+
 test.after(() => {
   challenges.closeMemberChallengesDatabase();
   rmSync(temporaryDirectory, { recursive: true, force: true });
