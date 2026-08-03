@@ -4,12 +4,14 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowLeft, CalendarCheck2, Camera, Eye, Flag, ShieldAlert, Timer, WalletCards } from "lucide-react";
 import { MemberLogoutButton } from "@/components/MemberLogoutButton";
+import { MemberChallenges } from "@/components/MemberChallenges";
 import { MemberMarkForm } from "@/components/MemberMarkForm";
 import { MemberMedicalCertificate } from "@/components/MemberMedicalCertificate";
 import { MemberProfilePhoto } from "@/components/MemberProfilePhoto";
 import { MemberProfileUpdateLink } from "@/components/MemberProfileUpdateLink";
 import { MemberRegistrationEditor } from "@/components/MemberRegistrationEditor";
 import { parseMemberMarkTime } from "@/lib/member-mark-chart";
+import { getMemberChallengesDashboard } from "@/lib/member-challenges";
 import { getMemberBySessionToken, getMemberDashboard, getMemberDashboardByLeadId, memberRoleLabels } from "@/lib/members";
 
 export const dynamic = "force-dynamic";
@@ -162,6 +164,7 @@ export default async function MemberDashboardPage({
       ? getMemberDashboard(account.id)
       : null;
   if (!dashboard) redirect(previewMode ? "/admin/cadastros" : "/login");
+  const challenges = getMemberChallengesDashboard(dashboard.account.id);
 
   const payload = parseJson<Record<string, string | boolean | string[]>>(dashboard.lead.payload_json, {});
   const receipts = parseJson<Record<string, boolean>>(dashboard.lead.receipts_json, {});
@@ -296,6 +299,11 @@ export default async function MemberDashboardPage({
           <small>{nextTest ? formatEventDate(nextTest.event_date, nextTest.event_time) : "Teste obrigatório nos meses pares"}</small>
         </article>
       </section>
+
+      <MemberChallenges
+        initialData={JSON.parse(JSON.stringify(challenges))}
+        readOnly={previewMode}
+      />
 
       <section className="member-card wide">
         <span className="eyebrow">ranking e marcas</span>

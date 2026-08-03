@@ -965,3 +965,194 @@ CREATE TABLE IF NOT EXISTS world_athletics_ranking_snapshots (
 
 CREATE INDEX IF NOT EXISTS idx_world_athletics_rankings_lookup
   ON world_athletics_ranking_snapshots (scope, season, gender, age_key, event_meters, published, created_at);
+
+CREATE TABLE IF NOT EXISTS member_challenge_definitions (
+  id TEXT PRIMARY KEY,
+  slug TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL,
+  type TEXT NOT NULL,
+  active INTEGER NOT NULL DEFAULT 1,
+  start_date TEXT,
+  end_date TEXT,
+  configuration_json TEXT NOT NULL DEFAULT '{}',
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS member_challenge_files (
+  id TEXT PRIMARY KEY,
+  account_id TEXT NOT NULL,
+  storage_name TEXT NOT NULL UNIQUE,
+  original_name TEXT NOT NULL,
+  mime_type TEXT NOT NULL,
+  size_bytes INTEGER NOT NULL,
+  sha256 TEXT NOT NULL,
+  purpose TEXT NOT NULL,
+  encryption_iv TEXT NOT NULL,
+  encryption_tag TEXT NOT NULL,
+  scan_status TEXT NOT NULL DEFAULT 'BASIC_VALIDATED',
+  retention_until TEXT,
+  created_at TEXT NOT NULL,
+  deleted_at TEXT,
+  FOREIGN KEY (account_id) REFERENCES member_accounts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS member_challenge_submissions (
+  id TEXT PRIMARY KEY,
+  challenge_id TEXT NOT NULL,
+  account_id TEXT NOT NULL,
+  period_reference TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'SUBMITTED',
+  submitted_data_json TEXT NOT NULL DEFAULT '{}',
+  file_id TEXT,
+  submitted_at TEXT NOT NULL,
+  reviewed_at TEXT,
+  reviewed_by TEXT,
+  review_notes TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE (challenge_id, account_id, period_reference),
+  FOREIGN KEY (challenge_id) REFERENCES member_challenge_definitions(id),
+  FOREIGN KEY (account_id) REFERENCES member_accounts(id) ON DELETE CASCADE,
+  FOREIGN KEY (file_id) REFERENCES member_challenge_files(id)
+);
+
+CREATE TABLE IF NOT EXISTS member_challenge_ai_analyses (
+  id TEXT PRIMARY KEY,
+  submission_id TEXT NOT NULL UNIQUE,
+  model TEXT NOT NULL,
+  extracted_data_json TEXT NOT NULL DEFAULT '{}',
+  normalized_data_json TEXT NOT NULL DEFAULT '{}',
+  confidence_score REAL NOT NULL DEFAULT 0,
+  warnings_json TEXT NOT NULL DEFAULT '[]',
+  suggested_score INTEGER NOT NULL DEFAULT 0,
+  suggested_benefit_percent REAL NOT NULL DEFAULT 0,
+  rules_version TEXT NOT NULL,
+  processing_status TEXT NOT NULL,
+  processed_at TEXT NOT NULL,
+  FOREIGN KEY (submission_id) REFERENCES member_challenge_submissions(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS member_challenge_benefits (
+  id TEXT PRIMARY KEY,
+  account_id TEXT NOT NULL,
+  source_type TEXT NOT NULL,
+  source_id TEXT NOT NULL,
+  percentage REAL NOT NULL DEFAULT 0,
+  previous_value_cents INTEGER NOT NULL DEFAULT 0,
+  projected_value_cents INTEGER NOT NULL DEFAULT 0,
+  status TEXT NOT NULL DEFAULT 'PENDING_APPROVAL',
+  valid_from TEXT,
+  valid_until TEXT,
+  approved_by TEXT,
+  approved_at TEXT,
+  rule_snapshot_json TEXT NOT NULL DEFAULT '{}',
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  UNIQUE (source_type, source_id),
+  FOREIGN KEY (account_id) REFERENCES member_accounts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS member_challenge_badges (
+  id TEXT PRIMARY KEY,
+  slug TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL,
+  challenge_type TEXT NOT NULL,
+  icon TEXT NOT NULL,
+  requirement_json TEXT NOT NULL DEFAULT '{}',
+  active INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS member_athlete_badges (
+  id TEXT PRIMARY KEY,
+  account_id TEXT NOT NULL,
+  badge_id TEXT NOT NULL,
+  source_type TEXT NOT NULL,
+  source_id TEXT,
+  earned_at TEXT NOT NULL,
+  UNIQUE (account_id, badge_id),
+  FOREIGN KEY (account_id) REFERENCES member_accounts(id) ON DELETE CASCADE,
+  FOREIGN KEY (badge_id) REFERENCES member_challenge_badges(id)
+);
+
+CREATE TABLE IF NOT EXISTS member_challenge_ideas (
+  id TEXT PRIMARY KEY,
+  account_id TEXT NOT NULL,
+  title TEXT NOT NULL,
+  category TEXT NOT NULL,
+  description TEXT NOT NULL,
+  problem TEXT NOT NULL,
+  expected_improvement TEXT NOT NULL,
+  image_file_id TEXT,
+  status TEXT NOT NULL DEFAULT 'SUBMITTED',
+  score_valid INTEGER NOT NULL DEFAULT 0,
+  admin_response TEXT,
+  implemented_at TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  FOREIGN KEY (account_id) REFERENCES member_accounts(id) ON DELETE CASCADE,
+  FOREIGN KEY (image_file_id) REFERENCES member_challenge_files(id)
+);
+
+CREATE TABLE IF NOT EXISTS member_challenge_score_history (
+  id TEXT PRIMARY KEY,
+  account_id TEXT NOT NULL,
+  score INTEGER NOT NULL,
+  level TEXT NOT NULL,
+  source TEXT NOT NULL,
+  metadata_json TEXT NOT NULL DEFAULT '{}',
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (account_id) REFERENCES member_accounts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS member_challenge_notifications (
+  id TEXT PRIMARY KEY,
+  account_id TEXT NOT NULL,
+  type TEXT NOT NULL,
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  entity_type TEXT,
+  entity_id TEXT,
+  read_at TEXT,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (account_id) REFERENCES member_accounts(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS member_challenge_audit_logs (
+  id TEXT PRIMARY KEY,
+  actor TEXT NOT NULL,
+  account_id TEXT,
+  entity_type TEXT NOT NULL,
+  entity_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  previous_data_json TEXT,
+  new_data_json TEXT,
+  justification TEXT,
+  ip_address TEXT,
+  created_at TEXT NOT NULL,
+  FOREIGN KEY (account_id) REFERENCES member_accounts(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS member_challenge_settings (
+  id TEXT PRIMARY KEY CHECK (id = 'default'),
+  configuration_json TEXT NOT NULL,
+  updated_at TEXT NOT NULL,
+  updated_by TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_member_challenge_submissions_review
+  ON member_challenge_submissions (status, challenge_id, submitted_at);
+CREATE INDEX IF NOT EXISTS idx_member_challenge_submissions_account
+  ON member_challenge_submissions (account_id, submitted_at);
+CREATE INDEX IF NOT EXISTS idx_member_challenge_ideas_review
+  ON member_challenge_ideas (status, created_at);
+CREATE INDEX IF NOT EXISTS idx_member_challenge_benefits_account
+  ON member_challenge_benefits (account_id, status, valid_until);
+CREATE INDEX IF NOT EXISTS idx_member_challenge_notifications_account
+  ON member_challenge_notifications (account_id, read_at, created_at);
+CREATE INDEX IF NOT EXISTS idx_member_challenge_audit_entity
+  ON member_challenge_audit_logs (entity_type, entity_id, created_at);

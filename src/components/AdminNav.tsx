@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Banknote, Bot, CalendarDays, ClipboardList, Globe2, HandHeart, Handshake, Home, Palette, ShoppingBag, Trophy } from "lucide-react";
+import { Banknote, Bot, CalendarDays, ClipboardList, Gamepad2, Globe2, HandHeart, Handshake, Home, Palette, ShoppingBag, Trophy } from "lucide-react";
 
 const adminItems = [
   { href: "/admin/home", label: "Home", icon: Home },
@@ -13,6 +13,7 @@ const adminItems = [
   { href: "/admin/eventos", label: "Eventos", icon: CalendarDays },
   { href: "/admin/ranking", label: "Ranking", icon: Trophy },
   { href: "/admin/circuito-virtual", label: "Circuito Virtual", icon: Globe2 },
+  { href: "/admin/desafios", label: "Gestão de Desafios", icon: Gamepad2 },
   { href: "/admin/referencias-japao", label: "Referências Japão", icon: Globe2 },
   { href: "/admin/loja", label: "Loja e pedidos", icon: ShoppingBag },
   { href: "/admin/branding", label: "Branding", icon: Palette },
