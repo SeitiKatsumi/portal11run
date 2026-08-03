@@ -155,10 +155,11 @@ const officialSeedResults = [
   ["cbat-2026-143732-kaua-gabriel-silveira-costa", "Kaua Gabriel Silveira Costa", 13, "MALE", 199_870, "Londrina", "PR", "Competição oficial CBAt 2026 · IPEC Londrina FEL"],
   ["cbat-2026-142098-luiz-miguel-da-silva-santana", "Luiz Miguel da Silva Santana", 13, "MALE", 216_160, "Bragança Paulista", "SP", "Competição oficial CBAt 2026 · EAF - Jaguarari"],
   ["cbat-2026-145831-jhonatas-lucino-dos-santos-silva", "Jhonatas Lucino dos Santos Silva", 13, "MALE", 241_330, "João Pessoa", "PB", "Competição oficial CBAt 2026 · ONG"],
-  ["track-2026-roseana-lima", "Roseana Lima", 9, "FEMALE", 258_000, "Local não informado", "--", "Teste validado em pista de 400 m", "TRACK_400M", "Pista de 400m"],
-  ["track-2026-kassyane-s-costa", "Kassyane S. Costa", 9, "FEMALE", 281_000, "Local não informado", "--", "Teste validado em pista de 400 m", "TRACK_400M", "Pista de 400m"],
-  ["track-2026-gabryelle-silva", "Gabryelle Silva", 9, "FEMALE", 263_000, "Local não informado", "--", "Teste validado em pista de 400 m", "TRACK_400M", "Pista de 400m"],
-  ["track-2026-maria-eloyza-alves", "Maria Eloyza Alves", 9, "FEMALE", 294_000, "Local não informado", "--", "Teste validado em pista de 400 m", "TRACK_400M", "Pista de 400m"]
+  ["track-2026-roseana-lima", "Roseana Lima", 9, "FEMALE", 258_000, "Pará, Brasil", "PA", "Teste validado em pista de 400 m", "TRACK_400M", "Pista de 400m"],
+  ["track-2026-kassyane-s-costa", "Kassyane S. Costa", 9, "FEMALE", 281_000, "Pará, Brasil", "PA", "Teste validado em pista de 400 m", "TRACK_400M", "Pista de 400m"],
+  ["track-2026-gabryelle-silva", "Gabryelle Silva", 9, "FEMALE", 263_000, "Pará, Brasil", "PA", "Teste validado em pista de 400 m", "TRACK_400M", "Pista de 400m"],
+  ["track-2026-maria-eloyza-alves", "Maria Eloyza Alves", 9, "FEMALE", 294_000, "Pará, Brasil", "PA", "Teste validado em pista de 400 m", "TRACK_400M", "Pista de 400m"],
+  ["official-2026-ana-cristina", "Ana Cristina", 10, "FEMALE", 236_120, "Santa Catarina, Brasil", "SC", "Competição oficial em Santa Catarina"]
 ] as const;
 
 function seedOfficialCircuitResults(db: DatabaseSync) {
@@ -169,7 +170,10 @@ function seedOfficialCircuitResults(db: DatabaseSync) {
        city, state, competition_name, submission_type, validation_badge, status,
        created_at, updated_at
      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'APPROVED', ?, ?)
-     ON CONFLICT(id) DO NOTHING`
+     ON CONFLICT(id) DO UPDATE SET
+       city = excluded.city,
+       state = excluded.state,
+       updated_at = excluded.updated_at`
   );
   for (const [
     id,
