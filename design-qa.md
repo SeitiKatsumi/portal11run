@@ -378,3 +378,44 @@ Nenhuma divergência P0, P1 ou P2 foi encontrada. A mudança solicitada está fi
 Nenhum ajuste P3 necessário para esta entrega.
 
 final result: passed
+
+---
+
+# Design QA — Admin sem barras internas e sem navegação pública
+
+- Source visual truth: `.design/audits/admin-no-scroll-2026-08-03/01-reference-scrollbar.png` (868 × 949 px) e `.design/audits/admin-no-scroll-2026-08-03/01-reference-public-header.png` (2182 × 656 px).
+- Implementation: `.design/audits/admin-no-scroll-2026-08-03/02-implementation-desktop.png` (1425 × 891 px) e `.design/audits/admin-no-scroll-2026-08-03/03-implementation-mobile.png` (390 × 844 px).
+- CSS viewport: 1440 × 900 desktop e 390 × 844 mobile, device scale 1.
+- State: `/admin`, visão geral; desktop em fluxo natural e gaveta mobile aberta.
+
+## Comparação visual
+
+- A sidebar mantém tipografia, cores, ícones, raios e hierarquia do design aprovado.
+- No desktop, `overflow-y: visible` e `clientHeight === scrollHeight` (1325 px): não existe rolagem interna nem item cortado.
+- No mobile, todos os itens continuam acessíveis por gesto, com `scrollbar-width: none` e WebKit scrollbar oculto.
+- O cabeçalho, rodapé e assistente públicos retornam `display: none` somente quando `.admin-shell-page` está presente.
+- Não existe overflow horizontal em desktop ou mobile.
+
+## Superfícies obrigatórias
+
+- **Tipografia:** família, pesos, tamanhos, entrelinhas e quebras preservados.
+- **Espaçamento:** topo reduzido após a remoção do header; container e grid seguem o padrão central do portal.
+- **Cores:** tokens existentes preservados, sem gradientes ou alterações de contraste.
+- **Imagem e ícones:** nenhum raster foi alterado; ícones Lucide existentes permanecem nítidos.
+- **Conteúdo:** nomes, descrições e 16 links administrativos preservados.
+
+## Histórico de comparação
+
+- P1 inicial: scrollbar interna visível e módulos inferiores escondidos. Corrigido removendo altura fixa e overflow no desktop.
+- P1 inicial: navegação pública duplicada acima do painel. Corrigido ocultando o chrome público somente no contexto administrativo.
+- Pós-correção: desktop e mobile capturados; gaveta mobile rolou de `0` a `507` sem barra visível; nova aba não registrou erros ou warnings no console.
+
+## Findings
+
+Nenhuma divergência P0, P1 ou P2 permanece.
+
+## Follow-up polish
+
+Nenhum ajuste P3 necessário para esta entrega.
+
+final result: passed

@@ -1297,6 +1297,12 @@ body.modal-open {
   overflow: hidden;
 }
 
+body:has(.admin-shell-page) .site-header,
+body:has(.admin-shell-page) .site-footer,
+body:has(.admin-shell-page) .run-assistant {
+  display: none;
+}
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
