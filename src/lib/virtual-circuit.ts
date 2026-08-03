@@ -21,7 +21,7 @@ import { circuitFaq, circuitRegulations, mandatoryConsents } from "./virtual-cir
 export const CIRCUIT_SLUG = "desafio-virtual-1km-11run-futuro-2026";
 export const CIRCUIT_EDITION_ID = "virtual-circuit-2026";
 export const CIRCUIT_ACTIVITY_START = "2026-08-01";
-export const CIRCUIT_HERO_IMAGE = "/assets/circuito-virtual/desafio-virtual-1000m-2026.webp";
+export const CIRCUIT_HERO_IMAGE = "/assets/circuito-virtual/desafio-virtual-premiacoes-2026.webp";
 
 let database: DatabaseSync | undefined;
 
@@ -62,7 +62,9 @@ function seedCircuitEdition(db: DatabaseSync) {
         `UPDATE virtual_circuit_editions
          SET start_date = ?,
              hero_image = CASE
-               WHEN hero_image IS NULL OR hero_image = '/assets/circuito-virtual/hero-atletas-2026.webp' THEN ?
+               WHEN hero_image IS NULL
+                 OR hero_image = '/assets/circuito-virtual/hero-atletas-2026.webp'
+                 OR hero_image = '/assets/circuito-virtual/desafio-virtual-1000m-2026.webp' THEN ?
                ELSE hero_image
              END,
              regulations_text = ?, faq_json = ?, updated_at = ?
