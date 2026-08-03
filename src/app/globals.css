@@ -2083,7 +2083,7 @@ body:has(.admin-shell-page) .run-assistant {
 }
 
 .support-board {
-  grid-template-columns: repeat(6, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
 }
 
 .support-contact,
@@ -2862,13 +2862,149 @@ body:has(.admin-shell-page) .run-assistant {
 
 .pipeline-board {
   display: grid;
-  grid-template-columns: repeat(5, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 12px;
   margin-top: 18px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: 8px;
-  scrollbar-width: thin;
+}
+
+.pipeline-stage-nav {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  gap: 8px;
+  margin-top: 18px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.pipeline-stage-tab {
+  display: flex;
+  min-width: 0;
+  min-height: 52px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.pipeline-stage-tab:hover {
+  border-color: var(--line);
+  background: var(--surface-muted);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.pipeline-stage-tab:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+}
+
+.pipeline-stage-tab span {
+  min-width: 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.pipeline-stage-tab strong {
+  display: inline-grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--accent-strong);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.pipeline-stage-tab.active {
+  border-color: var(--text);
+  background: var(--text);
+  color: var(--surface);
+}
+
+.pipeline-stage-tab.active strong {
+  border-color: rgb(255 255 255 / 0.16);
+  background: rgb(255 255 255 / 0.08);
+  color: #f1b56f;
+}
+
+.pipeline-stage-panel {
+  margin-top: 12px;
+  padding: clamp(18px, 3vw, 30px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.pipeline-stage-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+
+.pipeline-stage-head h2 {
+  margin: 6px 0 0;
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
+  font-weight: 350;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.pipeline-stage-head p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.pipeline-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 14px;
+  align-items: start;
+}
+
+.pipeline-card-grid .admin-card {
+  margin-top: 0;
+}
+
+.pipeline-empty-state {
+  display: grid;
+  min-height: 210px;
+  place-content: center;
+  gap: 7px;
+  padding: 24px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-muted);
+  text-align: center;
+}
+
+.pipeline-empty-state strong {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.pipeline-empty-state p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
 }
 
 .pipeline-column {
@@ -6881,9 +7017,7 @@ body:has(.admin-shell-page) .run-assistant {
   }
 
   .pipeline-board {
-    grid-template-columns: repeat(5, minmax(230px, 1fr));
-    overflow-x: auto;
-    padding-bottom: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
   }
 
   .finance-form,
@@ -7378,7 +7512,20 @@ body:has(.admin-shell-page) .run-assistant {
 
   .pipeline-board {
     grid-template-columns: 1fr;
-    overflow: visible;
+  }
+
+  .pipeline-stage-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 8px;
+  }
+
+  .pipeline-stage-head {
+    display: grid;
+    align-items: flex-start;
+  }
+
+  .pipeline-card-grid {
+    grid-template-columns: 1fr;
   }
 
   .lead-detail-backdrop {

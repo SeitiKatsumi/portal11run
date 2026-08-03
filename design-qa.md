@@ -419,3 +419,54 @@ Nenhuma divergência P0, P1 ou P2 permanece.
 Nenhum ajuste P3 necessário para esta entrega.
 
 final result: passed
+# Design QA — Pipeline administrativo sem rolagem horizontal
+
+- Data: 2026-08-03
+- Fonte visual: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-61356a51-16ef-4455-a143-5641a30e8894.png`
+- Implementação desktop: `C:/Users/User-PC/Documents/11run Portal 2/.design/audits/admin-pipeline-tabs-2026-08-03/implementation-1920x900.png`
+- Implementação mobile: `C:/Users/User-PC/Documents/11run Portal 2/.design/audits/admin-pipeline-tabs-2026-08-03/implementation-mobile.png`
+- Fonte: 1852 × 904 px, densidade 1x.
+- Implementação desktop: 1425 × 891 px, viewport solicitado 1920 × 900 e superfície útil limitada pelo navegador integrado; comparação normalizada pelo container central de 1280 px, densidade 1x.
+- Implementação mobile: 375 × 812 px, viewport CSS solicitado 390 × 844, densidade 1x.
+- Estado: `/admin/cadastros`, todos os projetos, primeira etapa com registros selecionada.
+
+**Comparação visual**
+
+- A fonte e a implementação foram abertas juntas no mesmo passe de comparação.
+- O problema P1 da referência — quinta coluna cortada e acesso às demais etapas dependente de scrollbar no rodapé — foi eliminado.
+- As etapas agora formam uma grade de abas que quebra linha dentro do container; a etapa selecionada recebe contraste forte e os contadores permanecem visíveis.
+- Os cadastros da etapa ativa usam uma grade responsiva, mantendo texto, controles e ações em largura legível.
+- No mobile, as etapas formam duas colunas e o conteúdo passa para uma coluna, sem overflow horizontal.
+
+**Superfícies de fidelidade**
+
+- Tipografia: família, pesos e hierarquia existentes do portal preservados; rótulos das etapas permanecem legíveis sem truncamento.
+- Espaçamento e ritmo: containers, raios, bordas e espaçamentos seguem os tokens administrativos; a navegação de etapas ganhou separação clara do conteúdo.
+- Cores e tokens: somente variáveis existentes (`--surface`, `--surface-muted`, `--line`, `--text`, `--muted`, `--accent-strong`) foram usadas; nenhum degradê foi introduzido.
+- Imagens e ícones: não houve substituição ou criação de ativos; fotos e ícones existentes foram preservados.
+- Conteúdo: nomes das etapas, contagens, filtros e ações permanecem intactos; foi adicionado um estado vazio orientativo.
+
+**Interações e responsividade verificadas**
+
+- Troca entre `Cadastro recebido` e `Aceitos` atualiza o painel correspondente.
+- A primeira etapa que contém registros é selecionada automaticamente.
+- Desktop: `scrollWidth === clientWidth`; navegação de etapas com `overflow-x: visible` e sem barra horizontal.
+- Mobile: `scrollWidth === clientWidth`; navegação de etapas e cards sem corte lateral.
+- Menu público: `Circuito Virtual 11 2026` aparece antes de `Circuito 11 Run 2027` no menu Projetos e no rodapé.
+- Console da captura final: nenhum erro ou aviso de runtime.
+
+**Histórico de correção**
+
+- P1 inicial: pipeline horizontal ocultava colunas e exigia deslocamento até o fim da página para acessar a scrollbar.
+- Correção: substituição do quadro horizontal por abas de etapa com contadores e painel responsivo; boards administrativos secundários passaram a quebrar linha automaticamente.
+- Evidência pós-correção: capturas desktop/mobile e métricas de largura acima, sem overflow horizontal.
+
+**Findings**
+
+- Nenhum P0, P1 ou P2 restante.
+
+**Follow-up Polish**
+
+- Nenhum item necessário para esta entrega.
+
+final result: passed

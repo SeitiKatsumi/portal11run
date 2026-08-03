@@ -230,6 +230,9 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
   const [leads, setLeads] = useState(initialLeads);
   const [memberAccounts, setMemberAccounts] = useState(initialMemberAccounts);
   const [projectFilter, setProjectFilter] = useState("todos");
+  const [selectedStatus, setSelectedStatus] = useState(
+    () => defaultStatuses.find((status) => initialLeads.some((lead) => lead.pipeline_status === status)) ?? initialLeads[0]?.pipeline_status ?? defaultStatuses[0]
+  );
   const [updating, setUpdating] = useState("");
   const [memberError, setMemberError] = useState("");
   const [memberErrorLead, setMemberErrorLead] = useState("");
@@ -271,6 +274,19 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
     if (projectFilter !== "todos") return statusesByProject[projectFilter] ?? defaultStatuses;
     return Array.from(new Set([...defaultStatuses, ...circuitoStatuses, ...leads.map((lead) => lead.pipeline_status)]));
   }, [leads, projectFilter]);
+
+  const selectedStatusLeads = useMemo(
+    () => filteredLeads.filter((lead) => lead.pipeline_status === selectedStatus),
+    [filteredLeads, selectedStatus]
+  );
+
+  function changeProjectFilter(nextProject: string) {
+    setProjectFilter(nextProject);
+    const nextStatuses = nextProject === "todos" ? activeStatuses : statusesByProject[nextProject] ?? defaultStatuses;
+    const nextLeads = nextProject === "todos" ? leads : leads.filter((lead) => lead.project_type === nextProject);
+    const nextStatus = nextStatuses.find((status) => nextLeads.some((lead) => lead.pipeline_status === status)) ?? nextStatuses[0];
+    setSelectedStatus(nextStatus);
+  }
 
   async function patchLead(id: string, body: Record<string, unknown>) {
     setUpdating(id);
@@ -563,7 +579,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
         </div>
         <label>
           <span>Projeto</span>
-          <select value={projectFilter} onChange={(event) => setProjectFilter(event.target.value)}>
+          <select value={projectFilter} onChange={(event) => changeProjectFilter(event.target.value)}>
             <option value="todos">Todos os projetos</option>
             {projects.map((project) => (
               <option key={project} value={project}>
@@ -574,21 +590,48 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
         </label>
       </div>
 
-      <div className="pipeline-board">
+      <div className="pipeline-stage-nav" role="tablist" aria-label="Etapas do pipeline">
         {activeStatuses.map((status) => {
-          const columnLeads = filteredLeads.filter((lead) => lead.pipeline_status === status);
+          const count = filteredLeads.filter((lead) => lead.pipeline_status === status).length;
+          const isSelected = status === selectedStatus;
 
           return (
-            <section className="pipeline-column" key={status}>
-              <div className="pipeline-column-head">
-                <strong>{status}</strong>
-                <span>{columnLeads.length}</span>
-              </div>
+            <button
+              className={isSelected ? "pipeline-stage-tab active" : "pipeline-stage-tab"}
+              type="button"
+              role="tab"
+              aria-selected={isSelected}
+              key={status}
+              onClick={() => setSelectedStatus(status)}
+            >
+              <span>{status}</span>
+              <strong>{count}</strong>
+            </button>
+          );
+        })}
+      </div>
 
-              {columnLeads.length === 0 ? <p className="empty-column">Sem cadastros nesta etapa.</p> : null}
+      <section className="pipeline-stage-panel" role="tabpanel" aria-label={selectedStatus}>
+        <div className="pipeline-stage-head">
+          <div>
+            <span className="eyebrow">etapa selecionada</span>
+            <h2>{selectedStatus}</h2>
+          </div>
+          <p>
+            {selectedStatusLeads.length === 1
+              ? "1 cadastro nesta etapa"
+              : `${selectedStatusLeads.length} cadastros nesta etapa`}
+          </p>
+        </div>
 
-              {columnLeads.map((lead) => {
-                const payload = parseJson<Record<string, string | boolean | string[]>>(lead.payload_json, {});
+        {selectedStatusLeads.length === 0 ? (
+          <div className="pipeline-empty-state">
+            <strong>Nenhum cadastro nesta etapa.</strong>
+            <p>Escolha outra etapa acima ou altere o filtro de projeto.</p>
+          </div>
+        ) : (
+          <div className="pipeline-card-grid">
+            {selectedStatusLeads.map((lead) => {
                 const photos = parseJson<string[]>(lead.photos_json, []);
                 const receipts = parseJson<Record<string, boolean>>(lead.receipts_json, {});
                 const projectLabel = projectLabels[lead.project_type] ?? lead.project_type;
@@ -713,10 +756,9 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
                   </article>
                 );
               })}
-            </section>
-          );
-        })}
-      </div>
+          </div>
+        )}
+      </section>
       {mounted && detailModal ? createPortal(detailModal, document.body) : null}
     </section>
   );
