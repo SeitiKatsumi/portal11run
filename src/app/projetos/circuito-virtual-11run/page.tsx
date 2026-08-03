@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CalendarDays, CheckCircle2, Clock3, MapPin, Medal, Route, ShieldCheck, Trophy, Users } from "lucide-react";
 import { CircuitRegistration } from "@/components/CircuitRegistration";
 import { CircuitRanking } from "@/components/CircuitRanking";
-import { getCircuitEdition } from "@/lib/virtual-circuit";
+import { CIRCUIT_HERO_IMAGE, getCircuitEdition } from "@/lib/virtual-circuit";
 import { CIRCUIT_CATEGORY_AGES, circuitCategoryBirthYear, circuitCategoryName } from "@/lib/virtual-circuit-category";
 import styles from "./virtual-circuit.module.css";
 
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Desafio Virtual 1km 11Run Futuro",
     description: "Primeira competição virtual para as categorias Sub 10 a Sub 14.",
-    images: ["/assets/circuito-virtual/hero-atletas-2026.webp"]
+    images: [CIRCUIT_HERO_IMAGE]
   }
 };
 
@@ -61,10 +61,11 @@ export default function VirtualCircuitPage() {
           </div>
           <div className={styles.heroImage}>
             <img
-              src={edition.hero_image || "/assets/circuito-virtual/hero-atletas-2026.webp"}
-              alt="Três jovens atletas brasileiros correndo em provas de rua"
+              src={edition.hero_image || CIRCUIT_HERO_IMAGE}
+              alt="Arte do Desafio Virtual 1.000 m 11Run para atletas de 9 a 13 anos"
+              width="1122"
+              height="1402"
             />
-            <div><strong>1.000 m</strong><span>de qualquer cidade do Brasil</span></div>
           </div>
         </section>
 

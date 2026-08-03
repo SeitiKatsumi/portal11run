@@ -21,6 +21,7 @@ import { circuitFaq, circuitRegulations, mandatoryConsents } from "./virtual-cir
 export const CIRCUIT_SLUG = "desafio-virtual-1km-11run-futuro-2026";
 export const CIRCUIT_EDITION_ID = "virtual-circuit-2026";
 export const CIRCUIT_ACTIVITY_START = "2026-08-01";
+export const CIRCUIT_HERO_IMAGE = "/assets/circuito-virtual/desafio-virtual-1000m-2026.webp";
 
 let database: DatabaseSync | undefined;
 
@@ -52,17 +53,23 @@ function safeJson<T>(value: string | null | undefined, fallback: T): T {
 function seedCircuitEdition(db: DatabaseSync) {
   const timestamp = now();
   const existing = db
-    .prepare("SELECT start_date, regulations_text, faq_json FROM virtual_circuit_editions WHERE id = ?")
-    .get(CIRCUIT_EDITION_ID) as { start_date: string; regulations_text: string; faq_json: string } | undefined;
+    .prepare("SELECT start_date, hero_image, regulations_text, faq_json FROM virtual_circuit_editions WHERE id = ?")
+    .get(CIRCUIT_EDITION_ID) as { start_date: string; hero_image: string | null; regulations_text: string; faq_json: string } | undefined;
   if (existing) {
     db.exec("BEGIN IMMEDIATE;");
     try {
       db.prepare(
         `UPDATE virtual_circuit_editions
-         SET start_date = ?, regulations_text = ?, faq_json = ?, updated_at = ?
+         SET start_date = ?,
+             hero_image = CASE
+               WHEN hero_image IS NULL OR hero_image = '/assets/circuito-virtual/hero-atletas-2026.webp' THEN ?
+               ELSE hero_image
+             END,
+             regulations_text = ?, faq_json = ?, updated_at = ?
          WHERE id = ?`
       ).run(
         CIRCUIT_ACTIVITY_START,
+        CIRCUIT_HERO_IMAGE,
         JSON.stringify(circuitRegulations),
         JSON.stringify(circuitFaq),
         timestamp,
@@ -106,8 +113,8 @@ function seedCircuitEdition(db: DatabaseSync) {
   db.prepare(
     `INSERT INTO virtual_circuit_editions
       (id, name, slug, description, start_date, end_date, timezone, distance_meters, status, regulations_version,
-       privacy_version, settings_json, regulations_text, faq_json, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+       privacy_version, hero_image, settings_json, regulations_text, faq_json, created_at, updated_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     CIRCUIT_EDITION_ID,
     "Desafio Virtual 1km 11Run Futuro",
@@ -120,6 +127,7 @@ function seedCircuitEdition(db: DatabaseSync) {
     "PUBLISHED",
     "1.0-2026",
     "1.0-2026",
+    CIRCUIT_HERO_IMAGE,
     JSON.stringify(settings),
     JSON.stringify(circuitRegulations),
     JSON.stringify(circuitFaq),
