@@ -1424,10 +1424,6 @@ body.modal-open {
   font-size: 0.78rem;
 }
 
-.admin-page {
-  padding: 118px 0 54px;
-}
-
 .legal-page {
   width: min(calc(100% - 48px), var(--max));
   margin: 0 auto;
@@ -2129,48 +2125,6 @@ body.modal-open {
   font-size: 0.92rem;
   font-weight: 500;
   line-height: 1.3;
-}
-
-.admin-nav {
-  width: min(calc(100% - 48px), var(--max));
-  margin: 0 auto 18px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 10px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--surface);
-  scrollbar-width: thin;
-}
-
-.admin-nav a {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 16px;
-  border: 1px solid transparent;
-  border-radius: 999px;
-  color: var(--muted);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.admin-nav a.active {
-  border-color: var(--line);
-  background: var(--surface-muted);
-  color: var(--text);
-}
-
-.admin-nav svg {
-  flex: 0 0 auto;
-  color: var(--accent-strong);
 }
 
 .alex-admin-page {
@@ -7341,10 +7295,6 @@ body.modal-open {
     max-height: 220px;
   }
 
-  .admin-page {
-    padding-top: 104px;
-  }
-
   .legal-page {
     width: min(calc(100% - 28px), var(--max));
     padding-top: 104px;
@@ -7360,15 +7310,6 @@ body.modal-open {
 
   .privacy-controller {
     grid-template-columns: 1fr;
-  }
-
-  .admin-nav {
-    width: min(calc(100% - 28px), var(--max));
-    margin-bottom: 14px;
-  }
-
-  .admin-nav a {
-    flex: 0 0 auto;
   }
 
   .admin-panel {
