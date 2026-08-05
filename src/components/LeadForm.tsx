@@ -96,8 +96,12 @@ const termsByProject: Partial<Record<FormProjectSlug, { title: string; clauses: 
     title: "Termo de aceite do Onze Futuro",
     clauses: [
       "O Onze Futuro é um projeto privado de desenvolvimento esportivo, formação de base, acompanhamento e oportunidade, sem promessa de resultado, patrocínio, bolsa ou permanência automática.",
+      "O ciclo institucional do projeto piloto está previsto para 2026 a 2029, sem garantia de permanência individual do atleta durante todo esse período.",
+      "Tanto o responsável legal quanto a 11RUN podem solicitar a desvinculação a qualquer tempo em razão de contratempos, saúde, escola, mudança de cidade, rotina ou treinador, questões familiares de qualquer natureza, segurança, viabilidade operacional ou financeira e desalinhamento de objetivos, sonhos, expectativas, comportamento, comunicação ou contexto de desempenho.",
+      "O desempenho nunca será analisado por um resultado isolado. Idade, maturação, saúde, ambiente e trajetória serão considerados em conjunto, priorizando o melhor interesse da criança, com comunicação privada e respeitosa sempre que possível.",
       "A participação exige que o atleta tenha treinador formado, com CREF ativo, responsável pela condução técnica cotidiana dos treinos.",
       "Toda responsabilidade por acidentes, lesões, intercorrências ou danos antes, durante ou depois de treinos, competições, deslocamentos e atividades é integralmente dos pais ou responsáveis legais e dos profissionais que acompanham o atleta.",
+      "A divisão de responsabilidades não afasta os deveres legais próprios da 11RUN, de organizadores de eventos ou de prestadores por atos e omissões dentro de suas respectivas atribuições.",
       "A 11RUN pode apoiar indicando profissionais, caminhos, contatos e boas práticas, mas não assume a execução diária dos treinamentos.",
       "A ajuda de custo, quando concedida, será paga todo dia 15 de cada mês, podendo variar conforme critérios internos, disponibilidade financeira e patrocinadores.",
       "Valores de ajuda de custo, modelos de materiais, uniformes, equipamentos e periodicidade de recebimento podem variar conforme disponibilidade, patrocinadores, fornecedores e critérios internos do projeto.",
@@ -106,7 +110,8 @@ const termsByProject: Partial<Record<FormProjectSlug, { title: string; clauses: 
       "Cada recebimento de ajuda, uniforme, material, inscrição ou benefício deverá ser confirmado no painel do site pelo responsável interno do projeto.",
       "O calendário de circuitos e provas é uma referência de desenvolvimento, sem obrigatoriedade de participação. Atletas que não participarem podem ficar fora do ranking, da certificação de tempos e de indicações a patrocinadores especiais.",
       "Podem existir patrocínios adicionais conforme desempenho, comportamento, assiduidade, evolução, visibilidade e interesse de parceiros, sem qualquer obrigação de concessão.",
-      "As imagens enviadas poderão ser usadas pela 11RUN e por sua assessoria de comunicação para perfil, análise, divulgação institucional e postagens relacionadas ao projeto."
+      "As imagens enviadas poderão ser usadas pela 11RUN e por sua assessoria de comunicação para perfil, análise, divulgação institucional e postagens relacionadas ao projeto.",
+      "No desligamento, benefícios futuros e acessos vinculados à participação podem ser encerrados. Dados e registros serão tratados conforme a Política de Privacidade, inclusive quanto a acesso, correção, revogação de consentimento e eliminação quando aplicável."
     ]
   },
   "circuito-futuro-11": {
@@ -234,9 +239,9 @@ function getBirthDateLimits(project: FormProjectSlug) {
   const format = (date: Date) => date.toISOString().slice(0, 10);
 
   if (project === "onze-futuro") {
-    const max = new Date(now.getFullYear() - 9, now.getMonth(), now.getDate());
+    const max = new Date(now.getFullYear() - 10, now.getMonth(), now.getDate());
     const min = new Date(now.getFullYear() - 14, now.getMonth(), now.getDate() + 1);
-    return { min: format(min), max: format(max), help: "Permitido apenas para atletas com idade entre 9 e 13 anos." };
+    return { min: format(min), max: format(max), help: "Permitido apenas para atletas com idade entre 10 e 13 anos." };
   }
 
   if (project === "circuito-futuro-11") {

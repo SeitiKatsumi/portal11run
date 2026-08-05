@@ -27,16 +27,31 @@ import {
 import type { LucideIcon } from "lucide-react";
 import { FeatureBanner } from "@/components/FeatureBanner";
 import { FutureJourneySection } from "@/components/FutureJourney/FutureJourneySection";
+import { OnzeFuturoFaq } from "@/components/OnzeFuturoFaq";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { Reveal } from "@/components/Reveal";
 import { getPublicAthleteProfileByFirstName } from "@/lib/leads";
+import { onzeFuturoFaqItems } from "@/lib/onze-futuro-faq";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Onze Futuro | 11RUN",
   description:
-    "O Onze Futuro  a frente de base da 11RUN para jovens atletas de 10 a 13 anos, com projeto piloto de 2026 a 2029, apoio técnico, psicológico, materiais, ajuda de custo e integraçãno ano Circuito 11RUN."
+    "O Onze Futuro é a frente de base da 11RUN para jovens atletas de 10 a 13 anos, com projeto piloto de 2026 a 2029, apoio técnico, psicológico, materiais, ajuda de custo e integração ao Circuito 11RUN."
+};
+
+const faqStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: onzeFuturoFaqItems.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer.join(" ")
+    }
+  }))
 };
 
 const heroImage = "/assets/onze-futuro-hero.jpg";
@@ -139,7 +154,7 @@ const offers = [
   {
     icon: Sparkles,
     title: "Materiais esportivos",
-    text: "Fornecimento de materiais de treino, equipamentos básicos e recursos necessérios para melhores condições de evolução."
+    text: "Fornecimento de materiais de treino, equipamentos básicos e recursos necessários para melhores condições de evolução."
   },
   {
     icon: Flag,
@@ -625,6 +640,12 @@ export default function Page() {
           </Link>
         </div>
       </section>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqStructuredData).replace(/</g, "\\u003c") }}
+      />
+      <OnzeFuturoFaq />
 
       <section className="futuro-signature">
         <strong>11RUN - Onze Futuro</strong>

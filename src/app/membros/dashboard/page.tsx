@@ -447,7 +447,7 @@ export default async function MemberDashboardPage({
           <div>
             <details>
               <summary>Por quanto tempo o projeto acontece?</summary>
-              <p>O 11 Futuro tem duração por tempo indeterminado. Atividades, calendário e participação podem ser revistos conforme planejamento técnico e operacional.</p>
+              <p>O ciclo institucional do piloto está previsto para 2026 a 2029. A permanência individual é acompanhada e pode ser encerrada antes desse prazo pela família ou pela 11RUN, sempre com atenção ao melhor interesse do atleta.</p>
             </details>
             <details>
               <summary>O atestado de aptidão médica é obrigatório?</summary>
@@ -460,6 +460,14 @@ export default async function MemberDashboardPage({
             <details>
               <summary>Quando são realizados os testes de 1.000 m?</summary>
               <p>O acompanhamento prevê um teste de 1.000 m nos meses pares. Datas e locais são comunicados no painel conforme disponibilidade e planejamento técnico.</p>
+            </details>
+            <details>
+              <summary>Como funcionam os Desafios 11RUN?</summary>
+              <p>Escolar, Assiduidade, Minha Evolução e Ideias para o Projeto registram compromisso e progresso. Score, badges e projeções não são ranking de talento nem aprovação financeira automática; documentos e benefícios passam por validação humana.</p>
+            </details>
+            <details>
+              <summary>Onde encontro todas as regras do painel e do projeto?</summary>
+              <p>A <Link href="/onze-futuro#faq">Super FAQ do Onze Futuro</Link> explica cadastro, responsabilidades, módulos gamificados, benefícios, privacidade, permanência e desligamento para atletas, famílias, treinadores e profissionais.</p>
             </details>
           </div>
         </article>

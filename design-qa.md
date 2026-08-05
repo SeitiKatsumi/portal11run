@@ -513,3 +513,48 @@ final result: passed
 - Nenhum ajuste P3 necessário para esta entrega.
 
 final result: passed
+
+---
+
+# Design QA — Super FAQ do Onze Futuro
+
+- Data: 2026-08-05.
+- Fonte visual: página publicada `https://11run.com.br/onze-futuro`, captura `.design/audits/onze-futuro-super-faq-2026-08-05/source-cta.png`.
+- Implementação desktop: `.design/audits/onze-futuro-super-faq-2026-08-05/implementation-desktop.png`, `implementation-desktop-details.png` e `implementation-desktop-final.png`.
+- Implementação mobile: `.design/audits/onze-futuro-super-faq-2026-08-05/implementation-mobile-faq.png`.
+- Viewports: 1440 × 900 no desktop e 390 × 844 no mobile.
+
+## Comparação visual
+
+- A nova seção preserva o container central, a escala tipográfica editorial, os fundos claros, a borda fina e os raios do Onze Futuro.
+- O destaque escuro do ciclo 2026–2029 retoma a linguagem visual do manifesto e cria hierarquia para a regra de permanência sem introduzir degradê.
+- Busca, filtros e acordeões reduzem a carga cognitiva de 44 respostas e evitam uma página permanentemente expandida.
+- A grade usa duas colunas no desktop e uma no mobile; quando um filtro retorna apenas um grupo, ele ocupa toda a largura disponível.
+
+## Superfícies obrigatórias
+
+- **Tipografia:** família, pesos e hierarquia existentes foram preservados; títulos usam escala fluida e textos longos mantêm linha confortável.
+- **Espaçamento:** seção, cards e recursos seguem o ritmo dos demais blocos da landing e permanecem dentro de `--max`.
+- **Cores:** somente tokens existentes (`--surface`, `--surface-muted`, `--text`, `--muted`, `--line`, `--accent`) e combinações derivadas foram usados.
+- **Ícones:** todos os símbolos são da biblioteca Lucide já adotada pelo portal; nenhum desenho artificial ou emoji foi criado.
+- **Conteúdo:** 44 respostas cobrem projeto, cadastro, rede de cuidado, painel, gamificação, permanência e privacidade.
+
+## Interações e responsividade verificadas
+
+- Busca por “assiduidade” retornou 10 respostas relacionadas.
+- Filtro “Desafios” retornou os 9 itens do módulo gamificado.
+- Acordeões abrem e fecham por teclado ou ponteiro, com foco visível.
+- Desktop: `body.scrollWidth = 1425` para viewport de 1440 px, sem overflow horizontal.
+- Mobile: `body.scrollWidth = 375` para viewport de 390 px, sem overflow horizontal.
+- Links para Política de Privacidade, Termos de Uso, Diretrizes aos Atletas e painel foram conferidos no DOM.
+
+## Findings
+
+- P2 corrigido: grupo filtrado ocupava somente metade da grade no desktop; regra `:only-child` passou a usar a largura total.
+- Nenhuma divergência P0, P1 ou P2 permanece.
+
+## Follow-up polish
+
+- Nenhum ajuste P3 necessário para esta entrega.
+
+final result: passed
