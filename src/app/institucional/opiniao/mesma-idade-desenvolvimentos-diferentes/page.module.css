@@ -4,3 +4,10 @@
 @media(prefers-reduced-motion:reduce){.page *{scroll-behavior:auto!important;transition:none!important}}
 .heroCopy{min-width:0}
 @media(max-width:650px){.hero h1{max-width:100%;font-size:clamp(2.35rem,10.5vw,3rem);letter-spacing:-.075em;overflow-wrap:anywhere}.heroCopy>p,.heroCopy>small{overflow-wrap:anywhere}}
+.hero h1{max-width:100%;font-size:clamp(3.3rem,5vw,4.7rem);overflow-wrap:anywhere}
+.heroVisual:before,.heroVisual:after,.trackLineA,.trackLineB{left:8%;width:108%;height:145px;transform:none}
+.heroVisual:before{top:13%;transform:rotate(-2deg)}
+.heroVisual:after{top:32%;transform:rotate(1deg)}
+.trackLineA{top:51%;transform:rotate(-2deg)}
+.trackLineB{top:70%;transform:rotate(1deg)}
+@media(max-width:650px){.hero h1{font-size:clamp(2.35rem,10.5vw,3rem)}.heroVisual:before,.heroVisual:after,.trackLineA,.trackLineB{left:4%;width:112%;height:70px}}
