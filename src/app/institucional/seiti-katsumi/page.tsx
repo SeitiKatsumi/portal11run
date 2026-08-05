@@ -4,7 +4,7 @@ import SeitiTrajectory from "@/app/admin/trajetoria-seiti/page";
 export const metadata: Metadata = {
   title: "Seiti Katsumi — Esporte, branding e inteligência artificial",
   description:
-    "Conheça a trajetória de Seiti Katsumi entre o atletismo de alto rendimento, branding, publicidade, marketing e inteligência artificial aplicada à gestão da 11RUN.",
+    "Conheça a trajetória e a formação de Seiti Katsumi em Comunicação Social, Design Industrial, Marketing, Branding, Comunicação e Business Intelligence.",
   alternates: { canonical: "/institucional/seiti-katsumi" },
 };
 

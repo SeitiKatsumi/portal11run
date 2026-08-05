@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SeitiFamilySlider } from "@/components/SeitiFamilySlider";
-import { ArrowUpRight, BrainCircuit, Medal, PanelsTopLeft } from "lucide-react";
+import { ArrowUpRight, BrainCircuit, Database, GraduationCap, Medal, PanelsTopLeft, Presentation, ScrollText } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -172,25 +172,32 @@ const leadershipPillars = [
   },
 ] as const;
 
+const academicFormation = [
+  { title: "Comunicação Social", label: "Formação superior", text: "Base acadêmica para compreender mídia, narrativa, públicos e sistemas de comunicação.", icon: Presentation },
+  { title: "Design Industrial", label: "Formação superior", text: "Formação orientada a projeto, função, experiência, linguagem visual e desenvolvimento de soluções.", icon: GraduationCap },
+  { title: "Marketing e Branding", label: "Pós-graduação", text: "Aprofundamento em estratégia, posicionamento, gestão de marca e construção de valor.", icon: ScrollText },
+  { title: "Comunicação e Business Intelligence", label: "Doutorado e especializações", text: "Doutorado em Comunicação, com especializações em áreas relacionadas a Business Intelligence, dados e inteligência aplicada aos negócios.", icon: Database },
+] as const;
+
 export default function AdminTrajetoriaSeitiPage() {
   return (
     <main className="admin-panel seiti-story-page">
       <section className="seiti-story-hero">
         <div>
-          <span className="eyebrow">Área temporária para apresentação</span>
-          <h1>Trajetória do Seiti e relação com o IVCL/Orcampi</h1>
+          <span className="eyebrow">Perfil profissional</span>
+          <h1>Seiti Katsumi: esporte, comunicação e inteligência estratégica.</h1>
           <p>
-            Uma linha do tempo objetiva para apresentar ao Ricardo a conexão entre Jogos Regionais, Funilense, Unicamp,
-            Eletropaulo, Japão e a retomada dessa história junto ao IVCL/Orcampi.
+            Atleta de alto rendimento, comunicador, designer e estrategista. Uma trajetória construída entre Brasil e
+            Japão, conectando esporte, formação acadêmica, branding, marketing, tecnologia e gestão orientada por dados.
           </p>
         </div>
-        <aside className="seiti-story-path" aria-label="Sequência da trajetória">
-          <span>1992</span>
-          <span>1994</span>
-          <span>Funilense</span>
-          <span>Eletropaulo</span>
-          <span>Japão</span>
-          <span>IVCL/Orcampi</span>
+        <aside className="seiti-story-path" aria-label="Áreas de atuação e formação">
+          <span>Alto rendimento</span>
+          <span>Comunicação</span>
+          <span>Design</span>
+          <span>Marketing</span>
+          <span>Branding</span>
+          <span>Business Intelligence</span>
         </aside>
       </section>
 
@@ -211,6 +218,24 @@ export default function AdminTrajetoriaSeitiPage() {
             </p>
           </div>
         </div>
+
+        <section className="seiti-academic" aria-labelledby="seiti-academic-title">
+          <div className="seiti-academic-heading">
+            <span className="eyebrow">Formação acadêmica</span>
+            <h3 id="seiti-academic-title">Comunicação, design, marcas e inteligência de negócios.</h3>
+            <p>Uma formação multidisciplinar que conecta pensamento estratégico, repertório criativo, pesquisa e decisões orientadas por dados.</p>
+          </div>
+          <div className="seiti-academic-grid">
+            {academicFormation.map(({ title, label, text, icon: Icon }) => (
+              <article key={title}>
+                <Icon aria-hidden="true" />
+                <span>{label}</span>
+                <h4>{title}</h4>
+                <p>{text}</p>
+              </article>
+            ))}
+          </div>
+        </section>
 
         <div className="seiti-leadership-grid">
           {leadershipPillars.map(({ title, text, icon: Icon }) => (
@@ -233,6 +258,15 @@ export default function AdminTrajetoriaSeitiPage() {
           </a>
         </div>
       </section>
+
+      <header className="seiti-timeline-intro">
+        <span className="eyebrow">Trajetória esportiva</span>
+        <h2>Do alto rendimento à relação com o IVCL/Orcampi.</h2>
+        <p>
+          Uma linha do tempo objetiva que preserva a conexão entre Jogos Regionais, Funilense, Unicamp, Eletropaulo,
+          Japão e a retomada dessa história junto ao IVCL/Orcampi.
+        </p>
+      </header>
 
       <section className="seiti-story-timeline" aria-label="Linha do tempo da trajetória">
         {timeline.map((item, index) => (
