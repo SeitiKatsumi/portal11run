@@ -470,3 +470,46 @@ final result: passed
 - Nenhum item necessário para esta entrega.
 
 final result: passed
+
+---
+
+# Design QA — Destaque de participação no Circuito Virtual
+
+- Data: 2026-08-05
+- Fonte visual: `C:/Users/User-PC/AppData/Local/Temp/codex-clipboard-b75f7f4f-c798-4a6f-9ad5-d8934cd839b9.png`.
+- Implementação desktop: `.design/audits/circuit-participation-2026-08-05/desktop.png`.
+- Implementação mobile: `.design/audits/circuit-participation-2026-08-05/mobile.png`.
+- Viewports: 1440 × 900 desktop e 390 × 844 mobile, densidade 1x.
+- Estado: `/projetos/circuito-virtual-11run`, ranking com 35 atletas aprovados.
+
+## Comparação visual
+
+- A área vazia indicada na referência recebeu um único bloco de prova social, alinhado ao conteúdo do hero e sem alterar a arte principal.
+- O total de participantes tem hierarquia imediata; os três nomes mais recentes permanecem legíveis e incluem categoria e UF.
+- O componente reaproveita bordas, raios, tipografia e tokens cromáticos do portal, sem degradês nem ativos artificiais.
+- No mobile, métrica e participantes são empilhados dentro do mesmo card; todos os nomes permanecem íntegros.
+
+## Superfícies obrigatórias
+
+- **Tipografia:** família e pesos existentes preservados; contador com destaque e metadados em escala auxiliar.
+- **Espaçamento:** bloco ocupa somente a faixa superior solicitada e acompanha os recuos do hero.
+- **Cores:** tokens `--surface-muted`, `--text`, `--muted`, `--accent` e `--line` reutilizados.
+- **Imagem e ícones:** arte existente preservada; ícones Lucide já adotados pelo projeto.
+- **Conteúdo:** total obtido do ranking aprovado; últimos participantes ordenados pela data da atividade.
+
+## Interações e responsividade verificadas
+
+- Desktop: `scrollWidth === clientWidth` e bloco medido em 520,625 × 91,984 px.
+- Mobile: `scrollWidth === clientWidth` e bloco medido em 301 × 224,578 px.
+- Conteúdo acessível por `aria-label="Participação no desafio virtual"`.
+- Nenhum erro funcional registrado; o único aviso foi o recarregamento completo esperado do Fast Refresh durante a edição local.
+
+## Findings
+
+- Nenhuma divergência P0, P1 ou P2 permanece.
+
+## Follow-up polish
+
+- Nenhum ajuste P3 necessário para esta entrega.
+
+final result: passed

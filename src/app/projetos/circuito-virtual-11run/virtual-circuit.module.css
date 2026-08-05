@@ -2,6 +2,19 @@
 .hero,.section,.categoryGuide,.finalCta{border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);margin-bottom:18px}
 .hero{min-height:650px;display:grid;grid-template-columns:minmax(0,1fr) minmax(420px,.9fr);overflow:hidden}
 .heroCopy{padding:clamp(36px,6vw,76px);display:flex;flex-direction:column;justify-content:center}
+.participationHighlight{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;margin:0 0 28px;padding:14px 16px;border:1px solid color-mix(in srgb,var(--accent) 38%,var(--line));border-radius:16px;background:var(--surface-muted)}
+.participationTotal{display:flex;align-items:center;gap:11px;padding-right:18px;border-right:1px solid var(--line)}
+.participationIcon{width:38px;height:38px;display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;border-radius:12px;background:var(--text);color:var(--surface)}
+.participationTotal>span:last-child{display:flex;flex-direction:column;line-height:1}
+.participationTotal strong{font-size:1.9rem;font-weight:400;letter-spacing:-.06em}
+.participationTotal small{margin-top:5px;color:var(--muted);font-size:.67rem;white-space:nowrap}
+.latestParticipants{min-width:0}
+.latestLabel{display:flex;align-items:center;gap:5px;margin-bottom:8px;color:var(--accent-strong);font-size:.62rem;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
+.latestParticipants ul{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0;padding:0;list-style:none}
+.latestParticipants li{min-width:0}
+.latestParticipants li strong,.latestParticipants li small{display:block}
+.latestParticipants li strong{min-height:2.2em;font-size:.71rem;font-weight:700;line-height:1.1}
+.latestParticipants li small{margin-top:3px;color:var(--muted);font-size:.6rem}
 .eyebrow{color:var(--accent-strong);font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
 .hero h1,.section h2,.finalCta h2{margin:18px 0;font-weight:300;letter-spacing:-.055em;line-height:.95}
 .hero h1{font-size:clamp(3rem,6.5vw,6rem)}
@@ -49,5 +62,5 @@
 .finalCta h2{max-width:780px}
 .mobileCta{display:none}
 @media(max-width:900px){.hero{grid-template-columns:1fr}.categoryGuide{grid-template-columns:1fr}.categoryList{grid-template-columns:repeat(5,minmax(115px,1fr));overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity}.categoryList::-webkit-scrollbar{display:none}.categoryList article{scroll-snap-align:start}.categorySwipeHint{display:block;margin-top:10px;color:var(--accent-strong);font-size:.68rem;font-weight:700;letter-spacing:.04em}.splitHeading{grid-template-columns:1fr;gap:10px}.steps{grid-template-columns:repeat(2,1fr)}.modeGrid,.awardGrid{grid-template-columns:1fr}.finalCta{align-items:flex-start;flex-direction:column}}
-@media(max-width:720px){.page{width:min(calc(100% - 28px),var(--max));padding-top:100px}.hero{min-height:auto}.heroCopy{padding:30px 22px}.hero h1{font-size:3.1rem}.section{padding:28px 20px}.categoryGuide{padding:28px 20px}.categoryGuide h2{font-size:1.65rem}.categoryList{margin-right:-20px;padding-right:20px}.section h2,.finalCta h2{font-size:2.65rem}.steps{grid-template-columns:repeat(2,minmax(0,1fr))}.quickFacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.futureCallout{align-items:flex-start;flex-direction:column}.mobileCta{display:none}}
+@media(max-width:720px){.page{width:min(calc(100% - 28px),var(--max));padding-top:100px}.hero{min-height:auto}.heroCopy{padding:30px 22px}.participationHighlight{grid-template-columns:1fr;gap:13px;margin-bottom:24px;padding:14px}.participationTotal{padding:0 0 12px;border-right:0;border-bottom:1px solid var(--line)}.latestParticipants ul{grid-template-columns:1fr;gap:8px}.latestParticipants li strong{min-height:0}.hero h1{font-size:3.1rem}.section{padding:28px 20px}.categoryGuide{padding:28px 20px}.categoryGuide h2{font-size:1.65rem}.categoryList{margin-right:-20px;padding-right:20px}.section h2,.finalCta h2{font-size:2.65rem}.steps{grid-template-columns:repeat(2,minmax(0,1fr))}.quickFacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.futureCallout{align-items:flex-start;flex-direction:column}.mobileCta{display:none}}
 @media(prefers-reduced-motion:no-preference){.primaryButton,.secondaryButton,.steps article,.modeGrid article{transition:transform .18s ease}.primaryButton:hover,.secondaryButton:hover,.steps article:hover,.modeGrid article:hover{transform:translateY(-2px)}}

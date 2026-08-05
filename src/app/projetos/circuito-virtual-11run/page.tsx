@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CalendarDays, CheckCircle2, Clock3, MapPin, Medal, Route, ShieldCheck, Trophy, Users } from "lucide-react";
 import { CircuitRegistration } from "@/components/CircuitRegistration";
 import { CircuitRanking } from "@/components/CircuitRanking";
-import { CIRCUIT_HERO_IMAGE, getCircuitEdition } from "@/lib/virtual-circuit";
+import { CIRCUIT_HERO_IMAGE, getCircuitEdition, listCircuitRanking } from "@/lib/virtual-circuit";
 import { CIRCUIT_CATEGORY_AGES, circuitCategoryBirthYear, circuitCategoryName } from "@/lib/virtual-circuit-category";
 import styles from "./virtual-circuit.module.css";
 
@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   }
 };
 
+export const dynamic = "force-dynamic";
+
 const modes = [
   ["Competição oficial", "Resultado público emitido por federação ou organização esportiva.", Trophy],
   ["Pista oficial de 400m", "Duas voltas completas e mais 200 metros, com vídeo público.", Route],
@@ -27,6 +29,10 @@ const modes = [
 
 export default function VirtualCircuitPage() {
   const edition = getCircuitEdition();
+  const ranking = listCircuitRanking();
+  const latestParticipants = [...ranking]
+    .sort((a, b) => b.activityDate.localeCompare(a.activityDate) || a.publicName.localeCompare(b.publicName, "pt-BR"))
+    .slice(0, 3);
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -42,6 +48,26 @@ export default function VirtualCircuitPage() {
       <div className={styles.page}>
         <section className={styles.hero}>
           <div className={styles.heroCopy}>
+            <aside className={styles.participationHighlight} aria-label="Participação no desafio virtual">
+              <div className={styles.participationTotal}>
+                <span className={styles.participationIcon} aria-hidden="true"><Users size={19} /></span>
+                <span>
+                  <strong>{ranking.length}</strong>
+                  <small>atletas já participaram</small>
+                </span>
+              </div>
+              <div className={styles.latestParticipants}>
+                <span className={styles.latestLabel}><Clock3 size={13} /> Últimos participantes</span>
+                <ul>
+                  {latestParticipants.map((participant) => (
+                    <li key={participant.athleteId}>
+                      <strong>{participant.publicName}</strong>
+                      <small>{circuitCategoryName(participant.categoryAge)} · {participant.state}</small>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </aside>
             <span className={styles.eyebrow}>Circuito Virtual 11Run</span>
             <h1>Desafio Virtual 1km 11Run Futuro</h1>
             <p className={styles.lead}>Para atletas brasileiros das categorias Sub 10 a Sub 14, residentes no Brasil ou no exterior.</p>
