@@ -92,6 +92,13 @@ export const navItems: NavItem[] = [
           { label: "Seiti Katsumi", href: "/institucional/seiti-katsumi" },
           { label: "Alex Lopes", href: "/institucional/alex-sandro-lopes" }
         ]
+      },
+      {
+        label: "Opinião",
+        href: "#opiniao",
+        children: [
+          { label: "Mesma idade. Desenvolvimentos diferentes.", href: "/institucional/opiniao/mesma-idade-desenvolvimentos-diferentes" }
+        ]
       }
     ]
   },
