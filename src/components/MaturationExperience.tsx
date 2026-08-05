@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowUpRight, BrainCircuit, ChevronDown, CircleCheck, Clock3, HeartHandshake, ShieldCheck, Sparkles } from "lucide-react";
+import { Activity, ArrowUpRight, BrainCircuit, ChevronDown, CircleCheck, Clock3, HeartHandshake, HeartPulse, Layers3, ShieldCheck, Sparkles, TrendingUp } from "lucide-react";
 import { developmentFactors, faqs, manifesto, scientificReferences } from "@/lib/maturation-content";
 import styles from "@/app/institucional/opiniao/mesma-idade-desenvolvimentos-diferentes/page.module.css";
 
@@ -10,6 +10,15 @@ const scenarios = [
   { label: "Atleta B", pace: "maturação intermediária", note: "Pode responder de outro modo ao mesmo estímulo e à mesma prova." },
   { label: "Atleta C", pace: "maturação mais tardia", note: "Pode precisar de mais tempo para expressar capacidades que ainda estão em desenvolvimento." }
 ] as const;
+
+const referenceIcons = {
+  "Maturação": Activity,
+  "Proteção": ShieldCheck,
+  "Talento": Sparkles,
+  "Lesões": HeartPulse,
+  "Bio-banding": Layers3,
+  "Crescimento": TrendingUp
+} as const;
 
 export function MaturationExperience() {
   const [scenario, setScenario] = useState(0);
@@ -58,7 +67,7 @@ export function MaturationExperience() {
 
     <section className={styles.section} id="ciencia">
       <header className={styles.sectionHeading}><span className={styles.eyebrow}>Base científica</span><h2>Ciência do esporte, traduzida sem perder as limitações.</h2><p>Ciência evolui. O conteúdo desta página deve ser revisado periodicamente.</p></header>
-      <div className={styles.referenceGrid}>{scientificReferences.map((reference) => <a key={reference.title} href={reference.url} target="_blank" rel="noreferrer"><span>{reference.category} · {reference.year}</span><h3>{reference.title}</h3><p>{reference.summary}</p><small>{reference.authors} · {reference.publication}</small><ArrowUpRight /></a>)}</div>
+      <div className={styles.referenceGrid}>{scientificReferences.map((reference) => { const ReferenceIcon = referenceIcons[reference.category]; return <a key={reference.title} href={reference.url} target="_blank" rel="noreferrer"><span className={styles.referenceMeta}><ReferenceIcon aria-hidden="true" />{reference.category} · {reference.year}</span><h3>{reference.title}</h3><p>{reference.summary}</p><small>{reference.authors} · {reference.publication}</small><ArrowUpRight className={styles.referenceArrow} /></a>; })}</div>
     </section>
 
     <section className={styles.section} id="duvidas">

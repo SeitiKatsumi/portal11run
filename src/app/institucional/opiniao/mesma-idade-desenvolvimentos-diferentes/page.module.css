@@ -11,3 +11,8 @@
 .trackLineA{top:51%;transform:rotate(-2deg)}
 .trackLineB{top:70%;transform:rotate(1deg)}
 @media(max-width:650px){.hero h1{font-size:clamp(2.35rem,10.5vw,3rem)}.heroVisual:before,.heroVisual:after,.trackLineA,.trackLineB{left:4%;width:112%;height:70px}}
+.manifesto h2{font-size:clamp(2.15rem,3.25vw,3.5rem);line-height:1.02}
+.referenceGrid .referenceMeta{display:flex;align-items:center;gap:8px;padding-right:28px}
+.referenceGrid .referenceMeta svg{position:static;width:18px;height:18px;flex:0 0 auto;color:var(--accent-strong)}
+.referenceGrid .referenceArrow{position:absolute;right:18px;top:18px;width:17px}
+@media(max-width:650px){.manifesto h2{font-size:clamp(2rem,10vw,2.75rem)}}
