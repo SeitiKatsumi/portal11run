@@ -169,6 +169,10 @@ const officialSeedResults = [
   ["track-2026-kassyane-s-costa", "Kassyane S. Costa", 9, "FEMALE", 281_000, "Pará, Brasil", "PA", "Teste validado em pista de 400 m", "TRACK_400M", "Pista de 400m"],
   ["track-2026-gabryelle-silva", "Gabryelle Silva", 9, "FEMALE", 263_000, "Pará, Brasil", "PA", "Teste validado em pista de 400 m", "TRACK_400M", "Pista de 400m"],
   ["track-2026-maria-eloyza-alves", "Maria Eloyza Alves", 9, "FEMALE", 294_000, "Pará, Brasil", "PA", "Teste validado em pista de 400 m", "TRACK_400M", "Pista de 400m"],
+  ["track-2026-solange-aquino", "Solange Aquino", 10, "FEMALE", 252_000, "Porto Alegre", "RS", "Teste validado em pista de 400 m", "TRACK_400M", "Pista 400m", "2026-08-04"],
+  ["open-course-2026-catarina-f-santos", "Catarina F. Santos", 10, "FEMALE", 282_000, "Ribeirão Preto", "SP", "Teste validado em percurso livre", "OPEN_COURSE", "Percurso Livre", "2026-08-05"],
+  ["track-2026-cintia-pina-calvo", "Cintia Pina Calvo", 9, "FEMALE", 241_700, "Rio de Janeiro", "RJ", "Teste validado em pista de 400 m", "TRACK_400M", "Pista 400m", "2026-08-03"],
+  ["track-2026-miguel-santos", "Miguel Santos", 11, "MALE", 196_000, "São Paulo", "SP", "Teste validado em pista de 400 m", "TRACK_400M", "Pista 400m", "2026-08-05"],
   ["official-2026-ana-cristina", "Ana Cristina", 10, "FEMALE", 236_120, "Santa Catarina, Brasil", "SC", "Competição oficial em Santa Catarina"]
 ] as const;
 
@@ -181,8 +185,17 @@ function seedOfficialCircuitResults(db: DatabaseSync) {
        created_at, updated_at
      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'APPROVED', ?, ?)
      ON CONFLICT(id) DO UPDATE SET
+       public_name = excluded.public_name,
+       category_age = excluded.category_age,
+       gender = excluded.gender,
+       activity_date = excluded.activity_date,
+       time_ms = excluded.time_ms,
        city = excluded.city,
        state = excluded.state,
+       competition_name = excluded.competition_name,
+       submission_type = excluded.submission_type,
+       validation_badge = excluded.validation_badge,
+       status = excluded.status,
        updated_at = excluded.updated_at`
   );
   for (const [
@@ -195,7 +208,8 @@ function seedOfficialCircuitResults(db: DatabaseSync) {
     state,
     competitionName,
     submissionType = "OFFICIAL_COMPETITION",
-    validationBadge = "Oficial"
+    validationBadge = "Oficial",
+    activityDate = CIRCUIT_ACTIVITY_START
   ] of officialSeedResults) {
     statement.run(
       id,
@@ -203,7 +217,7 @@ function seedOfficialCircuitResults(db: DatabaseSync) {
       publicName,
       categoryAge,
       gender,
-      CIRCUIT_ACTIVITY_START,
+      activityDate,
       timeMs,
       city,
       state,
