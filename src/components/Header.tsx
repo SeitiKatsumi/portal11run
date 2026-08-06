@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, ChevronDown, ChevronRight, Compass, Flag, Gift, Globe2, GraduationCap, HandHeart, HeartHandshake, Home, Medal, Menu, MessageSquareQuote, Palette, ShieldCheck, ShoppingBag, Trophy, UserRound, X } from "lucide-react";
+import { BarChart3, ChevronDown, ChevronRight, Compass, Flag, Gift, Globe2, GraduationCap, HandHeart, HeartHandshake, Home, Medal, Menu, MessageSquareQuote, Palette, Route, ShieldCheck, ShoppingBag, Trophy, UserRound, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { navItems } from "@/lib/content";
@@ -35,6 +35,7 @@ const navIcons: Record<string, LucideIcon> = {
   "/institucional/opiniao/mesma-idade-desenvolvimentos-diferentes": MessageSquareQuote,
   "/referencias/analises/formacao-integral-do-atleta": GraduationCap,
   "/referencias/analises/modulacao-neurorespiratoria-fundismo": MessageSquareQuote,
+  "/referencias/analises/o-fundo-comeca-na-infancia": Route,
   "/politica-de-privacidade": ShieldCheck
 };
 
