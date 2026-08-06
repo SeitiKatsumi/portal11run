@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, ChevronDown, ChevronRight, Compass, Flag, Gift, Globe2, HandHeart, HeartHandshake, Home, Medal, Menu, MessageSquareQuote, Palette, ShieldCheck, ShoppingBag, Trophy, UserRound, X } from "lucide-react";
+import { BarChart3, ChevronDown, ChevronRight, Compass, Flag, Gift, Globe2, GraduationCap, HandHeart, HeartHandshake, Home, Medal, Menu, MessageSquareQuote, Palette, ShieldCheck, ShoppingBag, Trophy, UserRound, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { navItems } from "@/lib/content";
@@ -33,6 +33,7 @@ const navIcons: Record<string, LucideIcon> = {
   "/institucional/branding": Palette,
   "/institucional/diretrizes-aos-atletas": ShieldCheck,
   "/institucional/opiniao/mesma-idade-desenvolvimentos-diferentes": MessageSquareQuote,
+  "/referencias/analises/formacao-integral-do-atleta": GraduationCap,
   "/politica-de-privacidade": ShieldCheck
 };
 

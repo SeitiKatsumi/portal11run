@@ -116,7 +116,8 @@ export const navItems: NavItem[] = [
         label: "Análises",
         href: "#analises",
         children: [
-          { label: "Mesma idade. Desenvolvimentos diferentes.", href: "/institucional/opiniao/mesma-idade-desenvolvimentos-diferentes" }
+          { label: "Mesma idade. Desenvolvimentos diferentes.", href: "/institucional/opiniao/mesma-idade-desenvolvimentos-diferentes" },
+          { label: "Formação Integral do Atleta", href: "/referencias/analises/formacao-integral-do-atleta" }
         ]
       }
     ]
