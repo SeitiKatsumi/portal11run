@@ -117,7 +117,8 @@ export const navItems: NavItem[] = [
         href: "#analises",
         children: [
           { label: "Mesma idade. Desenvolvimentos diferentes.", href: "/institucional/opiniao/mesma-idade-desenvolvimentos-diferentes" },
-          { label: "Formação Integral do Atleta", href: "/referencias/analises/formacao-integral-do-atleta" }
+          { label: "Formação Integral do Atleta", href: "/referencias/analises/formacao-integral-do-atleta" },
+          { label: "Respiração, Cérebro e Resistência", href: "/referencias/analises/modulacao-neurorespiratoria-fundismo" }
         ]
       }
     ]

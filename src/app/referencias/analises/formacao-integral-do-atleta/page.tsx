@@ -34,6 +34,7 @@ export default function IntegralFormationPage() {
     </header>
     <nav className={styles.jumpNav} aria-label="Nesta análise">{[["Introdução","introducao"],["Formação integral","formacao"],["Autonomia","autonomia"],["Pensamento crítico","pensamento-critico"],["Dupla carreira","dupla-carreira"],["Brasil","brasil"],["Responsabilidades","responsabilidades"],["Método 11RUN","metodo"],["Ciência","ciencia"],["Dúvidas","duvidas"]].map(([label,id])=><a key={id} href={`#${id}`}>{label}</a>)}</nav>
     <IntegralFormationExperience />
+    <section className={styles.related}><div><span className={styles.eyebrow}>Próxima análise</span><h2>Respiração, cérebro e resistência</h2><p>O que a ciência realmente sabe sobre modulação neurorespiratória no fundismo — sem transformar respiração em promessa de performance.</p></div><Link href="/referencias/analises/modulacao-neurorespiratoria-fundismo">Ler próxima análise <ArrowRight /></Link></section>
     <section className={styles.signature}><div><span className={styles.eyebrow}>Análises 11RUN</span><h2>Formação esportiva também é formação para a vida.</h2><p>Alto rendimento, educação e autonomia podem avançar juntos quando o atleta é tratado como pessoa em desenvolvimento — com voz, direitos, contexto e futuro.</p></div><div><strong>Seiti Katsumi</strong><span>Fundador da 11RUN</span></div></section>
   </article>;
 }

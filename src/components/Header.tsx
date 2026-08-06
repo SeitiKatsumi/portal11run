@@ -34,6 +34,7 @@ const navIcons: Record<string, LucideIcon> = {
   "/institucional/diretrizes-aos-atletas": ShieldCheck,
   "/institucional/opiniao/mesma-idade-desenvolvimentos-diferentes": MessageSquareQuote,
   "/referencias/analises/formacao-integral-do-atleta": GraduationCap,
+  "/referencias/analises/modulacao-neurorespiratoria-fundismo": MessageSquareQuote,
   "/politica-de-privacidade": ShieldCheck
 };
 
