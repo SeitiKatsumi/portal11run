@@ -3,6 +3,7 @@ import { navItems } from "@/lib/content";
 import type { NavItem } from "@/lib/content";
 import { listSponsors } from "@/lib/sponsors";
 import { sponsorCategories } from "@/lib/sponsor-categories";
+import { PRIMARY_EMAIL, PRIMARY_EMAIL_HREF } from "@/lib/site-contact";
 
 const footerSponsorCategories = sponsorCategories;
 const footerExcludedLinks = new Set(["/politica-de-privacidade"]);
@@ -184,6 +185,7 @@ export function Footer() {
           <img src="/assets/logos/onzerun-menu.png" alt="11RUN" className="footer-logo" />
           <p>Ecossistema de desenvolvimento esportivo, alto rendimento e oportunidades para corredores.</p>
           <span>11RUN Brasil</span>
+          <a className="footer-primary-email" href={PRIMARY_EMAIL_HREF}>{PRIMARY_EMAIL}</a>
         </div>
 
         <nav className="footer-nav-grid" aria-label="Navegação do rodapé">

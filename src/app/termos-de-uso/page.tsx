@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PRIMARY_EMAIL, PRIMARY_EMAIL_HREF } from "@/lib/site-contact";
 
 export const metadata: Metadata = {
   title: "Termos de Uso",
@@ -100,7 +101,8 @@ export default function TermsOfUsePage() {
           <p>
             Dúvidas sobre uso da marca devem ser encaminhadas pelo formulário disponível no{" "}
             <Link href="/institucional/branding#autorizacao">Manual da Marca 11Run</Link>. Questões sobre dados
-            pessoais devem utilizar os canais indicados na Política de Privacidade.
+            pessoais devem utilizar os canais indicados na Política de Privacidade. O e-mail principal da 11RUN é{" "}
+            <a href={PRIMARY_EMAIL_HREF}>{PRIMARY_EMAIL}</a>.
           </p>
         </article>
       </section>

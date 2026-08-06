@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { RunAssistant } from "@/components/RunAssistant";
+import { PRIMARY_EMAIL } from "@/lib/site-contact";
 
 const geist = Geist({
   subsets: ["latin"],
@@ -24,9 +25,17 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "11RUN",
+    url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://11run.com.br",
+    email: PRIMARY_EMAIL
+  };
   return (
     <html lang="pt-BR">
       <body className={geist.variable}>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
         <Header />
         <main>{children}</main>
         <Footer />

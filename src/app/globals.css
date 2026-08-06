@@ -5186,6 +5186,20 @@ body:has(.admin-shell-page) .run-assistant {
   transform: translateX(3px);
 }
 
+.footer-brand-block .footer-primary-email {
+  width: fit-content;
+  margin-top: 14px;
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.footer-brand-block .footer-primary-email:hover,
+.footer-brand-block .footer-primary-email:focus-visible {
+  color: var(--accent-strong);
+}
+
 .footer-elevenmind {
   display: flex;
   margin-top: clamp(30px, 4vw, 46px);

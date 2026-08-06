@@ -1,3 +1,5 @@
+import { PRIMARY_EMAIL } from "@/lib/site-contact";
+
 function configured(value: string | undefined) {
   const normalized = value?.trim();
   return normalized || null;
@@ -8,7 +10,7 @@ export const privacyController = {
   tradeName: configured(process.env.PRIVACY_CONTROLLER_TRADE_NAME) ?? "11RUN",
   cnpj: configured(process.env.PRIVACY_CONTROLLER_CNPJ),
   address: configured(process.env.PRIVACY_CONTROLLER_ADDRESS),
-  email: configured(process.env.PRIVACY_CONTACT_EMAIL),
+  email: configured(process.env.PRIVACY_CONTACT_EMAIL) ?? PRIMARY_EMAIL,
   whatsapp: configured(process.env.PRIVACY_CONTACT_WHATSAPP),
   dpoName: configured(process.env.PRIVACY_DPO_NAME)
 };

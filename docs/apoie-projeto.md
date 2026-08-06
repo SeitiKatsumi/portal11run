@@ -30,7 +30,7 @@ SQLITE_PATH=/data/portal11run.sqlite
 SUPPORT_PRIVATE_UPLOAD_DIR=/data/support-private
 NEXT_PUBLIC_SITE_URL=https://11run.com.br
 RESEND_API_KEY=
-NOTIFICATION_FROM_EMAIL=11RUN <contato@11run.com.br>
+NOTIFICATION_FROM_EMAIL=11RUN <11run@elevenmind.com.br>
 ADMIN_NOTIFICATION_EMAIL=
 ```
 
