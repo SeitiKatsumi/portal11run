@@ -92,13 +92,6 @@ export const navItems: NavItem[] = [
           { label: "Seiti Katsumi", href: "/institucional/seiti-katsumi" },
           { label: "Alex Lopes", href: "/institucional/alex-sandro-lopes" }
         ]
-      },
-      {
-        label: "Opinião",
-        href: "#opiniao",
-        children: [
-          { label: "Mesma idade. Desenvolvimentos diferentes.", href: "/institucional/opiniao/mesma-idade-desenvolvimentos-diferentes" }
-        ]
       }
     ]
   },
@@ -117,6 +110,13 @@ export const navItems: NavItem[] = [
           { label: "Ranking no Quênia", href: "/referencias/ranking-quenia" },
           { label: "Ranking em Uganda", href: "/referencias/ranking-uganda" },
           { label: "Ranking Mundial", href: "/referencias/ranking-mundial" }
+        ]
+      },
+      {
+        label: "Análises",
+        href: "#analises",
+        children: [
+          { label: "Mesma idade. Desenvolvimentos diferentes.", href: "/institucional/opiniao/mesma-idade-desenvolvimentos-diferentes" }
         ]
       }
     ]

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Activity, ArrowUpRight, BrainCircuit, ChevronDown, CircleCheck, Clock3, HeartHandshake, HeartPulse, Layers3, ShieldCheck, Sparkles, TrendingUp } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Activity, ArrowUpRight, BrainCircuit, ChevronDown, CircleCheck, Clock3, ExternalLink, HeartHandshake, HeartPulse, Languages, Layers3, ShieldCheck, Sparkles, TrendingUp, X } from "lucide-react";
 import { developmentFactors, faqs, manifesto, scientificReferences } from "@/lib/maturation-content";
 import styles from "@/app/institucional/opiniao/mesma-idade-desenvolvimentos-diferentes/page.module.css";
 
@@ -23,7 +23,26 @@ const referenceIcons = {
 export function MaturationExperience() {
   const [scenario, setScenario] = useState(0);
   const [month, setMonth] = useState(0);
+  const [translatedReference, setTranslatedReference] = useState<(typeof scientificReferences)[number] | null>(null);
+  const closeTranslationRef = useRef<HTMLButtonElement>(null);
+  const translationTriggerRef = useRef<HTMLButtonElement | null>(null);
   const selected = scenarios[scenario];
+
+  useEffect(() => {
+    if (!translatedReference) return;
+    const previousOverflow = document.body.style.overflow;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setTranslatedReference(null);
+    };
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", closeOnEscape);
+    requestAnimationFrame(() => closeTranslationRef.current?.focus());
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", closeOnEscape);
+      translationTriggerRef.current?.focus();
+    };
+  }, [translatedReference]);
 
   return <>
     <section className={styles.question} id="entenda">
@@ -67,8 +86,10 @@ export function MaturationExperience() {
 
     <section className={styles.section} id="ciencia">
       <header className={styles.sectionHeading}><span className={styles.eyebrow}>Base científica</span><h2>Ciência do esporte, traduzida sem perder as limitações.</h2><p>Ciência evolui. O conteúdo desta página deve ser revisado periodicamente.</p></header>
-      <div className={styles.referenceGrid}>{scientificReferences.map((reference) => { const ReferenceIcon = referenceIcons[reference.category]; return <a key={reference.title} href={reference.url} target="_blank" rel="noreferrer"><span className={styles.referenceMeta}><ReferenceIcon aria-hidden="true" />{reference.category} · {reference.year}</span><h3>{reference.title}</h3><p>{reference.summary}</p><small>{reference.authors} · {reference.publication}</small><ArrowUpRight className={styles.referenceArrow} /></a>; })}</div>
+      <div className={styles.referenceGrid}>{scientificReferences.map((reference) => { const ReferenceIcon = referenceIcons[reference.category]; return <article className={styles.referenceCard} key={reference.title}><a className={styles.referenceContent} href={reference.url} target="_blank" rel="noreferrer"><span className={styles.referenceMeta}><ReferenceIcon aria-hidden="true" />{reference.category} · {reference.year}</span><h3>{reference.title}</h3><p>{reference.summary}</p><small>{reference.authors} · {reference.publication}</small><ArrowUpRight className={styles.referenceArrow} /></a><button className={styles.translateButton} type="button" aria-label={`Ler resumo em português: ${reference.title}`} title="Ler resumo em português" onClick={(event) => { translationTriggerRef.current = event.currentTarget; setTranslatedReference(reference); }}><Languages aria-hidden="true" /></button></article>; })}</div>
     </section>
+
+    {translatedReference ? <div className={styles.translationBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setTranslatedReference(null); }}><section className={styles.translationModal} role="dialog" aria-modal="true" aria-labelledby="translation-title" aria-describedby="translation-description"><button ref={closeTranslationRef} className={styles.translationClose} type="button" aria-label="Fechar resumo traduzido" onClick={() => setTranslatedReference(null)}><X aria-hidden="true" /></button><header><span className={styles.translationBadge}><Languages aria-hidden="true" /> Resumo em português do Brasil</span><h2 id="translation-title">{translatedReference.title}</h2><p className={styles.originalTitle}>{translatedReference.originalTitle}</p></header><div className={styles.translationBody}><div><span>Resumo editorial 11RUN</span><p id="translation-description">{translatedReference.translatedSummary}</p></div><aside><strong>Ideia principal</strong><p>{translatedReference.keyPoint}</p><strong>Limitações</strong><p>{translatedReference.limitation}</p></aside></div><footer><p>Tradução editorial para fins educativos. Consulte a publicação original para metodologia, resultados e conclusões completas.</p><a href={translatedReference.url} target="_blank" rel="noreferrer">Abrir publicação original <ExternalLink aria-hidden="true" /></a></footer></section></div> : null}
 
     <section className={styles.section} id="duvidas">
       <header className={styles.sectionHeading}><span className={styles.eyebrow}>Dúvidas frequentes</span><h2>Respostas diretas, sem promessas absolutas.</h2></header>
