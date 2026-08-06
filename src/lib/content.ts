@@ -113,6 +113,13 @@ export const navItems: NavItem[] = [
         ]
       },
       {
+        label: "Resultados",
+        href: "#resultados",
+        children: [
+          { label: "Estaduais Sub 16", href: "/referencias/resultados/estaduais-sub-16" }
+        ]
+      },
+      {
         label: "Análises",
         href: "#analises",
         children: [
