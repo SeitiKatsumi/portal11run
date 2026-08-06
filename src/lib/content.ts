@@ -61,7 +61,7 @@ export type ProjectPage = {
 
 export const projectNavItems: NavItem[] = [
   { label: "11 Run Futuro", href: "/onze-futuro" },
-  { label: "Circuito Virtual 11 2026", href: "/projetos/circuito-virtual-11run" },
+  { label: "Desafio Virtual 11 2026", href: "/projetos/circuito-virtual-11run" },
   { label: "Circuito 11 Run 2027", href: "/circuito-futuro-11" },
   { label: "11 Run Master", href: "/11-master" },
   { label: "Bolsas", href: "/bolsas" },
