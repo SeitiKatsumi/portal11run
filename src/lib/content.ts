@@ -119,20 +119,20 @@ export const navItems: NavItem[] = [
         ]
       },
       {
-        label: "Análises",
-        href: "#analises",
+        label: "Calculadoras",
+        href: "#calculadoras",
+        children: [
+          { label: "Calculadora de Pace", href: "/referencias/calculadoras/pace" }
+        ]
+      },
+      {
+        label: "Reflexões",
+        href: "#reflexoes",
         children: [
           { label: "Mesma idade. Desenvolvimentos diferentes.", href: "/institucional/opiniao/mesma-idade-desenvolvimentos-diferentes" },
           { label: "Formação Integral do Atleta", href: "/referencias/analises/formacao-integral-do-atleta" },
           { label: "Respiração, Cérebro e Resistência", href: "/referencias/analises/modulacao-neurorespiratoria-fundismo" },
           { label: "O Fundo Começa na Infância?", href: "/referencias/analises/o-fundo-comeca-na-infancia" }
-        ]
-      },
-      {
-        label: "Calculadoras",
-        href: "#calculadoras",
-        children: [
-          { label: "Calculadora de Pace", href: "/referencias/calculadoras/pace" }
         ]
       }
     ]
