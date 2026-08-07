@@ -107,12 +107,11 @@ main {
   gap: clamp(20px, 2.6vw, 42px);
   align-items: center;
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: 0;
   border-radius: var(--radius);
 }
 
 .home-site-header {
-  border-color: rgb(255 255 255 / 0.34);
   box-shadow: 0 12px 40px rgb(0 0 0 / 0.1);
   color: #fff;
   transition: background-color 180ms ease, box-shadow 180ms ease, backdrop-filter 180ms ease;
