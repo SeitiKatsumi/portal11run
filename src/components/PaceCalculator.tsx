@@ -1,7 +1,7 @@
 "use client";
 
 import { Activity, Gauge, RotateCcw, Route, Timer, Zap } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { calculatePace, formatClock, parseClock, passageDistances, timeAtDistance } from "@/lib/pace-calculator";
 import styles from "@/app/referencias/calculadoras/pace/pace.module.css";
 
@@ -14,6 +14,15 @@ export function PaceCalculator() {
   const [time, setTime] = useState("15:00");
   const [pace, setPace] = useState("3:00");
   const [track, setTrack] = useState(400);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const incomingDistance = Number(params.get("distancia"));
+    const incomingTime = params.get("tempo");
+    if (Number.isFinite(incomingDistance) && incomingDistance >= 50 && incomingDistance <= 100000 && incomingTime && parseClock(incomingTime) > 0) {
+      setDistance(incomingDistance); setTime(incomingTime); setMode("time");
+    }
+  }, []);
 
   const result = useMemo(() => {
     const secondsPerKm = mode === "time" ? calculatePace(distance, parseClock(time))?.secondsPerKm ?? 0 : parseClock(pace);

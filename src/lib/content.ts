@@ -122,7 +122,8 @@ export const navItems: NavItem[] = [
         label: "Calculadoras",
         href: "#calculadoras",
         children: [
-          { label: "Calculadora de Pace", href: "/referencias/calculadoras/pace" }
+          { label: "Pace", href: "/referencias/calculadoras/pace" },
+          { label: "Fórmulas", href: "/referencias/calculadoras/formulas" }
         ]
       },
       {
