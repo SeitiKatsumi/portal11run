@@ -127,6 +127,13 @@ export const navItems: NavItem[] = [
           { label: "Respiração, Cérebro e Resistência", href: "/referencias/analises/modulacao-neurorespiratoria-fundismo" },
           { label: "O Fundo Começa na Infância?", href: "/referencias/analises/o-fundo-comeca-na-infancia" }
         ]
+      },
+      {
+        label: "Calculadoras",
+        href: "#calculadoras",
+        children: [
+          { label: "Calculadora de Pace", href: "/referencias/calculadoras/pace" }
+        ]
       }
     ]
   },
