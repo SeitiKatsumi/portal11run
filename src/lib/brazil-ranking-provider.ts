@@ -50,6 +50,7 @@ export type BrazilRankingInput = {
   gender: InternationalGender;
   ageKey: BrazilAgeKey;
   event: InternationalEvent;
+  region?: string;
 };
 
 function displayPerformance(value: string) {
@@ -72,7 +73,7 @@ export function buildBrazilRankingApiUrl(input: BrazilRankingInput) {
   url.searchParams.set("ano_minimo", String(category.min));
   url.searchParams.set("ano_maximo", String(category.max));
   url.searchParams.set("sexo", input.gender.toLowerCase());
-  url.searchParams.set("uflist", "");
+  url.searchParams.set("uflist", input.region ?? "");
   url.searchParams.set("page", "1");
   return url.toString();
 }
@@ -89,6 +90,7 @@ export function buildBrazilRankingPageUrl(input: BrazilRankingInput) {
   url.searchParams.set("tipo", "O");
   url.searchParams.set("prova", String(eventId));
   url.searchParams.set("vento", "0");
+  if (input.region) url.searchParams.set("uflist", input.region);
   url.searchParams.set("gerar", "1");
   return url.toString();
 }

@@ -92,8 +92,14 @@ function normalized(value: string | undefined) {
 }
 
 export async function listBrazilRankings(query: BrazilListQuery, force = false) {
-  const snapshot = await ensureBrazilRanking(query, force);
-  const rawRows = JSON.parse(snapshot.rows_json) as ParsedInternationalRanking["rows"];
+  const liveStateRanking = query.region ? await provider.fetchRanking(query) : null;
+  const snapshot = liveStateRanking ? null : await ensureBrazilRanking(query, force);
+  const rawRows = liveStateRanking?.rows
+    ?? JSON.parse((snapshot as Snapshot).rows_json) as ParsedInternationalRanking["rows"];
+  const sourceUrl = liveStateRanking?.sourceUrl ?? (snapshot as Snapshot).source_url;
+  const completedAt = liveStateRanking?.sourceUpdatedAt ?? (snapshot as Snapshot).completed_at;
+  const sourceStatus = liveStateRanking?.sourceStatus ?? (snapshot as Snapshot).status;
+  const snapshotId = snapshot?.id ?? `cbat-${query.season}-${query.region}-${query.gender}-${query.event}`;
   const regions = [...new Set(rawRows.map((row) => row.regionName).filter((value): value is string => Boolean(value)))]
     .sort((a, b) => a.localeCompare(b, "pt-BR"))
     .map((value) => ({ value }));
@@ -103,10 +109,10 @@ export async function listBrazilRankings(query: BrazilListQuery, force = false) 
     .filter((row) => !query.region || row.regionName === query.region)
     .slice(0, Math.min(100, Math.max(1, query.limit ?? 100)))
     .map((row, index) => ({
-      id: `${snapshot.id}-${index}-${row.position}`,
+      id: `${snapshotId}-${index}-${row.position}`,
       country: "BR",
       source_key: row.sourceKey ?? "cbat-ranking-2026",
-      source_url: row.sourceUrl ?? snapshot.source_url,
+      source_url: row.sourceUrl ?? sourceUrl,
       position: row.position,
       display_position: row.position,
       performance: row.performance,
@@ -131,19 +137,19 @@ export async function listBrazilRankings(query: BrazilListQuery, force = false) 
       key: "cbat-ranking-2026",
       name: "Ranking Brasileiro CBAt 2026",
       authority: "Confederação Brasileira de Atletismo",
-      sourceUrl: snapshot.source_url,
+      sourceUrl,
       supportingSources: []
     },
     config: { available: true, note: null },
     sync: null,
     import: {
-      id: snapshot.id,
-      source_url: snapshot.source_url,
-      source_updated_at: snapshot.source_updated_at,
-      completed_at: snapshot.completed_at,
-      record_count: snapshot.record_count,
+      id: snapshotId,
+      source_url: sourceUrl,
+      source_updated_at: liveStateRanking?.sourceUpdatedAt ?? snapshot?.source_updated_at ?? null,
+      completed_at: completedAt,
+      record_count: liveStateRanking?.rows.length ?? snapshot?.record_count ?? 0,
       round_label: "Top 100 CBAt",
-      status: snapshot.status
+      status: sourceStatus
     },
     count: results.length,
     results,

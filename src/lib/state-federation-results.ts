@@ -10,7 +10,7 @@ export type FederationSource = {
 export type StateFederationResult = {
   id: string;
   state: string;
-  event: 1000 | 2000;
+  event: 800 | 1000 | 1500 | 2000 | 3000 | 5000;
   gender: "M" | "F";
   athlete: string;
   birthYear: number;
