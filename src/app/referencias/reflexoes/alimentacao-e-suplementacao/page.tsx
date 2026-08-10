@@ -123,7 +123,7 @@ export default function NutritionAndSupplementationReflectionPage() {
         <div className={styles.heroCopy}>
           <span className={styles.eyebrow}>Reflexões 11RUN · Infância, saúde e esporte limpo</span>
           <h1>Alimentação <em>e Suplementação</em></h1>
-          <p>Na formação de jovens atletas, crescimento vem antes da performance — e nenhuma promessa de resultado substitui comida, cuidado e orientação profissional.</p>
+          <p>Na formação de jovens atletas, crescimento vem antes da performance — e nenhuma promessa de resultado substitui alimentação adequada, cuidado e orientação profissional.</p>
           <div className={styles.actions}>
             <a href="#ponto-de-partida">Começar a leitura <ArrowDown /></a>
             <Link href="/onze-futuro">Conhecer o Onze Futuro <ArrowRight /></Link>
@@ -131,7 +131,7 @@ export default function NutritionAndSupplementationReflectionPage() {
           <small>Leitura para famílias, treinadores e jovens atletas · Base científica atualizada em agosto de 2026</small>
         </div>
         <aside className={styles.heroManifesto} aria-label="Três compromissos para uma formação segura">
-          <Apple /><span>Comer para crescer.</span>
+          <Apple /><span>Alimentar-se para crescer.</span>
           <SearchCheck /><span>Perguntar antes de usar.</span>
           <ShieldCheck /><span>Competir sem atalhos.</span>
         </aside>
@@ -164,7 +164,7 @@ export default function NutritionAndSupplementationReflectionPage() {
       <section className={styles.section} id="alimentacao">
         <div className={styles.heading}>
           <span className={styles.eyebrow}>01 · Alimentação</span>
-          <h2>Comida sustenta uma infância inteira — não apenas o treino.</h2>
+          <h2>Uma alimentação adequada sustenta toda a infância — não apenas o treino.</h2>
           <p>Para o jovem corredor, alimentação precisa apoiar crescimento, escola, desenvolvimento cerebral, saúde óssea, imunidade, recuperação, convivência e prazer pelo esporte.</p>
         </div>
         <div className={styles.foodGrid}>
@@ -178,7 +178,7 @@ export default function NutritionAndSupplementationReflectionPage() {
             <CheckCircle2 />
             <h3>O que aprender</h3>
             <ul>
-              <li>Comida fornece energia para crescer, estudar, brincar e treinar.</li>
+              <li>Os alimentos fornecem energia e nutrientes para crescer, estudar, brincar e treinar.</li>
               <li>Fome não é fraqueza; recuperação também acontece no prato.</li>
               <li>O corpo muda durante o crescimento e não precisa ser comparado.</li>
             </ul>
@@ -187,13 +187,13 @@ export default function NutritionAndSupplementationReflectionPage() {
             <XCircle />
             <h3>O que evitar</h3>
             <ul>
-              <li>Contar calorias, pesar comida ou perseguir percentual de gordura.</li>
-              <li>Associar magreza a talento ou sentir culpa por comer.</li>
+              <li>Contar calorias, pesar porções ou perseguir determinado percentual de gordura.</li>
+              <li>Associar magreza a talento ou desenvolver culpa em relação à alimentação.</li>
               <li>Eliminar grupos alimentares sem avaliação profissional.</li>
             </ul>
           </article>
         </div>
-        <p className={styles.languageNote}><strong>Uma escolha de linguagem importa:</strong> falamos em “esporte limpo”, mas evitamos classificar alimentos como “limpos” ou “sujos”. Comida não deve carregar culpa.</p>
+        <p className={styles.languageNote}><strong>Uma escolha de linguagem importa:</strong> falamos em “esporte limpo”, mas evitamos classificar alimentos como “limpos” ou “sujos”. A alimentação não deve ser fonte de culpa.</p>
       </section>
 
       <section className={styles.darkSection} id="suplementacao">
@@ -260,7 +260,7 @@ export default function NutritionAndSupplementationReflectionPage() {
           <article>
             <span>9–10 anos</span>
             <h3>Concreto, lúdico e cotidiano</h3>
-            <ul><li>Comer para crescer e brincar.</li><li>Água como companheira do treino.</li><li>Diferença entre comida, remédio e suplemento.</li><li>Não aceitar produtos sem perguntar.</li><li>Propagandas não contam toda a história.</li></ul>
+            <ul><li>Alimentação adequada para crescer e brincar.</li><li>Água como companheira do treino.</li><li>Diferença entre alimento, medicamento e suplemento.</li><li>Não aceitar produtos sem perguntar.</li><li>Propagandas não contam toda a história.</li></ul>
           </article>
           <article>
             <span>11–13 anos</span>
@@ -275,13 +275,13 @@ export default function NutritionAndSupplementationReflectionPage() {
           <UsersRound />
           <span className={styles.eyebrow}>06 · Responsabilidade compartilhada</span>
           <h2>A criança aprende a perguntar. Os adultos assumem a verificação.</h2>
-          <p>Famílias, treinadores, pediatras e nutricionistas formam a rede que protege a saúde, a relação com a comida e a integridade esportiva.</p>
+          <p>Famílias, treinadores, pediatras e nutricionistas formam a rede que protege a saúde, a relação com a alimentação e a integridade esportiva.</p>
         </div>
         <ul>
           <li>Não oferecer suplemento por rotina, moda ou comparação.</li>
           <li>Não usar peso e composição corporal como cobrança de performance.</li>
           <li>Observar fadiga persistente, perda de peso, dor recorrente ou queda de rendimento.</li>
-          <li>Levar a sério medo de comer, culpa, compulsão ou preocupação excessiva com o corpo.</li>
+          <li>Levar a sério recusa alimentar, culpa após as refeições, compulsão ou preocupação excessiva com o corpo.</li>
           <li>Buscar avaliação profissional diante de sintomas, restrições ou dúvidas.</li>
         </ul>
       </section>
