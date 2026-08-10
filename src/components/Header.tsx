@@ -6,6 +6,7 @@ import { Apple, BarChart3, ChevronDown, ChevronRight, Compass, Flag, Gift, Globe
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { navItems } from "@/lib/content";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const navIcons: Record<string, LucideIcon> = {
   "/": Home,
@@ -219,6 +220,7 @@ export function Header() {
           <UserRound size={15} strokeWidth={1.7} />
           <span>{accountLabel}</span>
         </Link>
+        <LanguageSwitcher />
       </nav>
 
       <button
@@ -294,6 +296,7 @@ export function Header() {
             <UserRound size={16} strokeWidth={1.7} />
             <span>{accountLabel}</span>
           </Link>
+          <LanguageSwitcher mobile />
         </div>
       ) : null}
     </header>
