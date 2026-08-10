@@ -19,6 +19,7 @@ const routes = [
   "/institucional/seiti-katsumi",
   "/institucional/alex-sandro-lopes",
   "/institucional/diretrizes-aos-atletas",
+  "/referencias/reflexoes/alimentacao-e-suplementacao",
   "/institucional/opiniao/mesma-idade-desenvolvimentos-diferentes",
   "/apoie",
   "/apoie-o-projeto",

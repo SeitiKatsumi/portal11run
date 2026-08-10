@@ -130,6 +130,7 @@ export const navItems: NavItem[] = [
         label: "Reflexões",
         href: "#reflexoes",
         children: [
+          { label: "Alimentação e Suplementação", href: "/referencias/reflexoes/alimentacao-e-suplementacao" },
           { label: "Mesma idade. Desenvolvimentos diferentes.", href: "/institucional/opiniao/mesma-idade-desenvolvimentos-diferentes" },
           { label: "Formação Integral do Atleta", href: "/referencias/analises/formacao-integral-do-atleta" },
           { label: "Respiração, Cérebro e Resistência", href: "/referencias/analises/modulacao-neurorespiratoria-fundismo" },
