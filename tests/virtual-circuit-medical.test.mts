@@ -103,3 +103,14 @@ test("atestado médico não substitui o termo do responsável", () => {
     /termo de saúde e responsabilidade/
   );
 });
+
+test("ranking incorpora sem duplicidade os atletas de 13 anos homologados pela CBAt", () => {
+  const ranking = circuit.listCircuitRanking({ categoryAge: 13 });
+  const cbatResults = ranking.filter((item) => item.id.startsWith("cbat-2026-"));
+
+  assert.equal(cbatResults.length, 21);
+  assert.equal(new Set(cbatResults.map((item) => item.publicName)).size, 21);
+  assert.equal(cbatResults.find((item) => item.publicName === "Davi Henrique Alves da Silva")?.formattedTime, "02:56.38");
+  assert.equal(cbatResults.find((item) => item.publicName === "Helena Rowe Fernandes")?.formattedTime, "03:06.86");
+  assert.equal(cbatResults.find((item) => item.publicName === "Anne Gabryelle da Conceicao Ferraz")?.formattedTime, "04:40.57");
+});
