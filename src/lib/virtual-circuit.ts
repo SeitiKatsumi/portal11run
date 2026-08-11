@@ -173,6 +173,7 @@ const officialSeedResults = [
   ["open-course-2026-catarina-f-santos", "Catarina F. Santos", 10, "FEMALE", 282_000, "Ribeirão Preto", "SP", "Teste validado em percurso livre", "OPEN_COURSE", "Percurso Livre", "2026-08-05"],
   ["track-2026-cintia-pina-calvo", "Cintia Pina Calvo", 9, "FEMALE", 241_700, "Rio de Janeiro", "RJ", "Teste validado em pista de 400 m", "TRACK_400M", "Pista 400m", "2026-08-03"],
   ["track-2026-miguel-santos", "Miguel Santos", 11, "MALE", 196_000, "São Paulo", "SP", "Teste validado em pista de 400 m", "TRACK_400M", "Pista 400m", "2026-08-05"],
+  ["track-2026-nathan-augusto-almeida-gerin", "Nathan Augusto Almeida Gerin", 10, "MALE", 206_700, "Apucarana", "PR", "Teste validado em pista de 400 m", "TRACK_400M", "Pista 400m", "2026-08-10"],
   ["track-2026-maria-eloiza-n-da-silva", "Maria Eloiza N. da Silva", 10, "FEMALE", 234_960, "Recife", "PE", "Teste validado em pista de 400 m", "TRACK_400M", "Pista 400m", "2027-08-06"],
   ["official-2026-ana-cristina", "Ana Cristina", 10, "FEMALE", 236_120, "Santa Catarina, Brasil", "SC", "Competição oficial em Santa Catarina"]
 ] as const;
