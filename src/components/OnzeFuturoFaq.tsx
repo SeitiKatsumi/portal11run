@@ -24,6 +24,7 @@ const groupIcons = {
   painel: LayoutDashboard,
   gamificacao: Gamepad2,
   permanencia: BookOpenCheck,
+  "estudos-rotina": BookOpenCheck,
   privacidade: ShieldCheck
 };
 

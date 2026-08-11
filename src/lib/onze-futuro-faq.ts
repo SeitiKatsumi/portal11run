@@ -354,6 +354,104 @@ export const onzeFuturoFaqGroups: OnzeFuturoFaqGroup[] = [
     ]
   },
   {
+    id: "estudos-rotina",
+    label: "Estudos e rotina",
+    title: "Treinamento, escola e responsabilidades",
+    description: "Como conciliar estudos e esporte, quem organiza a rotina e quais responsabilidades permanecem com a família.",
+    items: [
+      {
+        id: "treino-dias-horarios",
+        question: "A participação no 11Run Futuro exige que a criança treine em dias e horários específicos?",
+        answer: ["Não. A 11Run não estabelece obrigatoriedade de treinamento em dias, horários ou locais específicos. A rotina esportiva deve ser organizada livremente pela família, de acordo com a disponibilidade da criança, dos responsáveis e de seus compromissos escolares."]
+      },
+      {
+        id: "faltas-escolares",
+        question: "A criança precisa faltar às aulas ou sair mais cedo da escola para participar do projeto?",
+        answer: ["Não. A participação no projeto não exige faltas, atrasos ou saídas antecipadas da escola. Para a 11Run, a formação escolar, a frequência às aulas e o desenvolvimento educacional são prioridades nesta fase da vida."]
+      },
+      {
+        id: "liberacao-escolar",
+        question: "A 11Run solicita a liberação dos atletas durante o horário escolar?",
+        answer: ["Não. A 11Run não solicita, exige ou recomenda que a escola libere seus alunos durante o horário de aula. Qualquer eventual flexibilização deverá ser tratada diretamente entre os pais ou responsáveis legais e a instituição de ensino."]
+      },
+      {
+        id: "atestado-escolar",
+        question: "A 11Run emite atestado para justificar faltas escolares?",
+        answer: ["Não. A 11Run pode emitir uma declaração de participação no projeto, destinada exclusivamente a comprovar que a criança integra o 11Run Futuro.", "Esse documento não é um atestado, não justifica automaticamente faltas ou atrasos e não representa uma convocação para treinamento ou competição."]
+      },
+      {
+        id: "aceite-declaracao-escola",
+        question: "A escola é obrigada a aceitar a declaração emitida pela 11Run?",
+        answer: ["Não. A declaração apenas comprova a participação da atleta no projeto. A análise de qualquer solicitação de alteração de horário, saída antecipada ou ausência cabe exclusivamente à instituição de ensino, conforme suas normas internas."]
+      },
+      {
+        id: "locais-oficiais-treinamento",
+        question: "A 11Run indica locais oficiais para treinamento?",
+        answer: ["Não. A 11Run não indica, credencia, homologa ou recomenda pistas, academias, centros esportivos, clubes, treinadores ou outros locais para a realização dos treinamentos individuais dos participantes."]
+      },
+      {
+        id: "escolha-local-treinamento",
+        question: "Quem escolhe o local onde a criança irá treinar?",
+        answer: ["A escolha do local de treinamento é de inteira responsabilidade dos pais ou responsáveis legais. Cabe à família avaliar a segurança, a estrutura, o deslocamento, a supervisão, a qualificação dos profissionais envolvidos e a adequação da atividade à idade da criança."]
+      },
+      {
+        id: "deslocamento-treinamento",
+        question: "A 11Run se responsabiliza pelo deslocamento até o local de treinamento?",
+        answer: ["Não. Transporte, acompanhamento, horários, autorizações e condições de deslocamento são responsabilidades exclusivas dos pais ou responsáveis legais."]
+      },
+      {
+        id: "supervisao-treinos-externos",
+        question: "A 11Run acompanha ou supervisiona os treinamentos realizados fora de suas atividades oficiais?",
+        answer: ["Não. Treinamentos realizados por iniciativa da família, em locais externos e com profissionais escolhidos pelos responsáveis, não são supervisionados pela 11Run.", "A participação no projeto não transfere à 11Run a responsabilidade por atividades externas organizadas pela família."]
+      },
+      {
+        id: "treinar-qualquer-lugar",
+        question: "A criança pode treinar em qualquer lugar?",
+        answer: ["A rotina de treinamento é livre, mas os responsáveis devem escolher um ambiente seguro, adequado à idade e compatível com a atividade proposta. Recomenda-se que a criança esteja sempre acompanhada ou supervisionada por um adulto responsável e, quando necessário, por profissional qualificado."]
+      },
+      {
+        id: "treinador-especifico",
+        question: "A criança precisa ter um treinador específico para permanecer no projeto?",
+        answer: ["Não há obrigatoriedade de contratação ou acompanhamento por um treinador indicado pela 11Run. Quando a família optar por acompanhamento profissional externo, a escolha, a contratação e a verificação das qualificações desse profissional serão de responsabilidade dos responsáveis legais."]
+      },
+      {
+        id: "estudos-prioridade",
+        question: "Os treinos devem ser colocados acima dos compromissos escolares?",
+        answer: ["Não. A orientação da 11Run é exatamente o contrário: os estudos devem permanecer como prioridade.", "Treinamentos, competições e demais atividades esportivas devem ser organizados de maneira que não prejudiquem a frequência, o rendimento acadêmico, o descanso, a convivência familiar e o desenvolvimento integral da criança."]
+      },
+      {
+        id: "conflito-horario-escolar",
+        question: "O que fazer quando o horário de treinamento coincide com o horário escolar?",
+        answer: ["A primeira alternativa deve ser reorganizar o treinamento para outro dia, horário ou local. Caso isso não seja possível, os responsáveis poderão conversar diretamente com a escola e avaliar uma solução, respeitando as normas da instituição e sem comprometer o aprendizado.", "A 11Run não interfere nessa decisão e não exige qualquer flexibilização escolar."]
+      },
+      {
+        id: "apoio-acordo-escola-familia",
+        question: "A 11Run apoia uma eventual liberação acordada entre a família e a escola?",
+        answer: ["A 11Run respeita a decisão tomada entre os responsáveis legais e a instituição de ensino, desde que a conciliação seja considerada adequada por ambas as partes e não prejudique a formação escolar da criança.", "Esse apoio não deve ser interpretado como recomendação, convocação ou exigência por parte do projeto."]
+      },
+      {
+        id: "treino-prejudica-estudos",
+        question: "O que acontece quando o treinamento começa a prejudicar os estudos?",
+        answer: ["A família deve reavaliar imediatamente a rotina e reduzir, reorganizar ou suspender temporariamente as atividades esportivas que estejam comprometendo a frequência, o rendimento ou o bem-estar da criança.", "No 11Run Futuro, resultados esportivos nunca devem ser colocados acima da educação, da saúde e do desenvolvimento saudável."]
+      },
+      {
+        id: "finalidade-declaracao-participacao",
+        question: "Qual é a finalidade das declarações de participação emitidas pelo projeto?",
+        answer: ["A finalidade é exclusivamente comprovar que a criança está cadastrada e participa do 11Run Futuro.", "A declaração não determina calendário de treinamento, não obriga a escola a liberar o aluno, não indica local de prática esportiva e não transfere à 11Run responsabilidades que pertencem à família, à escola ou aos profissionais externos contratados pelos responsáveis."]
+      },
+      {
+        id: "seguranca-treinos-familia",
+        question: "Quem responde pela segurança da criança durante os treinamentos escolhidos pela família?",
+        answer: ["Os pais ou responsáveis legais respondem pela escolha do local, do profissional, do acompanhamento, do transporte e das condições de segurança durante atividades realizadas fora da programação oficial da 11Run."]
+      },
+      {
+        id: "posicao-educacao-esporte",
+        question: "Qual é a posição oficial da 11Run sobre educação e esporte?",
+        answer: ["A 11Run acredita que o esporte deve fortalecer a educação, e não competir com ela. Nesta etapa da vida, a escola, o aprendizado, a formação humana, o descanso e a convivência familiar devem permanecer como prioridades.", "O atletismo é tratado como uma ferramenta complementar de desenvolvimento, capaz de ensinar disciplina, responsabilidade, saúde, amizade e perseverança, sempre respeitando a infância e a formação escolar."]
+      }
+    ]
+  },
+  {
     id: "privacidade",
     label: "Privacidade",
     title: "Dados, imagem, tecnologia e direitos",

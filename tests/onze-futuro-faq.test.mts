@@ -44,3 +44,13 @@ test("a FAQ atende toda a rede de cuidado e os temas legais essenciais", () => {
 
   assert.ok(onzeFuturoFaqItems.length >= 35, "a FAQ deve permanecer realmente abrangente");
 });
+
+test("a FAQ prioriza os estudos e delimita responsabilidades nos treinos externos", () => {
+  const content = JSON.stringify(onzeFuturoFaqGroups);
+
+  assert.match(content, /os estudos devem permanecer como prioridade/i);
+  assert.match(content, /não é um atestado/i);
+  assert.match(content, /não são supervisionados pela 11Run/i);
+  assert.match(content, /responsabilidade dos pais ou responsáveis legais/i);
+  assert.equal(onzeFuturoFaqGroups.find((group) => group.id === "estudos-rotina")?.items.length, 18);
+});
