@@ -114,3 +114,13 @@ test("ranking incorpora sem duplicidade os atletas de 13 anos homologados pela C
   assert.equal(cbatResults.find((item) => item.publicName === "Helena Rowe Fernandes")?.formattedTime, "03:06.86");
   assert.equal(cbatResults.find((item) => item.publicName === "Anne Gabryelle da Conceicao Ferraz")?.formattedTime, "04:40.57");
 });
+
+test("ranking inclui a marca de percurso livre de Bernardo Santos", () => {
+  const [bernardo] = circuit.listCircuitRanking({ categoryAge: 9, gender: "MALE", name: "Bernardo Santos" });
+
+  assert.equal(bernardo?.formattedTime, "03:52.47");
+  assert.equal(bernardo?.type, "OPEN_COURSE");
+  assert.equal(bernardo?.city, "Suzano");
+  assert.equal(bernardo?.state, "SP");
+  assert.equal(bernardo?.activityDate, "2026-08-09");
+});
