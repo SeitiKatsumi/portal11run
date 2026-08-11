@@ -181,7 +181,7 @@ const officialSeedResults = [
   ["track-2026-gabryelle-silva", "Gabryelle Silva", 9, "FEMALE", 263_000, "Pará, Brasil", "PA", "Teste validado em pista de 400 m", "TRACK_400M", "Pista de 400m"],
   ["track-2026-maria-eloyza-alves", "Maria Eloyza Alves", 9, "FEMALE", 294_000, "Pará, Brasil", "PA", "Teste validado em pista de 400 m", "TRACK_400M", "Pista de 400m"],
   ["track-2026-solange-aquino", "Solange Aquino", 10, "FEMALE", 252_000, "Porto Alegre", "RS", "Teste validado em pista de 400 m", "TRACK_400M", "Pista 400m", "2026-08-04"],
-  ["open-course-2026-bernardo-santos", "Bernardo Santos", 9, "MALE", 232_470, "Suzano", "SP", "Teste validado em percurso livre", "OPEN_COURSE", "Percurso Livre", "2026-08-09"],
+  ["open-course-2026-bernardo-santos", "Bernardo dos Santos Mendonça", 11, "MALE", 232_470, "Suzano", "SP", "Teste validado em percurso livre", "OPEN_COURSE", "Percurso Livre", "2026-08-09"],
   ["open-course-2026-catarina-f-santos", "Catarina F. Santos", 10, "FEMALE", 282_000, "Ribeirão Preto", "SP", "Teste validado em percurso livre", "OPEN_COURSE", "Percurso Livre", "2026-08-05"],
   ["track-2026-cintia-pina-calvo", "Cintia Pina Calvo", 9, "FEMALE", 241_700, "Rio de Janeiro", "RJ", "Teste validado em pista de 400 m", "TRACK_400M", "Pista 400m", "2026-08-03"],
   ["track-2026-miguel-santos", "Miguel Santos", 11, "MALE", 196_000, "São Paulo", "SP", "Teste validado em pista de 400 m", "TRACK_400M", "Pista 400m", "2026-08-05"],

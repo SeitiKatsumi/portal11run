@@ -8,6 +8,7 @@ process.env.SQLITE_PATH = path.join(tmpdir(), `11run-medical-${randomUUID()}.sql
 process.env.VIRTUAL_CIRCUIT_DATA_KEY = "test-only-medical-clearance-key";
 
 const circuit = await import("../src/lib/virtual-circuit.ts");
+const { categoryForBirthDate } = await import("../src/lib/virtual-circuit-core.ts");
 const { mandatoryConsents } = await import("../src/lib/virtual-circuit-content.ts");
 
 function privateFile(purpose: string) {
@@ -115,9 +116,11 @@ test("ranking incorpora sem duplicidade os atletas de 13 anos homologados pela C
   assert.equal(cbatResults.find((item) => item.publicName === "Anne Gabryelle da Conceicao Ferraz")?.formattedTime, "04:40.57");
 });
 
-test("ranking inclui a marca de percurso livre de Bernardo Santos", () => {
-  const [bernardo] = circuit.listCircuitRanking({ categoryAge: 9, gender: "MALE", name: "Bernardo Santos" });
+test("ranking inclui Bernardo dos Santos Mendonça na categoria calculada pela data de nascimento", () => {
+  const category = categoryForBirthDate("2015-08-07", 2026);
+  const [bernardo] = circuit.listCircuitRanking({ categoryAge: category.age, gender: "MALE", name: "Bernardo dos Santos Mendonça" });
 
+  assert.equal(category.age, 11);
   assert.equal(bernardo?.formattedTime, "03:52.47");
   assert.equal(bernardo?.type, "OPEN_COURSE");
   assert.equal(bernardo?.city, "Suzano");
