@@ -156,7 +156,7 @@ export function AlexProfileExperience() {
           </div>
         </div>
         <div className={styles.heroImage}>
-          <Image src="/assets/alex-lopes/hero-alex-selecao-brasileira.webp" alt="Retrato de Alex Sandro Lopes com uniforme da Seleção Brasileira" fill priority sizes="(max-width: 900px) 100vw, 50vw" />
+          <Image src="/assets/alex-lopes/hero-alex-selecao-brasileira-olympikus.webp" alt="Retrato de Alex Sandro Lopes com uniforme da Seleção Brasileira" fill priority sizes="(max-width: 900px) 100vw, 50vw" />
           <span>Presença na pista.<br />Visão de longo prazo.</span>
         </div>
       </section>
