@@ -86,12 +86,14 @@ export default function VirtualCircuitPage() {
             </p>
           </div>
           <div className={styles.heroImage}>
-            <img
-              src={edition.hero_image || CIRCUIT_HERO_IMAGE}
-              alt="Arte do Desafio Virtual 1.000 m 11Run para atletas de 9 a 13 anos"
-              width="1122"
-              height="1402"
-            />
+            <a href="#inscricao" aria-label="Participar gratuitamente do Desafio Virtual 1.000 m">
+              <img
+                src={edition.hero_image || CIRCUIT_HERO_IMAGE}
+                alt="Participe gratuitamente do Desafio Virtual 1.000 m 11Run para atletas de 9 a 13 anos"
+                width="1080"
+                height="1350"
+              />
+            </a>
           </div>
         </section>
 
