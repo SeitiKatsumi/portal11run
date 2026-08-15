@@ -5,6 +5,7 @@ import {
   ClipboardCheck,
   FileDown,
   Medal,
+  Plus,
   Pencil,
   RefreshCw,
   Save,
@@ -70,6 +71,7 @@ type OfficialDraft = {
   city: string;
   state: string;
   competitionName: string;
+  submissionType?: "OFFICIAL_COMPETITION" | "TRACK_400M" | "OPEN_COURSE";
 };
 
 const labels: Record<string, string> = {
@@ -95,6 +97,7 @@ export function CircuitAdmin({
   const [active, setActive] = useState<Submission | null>(null);
   const [activeOfficial, setActiveOfficial] = useState<CircuitOfficialResult | null>(null);
   const [officialDraft, setOfficialDraft] = useState<OfficialDraft | null>(null);
+  const [creatingOfficial, setCreatingOfficial] = useState(false);
   const [reason, setReason] = useState("");
   const [verifiedTime, setVerifiedTime] = useState("");
   const [busy, setBusy] = useState(false);
@@ -153,6 +156,29 @@ export function CircuitAdmin({
     setActiveOfficial(null);
     setOfficialDraft(null);
     setError("");
+  }
+
+  function openCreateOfficial() {
+    setError("");
+    setCreatingOfficial(true);
+    setOfficialDraft({ publicName: "", categoryAge: "9", gender: "FEMALE", activityDate: "", time: "", city: "", state: "", competitionName: "Teste inserido pelo admin", submissionType: "TRACK_400M" });
+  }
+
+  function closeCreateOfficial() {
+    setCreatingOfficial(false);
+    setOfficialDraft(null);
+    setError("");
+  }
+
+  async function createOfficial() {
+    if (!officialDraft) return;
+    setBusy(true); setError("");
+    const response = await fetch("/api/admin/circuito-virtual/official-results", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(officialDraft) });
+    const json = await response.json();
+    setBusy(false);
+    if (!response.ok) return setError(json.error || "Falha ao adicionar atleta.");
+    closeCreateOfficial();
+    await refresh();
   }
 
   async function saveOfficial() {
@@ -234,7 +260,7 @@ export function CircuitAdmin({
             <h2>Marcas oficiais importadas</h2>
             <p>Estas marcas aparecem diretamente no ranking público e permanecem editáveis.</p>
           </div>
-          <strong className={styles.resultCount}>{officialResults.length} registros</strong>
+          <div className={styles.titleActions}><strong className={styles.resultCount}>{officialResults.length} registros</strong><button type="button" onClick={openCreateOfficial}><Plus size={16} />Adicionar atleta</button></div>
         </div>
         <div className={`${styles.table} ${styles.officialTable}`}>
           <div className={`${styles.head} ${styles.officialHead}`}>
@@ -345,6 +371,30 @@ export function CircuitAdmin({
               <button type="button" onClick={closeOfficial}>Cancelar</button>
               <button type="button" disabled={busy} onClick={saveOfficial}><Save size={17} />{busy ? "Salvando..." : "Salvar alterações"}</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {creatingOfficial && officialDraft && (
+        <div className={styles.overlay} role="dialog" aria-modal="true" aria-label="Adicionar atleta diretamente">
+          <div className={styles.drawer}>
+            <button className={styles.close} onClick={closeCreateOfficial}><X size={18} /></button>
+            <span className={styles.kicker}>Inclusão administrativa direta</span>
+            <h2>Adicionar atleta</h2>
+            <p className={styles.syncNotice}>Este fluxo dispensa o cadastro público. Ao salvar, a marca será aprovada e publicada imediatamente no ranking do desafio.</p>
+            <div className={styles.officialForm}>
+              <label className={styles.fullField}>Nome do atleta<input autoFocus value={officialDraft.publicName} onChange={event=>setOfficialDraft({...officialDraft,publicName:event.target.value})}/></label>
+              <label>Categoria 2026<select value={officialDraft.categoryAge} onChange={event=>setOfficialDraft({...officialDraft,categoryAge:event.target.value})}>{CIRCUIT_CATEGORY_AGES.map(age=><option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}</select></label>
+              <label>Gênero esportivo<select value={officialDraft.gender} onChange={event=>setOfficialDraft({...officialDraft,gender:event.target.value as "FEMALE"|"MALE"})}><option value="FEMALE">Feminino</option><option value="MALE">Masculino</option></select></label>
+              <label>Modalidade<select value={officialDraft.submissionType} onChange={event=>setOfficialDraft({...officialDraft,submissionType:event.target.value as OfficialDraft["submissionType"]})}><option value="TRACK_400M">Pista de 400 m</option><option value="OPEN_COURSE">Percurso livre</option><option value="OFFICIAL_COMPETITION">Competição oficial</option></select></label>
+              <label>Data do teste<input type="date" value={officialDraft.activityDate} onChange={event=>setOfficialDraft({...officialDraft,activityDate:event.target.value})}/></label>
+              <label>Marca (MM:SS.CC)<input placeholder="03:26.70" value={officialDraft.time} onChange={event=>setOfficialDraft({...officialDraft,time:event.target.value})}/></label>
+              <label>Cidade<input value={officialDraft.city} onChange={event=>setOfficialDraft({...officialDraft,city:event.target.value})}/></label>
+              <label>UF<input maxLength={2} value={officialDraft.state} onChange={event=>setOfficialDraft({...officialDraft,state:event.target.value.toUpperCase()})}/></label>
+              <label className={styles.fullField}>Competição ou identificação do teste<input value={officialDraft.competitionName} onChange={event=>setOfficialDraft({...officialDraft,competitionName:event.target.value})}/></label>
+            </div>
+            {error&&<p className={styles.error}>{error}</p>}
+            <div className={styles.officialActions}><button type="button" onClick={closeCreateOfficial}>Cancelar</button><button type="button" disabled={busy} onClick={createOfficial}><Save size={17}/>{busy?"Salvando...":"Adicionar ao desafio"}</button></div>
           </div>
         </div>
       )}

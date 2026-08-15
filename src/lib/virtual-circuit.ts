@@ -1090,6 +1090,68 @@ export function listCircuitAdminOfficialResults() {
   return rows.map((row) => ({ ...row, formattedTime: formatCircuitTime(row.time_ms) }));
 }
 
+export function createCircuitAdminOfficialResult(input: {
+  publicName: string;
+  categoryAge: number;
+  gender: CircuitGender;
+  activityDate: string;
+  time: string;
+  city: string;
+  state: string;
+  competitionName: string;
+  submissionType: CircuitSubmissionType;
+  actor: string;
+  ip?: string;
+}) {
+  const db = getCircuitDatabase();
+  if (!Number.isInteger(input.categoryAge) || input.categoryAge < 9 || input.categoryAge > 13) {
+    throw new Error("A categoria deve estar entre 9 e 13 anos.");
+  }
+  if (!["FEMALE", "MALE"].includes(input.gender)) throw new Error("Gênero esportivo inválido.");
+  if (!["OFFICIAL_COMPETITION", "TRACK_400M", "OPEN_COURSE"].includes(input.submissionType)) {
+    throw new Error("Modalidade inválida.");
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(input.activityDate)) throw new Error("Data inválida.");
+  const state = cleanText(input.state, "Estado", 2).toUpperCase();
+  if (!/^[A-Z-]{2}$/.test(state)) throw new Error("UF inválida.");
+  const id = randomUUID();
+  const timestamp = now();
+  const values = {
+    publicName: normalizePublicName(cleanText(input.publicName, "Nome público")),
+    timeMs: parseCircuitTime(input.time),
+    city: cleanText(input.city, "Cidade", 120),
+    competitionName: cleanText(input.competitionName, "Competição ou identificação do teste", 180)
+  };
+  db.exec("BEGIN IMMEDIATE;");
+  try {
+    db.prepare(
+      `INSERT INTO virtual_circuit_official_results
+        (id, edition_id, public_name, category_age, gender, activity_date, time_ms, city, state,
+         competition_name, submission_type, validation_badge, status, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'APPROVED', ?, ?)`
+    ).run(
+      id, CIRCUIT_EDITION_ID, values.publicName, input.categoryAge, input.gender, input.activityDate,
+      values.timeMs, values.city, state, values.competitionName, input.submissionType,
+      badgeForType(input.submissionType), timestamp, timestamp
+    );
+    const after = db.prepare("SELECT * FROM virtual_circuit_official_results WHERE id = ?").get(id);
+    audit(db, {
+      entityType: "official_result",
+      entityId: id,
+      action: "ADMIN_CREATED",
+      actor: input.actor,
+      after,
+      reason: "Inclusão direta pelo painel administrativo.",
+      ip: input.ip
+    });
+    db.exec("COMMIT;");
+    return { ...after, formattedTime: formatCircuitTime(values.timeMs) };
+  } catch (error) {
+    db.exec("ROLLBACK;");
+    throw error;
+  }
+}
+
 export function updateCircuitAdminOfficialResult(input: {
   id: string;
   publicName: string;
