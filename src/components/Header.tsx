@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Apple, BarChart3, ChevronDown, ChevronRight, Compass, Flag, Gift, Globe2, GraduationCap, HandHeart, HeartHandshake, Home, Medal, Menu, MessageSquareQuote, Palette, Route, ShieldCheck, ShoppingBag, Trophy, UserRound, X } from "lucide-react";
+import { Apple, BarChart3, ChevronDown, ChevronRight, Compass, Flag, Gift, Globe2, GraduationCap, HandHeart, HeartHandshake, Home, Medal, Menu, MessageSquareQuote, Orbit, Palette, Route, ShieldCheck, ShoppingBag, Trophy, UserRound, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { navItems } from "@/lib/content";
@@ -24,6 +24,7 @@ const navIcons: Record<string, LucideIcon> = {
   "/referencias/ranking-quenia": Globe2,
   "/referencias/ranking-uganda": Globe2,
   "/referencias/ranking-mundial": Globe2,
+  "/referencias/calculadoras/chance-olimpica": Orbit,
   "/apoie": HandHeart,
   "/apoie-o-projeto": ShoppingBag,
   "/apoie/patrocine": HeartHandshake,

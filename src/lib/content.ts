@@ -123,7 +123,8 @@ export const navItems: NavItem[] = [
         href: "#calculadoras",
         children: [
           { label: "Pace", href: "/referencias/calculadoras/pace" },
-          { label: "Fórmulas", href: "/referencias/calculadoras/formulas" }
+          { label: "Fórmulas", href: "/referencias/calculadoras/formulas" },
+          { label: "Chance Olímpica", href: "/referencias/calculadoras/chance-olimpica" }
         ]
       },
       {
