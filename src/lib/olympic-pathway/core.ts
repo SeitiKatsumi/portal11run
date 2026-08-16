@@ -1,6 +1,6 @@
 import { calculateRiegelProjection, parseDuration, solveEquivalentVDOTTime, calculateVDOT } from "../running-formulas/index.ts";
 
-export const OLYMPIC_PATHWAY_VERSION = "oci-1.0.0";
+export const OLYMPIC_PATHWAY_VERSION = "opi-2.1.0";
 export const pathwayEvents = [800, 1500, 3000, 5000, 10000] as const;
 export type PathwayEvent = (typeof pathwayEvents)[number];
 export type CompetitiveGender = "M" | "F";
@@ -30,6 +30,17 @@ export type ComparableSource = {
   message?: string;
   performancesMs: number[];
 };
+
+export type PotentialBand = "starting" | "moving" | "international" | "promising" | "extraordinary";
+export type PathwayBadge = { key: string; label: string; description: string; level: "bronze" | "silver" | "gold" };
+
+export function potentialBandFor(score: number, hasInternationalTop30 = false): PotentialBand {
+  if (score >= 75) return "extraordinary";
+  if (score >= 55) return "promising";
+  if (score >= 35 || hasInternationalTop30) return "international";
+  if (score >= 15) return "moving";
+  return "starting";
+}
 
 const alignmentWeight: Record<Alignment, number> = {
   exact_age: 1,
@@ -70,14 +81,32 @@ export function analyzeOlympicPathway(input: PathwayInput, sources: ComparableSo
     const ranking = source.status === "available" ? positionFor(markMs, source.performancesMs) : null;
     if (!ranking) return { ...source, position: null, count: source.performancesMs.length, score: null, top10GapMs: null };
     const percentile = ranking.position === null ? 1 : Math.max(1, Math.min(100, 101 - ranking.position));
-    return { ...source, ...ranking, score: percentile * alignmentWeight[source.alignment], top10GapMs: ranking.tenthMs ? markMs - ranking.tenthMs : null };
+    return { ...source, ...ranking, score: percentile, top10GapMs: ranking.tenthMs ? markMs - ranking.tenthMs : null };
   });
   const scored = comparisons.filter((item) => item.score !== null && item.count >= 5);
   const totalWeight = scored.reduce((sum, item) => sum + alignmentWeight[item.alignment], 0);
-  const compatibility = totalWeight ? Math.round(scored.reduce((sum, item) => sum + Number(item.score) * alignmentWeight[item.alignment], 0) / totalWeight) : null;
+  const baseScore = totalWeight ? Math.round(scored.reduce((sum, item) => sum + Number(item.score) * alignmentWeight[item.alignment], 0) / totalWeight) : null;
   const age = input.ageYears + input.ageMonths / 12;
-  const confidence = age < 14 ? "baixa" : scored.length >= 5 && age >= 18 ? "moderada" : scored.length >= 3 ? "moderada" : "baixa";
-  const mode = age < 14 ? "base-protegida" : age < 18 ? "desenvolvimento" : "rota-competitiva";
+  const youthProjection = age >= 9 && age < 15;
+  const international = comparisons.filter((item) => ["US", "JP", "NO"].includes(item.key) && item.status === "available" && item.score !== null && item.position !== null);
+  const nationalTop50 = comparisons.filter((item) => item.key !== "WORLD" && item.status === "available" && item.score !== null && item.position !== null && Number(item.position) <= 50);
+  const topInternational = international.filter((item) => Number(item.position) <= 30);
+  const bestInternational = international.reduce<(typeof international)[number] | null>((best, item) => !best || Number(item.position) < Number(best.position) ? item : best, null);
+  const internationalFloor = topInternational.some((item) => Number(item.position) <= 3) ? 75 : topInternational.some((item) => Number(item.position) <= 10) ? 55 : topInternational.length ? 35 : 1;
+  const developmentBonus = youthProjection && baseScore !== null ? age < 11 ? 8 : age < 13 ? 5 : 3 : 0;
+  const nationalFloor = nationalTop50.length ? 20 : 1;
+  const potentialScore = baseScore === null ? youthProjection ? 5 : null : Math.min(100, Math.max(1, baseScore + developmentBonus, internationalFloor, nationalFloor));
+  const badges: PathwayBadge[] = [];
+  if (topInternational.length) badges.push({ key: "international-top-30", label: "Destaque internacional", description: `Top 30 em ${topInternational.map((item) => item.label).join(", ")}.`, level: "bronze" });
+  if (nationalTop50.length) badges.push({ key: "national-top-50", label: "Sonho olímpico ativado", description: `Top 50 em ${nationalTop50.map((item) => item.label).join(", ")}: na teoria recreativa, existe uma chance.`, level: "bronze" });
+  if (topInternational.some((item) => Number(item.position) <= 10)) badges.push({ key: "international-top-10", label: "Top 10 desbloqueado", description: "Sua marca entrou no Top 10 de uma referência internacional.", level: "silver" });
+  if (topInternational.some((item) => Number(item.position) <= 3)) badges.push({ key: "international-top-3", label: "Pódio internacional", description: "Sua marca alcançou o Top 3 de uma referência internacional.", level: "gold" });
+  if (topInternational.length >= 2) badges.push({ key: "multiple-countries", label: "Passaporte carimbado", description: `Destaque em ${topInternational.length} países de referência.`, level: "gold" });
+  if (scored.filter((item) => item.position !== null && Number(item.position) <= 50).length >= 3) badges.push({ key: "consistent", label: "Consistência global", description: "Top 50 em pelo menos três bases comparáveis.", level: "silver" });
+  badges.push({ key: "future-cycles", label: "Sonho em movimento", description: "Sua trajetória ainda pode atravessar novos ciclos olímpicos.", level: "bronze" });
+  const potentialBand = potentialScore === null ? null : potentialBandFor(potentialScore, topInternational.length > 0);
+  const confidence = youthProjection ? scored.length ? "projeção recreativa" : "projeção exploratória" : scored.length >= 5 && age >= 18 ? "moderada" : scored.length >= 3 ? "moderada" : "baixa";
+  const mode = youthProjection ? "base-protegida" : age < 18 ? "desenvolvimento" : "rota-competitiva";
   const cycles = [2028, 2032, 2036, 2040].map((year) => ({ year, age: Math.floor(age + (year - new Date(input.performanceDate).getFullYear())) }));
   const threeKRoutes = input.event === 3000 ? [1500, 5000].map((distance) => {
     const vdot = calculateVDOT(3000, checked.seconds!);
@@ -86,7 +115,16 @@ export function analyzeOlympicPathway(input: PathwayInput, sources: ComparableSo
     return { distance, riegelSeconds: riegel, danielsSeconds: daniels, divergencePercent: Math.abs(riegel - daniels) / ((riegel + daniels) / 2) * 100 };
   }) : [];
   return {
-    compatibility,
+    compatibility: potentialScore,
+    potentialScore,
+    potentialBand,
+    bestInternational: bestInternational ? { key: bestInternational.key, label: bestInternational.label, position: bestInternational.position } : null,
+    internationalHighlights: topInternational.map((item) => ({ key: item.key, label: item.label, position: item.position })),
+    nationalTop50: nationalTop50.map((item) => ({ key: item.key, label: item.label, position: item.position })),
+    projectionUsed: youthProjection,
+    projectionBasis: baseScore === null ? "developmental-baseline" : developmentBonus ? "rankings-plus-development-coefficient" : "rankings",
+    developmentBonus,
+    badges,
     probabilityCalibrated: false,
     confidence,
     mode,
