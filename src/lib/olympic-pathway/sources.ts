@@ -5,6 +5,7 @@ import { listWorldAthleticsRankings } from "@/lib/world-athletics-rankings";
 import type { JapanAge, JapanEvent } from "@/lib/japan-ranking-core";
 import type { InternationalAgeKey, InternationalEvent } from "@/lib/international-ranking-core";
 import type { Alignment, ComparableSource, PathwayInput } from "./core";
+import { calculateRiegelProjection } from "../running-formulas/index.ts";
 
 type RankingRow = { performance_milliseconds?: number | null; performance?: string; source_url?: string };
 type RankingPayload = { results?: RankingRow[]; count?: number; import?: Record<string, unknown> | null; source?: { sourceUrl?: string }; config?: { available?: boolean; note?: string | null } };
@@ -30,7 +31,22 @@ function usaAge(age: number): { ageKey: InternationalAgeKey; alignment: Alignmen
   return ageKey ? { ageKey, alignment: "two_year_band", category: ageKey } : null;
 }
 
-export async function loadOlympicPathwaySources(input: PathwayInput) {
+export async function loadOlympicPathwaySources(input: PathwayInput): Promise<ComparableSource[]> {
+  if (input.event === 1000) {
+    const projected: ComparableSource[][] = await Promise.all(([800, 1500] as const).map(async (referenceEvent): Promise<ComparableSource[]> => {
+      const sources: ComparableSource[] = await loadOlympicPathwaySources({ ...input, event: referenceEvent });
+      return sources.map((source) => ({
+        ...source,
+        key: `${source.key}-${referenceEvent}`,
+        label: `${source.label} · equivalência ${referenceEvent.toLocaleString("pt-BR")} m`,
+        category: `${source.category} · projeção para 1.000 m`,
+        alignment: source.status === "available" ? "projected_event" as const : source.alignment,
+        message: source.status === "available" ? "Índice estimado pela equivalência entre 800 m, 1.000 m e 1.500 m." : source.message,
+        performancesMs: source.performancesMs.map((milliseconds) => calculateRiegelProjection(referenceEvent, milliseconds / 1000, 1000) * 1000)
+      }));
+    }));
+    return projected.flat();
+  }
   const season = Number(input.performanceDate.slice(0, 4));
   const age = input.ageYears;
   const event = input.event as InternationalEvent;

@@ -67,12 +67,22 @@
   font-size: clamp(1rem, 1.5vw, 1.25rem);
 }
 
-.projectGrid {
+.projectGrid,
+.referenceGrid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 10px;
   width: min(100%, 1080px);
   margin: 0 auto;
+}
+
+.referenceGrid {
+  margin-top: -34px;
+}
+
+.referenceCard {
+  min-height: 78px;
+  background: rgb(28 35 39 / 0.72);
 }
 
 .projectCard {
@@ -134,7 +144,8 @@
 }
 
 .alignLeft .intro,
-.alignLeft .projectGrid {
+.alignLeft .projectGrid,
+.alignLeft .referenceGrid {
   margin-left: 0;
 }
 
@@ -154,7 +165,8 @@
 }
 
 @media (max-width: 900px) {
-  .projectGrid {
+  .projectGrid,
+  .referenceGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -184,6 +196,11 @@
     gap: 8px;
   }
 
+  .referenceGrid {
+    gap: 8px;
+    margin-top: -14px;
+  }
+
   .projectCard {
     grid-template-columns: auto minmax(0, 1fr);
     min-height: 74px;
@@ -205,14 +222,16 @@
 }
 
 @media (max-width: 380px) {
-  .projectGrid {
+  .projectGrid,
+  .referenceGrid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .intro,
-  .projectCard {
+  .projectCard,
+  .referenceCard {
     animation: none;
   }
 

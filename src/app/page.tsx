@@ -3,9 +3,12 @@ import Link from "next/link";
 import {
   ArrowUpRight,
   BarChart3,
+  Calculator,
   Flag,
   Globe2,
   GraduationCap,
+  Lightbulb,
+  ListChecks,
   Medal,
   Route,
   ShoppingBag,
@@ -40,6 +43,13 @@ const icons: Record<string, LucideIcon> = {
   Trophy,
   Users
 };
+
+const referenceCtas = [
+  { name: "Rankings", description: "Brasil e referências internacionais", href: "/referencias/ranking-brasil", icon: BarChart3 },
+  { name: "Resultados", description: "Competições e rankings estaduais", href: "/referencias/resultados/estaduais-sub-16", icon: ListChecks },
+  { name: "Calculadoras", description: "Pace, fórmulas e chance olímpica", href: "/referencias/calculadoras/chance-olimpica", icon: Calculator },
+  { name: "Reflexões", description: "Ciência, formação e desenvolvimento", href: "/referencias/analises/o-fundo-comeca-na-infancia", icon: Lightbulb }
+];
 
 export default function Home() {
   const { settings, projects } = getHomeConfig();
@@ -96,6 +106,12 @@ export default function Home() {
                 <ArrowUpRight size={18} />
               </Link>
             );
+          })}
+        </nav>
+        <nav className={styles.referenceGrid} aria-label="Referências 11RUN">
+          {referenceCtas.map((item, index) => {
+            const Icon = item.icon;
+            return <Link className={`${styles.projectCard} ${styles.referenceCard}`} href={item.href} key={item.name} style={{ animationDelay: `${260 + index * 55}ms` }}><span className={styles.projectIcon}><Icon size={22} strokeWidth={1.55} /></span><span className={styles.projectText}><strong>{item.name}</strong><small>{item.description}</small></span><ArrowUpRight size={18} /></Link>;
           })}
         </nav>
       </div>
