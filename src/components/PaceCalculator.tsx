@@ -43,7 +43,7 @@ export function PaceCalculator() {
       <div className={styles.inputs}>
         <label><span>Distância-alvo</span><div><input type="number" min="50" step="50" value={distance} onChange={(e) => setDistance(Number(e.target.value))}/><b>m</b></div></label>
         {mode === "time" ? <label><span>Tempo final</span><input inputMode="decimal" value={time} onChange={(e) => setTime(e.target.value)} placeholder="15:00"/><small>hh:mm:ss ou mm:ss</small></label> : <label><span>Ritmo desejado</span><input inputMode="decimal" value={pace} onChange={(e) => setPace(e.target.value)} placeholder="3:00"/><small>min/km</small></label>}
-        <label><span>Tamanho da pista</span><div><input type="number" min="100" step="100" value={track} onChange={(e) => setTrack(Math.max(100, Number(e.target.value)))}/><b>m</b></div></label>
+        <label><span>Tamanho da pista</span><div><select value={track} onChange={(e) => setTrack(Number(e.target.value))} aria-label="Tamanho da pista" style={{width:"100%",height:58,padding:"0 16px",border:"1px solid var(--line)",borderRadius:16,background:"var(--bg)",color:"var(--text)",font:"500 1.05rem/1 inherit",cursor:"pointer"}}><option value={400}>400 m · pista padrão</option><option value={200}>200 m</option><option value={100}>100 m</option></select></div><small>Escolha somente entre 400, 200 ou 100 metros.</small></label>
       </div>
       <div className={styles.presets}>{presets.map((item) => <button key={item} onClick={() => setDistance(item)} className={distance === item ? styles.selected : ""}>{names[item] ?? `${item.toLocaleString("pt-BR")} m`}</button>)}</div>
       <div className={styles.results}>
