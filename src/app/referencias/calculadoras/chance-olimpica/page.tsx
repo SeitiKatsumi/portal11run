@@ -155,7 +155,7 @@ export default function ChanceOlimpicaPage() {
       <section className={styles.intro} id="metodologia">
         <span className={styles.eyebrow}>Como o jogo funciona</span>
         <h2>
-          Uma marca. Sete mundos.
+          Uma marca. <em>Seu sonho.</em>
           <br />
           Muitas possibilidades.
         </h2>
