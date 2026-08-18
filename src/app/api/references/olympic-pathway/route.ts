@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { analyzeOlympicPathway, validatePathwayInput, type PathwayInput } from "@/lib/olympic-pathway/core";
 import { loadOlympicPathwaySources } from "@/lib/olympic-pathway/sources";
 import { assertRateLimit } from "@/lib/request-guard";
+import { incrementOlympicGameCount } from "@/lib/olympic-game-counter";
 
 export const dynamic = "force-dynamic";
 
@@ -28,7 +29,8 @@ export async function POST(request: NextRequest) {
       ? { title: "Uau... tão jovem e já tão longe!", text: `${input.event.toLocaleString("pt-BR")} metros antes dos 13 anos? Isso desbloqueia o modo pequena grande fundista! A distância já é uma aventura avançada para a idade, então o jogo reconhece essa coragem mesmo quando quase não existem rankings infantis comparáveis.` }
       : input.ageYears >= 23 ? adultNarrative
       : analysis.potentialBand ? narratives[analysis.potentialBand] : { title: "A próxima fase ainda está carregando.", text: "Os rankings ainda estão montando o mapa. Volte em breve: até videogame precisa carregar a próxima fase." };
-    return NextResponse.json({ analysis, input, limitations: [], narrative });
+    const playersCount = incrementOlympicGameCount();
+    return NextResponse.json({ analysis, input, limitations: [], narrative, playersCount });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Não foi possível concluir a análise.";
     return NextResponse.json({ error: message }, { status: message.startsWith("Muitas") ? 429 : 500 });
