@@ -107,7 +107,18 @@ export default function ChanceOlimpicaPage() {
       </nav>
       <section className={styles.hero}>
         <div>
-          <span className={styles.eyebrow}>11RUN Intelligence</span>
+          <div className={styles.heroBrand}>
+            <span className={styles.miniOlympicRings} aria-hidden="true">
+              <b />
+              <b />
+              <b />
+              <b />
+              <b />
+            </span>
+            <span className={styles.eyebrow}>
+              11RUN Análise de Potencial Olímpico
+            </span>
+          </div>
           <h1>Até onde a sua marca pode sonhar?</h1>
           <h2>Será que você tem potencial pra ir para as Olimpíadas um dia?</h2>
           <p>
@@ -134,7 +145,6 @@ export default function ChanceOlimpicaPage() {
               <b />
               <b />
             </span>
-            <strong>11</strong>
             <i />
             <i />
           </div>
