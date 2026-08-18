@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowDown, ShieldCheck } from "lucide-react";
+import { ArrowDown, ShieldCheck, Sparkles } from "lucide-react";
 import { OlympicPathwayCalculator } from "@/components/OlympicPathwayCalculator";
+import { getOlympicGameCount } from "@/lib/olympic-game-counter";
 import styles from "./chance-olimpica.module.css";
 
 export const metadata: Metadata = {
@@ -50,6 +51,7 @@ const faqs = [
 ];
 export default function ChanceOlimpicaPage() {
   const origin = "https://11run.com.br";
+  const olympicGameCount = getOlympicGameCount();
   const schemas = [
     {
       "@context": "https://schema.org",
@@ -129,6 +131,11 @@ export default function ChanceOlimpicaPage() {
             <ShieldCheck /> Experiência recreativa baseada nos rankings
             disponíveis
           </div>
+          <a className={styles.gameCounter} href="#analisar">
+            <Sparkles />
+            <strong>{olympicGameCount.toLocaleString("pt-BR")}</strong>
+            <span>pessoas já jogaram o Placar de Potencial</span>
+          </a>
           <div className={styles.heroActions}>
             <a href="#analisar">
               Começar o jogo <ArrowDown />

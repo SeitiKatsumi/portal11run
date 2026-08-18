@@ -18,7 +18,6 @@ import { getHomeConfig } from "@/lib/home";
 import { navItems } from "@/lib/content";
 import HomeReferenceCategories from "@/components/HomeReferenceCategories";
 import styles from "./home.module.css";
-import { getOlympicGameCount } from "@/lib/olympic-game-counter";
 
 export const metadata: Metadata = {
   title: "11RUN | Ecossistema de Inteligência aplicada ao fundismo no Brasil",
@@ -60,7 +59,6 @@ const referenceCategories = (navItems.find((item) => item.label === "Referência
 export default function Home() {
   const { settings, projects } = getHomeConfig();
   const useVideo = settings.hero_media_type === "video" && settings.hero_video;
-  const olympicGameCount = getOlympicGameCount();
 
   return (
     <section
@@ -93,12 +91,6 @@ export default function Home() {
             {settings.hero_title || "Ecossistema de Inteligência aplicada ao fundismo no Brasil"}
           </h1>
           {settings.hero_subtitle ? <p>{settings.hero_subtitle}</p> : null}
-          <Link className={styles.gameCounter} href="/referencias/calculadoras/chance-olimpica#analisar">
-            <Sparkles size={18} />
-            <strong>{olympicGameCount.toLocaleString("pt-BR")}</strong>
-            <span>pessoas já jogaram o Placar de Potencial</span>
-            <ArrowUpRight size={17} />
-          </Link>
         </div>
 
         <nav className={styles.projectGrid} aria-label="Projetos 11RUN">
