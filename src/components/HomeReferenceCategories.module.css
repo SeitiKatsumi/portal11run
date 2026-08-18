@@ -90,7 +90,7 @@
   border-bottom: 1px solid #dfd5c8;
 }
 
-.dialogIcon { border-color: #d8cabc; background: #f1e9dd; color: #88502d; }
+.dialogIcon { border-color: color-mix(in srgb, var(--accent) 30%, var(--line)); background: color-mix(in srgb, var(--accent) 9%, #fff); color: var(--accent); }
 .dialogIcon svg { width: 22px; }
 .dialogHeader small { color: #8b7665; font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .dialogHeader h2 { margin: 3px 0 0; font-size: clamp(1.7rem, 4vw, 2.5rem); font-weight: 400; letter-spacing: -.045em; }

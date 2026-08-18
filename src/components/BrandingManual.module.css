@@ -42,7 +42,7 @@
 .typeGrid strong{font-size:clamp(28px,3vw,44px);font-weight:400;margin:auto 0 16px}
 .namingGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .namingGrid article{padding:28px;border:1px solid #d8cfc2;border-radius:22px;background:#fff}
-.namingGrid span{display:block;color:#875b36;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
+.namingGrid span{display:block;color:var(--accent);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
 .namingGrid strong{font-size:clamp(2.6rem,6vw,5.4rem);font-weight:400;letter-spacing:-.07em}
 .namingGrid p{color:#6e655b;line-height:1.7;max-width:52ch}
 .namingGrid article div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
