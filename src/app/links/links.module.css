@@ -1,0 +1,276 @@
+.page {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  width: 100%;
+  place-items: center;
+  overflow: hidden;
+  padding: 34px 24px;
+  background: #fff;
+  color: #343434;
+}
+
+.shell {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 590px);
+  padding: clamp(28px, 6vw, 48px);
+  border: 1px solid rgb(255 255 255 / 0.82);
+  border-radius: 34px;
+  background: rgb(248 248 246 / 0.72);
+  box-shadow: 0 28px 80px rgb(50 50 48 / 0.11);
+  backdrop-filter: blur(24px);
+}
+
+.header {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.header img {
+  width: 152px;
+  height: 54px;
+  object-fit: contain;
+  filter: grayscale(1) brightness(0.45);
+}
+
+.header > span {
+  margin-top: 22px;
+  color: var(--accent);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.header h1 {
+  max-width: 470px;
+  margin: 13px 0 0;
+  color: #3c3c3b;
+  font-size: clamp(2rem, 7vw, 3.15rem);
+  font-weight: 350;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+}
+
+.header p {
+  max-width: 430px;
+  margin: 17px 0 0;
+  color: #777773;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.links {
+  display: grid;
+  gap: 10px;
+  margin-top: 32px;
+}
+
+.linkCard {
+  position: relative;
+  display: grid;
+  min-height: 88px;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  gap: 13px;
+  align-items: center;
+  overflow: hidden;
+  padding: 13px 16px 13px 12px;
+  border: 1px solid rgb(255 255 255 / 0.94);
+  border-radius: 20px;
+  background: rgb(255 255 255 / 0.58);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.88), 0 10px 28px rgb(60 60 55 / 0.055);
+  backdrop-filter: blur(18px);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.linkCard:hover,
+.linkCard:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 35%, #fff);
+  box-shadow: inset 0 1px 0 #fff, 0 15px 34px rgb(60 60 55 / 0.1);
+  transform: translateY(-3px);
+}
+
+.linkCard:focus-visible,
+.contact a:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 42%, transparent);
+  outline-offset: 3px;
+}
+
+.number {
+  align-self: start;
+  padding-top: 5px;
+  color: #aaa9a4;
+  font-size: 0.58rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+}
+
+.icon,
+.contact a {
+  display: grid;
+  place-items: center;
+  border: 1px solid rgb(218 218 214 / 0.86);
+  background: rgb(255 255 255 / 0.74);
+  color: var(--accent);
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
+}
+
+.copy {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+
+.copy strong {
+  color: #454543;
+  font-size: 0.94rem;
+  font-weight: 610;
+}
+
+.copy small {
+  overflow: hidden;
+  color: #858580;
+  font-size: 0.69rem;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arrow {
+  color: #8b8b86;
+  transition: color 180ms ease, transform 180ms ease;
+}
+
+.linkCard:hover .arrow {
+  color: var(--accent);
+  transform: translate(2px, -2px);
+}
+
+.contact {
+  display: grid;
+  justify-items: center;
+  margin-top: 30px;
+  padding-top: 25px;
+  border-top: 1px solid rgb(214 214 209 / 0.78);
+}
+
+.contact > span {
+  color: #8a8a85;
+  font-size: 0.62rem;
+  font-weight: 650;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.contact > div {
+  display: flex;
+  gap: 10px;
+  margin-top: 13px;
+}
+
+.contact a {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  box-shadow: 0 8px 22px rgb(60 60 55 / 0.07);
+  transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+}
+
+.contact a:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: translateY(-3px);
+}
+
+.contact small {
+  margin-top: 12px;
+  color: #92928d;
+  font-size: 0.68rem;
+}
+
+.orbitOne,
+.orbitTwo {
+  position: absolute;
+  border: 1px solid rgb(237 101 9 / 0.16);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.orbitOne {
+  top: -190px;
+  right: -140px;
+  width: 490px;
+  height: 490px;
+}
+
+.orbitTwo {
+  bottom: -250px;
+  left: -190px;
+  width: 520px;
+  height: 520px;
+  border-color: rgb(60 60 58 / 0.08);
+}
+
+@media (max-width: 600px) {
+  .page {
+    place-items: start center;
+    padding: 16px 14px;
+  }
+
+  .shell {
+    min-height: calc(100svh - 32px);
+    padding: 27px 17px 24px;
+    border-radius: 27px;
+  }
+
+  .header img {
+    width: 132px;
+    height: 47px;
+  }
+
+  .header > span {
+    margin-top: 17px;
+  }
+
+  .header p {
+    font-size: 0.82rem;
+  }
+
+  .links {
+    margin-top: 25px;
+  }
+
+  .linkCard {
+    min-height: 82px;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 12px;
+  }
+
+  .number {
+    display: none;
+  }
+
+  .icon {
+    width: 45px;
+    height: 45px;
+  }
+
+  .copy small {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .linkCard,
+  .arrow,
+  .contact a {
+    transition: none;
+  }
+}

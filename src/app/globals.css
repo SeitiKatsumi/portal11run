@@ -92,6 +92,16 @@ main {
   overflow: hidden;
 }
 
+body:has(#links-page) .site-header,
+body:has(#links-page) .site-footer,
+body:has(#links-page) .run-assistant {
+  display: none;
+}
+
+body:has(#links-page) main {
+  overflow: visible;
+}
+
 .site-header {
   position: fixed;
   top: 18px;

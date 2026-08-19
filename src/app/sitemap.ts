@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 
 const routes = [
   "",
+  "/links",
   "/app-11run",
   "/onze-futuro",
   "/11-master",
