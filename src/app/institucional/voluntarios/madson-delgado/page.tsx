@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 
 const credentials = [
   { icon: Scale, title: "Advocacia empresarial", text: "Mais de 14 anos de atuação, com foco no ambiente empresarial, prevenção de riscos e soluções juridicamente sustentáveis." },
-  { icon: Network, title: "Liderança no BNI", text: "Diretor Executivo das regionais Alagoas, Sergipe e Agreste, conectando pessoas, oportunidades e negócios em ambientes estruturados." },
+  { icon: Network, title: "Liderança no BNI", text: "Diretor Executivo das regionais Alagoas e Sergipe, conectando pessoas, oportunidades e negócios em ambientes estruturados." },
   { icon: BriefcaseBusiness, title: "Estratégia de negócios", text: "Uma visão que integra técnica jurídica, capacidade relacional e arquitetura de negócios sem reduzir sua atuação a um único rótulo." },
   { icon: ShieldCheck, title: "Governança para a 11RUN", text: "Responsável voluntário pela condução e supervisão da frente jurídica e legal do projeto daqui em diante." },
 ];
@@ -51,7 +51,7 @@ const timeline = [
   ["2012–2021", "Construção de sociedades de advocacia e consolidação da prática empresarial."],
   ["2014–2017", "Docência em Direito Civil, Processo Civil e Direito Empresarial, na graduação e na pós-graduação."],
   ["2021", "Estruturação da Delgado & Sampaio Sociedade de Advogados, dedicada ao ambiente empresarial e ao compliance preventivo."],
-  ["2023–2026", "Ingresso no ecossistema BNI e expansão da liderança para Alagoas, Sergipe e Agreste."],
+  ["2023–2026", "Ingresso no ecossistema BNI e expansão da liderança para Alagoas e Sergipe."],
   ["Agora", "Chegada à 11RUN para liderar voluntariamente a frente jurídica e apoiar uma governança segura, responsável e de longo prazo."],
 ];
 
@@ -64,7 +64,7 @@ export default function MadsonDelgadoPage() {
     affiliation: [
       { "@type": "Organization", name: "11RUN" },
       { "@type": "Organization", name: "Delgado & Sampaio Sociedade de Advogados" },
-      { "@type": "Organization", name: "BNI Alagoas, Sergipe e Agreste" },
+      { "@type": "Organization", name: "BNI Alagoas e Sergipe" },
     ],
     knowsAbout: ["Direito Empresarial", "Compliance", "Mediação", "Governança", "Estratégia de negócios"],
   };
