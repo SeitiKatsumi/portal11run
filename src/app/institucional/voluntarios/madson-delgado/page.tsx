@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -25,6 +26,7 @@ export const metadata: Metadata = {
     description: "Direito, governança e conexões para proteger o presente e sustentar o futuro da 11RUN.",
     url: "/institucional/voluntarios/madson-delgado",
     type: "profile",
+    images: [{ url: "/assets/institucional/voluntarios/madson-delgado.webp", alt: "Retrato de Madson Delgado" }],
   },
 };
 
@@ -80,10 +82,16 @@ export default function MadsonDelgadoPage() {
           <p>Madson chega à 11RUN para cuidar, de forma voluntária, da frente jurídica e legal do projeto, fortalecendo políticas, relações, contratos e decisões que protegem atletas, famílias, parceiros e a própria organização.</p>
           <a href="#parceria" className={styles.primaryButton}>Entenda essa parceria <ArrowRight size={18} /></a>
         </div>
-        <div className={styles.heroMark} aria-label="Madson Delgado, jurídico e governança 11RUN">
-          <div className={styles.monogram}>MD</div>
-          <div><ShieldCheck size={24} /><span>Jurídico<br />Governança<br />Confiança</span></div>
-        </div>
+        <figure className={styles.heroPortrait}>
+          <Image
+            src="/assets/institucional/voluntarios/madson-delgado.webp"
+            alt="Madson Delgado, voluntário responsável pela frente jurídica e legal da 11RUN"
+            fill
+            priority
+            sizes="(max-width: 900px) 100vw, 34vw"
+          />
+          <figcaption><ShieldCheck size={24} /><span>Jurídico<br />Governança<br />Confiança</span></figcaption>
+        </figure>
       </section>
 
       <nav className={styles.anchorNav} aria-label="Navegação desta página">
