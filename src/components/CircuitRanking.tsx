@@ -6,7 +6,7 @@ import { CIRCUIT_CATEGORY_AGES, circuitCategoryLabel, circuitCategoryName } from
 import styles from "./CircuitUI.module.css";
 
 type Period = "total" | "monthly" | "quarterly";
-type Rank = { id:string;position:number;categoryPosition:number;publicName:string;categoryAge:number;gender:string;city:string;state:string;formattedTime:string;activityDate:string;badge:string };
+export type CircuitRankingItem = { id:string;position:number;categoryPosition:number;publicName:string;categoryAge:number;gender:string;city:string;state:string;formattedTime:string;activityDate:string;badge:string };
 
 const monthOptions = [
   ["2026-08", "Agosto de 2026"],
@@ -66,17 +66,17 @@ function CurrentPrizes({ period, position }: { period: Period; position: number 
   return <div className={styles.prizeIcons}>{prizes.map(prize => <PrizeIcon key={prize.label} label={prize.label}>{prize.icon}</PrizeIcon>)}</div>;
 }
 
-export function CircuitRanking(){
+export function CircuitRanking({ initialRanking = [] }: { initialRanking?: CircuitRankingItem[] }){
   const [filters,setFilters]=useState({age:"",gender:"",state:"",name:""});
   const [period,setPeriod]=useState<Period>("total");
   const [periodSelection,setPeriodSelection]=useState("2026-08");
-  const [ranking,setRanking]=useState<Rank[]>([]);
-  const [loading,setLoading]=useState(true);
+  const [ranking,setRanking]=useState<CircuitRankingItem[]>(initialRanking);
+  const [loading,setLoading]=useState(false);
   useEffect(()=>{
     const dates=periodDates(period,periodSelection);
     const query=new URLSearchParams(Object.entries({...filters,...dates}).filter(([,value])=>value));
     setLoading(true);
-    fetch(`/api/circuito-virtual/ranking?${query}`).then(r=>r.json()).then(r=>setRanking(r.ranking||[])).finally(()=>setLoading(false));
+    fetch(`/api/circuito-virtual/ranking?${query}`, { cache: "no-store" }).then(r=>r.json()).then(r=>setRanking(r.ranking||[])).finally(()=>setLoading(false));
   },[filters,period,periodSelection]);
 
   function selectPeriod(nextPeriod: Period) {
@@ -96,6 +96,6 @@ export function CircuitRanking(){
     </div>
     <div className={styles.filters}><label><span>Categoria</span><select value={filters.age} onChange={e=>setFilters({...filters,age:e.target.value})}><option value="">Todas as categorias</option>{CIRCUIT_CATEGORY_AGES.map(age=><option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}</select></label><label><span>Gênero</span><select value={filters.gender} onChange={e=>setFilters({...filters,gender:e.target.value})}><option value="">Todos</option><option value="FEMALE">Feminino</option><option value="MALE">Masculino</option></select></label><label><span>UF</span><input maxLength={2} value={filters.state} onChange={e=>setFilters({...filters,state:e.target.value.toUpperCase()})}/></label><label><span>Atleta</span><div className={styles.search}><Search size={15}/><input value={filters.name} onChange={e=>setFilters({...filters,name:e.target.value})}/></div></label></div>
     <p className={styles.rankingHint}>Os ícones mostram a premiação que cada atleta estaria conquistando se o ranking terminasse hoje.</p>
-    <div className={styles.rankTable}><div className={styles.rankHead}><span>#</span><span>Atleta</span><span>Categoria</span><span>Data</span><span>Local</span><span>Marca</span><span>Premiação atual</span><span>Validação</span></div>{loading?<p className={styles.empty}>Carregando ranking…</p>:ranking.length?ranking.map(item=><div className={styles.rankRow} key={item.id}><b>{item.categoryPosition}</b><strong className={styles.rankName}>{item.publicName}<small className={styles.rankMobileCategory}>{circuitCategoryName(item.categoryAge)} · {item.categoryAge} anos · {item.gender==="FEMALE"?"F":"M"}</small></strong><span title={circuitCategoryLabel(item.categoryAge)}>{circuitCategoryName(item.categoryAge)} · {item.categoryAge} anos · {item.gender==="FEMALE"?"F":"M"}</span><time dateTime={item.activityDate}>{formatDate(item.activityDate)}</time><span>{formatLocation(item.city, item.state)}</span><strong className={styles.rankTime}><span className={styles.rankTimeLabel}>Marca</span>{item.formattedTime}</strong><CurrentPrizes period={period} position={item.categoryPosition}/><em>{item.badge}</em></div>):<p className={styles.empty}>O ranking será publicado assim que as primeiras marcas forem aprovadas neste período.</p>}</div>
+    <div className={styles.rankTable}><div className={styles.rankHead}><span>#</span><span>Atleta</span><span>Categoria</span><span>Data</span><span>Local</span><span>Marca</span><span>Premiação atual</span><span>Validação</span></div>{loading?<p className={styles.empty}>Carregando ranking…</p>:ranking.length?ranking.map(item=><div className={styles.rankRow} key={item.id}><b className={styles.rankPosition}>{item.categoryPosition}</b><strong className={styles.rankName}>{item.publicName}<small className={styles.rankMobileCategory}>{circuitCategoryName(item.categoryAge)} · {item.categoryAge} anos · {item.gender==="FEMALE"?"F":"M"}</small></strong><span className={styles.rankCategory} title={circuitCategoryLabel(item.categoryAge)}>{circuitCategoryName(item.categoryAge)} · {item.categoryAge} anos · {item.gender==="FEMALE"?"F":"M"}</span><time className={styles.rankDate} dateTime={item.activityDate}>{formatDate(item.activityDate)}</time><span className={styles.rankLocation}>{formatLocation(item.city, item.state)}</span><strong className={styles.rankTime}><span className={styles.rankTimeLabel}>Marca</span>{item.formattedTime}</strong><CurrentPrizes period={period} position={item.categoryPosition}/><em className={styles.rankBadge}>{item.badge}</em></div>):<p className={styles.empty}>O ranking será publicado assim que as primeiras marcas forem aprovadas neste período.</p>}</div>
   </div>
 }

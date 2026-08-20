@@ -75,9 +75,9 @@
   max-height: min(720px, calc(100dvh - 48px));
   overflow: hidden;
   border-radius: 26px;
-  background: #fbf7ef;
+  background: var(--surface-muted);
   box-shadow: 0 28px 90px rgb(0 0 0 / .32);
-  color: #211d19;
+  color: var(--text);
   animation: dialog-enter 240ms cubic-bezier(.2,.8,.2,1) both;
 }
 
@@ -122,7 +122,7 @@
 .options a:hover { background: #eee2d4; transform: translateX(3px); }
 .options a strong { font-weight: 550; }
 .options a > svg { width: 18px; color: #8a5230; }
-.optionNumber { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 12px; background: #211d19; color: #fbf7ef; font-size: .7rem; font-weight: 700; }
+.optionNumber { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 12px; background: var(--text); color: var(--surface-muted); font-size: .7rem; font-weight: 700; }
 
 @keyframes category-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes overlay-enter { from { opacity: 0; } }

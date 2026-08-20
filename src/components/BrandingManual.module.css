@@ -1,6 +1,6 @@
-.page{width:min(calc(100% - 48px),var(--max));margin:0 auto 72px;padding-top:118px;display:grid;gap:18px;color:#211f1b}
-.hero,.panel{border:1px solid #d8cfc2;border-radius:26px;background:#fbf7ef;padding:clamp(26px,5vw,72px)}
-.hero{min-height:430px;display:flex;flex-direction:column;justify-content:flex-end;background:#171714;color:#fff;overflow:hidden;position:relative}
+.page{width:min(calc(100% - 48px),var(--max));margin:0 auto 72px;padding-top:118px;display:grid;gap:18px;color:var(--text)}
+.hero,.panel{border:1px solid var(--line);border-radius:26px;background:var(--surface-muted);padding:clamp(26px,5vw,72px)}
+.hero{min-height:430px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--text);color:#fff;overflow:hidden;position:relative}
 .hero:after{content:"";position:absolute;width:440px;height:220px;border:28px double rgba(255,255,255,.08);border-radius:70px;right:-50px;top:-40px}
 .hero>*{position:relative;z-index:1}
 .eyebrow{text-transform:uppercase;letter-spacing:.16em;font-size:12px;font-weight:600;color:#895d38}
@@ -19,12 +19,12 @@
 .logoGrid img{width:82%;max-height:150px;object-fit:contain}
 .logoGrid figcaption{align-self:flex-start;font-size:13px}
 .logoLight{background:#fff;border:1px solid #ddd4c9}
-.logoDark{background:#171714;color:#fff}
+.logoDark{background:var(--text);color:#fff}
 .note{margin-top:20px;padding:16px 18px;border:1px solid #dbcdbb;border-radius:14px;color:#745b47}
 .ruleGrid,.typeGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.ruleGrid article,.typeGrid article,.coBrand{border:1px solid #d8cfc2;border-radius:20px;padding:24px}
+.ruleGrid article,.typeGrid article,.coBrand{border:1px solid var(--line);border-radius:20px;padding:24px}
 .ruleGrid h3,.coBrand h3{font-size:24px;margin:20px 0 8px}
-.ruleGrid p,.typeGrid p,.coBrand p{color:#6e655b;line-height:1.55}
+.ruleGrid p,.typeGrid p,.coBrand p{color:var(--muted);line-height:1.55}
 .safeArea{border:1px dashed #8d6544;padding:34px}
 .safeArea img{width:100%;height:70px;object-fit:contain}
 .sizes{display:grid;grid-template-columns:1fr auto;gap:20px;padding:23px;background:#efe8dd;border-radius:14px}
@@ -32,7 +32,7 @@
 .orientation{display:grid;grid-template-columns:2fr 1fr;gap:8px}
 .orientation span{display:grid;place-items:center;height:96px;border:1px solid #cfc2b2;border-radius:12px}
 .colorGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.colorCard{appearance:none;text-align:left;border:1px solid #d8cfc2;border-radius:18px;background:#fff;padding:12px;display:grid;grid-template-columns:1fr auto;gap:4px;color:inherit;cursor:pointer}
+.colorCard{appearance:none;text-align:left;border:1px solid var(--line);border-radius:18px;background:#fff;padding:12px;display:grid;grid-template-columns:1fr auto;gap:4px;color:inherit;cursor:pointer}
 .colorCard i{height:110px;border-radius:12px;grid-column:1/-1;border:1px solid #ddd}
 .colorCard span{margin-top:8px}
 .colorCard strong,.colorCard small{grid-column:1}
@@ -41,33 +41,33 @@
 .typeGrid span{font-size:12px;text-transform:uppercase;letter-spacing:.14em}
 .typeGrid strong{font-size:clamp(28px,3vw,44px);font-weight:400;margin:auto 0 16px}
 .namingGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.namingGrid article{padding:28px;border:1px solid #d8cfc2;border-radius:22px;background:#fff}
+.namingGrid article{padding:28px;border:1px solid var(--line);border-radius:22px;background:#fff}
 .namingGrid span{display:block;color:var(--accent);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
 .namingGrid strong{font-size:clamp(2.6rem,6vw,5.4rem);font-weight:400;letter-spacing:-.07em}
-.namingGrid p{color:#6e655b;line-height:1.7;max-width:52ch}
+.namingGrid p{color:var(--muted);line-height:1.7;max-width:52ch}
 .namingGrid article div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.namingGrid s{padding:14px 16px;border:1px solid #d8cfc2;border-radius:14px;color:#6e655b;text-decoration-color:#8e3c2c;text-decoration-thickness:2px}
+.namingGrid s{padding:14px 16px;border:1px solid var(--line);border-radius:14px;color:var(--muted);text-decoration-color:#8e3c2c;text-decoration-thickness:2px}
 .backgrounds{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .backgrounds>div{height:220px;border-radius:18px;display:grid;place-items:center;overflow:hidden}
 .backgrounds img{width:72%;max-height:90px;object-fit:contain}
-.light{background:#fff;border:1px solid #d8cfc2}
-.dark{background:#171714}
+.light{background:#fff;border:1px solid var(--line)}
+.dark{background:var(--text)}
 .photo{background:#35332f url("/assets/onze-futuro-origem.jpg") center/cover;background-blend-mode:multiply}
 .donts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
 .donts span{padding:15px;border:1px solid #d9cbbb;border-radius:12px;color:#9a3e33}
 .coBrand div{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
-.download{display:flex;align-items:center;gap:18px;background:#171714;color:#fff;padding:22px 26px;border-radius:18px}
-.downloadConsent{display:flex;align-items:flex-start;gap:10px;margin:0 0 14px;color:#6e655b;line-height:1.5}
+.download{display:flex;align-items:center;gap:18px;background:var(--text);color:#fff;padding:22px 26px;border-radius:18px}
+.downloadConsent{display:flex;align-items:flex-start;gap:10px;margin:0 0 14px;color:var(--muted);line-height:1.5}
 .downloadConsent input{margin-top:4px;accent-color:#1a1a1a}
 .downloadDisabled{opacity:.42;cursor:not-allowed;pointer-events:none}
 .download span{display:grid;gap:5px;flex:1}
 .download small{color:#bdb8af}
 .formGrid{display:grid;grid-template-columns:.75fr 1.5fr;gap:24px}
-.formGrid aside{background:#171714;color:#fff;border-radius:20px;padding:28px}
+.formGrid aside{background:var(--text);color:#fff;border-radius:20px;padding:28px}
 .formGrid aside p{color:#c8c2b8;line-height:1.55}
 .formGrid form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 .formGrid label{display:grid;gap:7px;font-size:13px}
-.formGrid input,.formGrid textarea{width:100%;border:1px solid #d6cabb;border-radius:12px;background:#fff;padding:13px;font:inherit}
+.formGrid input,.formGrid textarea{width:100%;border:1px solid var(--line);border-radius:12px;background:#fff;padding:13px;font:inherit}
 .formGrid textarea{min-height:100px;resize:vertical}
 .full{grid-column:1/-1}
 .upload{border:1px dashed #9d7958;border-radius:14px;padding:18px;display:flex!important;align-items:center;gap:10px;cursor:pointer}
@@ -75,12 +75,12 @@
 .check{display:flex!important;align-items:center;gap:9px}
 .check input{width:auto}
 .challenge{max-width:220px}
-.formGrid button{justify-self:end;align-self:end;border:0;border-radius:999px;background:#211f1b;color:#fff;padding:14px 22px;font-weight:600}
+.formGrid button{justify-self:end;align-self:end;border:0;border-radius:999px;background:var(--text);color:#fff;padding:14px 22px;font-weight:600}
 .message{padding:13px;border-radius:12px;background:#ece4d8}
 .termsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.termsGrid article{padding:22px;border:1px solid #d8cfc2;border-radius:18px}
+.termsGrid article{padding:22px;border:1px solid var(--line);border-radius:18px}
 .termsGrid article:last-child{grid-column:span 2}
-.termsGrid p{margin:10px 0 0;color:#6e655b;line-height:1.65}
+.termsGrid p{margin:10px 0 0;color:var(--muted);line-height:1.65}
 .trap{position:absolute!important;left:-10000px!important;width:1px!important;height:1px!important}
 
 @media(max-width:760px){.page{width:min(calc(100% - 28px),var(--max));padding-top:104px;gap:14px}

@@ -224,7 +224,7 @@
 .paid {
   border-color: rgb(47 107 69 / 0.25) !important;
   background: rgb(47 107 69 / 0.08);
-  color: #2f6b45;
+  color: var(--success);
 }
 
 .unpaid {

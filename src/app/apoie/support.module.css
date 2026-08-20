@@ -158,7 +158,7 @@
 
 .card:hover {
   transform: translateY(-3px);
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .card svg {
@@ -488,7 +488,7 @@
   padding: 12px;
   border: 1px solid var(--line);
   border-radius: 18px;
-  background: #fffaf2;
+  background: var(--surface);
 }
 
 .qr img {

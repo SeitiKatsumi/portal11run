@@ -5,7 +5,7 @@
   min-height: 100svh;
   overflow: hidden;
   isolation: isolate;
-  background: #171817;
+  background: var(--dark-surface);
   color: white;
 }
 

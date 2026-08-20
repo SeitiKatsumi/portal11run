@@ -214,7 +214,7 @@
 .configCard em.ok,
 .history em.ok {
   border-color: #98b4a5;
-  color: #34775a;
+  color: var(--success);
 }
 
 .warning {

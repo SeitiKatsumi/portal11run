@@ -44,7 +44,7 @@
 .steps p,.modeGrid p,.awardGrid p{font-size:.9rem;margin:0}
 .modeGrid,.awardGrid{grid-template-columns:repeat(3,1fr)}
 .awardGrid article{display:flex;flex-direction:column;min-height:300px}
-.awardGrid ul{display:grid;gap:11px;margin:18px 0 0;padding:18px 0 0 18px;border-top:1px solid #4a463e;color:#f7f2ea}
+.awardGrid ul{display:grid;gap:11px;margin:18px 0 0;padding:18px 0 0 18px;border-top:1px solid var(--muted);color:var(--surface-muted)}
 .awardGrid li{padding-left:3px;font-size:.9rem;line-height:1.55}
 .awardGrid li::marker{color:var(--accent-strong)}
 .awardGrid .finalAward{border-color:#74624f;background:#312d27}
@@ -52,8 +52,8 @@
 .modeGrid article{min-height:230px;display:flex;flex-direction:column}.modeGrid article>svg:last-child{margin-top:auto}
 .awards{background:var(--text);color:var(--surface)}
 .awards .eyebrow,.awards p{color:#c9b8a8}
-.awards .awardGrid article{background:#2b2924;border-color:#4a463e}
-.futureCallout{display:flex;justify-content:space-between;align-items:center;gap:24px;border-top:1px solid #4a463e;margin-top:24px;padding-top:24px}
+.awards .awardGrid article{background:#2b2924;border-color:var(--muted)}
+.futureCallout{display:flex;justify-content:space-between;align-items:center;gap:24px;border-top:1px solid var(--muted);margin-top:24px;padding-top:24px}
 .futureCallout p{margin:5px 0 0}.futureCallout a{border:1px solid #6b665d;border-radius:999px;padding:13px 18px;font-weight:600}
 .accordion{display:grid;gap:8px;margin-top:28px}
 .accordion details{border:1px solid var(--line);border-radius:14px;padding:0 18px;background:var(--surface-muted)}

@@ -228,7 +228,7 @@
 
 .list button.selected {
   border-color: var(--text);
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .list button > span {

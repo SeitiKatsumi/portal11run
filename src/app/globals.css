@@ -1,4 +1,5 @@
 :root {
+  /* Sistema visual oficial 11RUN: toda interface deve consumir estes tokens. */
   --bg: #f5f5f3;
   --bg-soft: #ececea;
   --surface: #ffffff;
@@ -10,6 +11,13 @@
   --accent: #ed6509;
   --accent-strong: #c94f00;
   --danger: #9f3f34;
+  --success: #34775a;
+  --warning: #b76516;
+  --on-accent: #ffffff;
+  --on-dark: #ffffff;
+  --dark-surface: #292929;
+  --font-family-base: Arial, sans-serif;
+  --font-family-display: Arial, sans-serif;
   --radius: 18px;
   --radius-sm: 12px;
   --max: 1280px;
@@ -66,7 +74,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: var(--font-sans), Arial, sans-serif;
+  font-family: var(--font-sans), var(--font-family-base);
   font-weight: 300;
   letter-spacing: 0;
 }
@@ -85,7 +93,17 @@ button,
 input,
 select,
 textarea {
-  font: inherit;
+  font-family: var(--font-sans), var(--font-family-base);
+  font-weight: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-sans), var(--font-family-display);
 }
 
 main {
@@ -870,7 +888,7 @@ main > div:first-child > .feature-banner {
 .feature-card:hover,
 .comparison-card:hover {
   transform: translateY(-3px);
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .project-lane svg,
@@ -1592,9 +1610,9 @@ body:has(.admin-shell-page) .run-assistant {
 
 .privacy-pending {
   padding: 14px;
-  border: 1px solid #c9895938;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
   border-radius: 12px;
-  background: #c989590d;
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
 }
 
 .privacy-table-wrap {
@@ -3756,15 +3774,15 @@ body:has(.admin-shell-page) .run-assistant {
   padding: 11px 16px;
   border: 1px solid rgba(119, 64, 31, 0.32);
   border-radius: 999px;
-  color: #633419;
+  color: var(--accent-strong);
   font-size: 0.82rem;
   font-weight: 700;
   transition: background 180ms ease, color 180ms ease, transform 180ms ease;
 }
 
 .member-medical-alert-cta:hover {
-  background: #633419;
-  color: #fffaf2;
+  background: var(--accent-strong);
+  color: var(--surface);
   transform: translateY(-1px);
 }
 
@@ -4974,7 +4992,7 @@ body:has(.admin-shell-page) .run-assistant {
 }
 
 .finance-badge.entrada {
-  color: #2f6b45;
+  color: var(--success);
   border-color: rgba(47, 107, 69, 0.28);
 }
 
@@ -6063,15 +6081,15 @@ body:has(.admin-shell-page) .run-assistant {
 }
 
 .ai-page {
-  --ai-bg: #050505;
-  --ai-panel: #101010;
-  --ai-panel-soft: #171717;
-  --ai-text: #f7f2ea;
-  --ai-muted: #b9afa4;
-  --ai-soft: #81766b;
-  --ai-line: #2a2825;
-  --ai-orange: #ff6b1a;
-  --ai-orange-soft: #ff8a3d;
+  --ai-bg: var(--dark-surface);
+  --ai-panel: var(--dark-surface);
+  --ai-panel-soft: color-mix(in srgb, var(--surface) 5%, var(--dark-surface));
+  --ai-text: var(--surface-muted);
+  --ai-muted: var(--line);
+  --ai-soft: color-mix(in srgb, var(--muted) 78%, var(--surface));
+  --ai-line: color-mix(in srgb, var(--line) 18%, var(--dark-surface));
+  --ai-orange: var(--accent);
+  --ai-orange-soft: color-mix(in srgb, var(--accent) 78%, var(--surface));
   --ai-radius: 22px;
   min-height: 100vh;
   padding: 118px 0 36px;
@@ -6857,7 +6875,7 @@ body:has(.admin-shell-page) .run-assistant {
 
 .chat-admin aside button.active {
   border-color: var(--accent-strong);
-  background: #fffdf8;
+  background: var(--surface);
 }
 
 .chat-admin aside span,

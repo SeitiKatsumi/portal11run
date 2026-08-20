@@ -198,7 +198,7 @@ export default function VirtualCircuitPage() {
         </section>
 
         <section className={styles.section} id="ranking">
-          <CircuitRanking />
+          <CircuitRanking initialRanking={ranking} />
         </section>
 
         <section className={styles.section} id="inscricao">

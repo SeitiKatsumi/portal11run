@@ -73,12 +73,12 @@
 
 .hero .eyebrow,
 .manifesto .eyebrow {
-  color: #d7bda4 !important;
+  color: var(--line) !important;
 }
 
 .hero h1 {
   margin: 14px 0 22px;
-  color: #fffaf2;
+  color: var(--surface);
   font-size: clamp(3rem, 6.8vw, 7.2rem);
   font-weight: 300;
   letter-spacing: -0.06em;
@@ -115,14 +115,14 @@
 }
 
 .primaryButton {
-  border-color: #fffaf2;
-  background: #fffaf2;
-  color: #201e1a;
+  border-color: var(--surface);
+  background: var(--surface);
+  color: var(--text);
 }
 
 .secondaryButton {
   border-color: rgb(255 250 242 / 0.5);
-  color: #fffaf2;
+  color: var(--surface);
   background: rgb(20 20 18 / 0.18);
 }
 
@@ -268,12 +268,12 @@
 }
 
 .problem {
-  background: #201e1a;
-  color: #fffaf2;
+  background: var(--text);
+  color: var(--surface);
 }
 
 .problem .eyebrow {
-  color: #d7bda4 !important;
+  color: var(--line) !important;
 }
 
 .problemHeading,
@@ -306,7 +306,7 @@
 }
 
 .gapCard svg {
-  color: #d7bda4;
+  color: var(--line);
 }
 
 .gapCard h3 {
@@ -393,8 +393,8 @@
 }
 
 .mvvGrid article:nth-child(2) {
-  background: #201e1a;
-  color: #fffaf2;
+  background: var(--text);
+  color: var(--surface);
 }
 
 .mvvGrid article:nth-child(2) p {
@@ -412,7 +412,7 @@
 
 .mvvGrid article:nth-child(2) > span,
 .mvvGrid article:nth-child(2) svg {
-  color: #d7bda4;
+  color: var(--line);
 }
 
 .mvvGrid h3 {
@@ -526,8 +526,8 @@
 
 .manifesto {
   padding: clamp(34px, 7vw, 92px);
-  background: #201e1a;
-  color: #fffaf2;
+  background: var(--text);
+  color: var(--surface);
 }
 
 .manifesto h2 {
@@ -542,7 +542,7 @@
 
 .manifestoLead {
   margin-top: 46px;
-  color: #fffaf2 !important;
+  color: var(--surface) !important;
   font-size: clamp(1.5rem, 3vw, 2.5rem) !important;
 }
 
@@ -554,7 +554,7 @@
 
 .returnList span {
   margin-bottom: 16px;
-  color: #d7bda4;
+  color: var(--line);
   font-size: 1rem;
 }
 
@@ -575,7 +575,7 @@
 }
 
 .manifesto footer strong {
-  color: #d7bda4;
+  color: var(--line);
 }
 
 .finalCta {

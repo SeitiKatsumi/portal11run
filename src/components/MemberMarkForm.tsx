@@ -23,7 +23,7 @@ type MemberMarkFormProps = {
 };
 
 const emptyForm = { event: "1000m", time: "", date: "", location: "" };
-const chartColor = "#56633a";
+const chartColor = "var(--accent-strong)";
 
 function formatTime(value: number) {
   const minutes = Math.floor(value / 60);
@@ -98,11 +98,11 @@ export function MemberMarkForm({ initialMarks = [], lockedTo1000m = true, readOn
           <div className="member-chart-canvas" role="img" aria-label="Gráfico de linha das melhores marcas de 1.000 m nos últimos 12 meses">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chart.data} margin={{ top: 18, right: 20, bottom: 4, left: 4 }} accessibilityLayer>
-                <CartesianGrid vertical={false} stroke="#ddd6ca" strokeDasharray="2 6" />
-                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "#7b746a", fontSize: 12 }} />
-                <YAxis reversed width={54} axisLine={false} tickLine={false} tick={{ fill: "#7b746a", fontSize: 12 }} tickFormatter={(value) => formatTime(Number(value))} domain={["dataMin - 3", "dataMax + 3"]} />
+                <CartesianGrid vertical={false} stroke="var(--line)" strokeDasharray="2 6" />
+                <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: "var(--muted)", fontSize: 12 }} />
+                <YAxis reversed width={54} axisLine={false} tickLine={false} tick={{ fill: "var(--muted)", fontSize: 12 }} tickFormatter={(value) => formatTime(Number(value))} domain={["dataMin - 3", "dataMax + 3"]} />
                 <Tooltip
-                  contentStyle={{ border: "1px solid #d8d4c9", borderRadius: 14, background: "#fffaf2", boxShadow: "0 12px 32px rgba(31,33,29,.12)" }}
+                  contentStyle={{ border: "1px solid var(--line)", borderRadius: 14, background: "var(--surface)", boxShadow: "0 12px 32px rgba(31,33,29,.12)" }}
                   formatter={(value) => [formatTime(Number(value)), "1.000 m"]}
                   labelStyle={{ color: "#66675f", marginBottom: 8 }}
                 />
