@@ -82,6 +82,8 @@ const labels: Record<string, string> = {
   DISQUALIFIED: "Desclassificada"
 };
 
+const queueStatuses = new Set(["AI_PROCESSING", "UNDER_REVIEW", "CORRECTION_REQUESTED"]);
+
 export function CircuitAdmin({
   initialMetrics,
   initialSubmissions,
@@ -92,7 +94,7 @@ export function CircuitAdmin({
   initialOfficialResults: CircuitOfficialResult[];
 }) {
   const [metrics, setMetrics] = useState(initialMetrics);
-  const [items, setItems] = useState(initialSubmissions);
+  const [items, setItems] = useState(initialSubmissions.filter((item) => queueStatuses.has(item.status)));
   const [officialResults, setOfficialResults] = useState(initialOfficialResults);
   const [active, setActive] = useState<Submission | null>(null);
   const [activeOfficial, setActiveOfficial] = useState<CircuitOfficialResult | null>(null);
@@ -107,7 +109,7 @@ export function CircuitAdmin({
     const response = await fetch("/api/admin/circuito-virtual");
     const json = await response.json();
     setMetrics(json.metrics);
-    setItems(json.submissions);
+    setItems(json.submissions.filter((item: Submission) => queueStatuses.has(item.status)));
     setOfficialResults(json.officialResults);
   }
 
