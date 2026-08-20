@@ -483,6 +483,7 @@ export default async function MemberDashboardPage({
               <p>A <Link href="/onze-futuro#faq">Super FAQ do Onze Futuro</Link> explica cadastro, responsabilidades, módulos gamificados, benefícios, privacidade, permanência e desligamento para atletas, famílias, treinadores e profissionais.</p>
             </details>
           </div>
+          <Link className="member-super-faq-link" href="/onze-futuro#faq">Acessar a Super FAQ do Onze Futuro →</Link>
         </article>
       </section>
     </main>
