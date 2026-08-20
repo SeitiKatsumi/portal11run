@@ -101,7 +101,7 @@
 
 .date strong { color: var(--text); font-size: 1.15rem; font-weight: 500; }
 .date span { margin-top: 2px; color: var(--accent-strong); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; }
-.featured .date { border-color: #4b453e; background: #2c2925; }
+.featured .date { border-color: var(--soft); background: var(--dark-surface); }
 .featured .date strong { color: var(--surface); }
 .featured .date span { color: var(--accent); }
 

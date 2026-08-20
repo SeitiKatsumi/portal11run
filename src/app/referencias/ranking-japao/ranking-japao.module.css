@@ -600,8 +600,8 @@
 
 .gold {
   border-color: #b69031;
-  background: #f5ecd2;
-  color: #6d5213;
+  background: var(--surface-muted);
+  color: var(--warning);
 }
 
 .silver {
@@ -612,8 +612,8 @@
 
 .bronze {
   border-color: var(--accent-strong);
-  background: #f2dfd3;
-  color: #754229;
+  background: var(--surface-muted);
+  color: var(--accent-strong);
 }
 
 .performance {

@@ -87,14 +87,14 @@
   gap: 16px;
   align-items: center;
   padding: 24px;
-  border-bottom: 1px solid #dfd5c8;
+  border-bottom: 1px solid var(--line);
 }
 
 .dialogIcon { border-color: color-mix(in srgb, var(--accent) 30%, var(--line)); background: color-mix(in srgb, var(--accent) 9%, #fff); color: var(--accent); }
 .dialogIcon svg { width: 22px; }
-.dialogHeader small { color: #8b7665; font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.dialogHeader small { color: var(--muted); font-size: .68rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
 .dialogHeader h2 { margin: 3px 0 0; font-size: clamp(1.7rem, 4vw, 2.5rem); font-weight: 400; letter-spacing: -.045em; }
-.close { display: grid; width: 44px; height: 44px; place-items: center; border: 0; border-radius: 50%; background: #f0e8dc; color: inherit; cursor: pointer; }
+.close { display: grid; width: 44px; height: 44px; place-items: center; border: 0; border-radius: 50%; background: var(--surface-muted); color: inherit; cursor: pointer; }
 .close svg { width: 20px; }
 
 .options {
@@ -112,16 +112,16 @@
   align-items: center;
   min-height: 66px;
   padding: 11px 15px;
-  border: 1px solid #ded3c5;
+  border: 1px solid var(--line);
   border-radius: 16px;
-  background: #f6efe5;
+  background: var(--surface-muted);
   color: inherit;
   transition: transform 160ms ease, background-color 160ms ease;
 }
 
-.options a:hover { background: #eee2d4; transform: translateX(3px); }
+.options a:hover { background: var(--surface-muted); transform: translateX(3px); }
 .options a strong { font-weight: 550; }
-.options a > svg { width: 18px; color: #8a5230; }
+.options a > svg { width: 18px; color: var(--accent-strong); }
 .optionNumber { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 12px; background: var(--text); color: var(--surface-muted); font-size: .7rem; font-weight: 700; }
 
 @keyframes category-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }

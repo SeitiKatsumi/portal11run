@@ -71,7 +71,7 @@
 }
 
 .cycle > div > span {
-  color: #d4a87e;
+  color: var(--accent);
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.12em;

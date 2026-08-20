@@ -18,6 +18,11 @@
   --dark-surface: #292929;
   --font-family-base: Arial, sans-serif;
   --font-family-display: Arial, sans-serif;
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --tracking-display: -0.055em;
   --radius: 18px;
   --radius-sm: 12px;
   --max: 1280px;
@@ -30,7 +35,7 @@
   padding: 18px 22px;
   border: 1px solid color-mix(in srgb, var(--danger) 32%, var(--line));
   border-radius: var(--radius);
-  background: #fff4ef;
+  background: var(--surface-muted);
   color: var(--text);
 }
 
@@ -75,7 +80,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans), var(--font-family-base);
-  font-weight: 300;
+  font-weight: var(--font-weight-regular);
   letter-spacing: 0;
 }
 
@@ -89,21 +94,43 @@ img {
   max-width: 100%;
 }
 
+/* A tipografia é global e autoritativa. Módulos definem apenas tamanho e layout. */
+body :where(*):not(code):not(pre):not(kbd):not(samp) {
+  font-family: var(--font-sans), var(--font-family-base) !important;
+}
+
 button,
 input,
 select,
 textarea {
-  font-family: var(--font-sans), var(--font-family-base);
-  font-weight: inherit;
+  font: inherit;
 }
 
 h1,
-h2,
+h2 {
+  font-family: var(--font-sans), var(--font-family-display) !important;
+  font-weight: var(--font-weight-light) !important;
+}
+
 h3,
 h4,
 h5,
 h6 {
-  font-family: var(--font-sans), var(--font-family-display);
+  font-family: var(--font-sans), var(--font-family-display) !important;
+  font-weight: var(--font-weight-medium) !important;
+}
+
+strong,
+b,
+button,
+[role="button"] {
+  font-weight: var(--font-weight-semibold) !important;
+}
+
+[class*="eyebrow"],
+[class*="kicker"],
+[class*="label"] {
+  font-weight: var(--font-weight-semibold) !important;
 }
 
 main {
@@ -1283,7 +1310,7 @@ main > div:first-child > .feature-banner {
 .lead-form select:focus,
 .lead-form textarea:focus {
   border-color: var(--accent-strong);
-  outline: 2px solid #e4d7ca;
+  outline: 2px solid var(--line);
   outline-offset: 1px;
 }
 
@@ -1333,13 +1360,13 @@ body.modal-open {
 .member-term-gate { padding-block: 32px 64px; }
 .member-term-card { width: min(100%, 980px); margin-inline: auto; padding: clamp(22px, 4vw, 48px); }
 .member-term-card .terms-heading h1 { margin: 4px 0; font-size: clamp(1.8rem, 4vw, 3.5rem); font-weight: 500; }
-.member-term-card > aside { margin: 18px 0; padding: 14px 18px; border-radius: 16px; background: #fff4ec; color: #6f6b68; }
-.terms-legal-notice { margin: 14px 0; padding: 12px 15px; border-radius: 14px; background: #fff4ec; color: var(--muted); font-size: .78rem; line-height: 1.5; }
+.member-term-card > aside { margin: 18px 0; padding: 14px 18px; border-radius: 16px; background: var(--surface-muted); color: var(--muted); }
+.terms-legal-notice { margin: 14px 0; padding: 12px 15px; border-radius: 14px; background: var(--surface-muted); color: var(--muted); font-size: .78rem; line-height: 1.5; }
 .member-term-card ol { max-height: 48vh; overflow: auto; padding: 18px 18px 18px 40px; border-radius: 20px; background: #fff; }
-.member-term-card li { margin-bottom: 12px; line-height: 1.55; color: #56514d; }
+.member-term-card li { margin-bottom: 12px; line-height: 1.55; color: var(--soft); }
 .member-term-card form { display: grid; gap: 18px; margin-top: 22px; }
 .member-term-card .button { justify-self: end; }
-.member-term-receipt { margin:14px 0; padding:14px 18px; border-radius:16px; background:#fff4ec; color:var(--text); }
+.member-term-receipt { margin:14px 0; padding:14px 18px; border-radius:16px; background:var(--surface-muted); color:var(--text); }
 .member-term-receipt div,.member-term-receipt strong,.member-term-receipt span { display:block; }
 .member-term-receipt span { margin-top:3px; color:var(--muted); font-size:.78rem; }
 .member-term-receipt summary { display:flex; align-items:center; gap:12px; cursor:pointer; list-style:none; }
@@ -1836,7 +1863,7 @@ body:has(.admin-shell-page) .run-assistant {
 }
 
 .support-plan-card.custom {
-  border-color: rgba(112, 71, 42, 0.28);
+  border-color: rgba(0, 0, 0, 0.28);
   background: #fff;
 }
 
@@ -1871,7 +1898,7 @@ body:has(.admin-shell-page) .run-assistant {
 
 .support-plan-card.featured .support-plan-top > span,
 .support-plan-card.featured .support-plan-ideal > span {
-  color: #f1c4a7;
+  color: var(--accent);
 }
 
 .support-plan-card h3 {
@@ -1940,7 +1967,7 @@ body:has(.admin-shell-page) .run-assistant {
 }
 
 .support-plan-card.featured li svg {
-  color: #f1c4a7;
+  color: var(--accent);
 }
 
 .support-plan-card .button {
@@ -3067,7 +3094,7 @@ body:has(.admin-shell-page) .run-assistant {
 .pipeline-stage-tab.active strong {
   border-color: rgb(255 255 255 / 0.16);
   background: rgb(255 255 255 / 0.08);
-  color: #f1b56f;
+  color: var(--accent);
 }
 
 .pipeline-stage-panel {
@@ -3745,10 +3772,10 @@ body:has(.admin-shell-page) .run-assistant {
 .member-medical-alert {
   margin-top: 0;
   padding: 18px 20px;
-  border: 1px solid rgba(166, 91, 48, 0.28);
+  border: 1px solid rgba(0, 0, 0, 0.28);
   border-radius: var(--radius-sm);
-  background: #fff4ea;
-  color: #77401f;
+  background: var(--surface-muted);
+  color: var(--accent-strong);
   display: flex;
   gap: 12px;
   align-items: center;
@@ -3772,7 +3799,7 @@ body:has(.admin-shell-page) .run-assistant {
   justify-content: center;
   gap: 8px;
   padding: 11px 16px;
-  border: 1px solid rgba(119, 64, 31, 0.32);
+  border: 1px solid rgba(0, 0, 0, 0.32);
   border-radius: 999px;
   color: var(--accent-strong);
   font-size: 0.82rem;
@@ -4034,7 +4061,7 @@ body:has(.admin-shell-page) .run-assistant {
 }
 
 .member-finance-total {
-  border-color: rgba(132, 74, 33, 0.35) !important;
+  border-color: rgba(0, 0, 0, 0.35) !important;
   background: var(--surface) !important;
 }
 
@@ -4998,7 +5025,7 @@ body:has(.admin-shell-page) .run-assistant {
 
 .finance-badge.saida {
   color: var(--accent-strong);
-  border-color: rgba(132, 74, 33, 0.28);
+  border-color: rgba(0, 0, 0, 0.28);
 }
 
 .transparency-page {
@@ -6215,7 +6242,7 @@ body:has(.admin-shell-page) .run-assistant {
 
 .ai-button.primary {
   border: 1px solid var(--ai-orange);
-  color: #160c05;
+  color: var(--dark-surface);
   background: var(--ai-orange);
 }
 
@@ -6507,7 +6534,7 @@ body:has(.admin-shell-page) .run-assistant {
 
 .ai-card:hover {
   transform: translateY(-3px);
-  border-color: #4a3428;
+  border-color: var(--text);
 }
 
 .ai-icon {
@@ -6516,10 +6543,10 @@ body:has(.admin-shell-page) .run-assistant {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #3a2a20;
+  border: 1px solid var(--text);
   border-radius: 14px;
   color: var(--ai-orange);
-  background: #1a100b;
+  background: var(--dark-surface);
 }
 
 .ai-card h3 {
@@ -6591,9 +6618,9 @@ body:has(.admin-shell-page) .run-assistant {
 .ai-safety-note {
   margin: 24px 0 0;
   padding: 18px;
-  border: 1px solid #3c3028;
+  border: 1px solid var(--text);
   border-radius: 16px;
-  background: #130f0c;
+  background: var(--dark-surface);
 }
 
 .ai-compare {
@@ -6611,8 +6638,8 @@ body:has(.admin-shell-page) .run-assistant {
 }
 
 .ai-compare article.featured {
-  border-color: #4d3425;
-  background: #140d09;
+  border-color: var(--text);
+  background: var(--dark-surface);
 }
 
 .ai-compare h3 {

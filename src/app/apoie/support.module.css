@@ -385,7 +385,7 @@
 
 .formError {
   background: #f7e8e4;
-  color: #8c3528;
+  color: var(--danger);
 }
 
 .honeypot {

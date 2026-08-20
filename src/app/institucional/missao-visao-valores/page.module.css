@@ -135,7 +135,7 @@
 .primaryButton:focus-visible,
 .secondaryButton:focus-visible,
 .frontCard:focus-visible {
-  outline: 3px solid #b98355;
+  outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
 

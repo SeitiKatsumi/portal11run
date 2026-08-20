@@ -103,7 +103,7 @@
   border: 1px solid rgb(154 63 51 / 0.28);
   border-radius: var(--radius-sm);
   background: rgb(154 63 51 / 0.08);
-  color: #85382f;
+  color: var(--danger);
 }
 
 .orders,
@@ -190,7 +190,7 @@
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: rgb(132 74 33 / 0.1);
+  background: rgb(0 0 0 / 0.1);
   color: var(--accent-strong);
 }
 
@@ -228,8 +228,8 @@
 }
 
 .unpaid {
-  border-color: rgb(132 74 33 / 0.22) !important;
-  background: rgb(132 74 33 / 0.07);
+  border-color: rgb(0 0 0 / 0.22) !important;
+  background: rgb(0 0 0 / 0.07);
   color: var(--accent-strong);
 }
 

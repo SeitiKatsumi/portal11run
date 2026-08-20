@@ -218,8 +218,8 @@
 }
 
 .warning {
-  border-color: #c9a59c !important;
-  color: #8b3f33 !important;
+  border-color: var(--line) !important;
+  color: var(--danger) !important;
 }
 
 .formRow {
