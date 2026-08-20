@@ -1,6 +1,6 @@
 import { createCipheriv, createDecipheriv, createHash, randomBytes, randomUUID } from "node:crypto";
 import { mkdirSync, readFileSync } from "node:fs";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { parseMemberMarkTime } from "./member-mark-chart.ts";
@@ -813,6 +813,38 @@ export function reviewChallengeSubmission(input: { id: string; status: string; c
   }
   syncScore(String(current.account_id), "submission-review");
   return database.prepare("SELECT * FROM member_challenge_submissions WHERE id=?").get(input.id);
+}
+
+export async function deleteChallengeSubmission(id: string, actor: string, ip?: string) {
+  const database = db();
+  const current = database.prepare(
+    `SELECT s.*, f.storage_name FROM member_challenge_submissions s
+     LEFT JOIN member_challenge_files f ON f.id=s.file_id WHERE s.id=?`
+  ).get(id) as Record<string, unknown> | undefined;
+  if (!current) throw new Error("Entrega não encontrada.");
+  const accountId = String(current.account_id);
+  const fileId = current.file_id ? String(current.file_id) : null;
+  let deleteFile = false;
+  database.exec("BEGIN IMMEDIATE;");
+  try {
+    database.prepare("DELETE FROM member_challenge_benefits WHERE source_id=?").run(id);
+    database.prepare("DELETE FROM member_athlete_badges WHERE source_type='submission' AND source_id=?").run(id);
+    database.prepare("DELETE FROM member_challenge_notifications WHERE entity_type='challenge_submission' AND entity_id=?").run(id);
+    database.prepare("DELETE FROM member_challenge_submissions WHERE id=?").run(id);
+    if (fileId) {
+      deleteFile = !database.prepare(
+        "SELECT 1 FROM member_challenge_submissions WHERE file_id=? UNION SELECT 1 FROM member_challenge_ideas WHERE image_file_id=? LIMIT 1"
+      ).get(fileId, fileId);
+      if (deleteFile) database.prepare("DELETE FROM member_challenge_files WHERE id=?").run(fileId);
+    }
+    audit({ actor, accountId, entityType: "challenge_submission", entityId: id, action: "SUBMISSION_DELETED", before: current, ip });
+    database.exec("COMMIT;");
+  } catch (error) {
+    database.exec("ROLLBACK;");
+    throw error;
+  }
+  if (deleteFile && current.storage_name) await unlink(path.join(privateRoot(), path.basename(String(current.storage_name)))).catch(() => undefined);
+  syncScore(accountId, "submission-deleted");
 }
 
 export function reviewChallengeIdea(input: { id: string; status: string; response?: string; actor: string; ip?: string }) {

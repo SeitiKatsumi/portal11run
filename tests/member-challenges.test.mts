@@ -85,6 +85,20 @@ test("processa leitura escolar estruturada e respeita teto acumulado", () => {
   assert.ok(dashboard.badges.earned.some((badge) => (badge as Record<string, unknown>).id === "badge-academic-highlight"));
 });
 
+test("exclui boletim, análise e arquivo privado associados", async () => {
+  insertPrivateFile("file-school-delete", "SCHOOL_REPORT");
+  const submissionId = challenges.submitSchoolChallenge("account-test", { quarter: 3, year: 2026, fileId: "file-school-delete", guardianAccepted: true });
+  challenges.saveSchoolAiAnalysis(submissionId, { model: "test-model", extracted: {}, normalized: { average: 7 }, confidence: 0.9, warnings: [], suggestedScore: 45, suggestedBenefit: 5, status: "COMPLETED" });
+  await challenges.deleteChallengeSubmission(submissionId, "admin:test");
+
+  const db = new DatabaseSync(databasePath);
+  assert.equal(db.prepare("SELECT id FROM member_challenge_submissions WHERE id=?").get(submissionId), undefined);
+  assert.equal(db.prepare("SELECT id FROM member_challenge_ai_analyses WHERE submission_id=?").get(submissionId), undefined);
+  assert.equal(db.prepare("SELECT id FROM member_challenge_files WHERE id='file-school-delete'").get(), undefined);
+  assert.ok(db.prepare("SELECT id FROM member_challenge_audit_logs WHERE entity_id=? AND action='SUBMISSION_DELETED'").get(submissionId));
+  db.close();
+});
+
 test("somente ideias validadas aparecem no ranking anonimizado", () => {
   const idea = challenges.submitChallengeIdea("account-test", { title: "Oficina de cadência", category: "Treinamentos", description: "Criar uma oficina mensal de cadência e técnica de corrida.", problem: "Melhorar a organização técnica.", expectedImprovement: "Aumentar a qualidade dos treinos." });
   assert.equal(challenges.challengeIdeasPublicRanking().length, 0);

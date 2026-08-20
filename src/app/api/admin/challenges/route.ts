@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import {
   createChallengeBadge,
+  deleteChallengeSubmission,
   getChallengeAdminData,
   reviewChallengeBenefit,
   reviewChallengeIdea,
@@ -24,6 +25,7 @@ export async function PATCH(request: Request) {
     const actor = `admin:${process.env.ADMIN_USER || "admin"}`;
     const ip = clientIp(request);
     if (body.action === "review-submission") reviewChallengeSubmission({ id: String(body.id), status: String(body.status), correctedValue: body.correctedValue === "" || body.correctedValue === undefined ? undefined : Number(body.correctedValue), notes: body.notes, actor, ip });
+    else if (body.action === "delete-submission") await deleteChallengeSubmission(String(body.id), actor, ip);
     else if (body.action === "review-idea") reviewChallengeIdea({ id: String(body.id), status: String(body.status), response: body.response, actor, ip });
     else if (body.action === "review-benefit") reviewChallengeBenefit({ id: String(body.id), approved: body.approved === true, validFrom: body.validFrom, validUntil: body.validUntil, notes: body.notes, actor, ip });
     else if (body.action === "update-settings") updateChallengeSettings(body.configuration ?? {}, actor, ip);
