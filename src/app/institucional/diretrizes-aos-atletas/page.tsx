@@ -12,6 +12,7 @@ import {
   Users
 } from "lucide-react";
 import styles from "./page.module.css";
+import { onzeFuturoPolicySections, onzeFuturoTerm } from "@/lib/onze-futuro-policy";
 
 export const metadata: Metadata = {
   title: "Diretrizes aos Atletas | 11Run",
@@ -101,7 +102,7 @@ export default function AthleteGuidelinesPage() {
 
       <section className={styles.hero}>
         <div>
-          <span className={styles.eyebrow}>Diretrizes oficiais · versão 1.0</span>
+          <span className={styles.eyebrow}>Diretrizes oficiais · versão {onzeFuturoTerm.version}</span>
           <h1>Diretrizes aos Atletas 11Run</h1>
           <p>Orientações para representarmos nossa equipe com responsabilidade, segurança, respeito e orgulho.</p>
         </div>
@@ -110,6 +111,21 @@ export default function AthleteGuidelinesPage() {
           <strong>Um time.<br />Um compromisso.</strong>
           <span>Master · Futuro · Núcleos oficiais</span>
         </div>
+      </section>
+
+      <section className={styles.nuclei} aria-labelledby="onze-futuro-protecao">
+        <div className={styles.sectionHeading}>
+          <span className={styles.eyebrow}>Política específica · Onze Futuro</span>
+          <h2 id="onze-futuro-protecao">Complementar o ecossistema, proteger a infância.</h2>
+          <p>Estas regras integram o termo de aceite do responsável e se aplicam à participação no Onze Futuro.</p>
+        </div>
+        <div className={styles.topicGrid}>
+          {onzeFuturoPolicySections.map((section, index) => <details className={styles.topic} id={section.id} key={section.id} open={index === 0}>
+            <summary><span className={styles.topicIcon}><ShieldCheck aria-hidden="true"/></span><span><small>Onze Futuro {String(index + 1).padStart(2,"0")}</small><strong>{section.title}</strong></span><span className={styles.expand}>Ver detalhes</span></summary>
+            <div className={styles.topicBody}><p>{section.intro}</p><ul>{section.items.map((item)=><li key={item}>{item}</li>)}</ul></div>
+          </details>)}
+        </div>
+        <p><small>{onzeFuturoTerm.legalNotice}</small></p>
       </section>
 
       <section className={styles.intro}>

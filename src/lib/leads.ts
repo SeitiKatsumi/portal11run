@@ -1,6 +1,8 @@
 import { mkdirSync, readFileSync } from "fs";
 import path from "path";
+import { createHash } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
+import { ONZE_FUTURO_TERM_VERSION, onzeFuturoTermSnapshot } from "./onze-futuro-policy";
 
 export type LeadPayload = Record<string, string | boolean | undefined>;
 
@@ -30,6 +32,12 @@ export type LeadRecord = {
   accepted_terms: number;
   term_acceptor_name: string | null;
   term_acceptor_cpf: string | null;
+  term_version: string | null;
+  term_hash: string | null;
+  term_snapshot: string | null;
+  term_accepted_at: string | null;
+  term_ip_address: string | null;
+  term_user_agent: string | null;
   photos_json: string | null;
   pipeline_status: string;
   receipts_json: string | null;
@@ -108,6 +116,12 @@ const schemaColumns: Record<string, string> = {
   accepted_terms: "INTEGER NOT NULL DEFAULT 0",
   term_acceptor_name: "TEXT",
   term_acceptor_cpf: "TEXT",
+  term_version: "TEXT",
+  term_hash: "TEXT",
+  term_snapshot: "TEXT",
+  term_accepted_at: "TEXT",
+  term_ip_address: "TEXT",
+  term_user_agent: "TEXT",
   photos_json: "TEXT",
   pipeline_status: "TEXT NOT NULL DEFAULT 'Cadastro recebido'",
   receipts_json: "TEXT",
@@ -308,8 +322,17 @@ export function validateLead(payload: LeadPayload, options?: { photoCount?: numb
   return { ok: true };
 }
 
-export function saveLead(payload: LeadPayload, photos: string[] = []) {
+export function saveLead(payload: LeadPayload, photos: string[] = [], requestMeta?: { ipAddress?: string; userAgent?: string }) {
   const now = new Date().toISOString();
+  if (payload.project_type === "onze-futuro" && payload.accepted_terms === true) {
+    const snapshot = onzeFuturoTermSnapshot();
+    payload.term_version = ONZE_FUTURO_TERM_VERSION;
+    payload.term_hash = createHash("sha256").update(snapshot).digest("hex");
+    payload.term_snapshot = snapshot;
+    payload.term_accepted_at = now;
+    payload.term_ip_address = requestMeta?.ipAddress ?? "";
+    payload.term_user_agent = requestMeta?.userAgent ?? "";
+  }
   const record = {
     id: crypto.randomUUID(),
     created_at: now,
@@ -345,6 +368,12 @@ export function saveLead(payload: LeadPayload, photos: string[] = []) {
         accepted_terms,
         term_acceptor_name,
         term_acceptor_cpf,
+        term_version,
+        term_hash,
+        term_snapshot,
+        term_accepted_at,
+        term_ip_address,
+        term_user_agent,
         photos_json,
         pipeline_status,
         receipts_json,
@@ -377,6 +406,12 @@ export function saveLead(payload: LeadPayload, photos: string[] = []) {
         $accepted_terms,
         $term_acceptor_name,
         $term_acceptor_cpf,
+        $term_version,
+        $term_hash,
+        $term_snapshot,
+        $term_accepted_at,
+        $term_ip_address,
+        $term_user_agent,
         $photos_json,
         $pipeline_status,
         $receipts_json,
@@ -411,6 +446,12 @@ export function saveLead(payload: LeadPayload, photos: string[] = []) {
       $accepted_terms: payload.accepted_terms === true ? 1 : 0,
       $term_acceptor_name: String(payload.term_acceptor_name ?? ""),
       $term_acceptor_cpf: cleanCpf(String(payload.term_acceptor_cpf ?? "")),
+      $term_version: String(payload.term_version ?? ""),
+      $term_hash: String(payload.term_hash ?? ""),
+      $term_snapshot: String(payload.term_snapshot ?? ""),
+      $term_accepted_at: String(payload.term_accepted_at ?? ""),
+      $term_ip_address: String(payload.term_ip_address ?? ""),
+      $term_user_agent: String(payload.term_user_agent ?? ""),
       $photos_json: JSON.stringify(photos),
       $pipeline_status: initialPipelineStatusByProject[String(payload.project_type ?? "")] ?? "Cadastro recebido",
       $receipts_json: JSON.stringify({}),

@@ -82,7 +82,11 @@ export async function POST(request: Request) {
     if (paymentReceiptUrls[0]) {
       payload.payment_receipt_url = paymentReceiptUrls[0];
     }
-    const lead = saveLead(payload, photoUrls);
+    const forwardedFor = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+    const lead = saveLead(payload, photoUrls, {
+      ipAddress: forwardedFor || request.headers.get("x-real-ip") || "",
+      userAgent: request.headers.get("user-agent") || ""
+    });
     return NextResponse.json({ ok: true, id: lead.id });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Não foi possível salvar o cadastro.";

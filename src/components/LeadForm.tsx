@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { onzeFuturoTerm } from "@/lib/onze-futuro-policy";
 import { useRouter } from "next/navigation";
 import { Loader2, Send, ShieldCheck, Upload } from "lucide-react";
 import { formProjects, type FormProjectSlug } from "@/lib/content";
@@ -93,26 +94,8 @@ const requiredByProject: Record<FormProjectSlug, Set<string>> = {
 
 const termsByProject: Partial<Record<FormProjectSlug, { title: string; clauses: string[] }>> = {
   "onze-futuro": {
-    title: "Termo de aceite do Onze Futuro",
-    clauses: [
-      "O Onze Futuro é um projeto privado de desenvolvimento esportivo, formação de base, acompanhamento e oportunidade, sem promessa de resultado, patrocínio, bolsa ou permanência automática.",
-      "O ciclo institucional do projeto piloto está previsto para 2026 a 2029, sem garantia de permanência individual do atleta durante todo esse período.",
-      "Tanto o responsável legal quanto a 11RUN podem solicitar a desvinculação a qualquer tempo em razão de contratempos, saúde, escola, mudança de cidade, rotina ou treinador, questões familiares de qualquer natureza, segurança, viabilidade operacional ou financeira e desalinhamento de objetivos, sonhos, expectativas, comportamento, comunicação ou contexto de desempenho.",
-      "O desempenho nunca será analisado por um resultado isolado. Idade, maturação, saúde, ambiente e trajetória serão considerados em conjunto, priorizando o melhor interesse da criança, com comunicação privada e respeitosa sempre que possível.",
-      "A participação exige que o atleta tenha treinador formado, com CREF ativo, responsável pela condução técnica cotidiana dos treinos.",
-      "Toda responsabilidade por acidentes, lesões, intercorrências ou danos antes, durante ou depois de treinos, competições, deslocamentos e atividades é integralmente dos pais ou responsáveis legais e dos profissionais que acompanham o atleta.",
-      "A divisão de responsabilidades não afasta os deveres legais próprios da 11RUN, de organizadores de eventos ou de prestadores por atos e omissões dentro de suas respectivas atribuições.",
-      "A 11RUN pode apoiar indicando profissionais, caminhos, contatos e boas práticas, mas não assume a execução diária dos treinamentos.",
-      "A ajuda de custo, quando concedida, será paga todo dia 15 de cada mês, podendo variar conforme critérios internos, disponibilidade financeira e patrocinadores.",
-      "Valores de ajuda de custo, modelos de materiais, uniformes, equipamentos e periodicidade de recebimento podem variar conforme disponibilidade, patrocinadores, fornecedores e critérios internos do projeto.",
-      "Atletas Onze Futuro terão inscrições gratuitas para todas as provas do Circuito 11, respeitando calendário, vagas disponíveis, regras técnicas e critérios de participação.",
-      "Uma agência de publicidade poderá assessorar o processo de imagem, comunicação, perfil, postagens e posicionamento dos atletas dentro do projeto.",
-      "Cada recebimento de ajuda, uniforme, material, inscrição ou benefício deverá ser confirmado no painel do site pelo responsável interno do projeto.",
-      "O calendário de circuitos e provas é uma referência de desenvolvimento, sem obrigatoriedade de participação. Atletas que não participarem podem ficar fora do ranking, da certificação de tempos e de indicações a patrocinadores especiais.",
-      "Podem existir patrocínios adicionais conforme desempenho, comportamento, assiduidade, evolução, visibilidade e interesse de parceiros, sem qualquer obrigação de concessão.",
-      "As imagens enviadas poderão ser usadas pela 11RUN e por sua assessoria de comunicação para perfil, análise, divulgação institucional e postagens relacionadas ao projeto.",
-      "No desligamento, benefícios futuros e acessos vinculados à participação podem ser encerrados. Dados e registros serão tratados conforme a Política de Privacidade, inclusive quanto a acesso, correção, revogação de consentimento e eliminação quando aplicável."
-    ]
+    title: `${onzeFuturoTerm.title} · versão ${onzeFuturoTerm.version}`,
+    clauses: [...onzeFuturoTerm.clauses]
   },
   "circuito-futuro-11": {
     title: "Termo de autorização e regulamento do Circuito Futuro 11",
@@ -428,6 +411,7 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
               <p>Leia e aceite para finalizar o envio.</p>
             </div>
           </div>
+          {project === "onze-futuro" ? <p className="terms-legal-notice">{onzeFuturoTerm.legalNotice}</p> : null}
           <ol>
             {term.clauses.map((clause) => (
               <li key={clause}>{clause}</li>

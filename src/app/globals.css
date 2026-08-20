@@ -1312,6 +1312,30 @@ body.modal-open {
   overflow: hidden;
 }
 
+.member-term-gate { padding-block: 32px 64px; }
+.member-term-card { width: min(100%, 980px); margin-inline: auto; padding: clamp(22px, 4vw, 48px); }
+.member-term-card .terms-heading h1 { margin: 4px 0; font-size: clamp(1.8rem, 4vw, 3.5rem); font-weight: 500; }
+.member-term-card > aside { margin: 18px 0; padding: 14px 18px; border-radius: 16px; background: #fff4ec; color: #6f6b68; }
+.terms-legal-notice { margin: 14px 0; padding: 12px 15px; border-radius: 14px; background: #fff4ec; color: var(--muted); font-size: .78rem; line-height: 1.5; }
+.member-term-card ol { max-height: 48vh; overflow: auto; padding: 18px 18px 18px 40px; border-radius: 20px; background: #fff; }
+.member-term-card li { margin-bottom: 12px; line-height: 1.55; color: #56514d; }
+.member-term-card form { display: grid; gap: 18px; margin-top: 22px; }
+.member-term-card .button { justify-self: end; }
+.member-term-receipt { margin:14px 0; padding:14px 18px; border-radius:16px; background:#fff4ec; color:var(--text); }
+.member-term-receipt div,.member-term-receipt strong,.member-term-receipt span { display:block; }
+.member-term-receipt span { margin-top:3px; color:var(--muted); font-size:.78rem; }
+.member-term-receipt summary { display:flex; align-items:center; gap:12px; cursor:pointer; list-style:none; }
+.member-term-receipt summary::-webkit-details-marker { display:none; }
+.member-term-history { display:grid; gap:8px; margin-top:16px; padding-top:14px; border-top:1px solid var(--line); }
+.member-term-history article { display:grid; grid-template-columns:minmax(140px,.7fr) minmax(140px,.7fr) 2fr; gap:12px; color:var(--muted); }
+.member-term-history code { overflow-wrap:anywhere; font-size:11px; }
+@media (max-width: 680px) {
+  .member-term-gate { padding-block: 14px 32px; }
+  .member-term-card ol { max-height: 42vh; }
+  .member-term-card .button { width: 100%; justify-content: center; }
+  .member-term-history article { grid-template-columns:1fr; gap:2px; }
+}
+
 body:has(.admin-shell-page) .site-header,
 body:has(.admin-shell-page) .site-footer,
 body:has(.admin-shell-page) .run-assistant {
@@ -5133,7 +5157,7 @@ body:has(.admin-shell-page) .run-assistant {
 
 .footer-main {
   display: grid;
-  grid-template-columns: minmax(220px, 0.9fr) minmax(0, 3.1fr);
+  grid-template-columns: minmax(220px, 0.78fr) minmax(0, 3.22fr);
   gap: clamp(32px, 5vw, 72px);
   padding-top: clamp(30px, 4vw, 46px);
 }
@@ -5157,12 +5181,13 @@ body:has(.admin-shell-page) .run-assistant {
 .footer-nav-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: clamp(22px, 3vw, 42px);
+  gap: clamp(34px, 4vw, 58px) clamp(22px, 3vw, 42px);
   min-width: 0;
 }
 
 .footer-nav-column {
   min-width: 0;
+  padding-top: 2px;
 }
 
 .site-footer strong {

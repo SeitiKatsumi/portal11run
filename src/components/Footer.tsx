@@ -6,7 +6,6 @@ import { sponsorCategories } from "@/lib/sponsor-categories";
 import { PRIMARY_EMAIL, PRIMARY_EMAIL_HREF } from "@/lib/site-contact";
 
 const footerSponsorCategories = sponsorCategories;
-const footerExcludedLinks = new Set(["/politica-de-privacidade"]);
 
 type FooterSponsorCategory = (typeof footerSponsorCategories)[number];
 
@@ -108,7 +107,7 @@ function getFooterSponsors(): FooterSponsor[] {
 function flattenNavLeaves(item: NavItem): NavItem[] {
   return item.children?.length
     ? item.children.flatMap(flattenNavLeaves)
-    : item.href.startsWith("/") && !footerExcludedLinks.has(item.href)
+    : item.href.startsWith("/")
       ? [item]
       : [];
 }
@@ -124,31 +123,33 @@ function uniqueLinks(items: NavItem[]): NavItem[] {
 }
 
 function getFooterNavGroups(): FooterNavGroup[] {
-  const sectionItems = navItems.filter((item) => item.children?.length);
-  const namedSections = ["Projetos", "Institucional", "Apoie o Projeto"];
-  const mainSections = namedSections
-    .map((label) => sectionItems.find((item) => item.label === label))
-    .filter((item): item is NavItem => Boolean(item))
-    .map((item) => ({ title: item.label, links: uniqueLinks(flattenNavLeaves(item)) }));
-  const referenceLinks = sectionItems
-    .filter((item) => !namedSections.includes(item.label))
-    .flatMap(flattenNavLeaves);
-  const remainingNavigation = [
-    ...navItems.filter((item) => !item.children?.length && item.href.startsWith("/")),
-    ...referenceLinks
-  ];
+  const byLabel = (label: string) => navItems.find((item) => item.label === label);
+  const references = byLabel("Referências")?.children ?? [];
+  const referenceGroup = (label: string) => references.find((item) => item.label === label);
+  const group = (title: string, item?: NavItem): FooterNavGroup => ({
+    title,
+    links: item ? uniqueLinks(flattenNavLeaves(item)) : []
+  });
 
   return [
-    ...mainSections,
+    group("Projetos", byLabel("Projetos")),
+    group("Institucional", byLabel("Institucional")),
+    group("Apoie o Projeto", byLabel("Apoie o Projeto")),
+    group("Rankings", referenceGroup("Rankings")),
+    group("Resultados", referenceGroup("Resultados")),
+    group("Calculadoras", referenceGroup("Calculadoras")),
+    group("Reflexões", referenceGroup("Reflexões")),
     {
-      title: "Referências e suporte",
-      links: uniqueLinks([
-        ...remainingNavigation,
+      title: "Acesso e legal",
+      links: [
+        { label: "Home", href: "/" },
         { label: "Meu Painel", href: "/meu-painel" },
-        { label: "Política de Privacidade", href: "/politica-de-privacidade" }
-      ])
+        { label: "Política de Privacidade", href: "/politica-de-privacidade" },
+        { label: "Termos de Uso", href: "/termos-de-uso" },
+        { label: "Diretrizes aos Atletas", href: "/institucional/diretrizes-aos-atletas" }
+      ]
     }
-  ];
+  ].filter((item) => item.links.length > 0);
 }
 
 export function Footer() {

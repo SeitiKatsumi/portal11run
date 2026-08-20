@@ -412,7 +412,7 @@ export const onzeFuturoFaqGroups: OnzeFuturoFaqGroup[] = [
       {
         id: "treinador-especifico",
         question: "A criança precisa ter um treinador específico para permanecer no projeto?",
-        answer: ["Não há obrigatoriedade de contratação ou acompanhamento por um treinador indicado pela 11Run. Quando a família optar por acompanhamento profissional externo, a escolha, a contratação e a verificação das qualificações desse profissional serão de responsabilidade dos responsáveis legais."]
+        answer: ["A 11Run não indica nem contrata o treinador e não substitui a condução técnica cotidiana. A preparação esportiva deve ser conduzida por profissional legalmente habilitado, escolhido e verificado pela família, que permanece responsável por essa contratação e supervisão."]
       },
       {
         id: "estudos-prioridade",
@@ -449,6 +449,24 @@ export const onzeFuturoFaqGroups: OnzeFuturoFaqGroup[] = [
         question: "Qual é a posição oficial da 11Run sobre educação e esporte?",
         answer: ["A 11Run acredita que o esporte deve fortalecer a educação, e não competir com ela. Nesta etapa da vida, a escola, o aprendizado, a formação humana, o descanso e a convivência familiar devem permanecer como prioridades.", "O atletismo é tratado como uma ferramenta complementar de desenvolvimento, capaz de ensinar disciplina, responsabilidade, saúde, amizade e perseverança, sempre respeitando a infância e a formação escolar."]
       }
+    ]
+  },
+  {
+    id: "politica-onze-futuro",
+    label: "Política do projeto",
+    title: "Vínculo, marca, pedidos de ajuda e segurança",
+    description: "Regras objetivas para proteger atletas, famílias, parceiros e a natureza complementar do Onze Futuro.",
+    items: [
+      { id: "ecossistema-complementar", question: "O que significa dizer que o Onze Futuro complementa o ecossistema do atleta?", answer: ["Significa que o projeto oferece acompanhamento institucional, registros e possíveis oportunidades, mas não substitui família, treinador, escola, clube, equipe ou profissionais de saúde. A 11Run não dirige a carreira nem a rotina técnica da criança."] },
+      { id: "vinculo-trabalhista", question: "A participação cria vínculo trabalhista ou profissional?", answer: ["Não. Não há salário, prestação de serviços, jornada, controle de ponto, subordinação, horário obrigatório, meta, cobrança de resultado, agenciamento ou exclusividade. Benefícios eventuais não constituem remuneração e podem ser alterados ou encerrados."] },
+      { id: "painel-teste", question: "O painel e o teste de 1.000 m controlam o trabalho ou o rendimento do atleta?", answer: ["Não. São ferramentas de registro e acompanhamento para o próprio atleta, sua família e seu treinador. Não prescrevem treino, não controlam produtividade e não determinam talento, permanência ou resultado."] },
+      { id: "marcar-11run", question: "Quando o atleta pode marcar a 11Run nas redes sociais?", answer: ["Em conteúdos verdadeiros e seguros relacionados a corrida, treino, evolução ou atividades do projeto. Ao usar marca, uniforme ou menção à 11Run, não se pode sugerir parceria inexistente nem associar o projeto a preconceito, assédio, violência, ilegalidade ou manifestações político-partidárias, religiosas ou ideológicas."] },
+      { id: "marcar-parceiros", question: "É permitido marcar patrocinadores, apoiadores ou parceiros?", answer: ["Somente com autorização prévia e escrita da 11Run. Os contatos obtidos pelo projeto não podem ser usados para criar relações, negociações ou campanhas particulares."] },
+      { id: "pedir-dinheiro", question: "Atletas ou familiares podem pedir dinheiro, patrocínio ou ajuda a pessoas ligadas ao projeto?", answer: ["Não. É proibido solicitar dinheiro, produtos, serviços, doações, empréstimos, favores, inscrições, transporte, hospedagem ou ajuda de qualquer natureza a diretores e familiares, integrantes da equipe, patrocinadores, apoiadores, voluntários, parceiros, fornecedores, outras famílias ou pessoas conhecidas por meio do projeto.", "A proibição vale para abordagens pessoais, WhatsApp, telefone, redes sociais, e-mail, mensagens privadas, intermediários, rifas, campanhas e vaquinhas. Necessidades relacionadas ao projeto devem seguir exclusivamente os canais oficiais."] },
+      { id: "excecoes-protecao", question: "Pedir socorro ou denunciar uma situação também é proibido?", answer: ["Não. Emergências, pedidos de proteção, denúncias de abuso, exercício de direitos e solicitações administrativas pelos canais oficiais não são pedidos indevidos e devem ser acolhidos com prioridade."] },
+      { id: "consequencia-pedido", question: "O que acontece se houver pedido não autorizado de dinheiro ou ajuda?", answer: ["A abordagem constitui infração grave e resulta em desligamento imediato, comunicado ao responsável legal. O pedido não representa a 11Run e não cria obrigação para o destinatário ou para o projeto."] },
+      { id: "provas-irregulares", question: "A criança pode competir sem inscrição, em idade diferente ou usando documento de outra pessoa?", answer: ["Não. São proibidos participação sem inscrição regular, identidade de terceiro, falsificação de idade, documento ou resultado e provas incompatíveis com idade, distância, orientação médica ou regulamento. A 11Run não autoriza, estimula, divulga nem valida resultados obtidos assim."] },
+      { id: "desligamento-imediato", question: "A 11Run pode suspender ou desligar um atleta imediatamente?", answer: ["Sim. Situações graves de segurança, pedido financeiro indevido, fraude, prova irregular, uso indevido da marca, preconceito, assédio, violência ou ilegalidade podem gerar suspensão preventiva ou desligamento imediato. O responsável será comunicado e a criança não será exposta ou retaliada."] }
     ]
   },
   {

@@ -6,6 +6,8 @@ import { listEventsForLead, type MemberEvent } from "./events";
 import type { LeadRecord } from "./leads";
 import type { RankingRecord } from "./rankings";
 import { normalizeMemberMarkEvent } from "./member-mark-options";
+import { cleanCpf, isValidCpf } from "./leads";
+import { ONZE_FUTURO_TERM_VERSION, onzeFuturoTermSnapshot } from "./onze-futuro-policy";
 
 export type MemberRole = "atleta_onze_futuro" | "atleta_11_regional" | "atleta_11_bolsista" | "atleta_circuito_futuro";
 
@@ -37,6 +39,18 @@ export type MemberAccount = {
 };
 
 export type MemberAccountPublic = Omit<MemberAccount, "password_hash" | "password_salt">;
+
+export type MemberTermAcceptance = {
+  id: string;
+  account_id: string;
+  lead_id: string;
+  document_type: string;
+  document_version: string;
+  document_hash: string;
+  acceptor_name: string;
+  acceptor_cpf: string;
+  accepted_at: string;
+};
 
 export type FinancialRecord = {
   id: string;
@@ -91,6 +105,7 @@ export type MemberDashboardData = {
   performanceMarks: MemberPerformanceMark[];
   rankings: RankingRecord[];
   events: MemberEvent[];
+  termAcceptances: MemberTermAcceptance[];
 };
 
 let database: DatabaseSync | undefined;
@@ -244,9 +259,20 @@ export function upsertMemberAccount(input: { leadId: string; role: MemberRole; u
     ).run(randomUUID(), input.leadId, input.role, cleanUsername, passwordParts.hash, passwordParts.salt, input.active === false ? 0 : 1, updatedAt, updatedAt);
   }
 
-  return db
+  const savedAccount = db
     .prepare("SELECT id, lead_id, role, username, active, created_at, updated_at FROM member_accounts WHERE lead_id = ?")
     .get(input.leadId) as MemberAccountPublic;
+  if (lead.project_type === "onze-futuro" && lead.term_version === ONZE_FUTURO_TERM_VERSION && lead.term_snapshot && lead.term_hash) {
+    db.prepare(
+      `INSERT OR IGNORE INTO member_term_acceptances
+       (id, account_id, lead_id, document_type, document_version, document_hash, document_snapshot,
+        acceptor_name, acceptor_cpf, ip_address, user_agent, accepted_at)
+       VALUES (?, ?, ?, 'ONZE_FUTURO', ?, ?, ?, ?, ?, ?, ?, ?)`
+    ).run(randomUUID(), savedAccount.id, lead.id, lead.term_version, lead.term_hash, lead.term_snapshot,
+      lead.term_acceptor_name ?? "Responsável legal", lead.term_acceptor_cpf ?? "",
+      lead.term_ip_address ?? "", lead.term_user_agent ?? "", lead.term_accepted_at || lead.created_at);
+  }
+  return savedAccount;
 }
 
 export function authenticateMember(username: string, password: string) {
@@ -284,6 +310,67 @@ export function getMemberBySessionToken(token?: string | null) {
 export function deleteMemberSession(token?: string | null) {
   if (!token) return;
   getDatabase().prepare("DELETE FROM member_sessions WHERE token_hash = ?").run(hashToken(token));
+}
+
+export function hasCurrentOnzeFuturoTerm(accountId: string) {
+  const account = getDatabase()
+    .prepare("SELECT role FROM member_accounts WHERE id = ? AND active = 1")
+    .get(accountId) as { role: MemberRole } | undefined;
+  if (!account || account.role !== "atleta_onze_futuro") return true;
+  return Boolean(
+    getDatabase()
+      .prepare("SELECT id FROM member_term_acceptances WHERE account_id = ? AND document_type = 'ONZE_FUTURO' AND document_version = ?")
+      .get(accountId, ONZE_FUTURO_TERM_VERSION)
+  );
+}
+
+export function acceptCurrentOnzeFuturoTerm(input: {
+  accountId: string;
+  acceptorName: string;
+  acceptorCpf: string;
+  ipAddress?: string;
+  userAgent?: string;
+}) {
+  const db = getDatabase();
+  const row = db.prepare(
+    `SELECT a.id AS account_id, a.lead_id, a.role, l.payload_json, l.term_acceptor_cpf
+     FROM member_accounts a JOIN leads l ON l.id = a.lead_id
+     WHERE a.id = ? AND a.active = 1`
+  ).get(input.accountId) as {
+    account_id: string; lead_id: string; role: MemberRole; payload_json: string;
+    term_acceptor_cpf: string | null;
+  } | undefined;
+  if (!row || row.role !== "atleta_onze_futuro") throw new Error("Conta do Onze Futuro não encontrada.");
+
+  const name = input.acceptorName.trim();
+  const cpf = cleanCpf(input.acceptorCpf);
+  if (name.length < 3) throw new Error("Informe o nome completo do responsável.");
+  if (!isValidCpf(cpf)) throw new Error("CPF do responsável inválido.");
+  const payload = JSON.parse(row.payload_json || "{}") as Record<string, unknown>;
+  const knownCpfs = [row.term_acceptor_cpf, payload.guardian_cpf, payload.term_acceptor_cpf]
+    .map((value) => cleanCpf(String(value ?? "")))
+    .filter(Boolean);
+  if (knownCpfs.length && !knownCpfs.includes(cpf)) throw new Error("O CPF deve corresponder ao responsável registrado.");
+
+  const snapshot = onzeFuturoTermSnapshot();
+  const hash = createHash("sha256").update(snapshot).digest("hex");
+  const acceptedAt = now();
+  db.prepare(
+    `INSERT OR IGNORE INTO member_term_acceptances
+     (id, account_id, lead_id, document_type, document_version, document_hash, document_snapshot,
+      acceptor_name, acceptor_cpf, ip_address, user_agent, accepted_at)
+     VALUES (?, ?, ?, 'ONZE_FUTURO', ?, ?, ?, ?, ?, ?, ?, ?)`
+  ).run(randomUUID(), row.account_id, row.lead_id, ONZE_FUTURO_TERM_VERSION, hash, snapshot, name, cpf,
+    input.ipAddress?.slice(0, 100) ?? "", input.userAgent?.slice(0, 500) ?? "", acceptedAt);
+  return db.prepare(
+    "SELECT id, account_id, lead_id, document_type, document_version, document_hash, acceptor_name, acceptor_cpf, accepted_at FROM member_term_acceptances WHERE account_id = ? AND document_type = 'ONZE_FUTURO' AND document_version = ?"
+  ).get(row.account_id, ONZE_FUTURO_TERM_VERSION) as MemberTermAcceptance;
+}
+
+export function listMemberTermAcceptances(accountId: string) {
+  return getDatabase().prepare(
+    "SELECT id, account_id, lead_id, document_type, document_version, document_hash, acceptor_name, acceptor_cpf, accepted_at FROM member_term_acceptances WHERE account_id = ? ORDER BY datetime(accepted_at) DESC"
+  ).all(accountId) as MemberTermAcceptance[];
 }
 
 export function getMemberDashboard(accountId: string): MemberDashboardData | null {
@@ -328,6 +415,7 @@ export function getMemberDashboard(accountId: string): MemberDashboardData | nul
       }))
   ]);
   const events = listEventsForLead(lead.id, lead.project_type);
+  const termAcceptances = listMemberTermAcceptances(account.id);
 
   return {
     account: publicAccount(account),
@@ -337,7 +425,8 @@ export function getMemberDashboard(accountId: string): MemberDashboardData | nul
     marks,
     performanceMarks,
     rankings: matchingRankings,
-    events
+    events,
+    termAcceptances
   };
 }
 

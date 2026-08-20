@@ -723,6 +723,27 @@ CREATE TABLE IF NOT EXISTS japan_ranking_seasons (
   updated_at TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS member_term_acceptances (
+  id TEXT PRIMARY KEY,
+  account_id TEXT NOT NULL,
+  lead_id TEXT NOT NULL,
+  document_type TEXT NOT NULL,
+  document_version TEXT NOT NULL,
+  document_hash TEXT NOT NULL,
+  document_snapshot TEXT NOT NULL,
+  acceptor_name TEXT NOT NULL,
+  acceptor_cpf TEXT NOT NULL,
+  ip_address TEXT,
+  user_agent TEXT,
+  accepted_at TEXT NOT NULL,
+  UNIQUE(account_id, document_type, document_version),
+  FOREIGN KEY (account_id) REFERENCES member_accounts(id) ON DELETE CASCADE,
+  FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_member_term_acceptances_account
+  ON member_term_acceptances (account_id, document_type, accepted_at);
+
 CREATE TABLE IF NOT EXISTS japan_ranking_event_configs (
   id TEXT PRIMARY KEY,
   season INTEGER NOT NULL,

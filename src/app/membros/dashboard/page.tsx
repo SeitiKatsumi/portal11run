@@ -10,9 +10,10 @@ import { MemberMedicalCertificate } from "@/components/MemberMedicalCertificate"
 import { MemberProfilePhoto } from "@/components/MemberProfilePhoto";
 import { MemberProfileUpdateLink } from "@/components/MemberProfileUpdateLink";
 import { MemberRegistrationEditor } from "@/components/MemberRegistrationEditor";
+import { MemberTermAcceptance } from "@/components/MemberTermAcceptance";
 import { parseMemberMarkTime } from "@/lib/member-mark-chart";
 import { getMemberChallengesDashboard } from "@/lib/member-challenges";
-import { getMemberBySessionToken, getMemberDashboard, getMemberDashboardByLeadId, memberRoleLabels } from "@/lib/members";
+import { getMemberBySessionToken, getMemberDashboard, getMemberDashboardByLeadId, hasCurrentOnzeFuturoTerm, memberRoleLabels } from "@/lib/members";
 
 export const dynamic = "force-dynamic";
 
@@ -157,6 +158,7 @@ export default async function MemberDashboardPage({
   const previewMode = Boolean(previewLeadId);
   const account = previewMode ? null : getMemberBySessionToken((await cookies()).get("member_session")?.value);
   if (!previewMode && !account) redirect("/login");
+  if (!previewMode && account && !hasCurrentOnzeFuturoTerm(account.id)) return <MemberTermAcceptance />;
 
   const dashboard = previewLeadId
     ? getMemberDashboardByLeadId(previewLeadId)
@@ -272,6 +274,17 @@ export default async function MemberDashboardPage({
           {!previewMode ? <MemberProfileUpdateLink /> : null}
         </aside>
       ) : null}
+
+      {dashboard.termAcceptances[0] ? <details className="member-term-receipt">
+        <summary><ShieldAlert size={20}/><div><strong>Termo do Onze Futuro aceito</strong>
+        <span>Versão {dashboard.termAcceptances[0].document_version} · {formatDate(dashboard.termAcceptances[0].accepted_at)} · comprovante {dashboard.termAcceptances[0].document_hash.slice(0, 12).toUpperCase()}</span></div></summary>
+        <div className="member-term-history">
+          <strong>Histórico de aceites</strong>
+          {dashboard.termAcceptances.map((acceptance) => <article key={acceptance.id}>
+            <span>Versão {acceptance.document_version}</span><span>{formatDate(acceptance.accepted_at)}</span><code>{acceptance.document_hash.toUpperCase()}</code>
+          </article>)}
+        </div>
+      </details> : null}
 
       <section className="member-highlight-grid" aria-label="Destaques do atleta">
         <article>
