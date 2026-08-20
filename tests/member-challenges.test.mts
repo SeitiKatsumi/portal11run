@@ -78,6 +78,10 @@ test("processa leitura escolar estruturada e respeita teto acumulado", () => {
   db.close();
   challenges.reviewChallengeBenefit({ id: schoolBenefit.id, approved: true, actor: "admin:test" });
 
+  const expired = new DatabaseSync(databasePath);
+  expired.prepare("UPDATE member_challenge_benefits SET valid_until='2020-01-01' WHERE id=?").run(schoolBenefit.id);
+  expired.close();
+
   const dashboard = challenges.getMemberChallengesDashboard("account-test");
   assert.equal(dashboard.benefit.schoolPercent, 10);
   assert.equal(dashboard.benefit.totalPercent, 25);

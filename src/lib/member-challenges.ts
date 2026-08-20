@@ -582,7 +582,7 @@ function benefitProjection(accountId: string) {
   const current = currentAidValue(accountId);
   const approved = db().prepare(
     `SELECT * FROM member_challenge_benefits WHERE account_id = ? AND status = 'APPROVED'
-     AND (valid_until IS NULL OR date(valid_until) >= date('now')) ORDER BY datetime(created_at) DESC`
+     AND (source_type = 'SCHOOL' OR valid_until IS NULL OR date(valid_until) >= date('now')) ORDER BY datetime(created_at) DESC`
   ).all(accountId) as Array<Record<string, string | number | null>>;
   const latestByType = new Map<string, Record<string, string | number | null>>();
   approved.forEach((row) => { if (!latestByType.has(String(row.source_type))) latestByType.set(String(row.source_type), row); });
@@ -687,13 +687,7 @@ function createOrUpdateBenefit(accountId: string, sourceType: "SCHOOL" | "ATTEND
   const submission = db().prepare("SELECT period_reference FROM member_challenge_submissions WHERE id=?").get(sourceId) as { period_reference: string } | undefined;
   let validFrom: string | null = timestamp.slice(0, 10);
   let validUntil: string | null = null;
-  if (submission && sourceType === "SCHOOL") {
-    const match = /^(\d{4})-T([1-4])$/.exec(submission.period_reference);
-    if (match) {
-      const end = new Date(Date.UTC(Number(match[1]), Number(match[2]) * 3 + 3, 0));
-      validUntil = end.toISOString().slice(0, 10);
-    }
-  } else if (submission) {
+  if (submission && sourceType === "ATTENDANCE") {
     const [year, month] = submission.period_reference.split("-").map(Number);
     validFrom = new Date(Date.UTC(year, month, 1)).toISOString().slice(0, 10);
     validUntil = new Date(Date.UTC(year, month + 1, 0)).toISOString().slice(0, 10);
