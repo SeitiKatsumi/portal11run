@@ -55,7 +55,7 @@ function seedHome(db: DatabaseSync) {
       content_alignment, overlay_strength, header_opacity, header_blur, updated_at
     ) VALUES ('primary', 'image', ?, NULL, ?, ?, ?, 'center', 58, 74, 18, ?)`
   ).run(
-    "/assets/home/ayla-trofeus-hero.webp",
+    "/assets/home/home-medalha-hero.webp",
     "O futuro da corrida começa aqui.",
     "Escolha uma frente e entre no ecossistema 11RUN.",
     "Performance · formação · oportunidade",
@@ -101,6 +101,19 @@ function seedHome(db: DatabaseSync) {
     timestamp,
     "/assets/home/ayla-podcast-hero.webp"
   );
+
+  db.prepare(
+    `UPDATE home_settings
+     SET hero_media_type = 'image',
+         hero_image = ?,
+         hero_video = NULL,
+         updated_at = ?
+     WHERE id = 'primary'
+       AND (
+         hero_video = '/assets/home/homevideo.mp4'
+         OR hero_image IN ('/assets/home/ayla-trofeus-hero.webp', '/assets/home/ayla-podcast-hero.webp')
+       )`
+  ).run("/assets/home/home-medalha-hero.webp", timestamp);
 
   const projects = [
     ["onze-futuro", "11 Run Futuro", "Base, cultura esportiva e desenvolvimento.", "Medal", "/onze-futuro", 10],
