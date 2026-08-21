@@ -55,7 +55,7 @@ const faqStructuredData = {
 };
 
 const heroImage = "/assets/onze-futuro-hero.jpg";
-const launchVideo = "/assets/onze-futuro-lancamento-full.mp4";
+const launchImage = "/assets/onze-futuro-medalha.webp";
 const scenarioImage = "/assets/onze-futuro-cenario.jpg";
 const originImage = "/assets/athletes/turma-onze-futuro.webp";
 const pilotImage = "/assets/athletes/eloiza.webp";
@@ -325,10 +325,8 @@ export default function Page() {
   return (
     <div className="futuro-landing">
       <FeatureBanner
-        videoSrc={launchVideo}
-        videoAutoPlay={false}
-        videoControls
-        imageAlt="Vídeo de lançamento do Onze Futuro"
+        imageSrc={launchImage}
+        imageAlt="Jovem atleta 11RUN exibindo sua medalha"
         mediaOnly
       />
 
