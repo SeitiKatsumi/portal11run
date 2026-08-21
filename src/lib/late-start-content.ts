@@ -59,7 +59,7 @@ export const lateStartFaq = [
   ["O Brasil possui atletismo de base?","Sim. Existem categorias, competições, escolas, clubes e projetos; o desafio é distribuir e conectar essas peças."],
   ["O que a escola deve fazer?","Ampliar acesso, repertório e pertencimento — não sentenciar quem tem ou não talento."],
   ["Como o Onze Futuro responde?","Como projeto piloto de acompanhamento profundo, proteção e aprendizagem. Não é modelo cientificamente comprovado nem promessa de alto rendimento."],
-  ["Cinco atletas validam um modelo?","Não. Uma turma pequena permite avaliar viabilidade e acompanhar casos, sem generalizar resultados."],
+  ["Seis atletas validam um modelo?","Não. Uma turma pequena permite avaliar viabilidade e acompanhar casos, sem generalizar resultados."],
   ["O projeto cria score de talento?","Não. Tempos e medidas são contextualizados; não há previsão automatizada de carreira ou ranking biológico."],
   ["Como proteger dados infantis?","Com minimização, finalidade clara, autorização adequada, acesso restrito e ausência de decisões automatizadas."],
   ["Onde consultar as fontes?","Na biblioteca desta página, que informa interpretação, limitação e data de revisão de cada referência."]

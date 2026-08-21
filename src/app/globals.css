@@ -5411,6 +5411,12 @@ body:has(.admin-shell-page) .run-assistant {
   height: 100%;
 }
 
+.futuro-image-square.futuro-image-portrait {
+  aspect-ratio: 4 / 5;
+  object-fit: contain;
+  background: var(--surface);
+}
+
 .futuro-kpis {
   grid-column: 1 / -1;
   display: grid;
@@ -5537,7 +5543,7 @@ body:has(.admin-shell-page) .run-assistant {
 
 .futuro-athlete-photo {
   width: 100%;
-  height: clamp(320px, 36vw, 460px);
+  aspect-ratio: 4 / 5;
   min-width: 0;
   overflow: hidden;
   border: 1px solid var(--line);
@@ -5548,7 +5554,7 @@ body:has(.admin-shell-page) .run-assistant {
 .futuro-athlete-photo img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center center;
 }
 

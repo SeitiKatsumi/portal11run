@@ -57,12 +57,12 @@ const faqStructuredData = {
 const heroImage = "/assets/onze-futuro-hero.jpg";
 const launchImage = "/assets/onze-futuro-medalha.webp";
 const scenarioImage = "/assets/onze-futuro-cenario.jpg";
-const originImage = "/assets/athletes/turma-onze-futuro.webp";
-const pilotImage = "/assets/athletes/eloiza.webp";
+const originImage = "/assets/athletes/turma-onze-futuro-seis.webp";
+const pilotImage = "/assets/athletes/piloto-aime.webp";
 
 const heroStats = [
   { icon: CalendarDays, title: "Projeto piloto", text: "2026 a 2029" },
-  { icon: Users, title: "Amostragem inicial", text: "5 atletas acompanhados de perto" },
+  { icon: Users, title: "Amostragem inicial", text: "6 atletas acompanhados de perto" },
   { icon: HeartPulse, title: "Ciclo de base", text: "3 anos de desenvolvimento" },
   { icon: Network, title: "Corpo multidisciplinar", text: "técnico, docente e emocional" },
   { icon: BarChart3, title: "Expansão responsável", text: "crescimento guiado por análise" },
@@ -101,7 +101,7 @@ const differentials = [
   {
     icon: Users,
     title: "Amostragem inicial com profundidade",
-    text: "A fase inicial começa com 5 atletas para permitir acompanhamento próximo, coleta de dados, análise individual e refinamento da metodologia."
+    text: "A fase inicial começa com 6 atletas para permitir acompanhamento próximo, coleta de dados, análise individual e refinamento da metodologia."
   },
   {
     icon: Network,
@@ -224,8 +224,8 @@ const athleteProfiles = [
   {
     name: "Aimê Giaretta Katsumi",
     birthDate: "21/03/2017",
-    image: "/assets/athletes/aime.webp",
-    alt: "Aimê Giaretta Katsumi correndo na pista",
+    image: "/assets/athletes/perfil-aime.webp",
+    alt: "Perfil visual de Aimê Giaretta Katsumi",
     intro: "A caçulinha do grupo, com energia doce, leve e cheia de sonhos grandes.",
     bio: [
       "Aimê começou a correr bem pertinho do papai, seu parceiro de todos os momentos, e o que parecia apenas uma brincadeira virou uma linda surpresa: ela mostrou resistência, coragem e um amor enorme pela pista.",
@@ -236,8 +236,8 @@ const athleteProfiles = [
   {
     name: "Maria Eloiza Nascimento da Silva",
     birthDate: "15/10/2016",
-    image: "/assets/athletes/eloiza.webp",
-    alt: "Maria Eloiza Nascimento da Silva correndo na pista",
+    image: "/assets/athletes/perfil-maria-eloiza.webp",
+    alt: "Perfil visual de Maria Eloiza Nascimento da Silva",
     intro: "Uma atleta alegre, intensa e cheia de futuro.",
     bio: [
       "Maria Eloiza descobriu o atletismo vendo o papai correr. A curiosidade virou vontade, a vontade virou pedido, e depois de ganhar seu primeiro tênis de corrida, ela nunca mais parou.",
@@ -248,8 +248,8 @@ const athleteProfiles = [
   {
     name: "Emanuelly Helena Alves Marcelino",
     birthDate: "23/02/2016",
-    image: "/assets/athletes/manu.webp",
-    alt: "Emanuelly Helena Alves Marcelino correndo na pista",
+    image: "/assets/athletes/perfil-manu.webp",
+    alt: "Perfil visual de Emanuelly Helena Alves Marcelino",
     intro: "Manu une concentração, sensibilidade e vontade de evoluir.",
     bio: [
       "Emanuelly, carinhosamente chamada de Manu, começou na corrida por incentivo do pai e logo descobriu que aquele também era o seu lugar. Desde pequena, já chamava atenção nas corridas infantis pela força, disciplina e disposição para competir.",
@@ -260,20 +260,32 @@ const athleteProfiles = [
   {
     name: "Sophia Gabrielly de Aragão Maciel",
     birthDate: "28/07/2016",
-    image: "/assets/athletes/soso.webp",
-    alt: "Sophia Gabrielly de Aragão Maciel correndo na pista",
+    image: "/assets/athletes/perfil-soso.webp",
+    alt: "Perfil visual de Sophia Gabrielly de Aragão Maciel",
     intro: "Soso representa a atleta que nasce da paixão.",
     bio: [
       "Sophia, nossa Soso, encontrou na corrida o seu grande amor. Antes de chegar ao atletismo, passou pela ginástica rítmica, onde desenvolveu coordenação, expressão corporal e disciplina. Hoje, além de correr, também pratica natação e já sonha com novos desafios, quem sabe até no triathlon.",
       "Carinhosa, comunicativa, determinada e dona de uma personalidade forte, Soso sabe muito bem o que quer. Quando coloca algo na cabeça e no coração, vai atrás com energia, foco e coragem.",
       "Ela ama passear, competir e viver experiências que a façam se movimentar. Na pista, leva toda essa intensidade linda: corre com vontade, com alegria e com aquela força de quem não desiste fácil."
     ]
+  },
+  {
+    name: "Nathan Augusto Almeida Gerin",
+    birthDate: "14/01/2016",
+    image: "/assets/athletes/perfil-nathan.webp",
+    alt: "Perfil visual de Nathan Augusto Almeida Gerin",
+    intro: "Velocidade, resistência e muita vontade de construir uma trajetória completa no atletismo.",
+    bio: [
+      "Representante de Apucarana, no Paraná, Nathan já reúne conquistas importantes e mostra versatilidade em diferentes distâncias. É recordista paranaense nos 60 e 600 metros e segue ampliando seu repertório esportivo.",
+      "No teste de 1.000 metros em pista de 400 metros, registrou 3min26s70. A marca reforça a combinação entre velocidade e resistência que chama atenção em sua formação.",
+      "Nathan sonha em ser atleta olímpico e quebrar recordes mundiais. No Onze Futuro, encontra um ambiente para continuar aprendendo, evoluindo e transformando esse sonho em uma jornada responsável."
+    ]
   }
 ];
 
 const thalesProfile = {
-  image: "/assets/athletes/thales.webp",
-  alt: "Thales correndo uma prova de rua noturna com o uniforme da 11RUN",
+  image: "/assets/athletes/perfil-thales.webp",
+  alt: "Perfil visual de Thales",
   intro: "Um convite do pai virou paixão, disciplina e o sonho de construir uma grande história no esporte.",
   bio: [
     "A trajetória do Thales na corrida começou aos 9 anos, em novembro de 2024, de uma forma muito simples. O esporte sempre esteve presente em sua infância, mas foi quando seu pai o convidou para um treino de 5 quilômetros que ele descobriu sua verdadeira paixão. Naquele primeiro treino, completou os 5 km em 26 minutos e nunca mais parou de correr.",
@@ -370,7 +382,7 @@ export default function Page() {
       <section className="futuro-section futuro-athletes">
         <SectionHeader
           eyebrow="primeira turma"
-          title="Cinco atletas, cinco histórias e um mesmo amor pela corrida."
+          title="Seis atletas, seis histórias e um mesmo amor pela corrida."
           text="O projeto piloto do Onze Futuro começa com atletas que já carregam no corpo e no coração a alegria de correr, aprender, competir e sonhar grande."
         />
         <div className="futuro-athlete-grid">
@@ -432,7 +444,7 @@ export default function Page() {
       <section className="futuro-section futuro-origin">
         <div className="futuro-two-col reverse">
           <Reveal>
-            <img className="futuro-image-square" src={originImage} alt="Jovens atletas reunidas em ambiente esportivo" />
+            <img className="futuro-image-square futuro-image-portrait" src={originImage} alt="Os seis jovens atletas do Onze Futuro" />
           </Reveal>
           <Reveal delay={0.08}>
             <div>
@@ -532,11 +544,11 @@ export default function Page() {
               <SectionHeader
                 eyebrow="piloto 2026-2029"
                 title="Um projeto piloto para estudar, validar e crescer."
-                text="A proposta não é limitar o projeto a 5 atletas. A proposta é começar com responsabilidade."
+                text="A proposta não é limitar o projeto a 6 atletas. A proposta é começar com responsabilidade."
               />
               <div className="futuro-text-block">
                 <p>
-                  O Onze Futuro começará com uma primeira turma de amostragem formada por 5 atletas, acompanhados
+                  O Onze Futuro começará com uma primeira turma de amostragem formada por 6 atletas, acompanhados
                   durante o ciclo inicial de 2026 a 2029.
                 </p>
                 <p>
@@ -548,7 +560,7 @@ export default function Page() {
             </div>
           </Reveal>
           <Reveal delay={0.08}>
-            <img className="futuro-image-square" src={pilotImage} alt="Maria Eloiza correndo na pista" />
+            <img className="futuro-image-square futuro-image-portrait" src={pilotImage} alt="Aimê com o uniforme do Onze Futuro" />
           </Reveal>
         </div>
         <div className="futuro-timeline">
@@ -571,7 +583,7 @@ export default function Page() {
               <h3>{item}</h3>
               <p>
                 {index === 0
-                  ? "O projeto começa com 5 atletas entre 10 e 13 anos, acompanhados por 3 anos em uma fase de estudo, validação e desenvolvimento."
+                  ? "O projeto começa com 6 atletas entre 10 e 13 anos, acompanhados por 3 anos em uma fase de estudo, validação e desenvolvimento."
                   : index === 1
                     ? "Os atletas terão suporte técnico, psicológico, esportivo, educacional e institucional dentro do ecossistema 11RUN."
                     : index === 2
@@ -617,7 +629,7 @@ export default function Page() {
           precisamos de base. Se queremos futuro, precisamos de ecossistema.
         </p>
         <p>
-          Começaremos com 5 atletas. Mas a missão é maior: criar cultura, desenvolver disciplina, abrir caminhos,
+          Começaremos com 6 atletas. Mas a missão é maior: criar cultura, desenvolver disciplina, abrir caminhos,
           estudar a base, validar um modelo e construir um futuro possível para mais jovens corredores.
         </p>
       </section>

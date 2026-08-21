@@ -39,13 +39,13 @@ export const onzeFuturoFaqGroups: OnzeFuturoFaqGroup[] = [
         id: "ciclo",
         question: "O projeto vai de 2026 a 2029?",
         answer: [
-          "Sim. 2026 a 2029 é o ciclo institucional previsto para o piloto, com uma primeira amostragem de cinco atletas. Nesse período, a 11RUN pretende estudar, validar e aprimorar a metodologia, o acompanhamento e a viabilidade de expansão.",
+          "Sim. 2026 a 2029 é o ciclo institucional previsto para o piloto, com uma primeira amostragem de seis atletas. Nesse período, a 11RUN pretende estudar, validar e aprimorar a metodologia, o acompanhamento e a viabilidade de expansão.",
           "Esse calendário não significa permanência individual garantida até 2029. A continuidade de cada atleta é acompanhada periodicamente e depende do melhor interesse da criança, da disponibilidade do projeto e do alinhamento entre atleta, família, treinador, equipe 11RUN e demais profissionais."
         ]
       },
       {
         id: "cinco-atletas",
-        question: "Por que a primeira turma tem apenas cinco atletas?",
+        question: "Por que a primeira turma tem apenas seis atletas?",
         answer: [
           "A turma reduzida permite acompanhamento próximo, validação responsável dos processos e aprendizado real antes de qualquer expansão. A proposta é observar evolução esportiva, adaptação competitiva, rotina, escola, maturidade emocional, apoio familiar, materiais, benefícios e comunicação sem perder qualidade ou proteção.",
           "O número inicial é uma amostragem do piloto, não o limite permanente do projeto."
