@@ -89,13 +89,7 @@ export const navItems: NavItem[] = [
         href: "#profissionais",
         children: [
           { label: "Seiti Katsumi", href: "/institucional/seiti-katsumi" },
-          { label: "Alex Lopes", href: "/institucional/alex-sandro-lopes" }
-        ]
-      },
-      {
-        label: "Voluntários",
-        href: "#voluntarios",
-        children: [
+          { label: "Alex Lopes", href: "/institucional/alex-sandro-lopes" },
           { label: "Madson Delgado", href: "/institucional/voluntarios/madson-delgado" }
         ]
       }
