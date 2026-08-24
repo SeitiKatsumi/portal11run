@@ -105,15 +105,15 @@ test("atestado médico não substitui o termo do responsável", () => {
   );
 });
 
-test("ranking incorpora sem duplicidade os atletas de 13 anos homologados pela CBAt", () => {
+test("ranking absoluto considera somente resultados homologados dentro da edição", () => {
   const ranking = circuit.listCircuitRanking({ categoryAge: 13 });
   const cbatResults = ranking.filter((item) => item.id.startsWith("cbat-2026-"));
 
-  assert.equal(cbatResults.length, 21);
-  assert.equal(new Set(cbatResults.map((item) => item.publicName)).size, 21);
+  assert.equal(cbatResults.length, 9);
+  assert.equal(new Set(cbatResults.map((item) => item.publicName)).size, 9);
+  assert.equal(cbatResults.every((item) => item.activityDate >= "2026-08-01" && item.activityDate <= "2026-11-30"), true);
   assert.equal(cbatResults.find((item) => item.publicName === "Davi Henrique Alves da Silva")?.formattedTime, "02:56.38");
-  assert.equal(cbatResults.find((item) => item.publicName === "Helena Rowe Fernandes")?.formattedTime, "03:06.86");
-  assert.equal(cbatResults.find((item) => item.publicName === "Anne Gabryelle da Conceicao Ferraz")?.formattedTime, "04:40.57");
+  assert.equal(cbatResults.find((item) => item.publicName === "Helena Rowe Fernandes"), undefined);
 });
 
 test("ranking inclui Bernardo dos Santos Mendonça na categoria calculada pela data de nascimento", () => {

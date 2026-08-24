@@ -76,7 +76,7 @@ export function CircuitRegistration({ startDate, endDate }: { startDate: string;
     if (step === 4) {
       const activityDate = String(data.activityDate ?? "");
       if (activityDate > endDate) {
-        setMessage({ type: "error", text: "A atividade deve ter sido realizada até 15/12/2026." }); return false;
+        setMessage({ type: "error", text: `A atividade deve ter sido realizada até ${endDate.split("-").reverse().join("/")}.` }); return false;
       }
       if (data.type === "OFFICIAL_COMPETITION" && (!data.competitionName || !data.organizer || !data.officialResultUrl)) {
         setMessage({ type: "error", text: "Informe competição, entidade e resultado oficial." }); return false;

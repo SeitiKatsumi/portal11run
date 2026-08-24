@@ -17,10 +17,16 @@ import {
   type RankableSubmission
 } from "./virtual-circuit-core.ts";
 import { circuitFaq, circuitRegulations, mandatoryConsents } from "./virtual-circuit-content.ts";
+import {
+  CIRCUIT_EDITION_END,
+  CIRCUIT_EDITION_START,
+  CIRCUIT_REGULATIONS_VERSION
+} from "./virtual-circuit-schedule.ts";
 
 export const CIRCUIT_SLUG = "desafio-virtual-1km-11run-futuro-2026";
 export const CIRCUIT_EDITION_ID = "virtual-circuit-2026";
-export const CIRCUIT_ACTIVITY_START = "2026-08-01";
+export const CIRCUIT_ACTIVITY_START = CIRCUIT_EDITION_START;
+export const CIRCUIT_ACTIVITY_END = CIRCUIT_EDITION_END;
 export const CIRCUIT_HERO_IMAGE = "/assets/circuito-virtual/desafio-virtual-1000m-participe-2026.webp";
 
 let database: DatabaseSync | undefined;
@@ -50,17 +56,42 @@ function safeJson<T>(value: string | null | undefined, fallback: T): T {
   }
 }
 
+function circuitEditionSettings(current: Record<string, string | number> = {}) {
+  const settings = { ...current };
+  delete settings.quarterlyShoesCount;
+  return {
+    ...settings,
+    minAge: 9,
+    maxAge: 13,
+    editionYear: 2026,
+    elevationToleranceMeters: Number(settings.elevationToleranceMeters) || 2,
+    monthlyShirtsPerCategory: 1,
+    bimonthlyShoesPerCategory: 1,
+    bimonthlyShirtsTop: 3,
+    finalPrizeCents: 50000,
+    finalShirtsTop: 10,
+    finalTrophiesTop: 3,
+    finalPhysicalCertificatesTop: 5,
+    futureProjectUrl: "/onze-futuro",
+    heroEyebrow: "Circuito Virtual 11Run",
+    relatedProjectUrl: "/circuito-futuro-11"
+  };
+}
+
 function seedCircuitEdition(db: DatabaseSync) {
   const timestamp = now();
   const existing = db
-    .prepare("SELECT start_date, hero_image, regulations_text, faq_json FROM virtual_circuit_editions WHERE id = ?")
-    .get(CIRCUIT_EDITION_ID) as { start_date: string; hero_image: string | null; regulations_text: string; faq_json: string } | undefined;
+    .prepare("SELECT start_date, end_date, hero_image, settings_json FROM virtual_circuit_editions WHERE id = ?")
+    .get(CIRCUIT_EDITION_ID) as { start_date: string; end_date: string; hero_image: string | null; settings_json: string } | undefined;
   if (existing) {
+    const settings = circuitEditionSettings(safeJson<Record<string, string | number>>(existing.settings_json, {}));
     db.exec("BEGIN IMMEDIATE;");
     try {
       db.prepare(
         `UPDATE virtual_circuit_editions
          SET start_date = ?,
+             end_date = ?,
+             regulations_version = ?,
              hero_image = CASE
                WHEN hero_image IS NULL
                  OR hero_image = '/assets/circuito-virtual/hero-atletas-2026.webp'
@@ -68,11 +99,14 @@ function seedCircuitEdition(db: DatabaseSync) {
                  OR hero_image = '/assets/circuito-virtual/desafio-virtual-premiacoes-2026.webp' THEN ?
                ELSE hero_image
              END,
-             regulations_text = ?, faq_json = ?, updated_at = ?
+             settings_json = ?, regulations_text = ?, faq_json = ?, updated_at = ?
          WHERE id = ?`
       ).run(
         CIRCUIT_ACTIVITY_START,
+        CIRCUIT_ACTIVITY_END,
+        CIRCUIT_REGULATIONS_VERSION,
         CIRCUIT_HERO_IMAGE,
+        JSON.stringify(settings),
         JSON.stringify(circuitRegulations),
         JSON.stringify(circuitFaq),
         timestamp,
@@ -101,18 +135,7 @@ function seedCircuitEdition(db: DatabaseSync) {
     }
     return;
   }
-  const settings = {
-    minAge: 9,
-    maxAge: 13,
-    editionYear: 2026,
-    elevationToleranceMeters: 2,
-    monthlyShirtsPerCategory: 3,
-    quarterlyShoesCount: 1,
-    finalPrizeCents: 100000,
-    futureProjectUrl: "/onze-futuro",
-    heroEyebrow: "Circuito Virtual 11Run",
-    relatedProjectUrl: "/circuito-futuro-11"
-  };
+  const settings = circuitEditionSettings();
   db.prepare(
     `INSERT INTO virtual_circuit_editions
       (id, name, slug, description, start_date, end_date, timezone, distance_meters, status, regulations_version,
@@ -124,11 +147,11 @@ function seedCircuitEdition(db: DatabaseSync) {
     CIRCUIT_SLUG,
     "Primeira competição virtual para atletas de 9 a 13 anos.",
     CIRCUIT_ACTIVITY_START,
-    "2026-12-15",
+    CIRCUIT_ACTIVITY_END,
     "America/Sao_Paulo",
     1000,
     "PUBLISHED",
-    "1.0-2026",
+    CIRCUIT_REGULATIONS_VERSION,
     "1.0-2026",
     CIRCUIT_HERO_IMAGE,
     JSON.stringify(settings),
@@ -917,6 +940,10 @@ export type RankingFilters = {
 export function listCircuitRanking(filters: RankingFilters = {}) {
   const edition = getCircuitEdition();
   const db = getCircuitDatabase();
+  const validDate = (value?: string) => Boolean(value && /^\d{4}-\d{2}-\d{2}$/.test(value));
+  const start = validDate(filters.start) && filters.start! > edition.start_date ? filters.start! : edition.start_date;
+  const end = validDate(filters.end) && filters.end! < edition.end_date ? filters.end! : edition.end_date;
+  if (start > end) return [];
   const submissionRows = db
     .prepare(
       `SELECT s.id, s.athlete_id, a.public_name, a.category_age, a.gender, s.city, s.state,
@@ -948,8 +975,7 @@ export function listCircuitRanking(filters: RankingFilters = {}) {
     if (filters.name && !row.public_name.toLocaleLowerCase("pt-BR").includes(filters.name.toLocaleLowerCase("pt-BR"))) {
       return false;
     }
-    if (filters.start && row.activity_date < filters.start) return false;
-    if (filters.end && row.activity_date > filters.end) return false;
+    if (row.activity_date < start || row.activity_date > end) return false;
     return true;
   });
   const rankable: RankableSubmission[] = rows.map((row) => ({

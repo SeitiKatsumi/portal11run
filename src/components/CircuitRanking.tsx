@@ -1,36 +1,31 @@
 "use client";
 
-import { Banknote, Footprints, Search, Shirt, Trophy } from "lucide-react";
+import { Award, BadgeCheck, Banknote, Footprints, Search, Shirt, Sparkles, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CIRCUIT_CATEGORY_AGES, circuitCategoryLabel, circuitCategoryName } from "@/lib/virtual-circuit-category";
+import {
+  CIRCUIT_ABSOLUTE,
+  CIRCUIT_BIMONTHS,
+  CIRCUIT_MONTHS,
+  circuitPeriodStatus,
+  circuitPrizesForPosition,
+  type CircuitPeriodDefinition,
+  type CircuitPrize,
+  type CircuitRankingPeriod
+} from "@/lib/virtual-circuit-schedule";
 import styles from "./CircuitUI.module.css";
 
-type Period = "total" | "monthly" | "quarterly";
 export type CircuitRankingItem = { id:string;position:number;categoryPosition:number;publicName:string;categoryAge:number;gender:string;city:string;state:string;formattedTime:string;activityDate:string;badge:string };
 
-const monthOptions = [
-  ["2026-08", "Agosto de 2026"],
-  ["2026-09", "Setembro de 2026"],
-  ["2026-10", "Outubro de 2026"],
-  ["2026-11", "Novembro de 2026"],
-  ["2026-12", "Dezembro de 2026"]
-] as const;
-
-const quarterOptions = [
-  ["2026-08-01|2026-09-30", "1º ciclo · 01/08 a 30/09"],
-  ["2026-10-01|2026-12-15", "2º ciclo · 01/10 a 15/12"]
-] as const;
-
-function periodDates(period: Period, selection: string) {
-  if (period === "total") return {};
-  if (period === "quarterly") {
-    const [start, end] = selection.split("|");
-    return { start, end };
-  }
-  const [year, month] = selection.split("-").map(Number);
-  const endDay = new Date(Date.UTC(year, month, 0)).getUTCDate();
-  return { start: `${selection}-01`, end: `${selection}-${String(endDay).padStart(2, "0")}` };
-}
+const prizeDetails: Record<CircuitPrize, { label: string; icon: React.ReactNode }> = {
+  cash: { label: "R$ 500,00 para o líder da categoria", icon: <Banknote size={16} /> },
+  shoes: { label: "Um par de tênis", icon: <Footprints size={16} /> },
+  shirt: { label: "Camiseta 11Run", icon: <Shirt size={16} /> },
+  trophy: { label: "Troféu 11Run", icon: <Trophy size={16} /> },
+  "physical-certificate": { label: "Certificado físico", icon: <Award size={16} /> },
+  "digital-certificate": { label: "Certificado digital", icon: <BadgeCheck size={16} /> },
+  "future-opportunity": { label: "Elegível para avaliação de oportunidade no 11Run Futuro", icon: <Sparkles size={16} /> }
+};
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", timeZone: "UTC" })
@@ -38,64 +33,67 @@ function formatDate(value: string) {
 }
 
 function formatLocation(city: string, state: string) {
-  if (/,\s*Brasil$/i.test(city)) return city;
+  if (/[,]\s*Brasil$/i.test(city)) return city;
   return state && state !== "--" ? `${city}/${state}` : city;
 }
 
-function PrizeIcon({ label, children }: { label: string; children: React.ReactNode }) {
-  return <span className={styles.prizeIcon} data-tooltip={label} aria-label={label} tabIndex={0}>{children}</span>;
+function selectedPeriod(period: CircuitRankingPeriod, selection: string): CircuitPeriodDefinition {
+  if (period === "absolute") return CIRCUIT_ABSOLUTE;
+  const options = period === "monthly" ? CIRCUIT_MONTHS : CIRCUIT_BIMONTHS;
+  return options.find((option) => option.id === selection) ?? options[0];
 }
 
-function CurrentPrizes({ period, position }: { period: Period; position: number }) {
-  const prizes: Array<{ label: string; icon: React.ReactNode }> = [];
-  if (period === "monthly" && position === 1) {
-    prizes.push({ label: "Até o momento, está ganhando uma camiseta 11Run neste mês.", icon: <Shirt size={16} /> });
-  }
-  if (period === "quarterly") {
-    if (position === 1) prizes.push({ label: "Até o momento, está ganhando um par de tênis neste ciclo.", icon: <Footprints size={16} /> });
-    if (position <= 3) prizes.push({ label: "Até o momento, está ganhando uma camiseta 11Run neste ciclo.", icon: <Shirt size={16} /> });
-  }
-  if (period === "total") {
-    if (position === 1) {
-      prizes.push({ label: "Até o momento, está ganhando R$ 500,00 como líder da categoria.", icon: <Banknote size={16} /> });
-      prizes.push({ label: "Até o momento, está ganhando um par de tênis.", icon: <Footprints size={16} /> });
-      prizes.push({ label: "Até o momento, está ganhando o Troféu 11Run.", icon: <Trophy size={16} /> });
-    }
-    if (position <= 10) prizes.push({ label: "Até o momento, está entre os dez ganhadores de camiseta 11Run.", icon: <Shirt size={16} /> });
-  }
-  return <div className={styles.prizeIcons}>{prizes.map(prize => <PrizeIcon key={prize.label} label={prize.label}>{prize.icon}</PrizeIcon>)}</div>;
+function PrizeIcon({ prize }: { prize: CircuitPrize }) {
+  const details = prizeDetails[prize];
+  return <span className={styles.prizeIcon} data-tooltip={details.label} aria-label={details.label} tabIndex={0}>{details.icon}</span>;
 }
 
-export function CircuitRanking({ initialRanking = [] }: { initialRanking?: CircuitRankingItem[] }){
+function CurrentPrizes({ period, position, categoryAge }: { period: CircuitRankingPeriod; position: number; categoryAge: number }) {
+  const prizes = circuitPrizesForPosition(period, position, categoryAge);
+  return <div className={styles.prizeIcons} aria-label="Premiação provisória cumulativa">{prizes.map((prize) => <PrizeIcon key={prize} prize={prize} />)}</div>;
+}
+
+export function CircuitRanking({ initialRanking = [] }: { initialRanking?: CircuitRankingItem[] }) {
   const [filters,setFilters]=useState({age:"",gender:"",state:"",name:""});
-  const [period,setPeriod]=useState<Period>("total");
-  const [periodSelection,setPeriodSelection]=useState("2026-08");
+  const [period,setPeriod]=useState<CircuitRankingPeriod>("absolute");
+  const [periodSelection,setPeriodSelection]=useState(CIRCUIT_MONTHS[0].id);
   const [ranking,setRanking]=useState<CircuitRankingItem[]>(initialRanking);
   const [loading,setLoading]=useState(false);
-  useEffect(()=>{
-    const dates=periodDates(period,periodSelection);
-    const query=new URLSearchParams(Object.entries({...filters,...dates}).filter(([,value])=>value));
-    setLoading(true);
-    fetch(`/api/circuito-virtual/ranking?${query}`, { cache: "no-store" }).then(r=>r.json()).then(r=>setRanking(r.ranking||[])).finally(()=>setLoading(false));
-  },[filters,period,periodSelection]);
+  const activePeriod = selectedPeriod(period, periodSelection);
 
-  function selectPeriod(nextPeriod: Period) {
+  useEffect(()=>{
+    const query=new URLSearchParams(Object.entries({ ...filters, start: activePeriod.start, end: activePeriod.end }).filter(([,value])=>value));
+    setLoading(true);
+    fetch(`/api/circuito-virtual/ranking?${query}`, { cache: "no-store" })
+      .then((response)=>response.json())
+      .then((response)=>setRanking(response.ranking||[]))
+      .finally(()=>setLoading(false));
+  },[filters,activePeriod.start,activePeriod.end]);
+
+  function selectPeriod(nextPeriod: CircuitRankingPeriod) {
     setPeriod(nextPeriod);
-    setPeriodSelection(nextPeriod === "quarterly" ? quarterOptions[0][0] : monthOptions[0][0]);
+    if (nextPeriod === "monthly") setPeriodSelection(CIRCUIT_MONTHS[0].id);
+    if (nextPeriod === "bimonthly") setPeriodSelection(CIRCUIT_BIMONTHS[0].id);
   }
 
+  const periodOptions = period === "monthly" ? CIRCUIT_MONTHS : CIRCUIT_BIMONTHS;
+
   return <div className={styles.ranking}>
-    <div className={styles.rankingHeader}><div><span className={styles.eyebrow}>Ranking nacional</span><h2>As melhores marcas do Brasil.</h2><p>Somente a melhor marca aprovada de cada atleta entra na classificação. As categorias vão de Sub 10 a Sub 14 e consideram o ano de nascimento.</p></div><Trophy size={42}/></div>
+    <div className={styles.rankingHeader}><div><span className={styles.eyebrow}>Ranking nacional</span><h2>As melhores marcas do Brasil.</h2><p>Somente a melhor marca validada de cada atleta entra na classificação da categoria e do gênero correspondentes.</p></div><Trophy size={42}/></div>
     <div className={styles.periodBar}>
       <div className={styles.periodTabs} aria-label="Período do ranking">
         <button type="button" className={period==="monthly"?styles.selectedPeriod:""} onClick={()=>selectPeriod("monthly")}>Mensal</button>
-        <button type="button" className={period==="quarterly"?styles.selectedPeriod:""} onClick={()=>selectPeriod("quarterly")}>Trimestral</button>
-        <button type="button" className={period==="total"?styles.selectedPeriod:""} onClick={()=>selectPeriod("total")}>Total da edição</button>
+        <button type="button" className={period==="bimonthly"?styles.selectedPeriod:""} onClick={()=>selectPeriod("bimonthly")}>Bimestral</button>
+        <button type="button" className={period==="absolute"?styles.selectedPeriod:""} onClick={()=>selectPeriod("absolute")}>Ranking absoluto</button>
       </div>
-      {period !== "total" && <label className={styles.periodSelect}><span>{period==="monthly"?"Mês":"Ciclo"}</span><select value={periodSelection} onChange={e=>setPeriodSelection(e.target.value)}>{(period==="monthly"?monthOptions:quarterOptions).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>}
+      {period !== "absolute" && <label className={styles.periodSelect}><span>{period==="monthly"?"Mês":"Bimestre"}</span><select value={periodSelection} onChange={event=>setPeriodSelection(event.target.value)}>{periodOptions.map((option)=><option key={option.id} value={option.id}>{option.label}</option>)}</select></label>}
     </div>
-    <div className={styles.filters}><label><span>Categoria</span><select value={filters.age} onChange={e=>setFilters({...filters,age:e.target.value})}><option value="">Todas as categorias</option>{CIRCUIT_CATEGORY_AGES.map(age=><option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}</select></label><label><span>Gênero</span><select value={filters.gender} onChange={e=>setFilters({...filters,gender:e.target.value})}><option value="">Todos</option><option value="FEMALE">Feminino</option><option value="MALE">Masculino</option></select></label><label><span>UF</span><input maxLength={2} value={filters.state} onChange={e=>setFilters({...filters,state:e.target.value.toUpperCase()})}/></label><label><span>Atleta</span><div className={styles.search}><Search size={15}/><input value={filters.name} onChange={e=>setFilters({...filters,name:e.target.value})}/></div></label></div>
-    <p className={styles.rankingHint}>Os ícones mostram a premiação que cada atleta estaria conquistando se o ranking terminasse hoje.</p>
-    <div className={styles.rankTable}><div className={styles.rankHead}><span>#</span><span>Atleta</span><span>Categoria</span><span>Data</span><span>Local</span><span>Marca</span><span>Premiação atual</span><span>Validação</span></div>{loading?<p className={styles.empty}>Carregando ranking…</p>:ranking.length?ranking.map(item=><div className={styles.rankRow} key={item.id}><b className={styles.rankPosition}>{item.categoryPosition}</b><strong className={styles.rankName}>{item.publicName}<small className={styles.rankMobileCategory}>{circuitCategoryName(item.categoryAge)} · {item.categoryAge} anos · {item.gender==="FEMALE"?"F":"M"}</small></strong><span className={styles.rankCategory} title={circuitCategoryLabel(item.categoryAge)}>{circuitCategoryName(item.categoryAge)} · {item.categoryAge} anos · {item.gender==="FEMALE"?"F":"M"}</span><time className={styles.rankDate} dateTime={item.activityDate}>{formatDate(item.activityDate)}</time><span className={styles.rankLocation}>{formatLocation(item.city, item.state)}</span><strong className={styles.rankTime}><span className={styles.rankTimeLabel}>Marca</span>{item.formattedTime}</strong><CurrentPrizes period={period} position={item.categoryPosition}/><em className={styles.rankBadge}>{item.badge}</em></div>):<p className={styles.empty}>O ranking será publicado assim que as primeiras marcas forem aprovadas neste período.</p>}</div>
-  </div>
+    <div className={styles.periodSummary}>
+      <span>{circuitPeriodStatus(activePeriod)}</span>
+      <div><strong>{activePeriod.label}</strong><small>{activePeriod.shortLabel} · classificação provisória até a homologação</small></div>
+    </div>
+    <div className={styles.filters}><label><span>Categoria</span><select value={filters.age} onChange={event=>setFilters({...filters,age:event.target.value})}><option value="">Todas as categorias</option>{CIRCUIT_CATEGORY_AGES.map(age=><option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}</select></label><label><span>Gênero</span><select value={filters.gender} onChange={event=>setFilters({...filters,gender:event.target.value})}><option value="">Todos</option><option value="FEMALE">Feminino</option><option value="MALE">Masculino</option></select></label><label><span>UF</span><input maxLength={2} value={filters.state} onChange={event=>setFilters({...filters,state:event.target.value.toUpperCase()})}/></label><label><span>Atleta</span><div className={styles.search}><Search size={15}/><input value={filters.name} onChange={event=>setFilters({...filters,name:event.target.value})}/></div></label></div>
+    <p className={styles.rankingHint}>Os ícones mostram as premiações cumulativas que cada atleta conquistaria se o período terminasse hoje.</p>
+    <div className={styles.rankTable}><div className={styles.rankHead}><span>#</span><span>Atleta</span><span>Categoria</span><span>Data</span><span>Local</span><span>Marca</span><span>Premiação atual</span><span>Validação</span></div>{loading?<p className={styles.empty}>Carregando ranking…</p>:ranking.length?ranking.map(item=><div className={styles.rankRow} key={item.id}><b className={styles.rankPosition}>{item.categoryPosition}</b><strong className={styles.rankName}>{item.publicName}<small className={styles.rankMobileCategory}>{circuitCategoryName(item.categoryAge)} · {item.categoryAge} anos · {item.gender==="FEMALE"?"F":"M"}</small></strong><span className={styles.rankCategory} title={circuitCategoryLabel(item.categoryAge)}>{circuitCategoryName(item.categoryAge)} · {item.categoryAge} anos · {item.gender==="FEMALE"?"F":"M"}</span><time className={styles.rankDate} dateTime={item.activityDate}>{formatDate(item.activityDate)}</time><span className={styles.rankLocation}>{formatLocation(item.city, item.state)}</span><strong className={styles.rankTime}><span className={styles.rankTimeLabel}>Marca</span>{item.formattedTime}</strong><CurrentPrizes period={period} position={item.categoryPosition} categoryAge={item.categoryAge}/><em className={styles.rankBadge}>{item.badge}</em></div>):<p className={styles.empty}>Ainda não há marcas validadas para este período.</p>}</div>
+  </div>;
 }

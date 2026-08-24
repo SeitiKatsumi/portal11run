@@ -44,6 +44,7 @@
 .steps p,.modeGrid p,.awardGrid p{font-size:.9rem;margin:0}
 .modeGrid,.awardGrid{grid-template-columns:repeat(3,1fr)}
 .awardGrid article{display:flex;flex-direction:column;min-height:300px}
+.periodList{display:grid;gap:7px;margin-top:14px}.periodList>span{display:grid;gap:2px;padding:9px 10px;border:1px solid color-mix(in srgb,var(--surface) 18%,transparent);border-radius:10px;background:color-mix(in srgb,var(--surface) 5%,transparent)}.periodList b{font-size:.73rem}.periodList small{color:var(--muted);font-size:.65rem}
 .awardGrid ul{display:grid;gap:11px;margin:18px 0 0;padding:18px 0 0 18px;border-top:1px solid var(--muted);color:var(--surface-muted)}
 .awardGrid li{padding-left:3px;font-size:.9rem;line-height:1.55}
 .awardGrid li::marker{color:var(--accent-strong)}
@@ -53,6 +54,7 @@
 .awards{background:var(--text);color:var(--surface)}
 .awards .eyebrow,.awards p{color:var(--muted)}
 .awards .awardGrid article{background:var(--dark-surface);border-color:var(--muted)}
+.cumulativeNotice{display:flex;align-items:flex-start;gap:9px;margin:20px 0 0!important;padding:14px 16px;border:1px solid color-mix(in srgb,var(--accent) 55%,transparent);border-radius:14px;background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--surface)!important;font-size:.82rem}.cumulativeNotice svg{flex:0 0 auto;color:var(--accent)}
 .futureCallout{display:flex;justify-content:space-between;align-items:center;gap:24px;border-top:1px solid var(--muted);margin-top:24px;padding-top:24px}
 .futureCallout p{margin:5px 0 0}.futureCallout a{border:1px solid var(--muted);border-radius:999px;padding:13px 18px;font-weight:600}
 .accordion{display:grid;gap:8px;margin-top:28px}

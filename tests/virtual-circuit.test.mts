@@ -14,6 +14,12 @@ import {
   validateCpf,
   type RankableSubmission
 } from "../src/lib/virtual-circuit-core.ts";
+import {
+  CIRCUIT_ABSOLUTE,
+  CIRCUIT_BIMONTHS,
+  CIRCUIT_MONTHS,
+  circuitPrizesForPosition
+} from "../src/lib/virtual-circuit-schedule.ts";
 
 test("converte e formata MM:SS.CC sem perder centésimos", () => {
   assert.equal(parseCircuitTime("03:42.18"), 222_180);
@@ -27,11 +33,11 @@ test("calcula a categoria pela idade no ano da edição", () => {
   assert.throws(() => categoryForBirthDate("2012-01-01", 2026));
 });
 
-test("normaliza atividades anteriores ao início oficial para 01 de agosto de 2026", () => {
-  assert.equal(validateCircuitActivityDate("2026-07-01", "2026-08-01", "2026-12-15"), "2026-08-01");
-  assert.equal(validateCircuitActivityDate("2026-08-01", "2026-08-01", "2026-12-15"), "2026-08-01");
-  assert.equal(validateCircuitActivityDate("2026-09-10", "2026-08-01", "2026-12-15"), "2026-09-10");
-  assert.throws(() => validateCircuitActivityDate("2026-12-16", "2026-08-01", "2026-12-15"));
+test("normaliza atividades anteriores ao início e encerra a edição em novembro", () => {
+  assert.equal(validateCircuitActivityDate("2026-07-01", "2026-08-01", "2026-11-30"), "2026-08-01");
+  assert.equal(validateCircuitActivityDate("2026-08-01", "2026-08-01", "2026-11-30"), "2026-08-01");
+  assert.equal(validateCircuitActivityDate("2026-09-10", "2026-08-01", "2026-11-30"), "2026-09-10");
+  assert.throws(() => validateCircuitActivityDate("2026-12-01", "2026-08-01", "2026-11-30"));
 });
 
 test("valida dígitos verificadores do CPF", () => {
@@ -61,10 +67,30 @@ test("decide altimetria com tolerância configurável", () => {
   assert.equal(elevationDecision(100, 97, 2).status, "FAIL");
 });
 
-test("calcula períodos mensal, trimestral e da edição", () => {
-  assert.deepEqual(periodBounds("month", "2026-09-12", "2026-08-01", "2026-12-15"), { start: "2026-09-01", end: "2026-09-30" });
-  assert.deepEqual(periodBounds("quarter", "2026-08-12", "2026-08-01", "2026-12-15"), { start: "2026-08-01", end: "2026-10-31" });
-  assert.deepEqual(periodBounds("edition", "2026-09-12", "2026-08-01", "2026-12-15"), { start: "2026-08-01", end: "2026-12-15" });
+test("calcula períodos mensal, bimestral e absoluto", () => {
+  assert.deepEqual(periodBounds("month", "2026-09-12", "2026-08-01", "2026-11-30"), { start: "2026-09-01", end: "2026-09-30" });
+  assert.deepEqual(periodBounds("bimester", "2026-08-12", "2026-08-01", "2026-11-30"), { start: "2026-08-01", end: "2026-09-30" });
+  assert.deepEqual(periodBounds("bimester", "2026-10-12", "2026-08-01", "2026-11-30"), { start: "2026-10-01", end: "2026-11-30" });
+  assert.deepEqual(periodBounds("edition", "2026-09-12", "2026-08-01", "2026-11-30"), { start: "2026-08-01", end: "2026-11-30" });
+  assert.deepEqual(CIRCUIT_MONTHS.map(({ start, end }) => ({ start, end })), [
+    { start: "2026-08-01", end: "2026-08-31" },
+    { start: "2026-09-01", end: "2026-09-30" },
+    { start: "2026-10-01", end: "2026-10-31" },
+    { start: "2026-11-01", end: "2026-11-30" }
+  ]);
+  assert.equal(CIRCUIT_BIMONTHS.length, 2);
+  assert.deepEqual({ start: CIRCUIT_ABSOLUTE.start, end: CIRCUIT_ABSOLUTE.end }, { start: "2026-08-01", end: "2026-11-30" });
+});
+
+test("aplica premiações cumulativas por período e posição", () => {
+  assert.deepEqual(circuitPrizesForPosition("monthly", 1, 9), ["shirt"]);
+  assert.deepEqual(circuitPrizesForPosition("bimonthly", 1, 9), ["shoes", "shirt"]);
+  assert.deepEqual(circuitPrizesForPosition("bimonthly", 3, 9), ["shirt"]);
+  assert.deepEqual(circuitPrizesForPosition("absolute", 1, 9), ["cash", "shoes", "shirt", "trophy", "physical-certificate", "digital-certificate", "future-opportunity"]);
+  assert.deepEqual(circuitPrizesForPosition("absolute", 3, 12), ["shirt", "trophy", "physical-certificate", "digital-certificate"]);
+  assert.deepEqual(circuitPrizesForPosition("absolute", 5, 10), ["shirt", "physical-certificate", "digital-certificate", "future-opportunity"]);
+  assert.deepEqual(circuitPrizesForPosition("absolute", 10, 11), ["shirt", "digital-certificate", "future-opportunity"]);
+  assert.deepEqual(circuitPrizesForPosition("absolute", 11, 13), ["digital-certificate"]);
 });
 
 test("fingerprint detecta reenvio idêntico", () => {

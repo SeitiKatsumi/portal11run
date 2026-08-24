@@ -5,6 +5,13 @@ import { CircuitRegistration } from "@/components/CircuitRegistration";
 import { CircuitRanking } from "@/components/CircuitRanking";
 import { CIRCUIT_HERO_IMAGE, getCircuitEdition, listCircuitRanking } from "@/lib/virtual-circuit";
 import { CIRCUIT_CATEGORY_AGES, circuitCategoryBirthYear, circuitCategoryName } from "@/lib/virtual-circuit-category";
+import {
+  CIRCUIT_ABSOLUTE,
+  CIRCUIT_AWARD_COPY,
+  CIRCUIT_BIMONTHS,
+  CIRCUIT_MONTHS,
+  circuitPeriodStatus
+} from "@/lib/virtual-circuit-schedule";
 import styles from "./virtual-circuit.module.css";
 
 export const metadata: Metadata = {
@@ -77,7 +84,7 @@ export default function VirtualCircuitPage() {
               <a className={styles.secondaryButton} href="#ranking">Ver ranking nacional</a>
             </div>
             <div className={styles.quickFacts}>
-              <span><Clock3 size={17} /> 1 ago — 15 dez 2026</span>
+              <span><Clock3 size={17} /> 1 ago — 30 nov 2026</span>
               <span><ShieldCheck size={17} /> Participação gratuita</span>
               <span><Users size={17} /> Exclusivo para brasileiros</span>
             </div>
@@ -156,43 +163,35 @@ export default function VirtualCircuitPage() {
         <section className={`${styles.section} ${styles.awards}`}>
           <div>
             <span className={styles.eyebrow}>Muito mais que um ranking</span>
-            <h2>Premiações para celebrar coragem e evolução.</h2>
+            <h2>Três disputas. Premiações que se acumulam.</h2>
+            <p>Mensal, bimestral e absoluta: cada classificação considera categoria e gênero, com datas próprias e marcas validadas.</p>
           </div>
           <div className={styles.awardGrid}>
             <article>
               <CalendarDays />
-              <span>Mensal</span>
-              <h3>Melhor marca de cada categoria</h3>
-              <ul>
-                <li>Camiseta 11Run para a melhor marca mensal de cada categoria.</li>
-              </ul>
+              <span>Premiação mensal</span>
+              <h3>Do primeiro ao último dia de cada mês</h3>
+              <div className={styles.periodList}>{CIRCUIT_MONTHS.map((period) => <span key={period.id}><b>{period.label.replace(" de 2026", "")}</b><small>{period.shortLabel} · {circuitPeriodStatus(period)}</small></span>)}</div>
+              <ul>{CIRCUIT_AWARD_COPY.monthly.map((prize) => <li key={prize}>{prize}</li>)}</ul>
             </article>
             <article>
               <Trophy />
-              <span>Trimestral · 2 ciclos</span>
-              <h3>01/08 a 30/09 e 01/10 a 15/12</h3>
-              <ul>
-                <li>Tênis para o primeiro de cada categoria.</li>
-                <li>Camiseta 11Run para os três primeiros de cada categoria.</li>
-              </ul>
+              <span>Premiação bimestral</span>
+              <h3>Dois ciclos com ranking próprio</h3>
+              <div className={styles.periodList}>{CIRCUIT_BIMONTHS.map((period) => <span key={period.id}><b>{period.label}</b><small>{period.shortLabel} · {circuitPeriodStatus(period)}</small></span>)}</div>
+              <ul>{CIRCUIT_AWARD_COPY.bimonthly.map((prize) => <li key={prize}>{prize}</li>)}</ul>
             </article>
             <article className={styles.finalAward}>
               <Medal />
-              <span>Final da edição 2026</span>
-              <h3>Premiação completa por categoria</h3>
-              <ul>
-                <li><strong>R$ 500,00</strong> para o líder de cada categoria.</li>
-                <li>Tênis para o primeiro de cada categoria.</li>
-                <li>Camiseta 11Run para os dez primeiros de cada categoria.</li>
-                <li>Troféu 11Run para os três primeiros de cada categoria.</li>
-                <li>Certificado físico para os cinco primeiros de cada categoria.</li>
-                <li>Certificado digital para todos os concluintes com marca validada no ranking.</li>
-                <li>Oportunidade de entrar para o 11Run Futuro, exclusiva para as categorias Sub 10, Sub 11 e Sub 12.</li>
-              </ul>
+              <span>Ranking absoluto</span>
+              <h3>01/08 a 30/11 · {circuitPeriodStatus(CIRCUIT_ABSOLUTE)}</h3>
+              <p>A melhor marca validada de cada atleta em toda a edição.</p>
+              <ul>{CIRCUIT_AWARD_COPY.absolute.map((prize) => <li key={prize}>{prize.startsWith("R$ 500") ? <strong>{prize}</strong> : prize}</li>)}</ul>
             </article>
           </div>
+          <p className={styles.cumulativeNotice}><CheckCircle2 size={18} /> As premiações são cumulativas: o atleta recebe todos os itens correspondentes à posição conquistada em cada período.</p>
           <div className={styles.futureCallout}>
-            <div><strong>Oportunidade 11Run Futuro</strong><p>Na premiação final, atletas das categorias Sub 10, Sub 11 e Sub 12 poderão receber a oportunidade de entrar para o projeto.</p></div>
+            <div><strong>Oportunidade 11Run Futuro</strong><p>Na premiação absoluta, atletas Sub 10, Sub 11 e Sub 12 poderão ser avaliados para uma oportunidade no projeto. A classificação não garante ingresso automático.</p></div>
             <Link href="/onze-futuro">Conheça o 11Run Futuro</Link>
           </div>
         </section>

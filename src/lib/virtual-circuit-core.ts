@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 export const CIRCUIT_SUBMISSION_TYPES = ["OFFICIAL_COMPETITION", "TRACK_400M", "OPEN_COURSE"] as const;
 export type CircuitSubmissionType = (typeof CIRCUIT_SUBMISSION_TYPES)[number];
 export type CircuitGender = "FEMALE" | "MALE";
-export type CircuitPeriod = "month" | "quarter" | "edition";
+export type CircuitPeriod = "month" | "bimester" | "edition";
 
 export const validationPriority: Record<CircuitSubmissionType, number> = {
   OFFICIAL_COMPETITION: 3,
@@ -178,9 +178,9 @@ export function periodBounds(period: CircuitPeriod, anchor: string, editionStart
   const editionDate = new Date(`${editionStart}T12:00:00.000Z`);
   const elapsedMonths =
     (date.getUTCFullYear() - editionDate.getUTCFullYear()) * 12 + date.getUTCMonth() - editionDate.getUTCMonth();
-  const cycleOffset = Math.max(0, Math.floor(elapsedMonths / 3) * 3);
+  const cycleOffset = Math.max(0, Math.floor(elapsedMonths / 2) * 2);
   const start = new Date(Date.UTC(editionDate.getUTCFullYear(), editionDate.getUTCMonth() + cycleOffset, 1));
-  const end = new Date(Date.UTC(editionDate.getUTCFullYear(), editionDate.getUTCMonth() + cycleOffset + 3, 0));
+  const end = new Date(Date.UTC(editionDate.getUTCFullYear(), editionDate.getUTCMonth() + cycleOffset + 2, 0));
   return {
     start: start.toISOString().slice(0, 10) < editionStart ? editionStart : start.toISOString().slice(0, 10),
     end: end.toISOString().slice(0, 10) > editionEnd ? editionEnd : end.toISOString().slice(0, 10)
