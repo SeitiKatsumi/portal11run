@@ -935,15 +935,20 @@ export type RankingFilters = {
   name?: string;
   start?: string;
   end?: string;
+  includeOutsideEdition?: boolean;
 };
 
 export function listCircuitRanking(filters: RankingFilters = {}) {
   const edition = getCircuitEdition();
   const db = getCircuitDatabase();
   const validDate = (value?: string) => Boolean(value && /^\d{4}-\d{2}-\d{2}$/.test(value));
-  const start = validDate(filters.start) && filters.start! > edition.start_date ? filters.start! : edition.start_date;
-  const end = validDate(filters.end) && filters.end! < edition.end_date ? filters.end! : edition.end_date;
-  if (start > end) return [];
+  const start = filters.includeOutsideEdition
+    ? filters.start
+    : validDate(filters.start) && filters.start! > edition.start_date ? filters.start! : edition.start_date;
+  const end = filters.includeOutsideEdition
+    ? filters.end
+    : validDate(filters.end) && filters.end! < edition.end_date ? filters.end! : edition.end_date;
+  if (start && end && start > end) return [];
   const submissionRows = db
     .prepare(
       `SELECT s.id, s.athlete_id, a.public_name, a.category_age, a.gender, s.city, s.state,
@@ -975,7 +980,8 @@ export function listCircuitRanking(filters: RankingFilters = {}) {
     if (filters.name && !row.public_name.toLocaleLowerCase("pt-BR").includes(filters.name.toLocaleLowerCase("pt-BR"))) {
       return false;
     }
-    if (row.activity_date < start || row.activity_date > end) return false;
+    if (start && row.activity_date < start) return false;
+    if (end && row.activity_date > end) return false;
     return true;
   });
   const rankable: RankableSubmission[] = rows.map((row) => ({

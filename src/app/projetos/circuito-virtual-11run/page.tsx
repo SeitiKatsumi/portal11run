@@ -37,7 +37,8 @@ const modes = [
 export default function VirtualCircuitPage() {
   const edition = getCircuitEdition();
   const ranking = listCircuitRanking();
-  const latestParticipants = [...ranking]
+  const participants = listCircuitRanking({ includeOutsideEdition: true });
+  const latestParticipants = [...participants]
     .sort((a, b) => b.activityDate.localeCompare(a.activityDate) || a.publicName.localeCompare(b.publicName, "pt-BR"))
     .slice(0, 3);
   const faqSchema = {
@@ -59,7 +60,7 @@ export default function VirtualCircuitPage() {
               <div className={styles.participationTotal}>
                 <span className={styles.participationIcon} aria-hidden="true"><Users size={19} /></span>
                 <span>
-                  <strong>{ranking.length}</strong>
+                  <strong>{participants.length}</strong>
                   <small>atletas já participaram</small>
                 </span>
               </div>
