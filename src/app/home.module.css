@@ -27,6 +27,11 @@
   object-position: center top;
 }
 
+.media img {
+  position: fixed;
+  inset: 0;
+}
+
 .overlay {
   z-index: -1;
 }
@@ -55,7 +60,7 @@
 .intro h1 {
   margin: 16px 0 14px;
   text-wrap: balance;
-  font-size: clamp(2.25rem, 4.9vw, 5rem);
+  font-size: clamp(1.575rem, 3.43vw, 3.5rem);
   font-weight: 300;
   letter-spacing: -0.055em;
   line-height: 0.94;
@@ -209,7 +214,7 @@
 
   .intro h1 {
     margin-top: 12px;
-    font-size: clamp(1.9rem, 9.1vw, 3.1rem);
+    font-size: clamp(1.33rem, 6.37vw, 2.17rem);
   }
 
   .projectGrid {
