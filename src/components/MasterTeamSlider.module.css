@@ -1,0 +1,203 @@
+.section {
+  width: min(calc(100% - 48px), var(--max));
+  margin: 24px auto 0;
+  padding: clamp(32px, 5vw, 72px);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, .42fr) auto;
+  align-items: end;
+  gap: 28px;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: .72rem;
+  font-weight: 750;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.header h2 {
+  max-width: 850px;
+  margin: 12px 0 0;
+  font-size: clamp(2.5rem, 4.8vw, 5.4rem);
+  font-weight: 300;
+  line-height: .95;
+  letter-spacing: -.055em;
+}
+
+.header p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+}
+
+.controls button {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+
+.controls button:hover {
+  background: var(--accent);
+  color: white;
+  transform: translateY(-2px);
+}
+
+.viewport {
+  margin-top: 36px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  outline: none;
+}
+
+.viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.viewport:focus-visible {
+  border-radius: 20px;
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+}
+
+.track {
+  display: grid;
+  grid-auto-columns: calc((100% - 32px) / 3);
+  grid-auto-flow: column;
+  gap: 16px;
+}
+
+.card {
+  min-width: 0;
+  margin: 0;
+  scroll-snap-align: start;
+}
+
+.card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: contain;
+  border-radius: 22px;
+  background: var(--surface-muted);
+}
+
+.card figcaption {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 13px 4px 0;
+  font-weight: 700;
+}
+
+.card figcaption span {
+  color: var(--accent);
+  font-size: .72rem;
+  letter-spacing: .08em;
+}
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 26px;
+}
+
+.dots button {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--line);
+  cursor: pointer;
+  transition: width .2s ease, background .2s ease;
+}
+
+.dots .activeDot {
+  width: 28px;
+  background: var(--accent);
+}
+
+@media (max-width: 900px) {
+  .header {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .header p {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    max-width: 620px;
+  }
+
+  .track {
+    grid-auto-columns: calc((100% - 14px) / 2);
+    gap: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .section {
+    width: min(calc(100% - 28px), var(--max));
+    padding: 28px 20px;
+  }
+
+  .header {
+    gap: 18px;
+  }
+
+  .header h2 {
+    font-size: clamp(2.25rem, 12vw, 3.8rem);
+  }
+
+  .controls button {
+    width: 42px;
+    height: 42px;
+  }
+
+  .viewport {
+    margin-top: 26px;
+  }
+
+  .track {
+    grid-auto-columns: 86%;
+    gap: 12px;
+  }
+
+  .card img {
+    border-radius: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viewport {
+    scroll-behavior: auto;
+  }
+
+  .controls button,
+  .dots button {
+    transition: none;
+  }
+}

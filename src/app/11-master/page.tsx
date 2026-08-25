@@ -19,6 +19,7 @@ import { CTASection } from "@/components/CTASection";
 import { FeatureBanner } from "@/components/FeatureBanner";
 import { MasterOfficialEvents } from "@/components/MasterOfficialEvents";
 import { MasterPaulistaResults } from "@/components/MasterPaulistaResults";
+import { MasterTeamSlider } from "@/components/MasterTeamSlider";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { Reveal } from "@/components/Reveal";
 
@@ -381,6 +382,8 @@ export default function Page() {
           <Checklist items={goals} />
         </div>
       </section>
+
+      <MasterTeamSlider />
 
       <MasterOfficialEvents />
 
