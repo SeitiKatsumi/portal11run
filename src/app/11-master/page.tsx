@@ -33,7 +33,7 @@ const paulistaImage = "/assets/11-master/paulista-2026/40-titb-03805.webp";
 
 const heroMetrics = [
   { value: "11 e 12", label: "de julho de 2026" },
-  { value: "8", label: "atletas federados" },
+  { value: "13", label: "atletas federados" },
   { value: "12", label: "pódios na estreia" },
   { value: "Alex Lopes", label: "comando técnico" }
 ];
@@ -129,9 +129,10 @@ const masterAthletes = [
   { name: "Leandro Cordeito Marcelino", category: "M40" },
   { name: "Edinaldo Machado dos Santos", category: "M35" },
   { name: "Josimar Aparecido Ribeiro", category: "M35" },
-  { name: "Tatiele Carvalho", category: "M35" },
+  { name: "Vanessa Fernanda Padilha", category: "W40" },
+  { name: "Tatiele Carvalho", category: "W30" },
   { name: "Robson Alvarenga", category: "M30" },
-  { name: "Ana Paula Pandolfi Soares", category: "M30" }
+  { name: "Ana Paula Pandolfi Soares", category: "W30" }
 ];
 
 function CardGrid({
