@@ -5,17 +5,21 @@ import {
   ClipboardCheck,
   FileDown,
   Medal,
+  Eye,
+  EyeOff,
   Plus,
   Pencil,
   RefreshCw,
   Save,
+  Search,
   ShieldAlert,
+  Trash2,
   Users,
   X,
   XCircle,
   type LucideIcon
 } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { CircuitOfficialResult } from "@/lib/virtual-circuit";
 import { CIRCUIT_CATEGORY_AGES, circuitCategoryLabel, circuitCategoryName } from "@/lib/virtual-circuit-category";
 import styles from "./CircuitAdmin.module.css";
@@ -79,10 +83,20 @@ const labels: Record<string, string> = {
   APPROVED: "Aprovada",
   REJECTED: "Rejeitada",
   CORRECTION_REQUESTED: "Correção solicitada",
-  DISQUALIFIED: "Desclassificada"
+  DISQUALIFIED: "Desclassificada",
+  HIDDEN: "Oculta"
 };
 
-const queueStatuses = new Set(["AI_PROCESSING", "UNDER_REVIEW", "CORRECTION_REQUESTED"]);
+type SortOrder = "date-desc" | "date-asc" | "name-asc" | "name-desc";
+
+function filterAndSort<T extends { activity_date: string }>(rows: T[], name: (row: T) => string, search: string, date: string, sort: SortOrder) {
+  const query = search.trim().toLocaleLowerCase("pt-BR");
+  return rows
+    .filter((row) => (!query || name(row).toLocaleLowerCase("pt-BR").includes(query)) && (!date || row.activity_date === date))
+    .sort((a, b) => sort.startsWith("name")
+      ? name(a).localeCompare(name(b), "pt-BR") * (sort === "name-desc" ? -1 : 1)
+      : a.activity_date.localeCompare(b.activity_date) * (sort === "date-desc" ? -1 : 1));
+}
 
 export function CircuitAdmin({
   initialMetrics,
@@ -94,22 +108,29 @@ export function CircuitAdmin({
   initialOfficialResults: CircuitOfficialResult[];
 }) {
   const [metrics, setMetrics] = useState(initialMetrics);
-  const [items, setItems] = useState(initialSubmissions.filter((item) => queueStatuses.has(item.status)));
+  const [items, setItems] = useState(initialSubmissions);
   const [officialResults, setOfficialResults] = useState(initialOfficialResults);
   const [active, setActive] = useState<Submission | null>(null);
   const [activeOfficial, setActiveOfficial] = useState<CircuitOfficialResult | null>(null);
   const [officialDraft, setOfficialDraft] = useState<OfficialDraft | null>(null);
+  const [submissionDraft, setSubmissionDraft] = useState<OfficialDraft | null>(null);
   const [creatingOfficial, setCreatingOfficial] = useState(false);
   const [reason, setReason] = useState("");
   const [verifiedTime, setVerifiedTime] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [search, setSearch] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("date-desc");
+
+  const filteredItems = useMemo(() => filterAndSort(items, (item) => item.public_name || item.athlete_name, search, dateFilter, sortOrder), [items, search, dateFilter, sortOrder]);
+  const filteredOfficialResults = useMemo(() => filterAndSort(officialResults, (item) => item.public_name, search, dateFilter, sortOrder), [officialResults, search, dateFilter, sortOrder]);
 
   async function refresh() {
     const response = await fetch("/api/admin/circuito-virtual");
     const json = await response.json();
     setMetrics(json.metrics);
-    setItems(json.submissions.filter((item: Submission) => queueStatuses.has(item.status)));
+    setItems(json.submissions);
     setOfficialResults(json.officialResults);
   }
 
@@ -118,7 +139,19 @@ export function CircuitAdmin({
     const response = await fetch(`/api/admin/circuito-virtual/submissions/${id}`);
     const json = await response.json();
     if (!response.ok) return setError(json.error || "Falha ao carregar.");
-    setActive(json.submission);
+    const item = json.submission as Submission;
+    setActive(item);
+    setSubmissionDraft({
+      publicName: item.public_name,
+      categoryAge: String(item.category_age),
+      gender: item.gender as "FEMALE" | "MALE",
+      activityDate: item.activity_date,
+      time: item.formattedTime,
+      city: item.city,
+      state: item.state,
+      competitionName: "",
+      submissionType: item.submission_type as OfficialDraft["submissionType"]
+    });
   }
 
   async function decide(status: string) {
@@ -199,8 +232,43 @@ export function CircuitAdmin({
     await refresh();
   }
 
+  async function saveSubmission() {
+    if (!active || !submissionDraft) return;
+    await mutateSubmission("PATCH", { action: "edit", ...submissionDraft });
+  }
+
+  async function mutateSubmission(method: "PATCH" | "DELETE", body?: Record<string, unknown>) {
+    if (!active) return;
+    if (method === "DELETE" && !window.confirm(`Excluir definitivamente o registro de ${active.public_name}?`)) return;
+    setBusy(true); setError("");
+    const response = await fetch(`/api/admin/circuito-virtual/submissions/${active.id}`, {
+      method,
+      headers: body ? { "Content-Type": "application/json" } : undefined,
+      body: body ? JSON.stringify(body) : undefined
+    });
+    const json = await response.json();
+    setBusy(false);
+    if (!response.ok) return setError(json.error || "Falha ao atualizar registro.");
+    setActive(null); setSubmissionDraft(null); await refresh();
+  }
+
+  async function mutateOfficial(method: "PATCH" | "DELETE", body?: Record<string, unknown>) {
+    if (!activeOfficial) return;
+    if (method === "DELETE" && !window.confirm(`Excluir definitivamente o registro de ${activeOfficial.public_name}?`)) return;
+    setBusy(true); setError("");
+    const response = await fetch(`/api/admin/circuito-virtual/official-results/${activeOfficial.id}`, {
+      method,
+      headers: body ? { "Content-Type": "application/json" } : undefined,
+      body: body ? JSON.stringify(body) : undefined
+    });
+    const json = await response.json();
+    setBusy(false);
+    if (!response.ok) return setError(json.error || "Falha ao atualizar registro.");
+    closeOfficial(); await refresh();
+  }
+
   const totalActivities = metrics.submissions + officialResults.length;
-  const totalApproved = metrics.approved + officialResults.length;
+  const totalApproved = metrics.approved + officialResults.filter((item) => item.status === "APPROVED").length;
 
   return (
     <main className={`admin-panel ${styles.panel}`}>
@@ -230,9 +298,16 @@ export function CircuitAdmin({
         ))}
       </section>
 
+      <section className={styles.filters} aria-label="Filtros dos registros">
+        <label><Search size={17} /><span>Buscar atleta</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Ex.: Emanuelly" /></label>
+        <label><span>Data da atividade</span><input type="date" value={dateFilter} onChange={(event) => setDateFilter(event.target.value)} /></label>
+        <label><span>Ordenar</span><select value={sortOrder} onChange={(event) => setSortOrder(event.target.value as SortOrder)}><option value="date-desc">Data mais recente</option><option value="date-asc">Data mais antiga</option><option value="name-asc">Nome A–Z</option><option value="name-desc">Nome Z–A</option></select></label>
+        <button type="button" onClick={() => { setSearch(""); setDateFilter(""); setSortOrder("date-desc"); }}>Limpar filtros</button>
+      </section>
+
       <section className={styles.queue}>
         <div className={styles.sectionTitle}>
-          <div><span>Fila técnica</span><h2>Atividades recebidas</h2></div>
+          <div><span>Cadastros do desafio</span><h2>Inscrições e atividades</h2><p>Inclui pendências, aprovadas e ocultas. Aqui também aparecem atletas cadastrados pelo formulário, como Emanuelly.</p></div>
           <button type="button" onClick={() => window.open("/api/admin/circuito-virtual/export", "_blank")}>
             <FileDown size={16} />Exportar CSV
           </button>
@@ -241,17 +316,17 @@ export function CircuitAdmin({
           <div className={styles.head}>
             <span>Atleta</span><span>Categoria</span><span>Marca</span><span>Modalidade</span><span>Status</span><span></span>
           </div>
-          {items.map((item) => (
+          {filteredItems.map((item) => (
             <button className={styles.row} key={item.id} onClick={() => openSubmission(item.id)}>
-              <strong>{item.athlete_name}</strong>
+              <strong>{item.public_name || item.athlete_name}</strong>
               <span>{circuitCategoryName(item.category_age)} · {item.category_age} anos · {item.gender === "FEMALE" ? "F" : "M"}</span>
               <b>{item.formattedTime}</b>
               <span>{item.submission_type.replaceAll("_", " ")}</span>
               <em>{labels[item.status] || item.status}</em>
-              <span>Revisar →</span>
+              <span>{item.status === "HIDDEN" ? "Oculto · Gerenciar →" : "Gerenciar →"}</span>
             </button>
           ))}
-          {!items.length && <p className={styles.empty}>Nenhuma atividade recebida ainda.</p>}
+          {!filteredItems.length && <p className={styles.empty}>Nenhum cadastro corresponde aos filtros.</p>}
         </div>
       </section>
 
@@ -268,7 +343,7 @@ export function CircuitAdmin({
           <div className={`${styles.head} ${styles.officialHead}`}>
             <span>Atleta</span><span>Categoria</span><span>Data</span><span>Local</span><span>Marca</span><span></span>
           </div>
-          {officialResults.map((item) => (
+          {filteredOfficialResults.map((item) => (
             <button
               className={`${styles.row} ${styles.officialRow}`}
               key={item.id}
@@ -279,17 +354,18 @@ export function CircuitAdmin({
               <span>{new Date(`${item.activity_date}T12:00:00`).toLocaleDateString("pt-BR")}</span>
               <span>{item.city}/{item.state}</span>
               <b>{item.formattedTime}</b>
-              <span className={styles.editLabel}><Pencil size={15} />Editar</span>
+              <span className={styles.editLabel}>{item.status === "HIDDEN" ? <EyeOff size={15} /> : <Pencil size={15} />}{item.status === "HIDDEN" ? "Oculto · Gerenciar" : "Gerenciar"}</span>
             </button>
           ))}
+          {!filteredOfficialResults.length && <p className={styles.empty}>Nenhuma marca oficial corresponde aos filtros.</p>}
         </div>
       </section>
 
-      {active && (
+      {active && submissionDraft && (
         <div className={styles.overlay} role="dialog" aria-modal="true">
           <div className={styles.drawer}>
-            <button className={styles.close} onClick={() => setActive(null)}>×</button>
-            <span className={styles.kicker}>Revisão técnica</span>
+            <button className={styles.close} onClick={() => { setActive(null); setSubmissionDraft(null); }}>×</button>
+            <span className={styles.kicker}>Cadastro e atividade</span>
             <h2>{active.athlete_name}</h2>
             <div className={styles.details}>
               <p><small>Nome público</small><strong>{active.public_name}</strong></p>
@@ -303,6 +379,21 @@ export function CircuitAdmin({
                 <strong>{active.medical_status === "VERIFIED" ? "Termo do responsável aceito" : "Atestado dispensado pela regra atual"}</strong>
                 <span>A homologação não depende de documento médico.</span>
               </p>
+            </div>
+            <div className={styles.officialForm}>
+              <label className={styles.fullField}>Nome público<input value={submissionDraft.publicName} onChange={(event) => setSubmissionDraft({ ...submissionDraft, publicName: event.target.value })} /></label>
+              <label>Categoria 2026<select value={submissionDraft.categoryAge} onChange={(event) => setSubmissionDraft({ ...submissionDraft, categoryAge: event.target.value })}>{CIRCUIT_CATEGORY_AGES.map((age) => <option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}</select></label>
+              <label>Gênero esportivo<select value={submissionDraft.gender} onChange={(event) => setSubmissionDraft({ ...submissionDraft, gender: event.target.value as "FEMALE" | "MALE" })}><option value="FEMALE">Feminino</option><option value="MALE">Masculino</option></select></label>
+              <label>Modalidade<select value={submissionDraft.submissionType} onChange={(event) => setSubmissionDraft({ ...submissionDraft, submissionType: event.target.value as OfficialDraft["submissionType"] })}><option value="TRACK_400M">Pista de 400 m</option><option value="OPEN_COURSE">Percurso livre</option><option value="OFFICIAL_COMPETITION">Competição oficial</option></select></label>
+              <label>Data<input type="date" value={submissionDraft.activityDate} onChange={(event) => setSubmissionDraft({ ...submissionDraft, activityDate: event.target.value })} /></label>
+              <label>Marca (MM:SS.CC)<input value={submissionDraft.time} onChange={(event) => setSubmissionDraft({ ...submissionDraft, time: event.target.value })} /></label>
+              <label>Cidade<input value={submissionDraft.city} onChange={(event) => setSubmissionDraft({ ...submissionDraft, city: event.target.value })} /></label>
+              <label>UF<input maxLength={2} value={submissionDraft.state} onChange={(event) => setSubmissionDraft({ ...submissionDraft, state: event.target.value.toUpperCase() })} /></label>
+            </div>
+            <div className={styles.recordActions}>
+              <button type="button" disabled={busy} onClick={saveSubmission}><Save size={16} />Salvar edição</button>
+              <button type="button" disabled={busy} onClick={() => mutateSubmission("PATCH", { action: active.status === "HIDDEN" ? "restore" : "hide" })}>{active.status === "HIDDEN" ? <Eye size={16} /> : <EyeOff size={16} />}{active.status === "HIDDEN" ? "Restaurar" : "Ocultar"}</button>
+              <button type="button" className={styles.danger} disabled={busy} onClick={() => mutateSubmission("DELETE")}><Trash2 size={16} />Excluir</button>
             </div>
             <div className={styles.evidence}>
               <strong>Evidências privadas</strong>
@@ -321,11 +412,11 @@ export function CircuitAdmin({
             <label>Marca verificada (opcional)<input placeholder="03:42.18" value={verifiedTime} onChange={(event) => setVerifiedTime(event.target.value)} /></label>
             <label>Justificativa obrigatória<textarea rows={4} value={reason} onChange={(event) => setReason(event.target.value)} placeholder="Registre as evidências e o motivo da decisão." /></label>
             {error && <p className={styles.error}>{error}</p>}
-            <div className={styles.actions}>
+            {!["APPROVED", "HIDDEN"].includes(active.status) && <div className={styles.actions}>
               <button disabled={busy} onClick={() => decide("APPROVED")}><CheckCircle2 />Aprovar</button>
               <button disabled={busy} onClick={() => decide("CORRECTION_REQUESTED")}><ShieldAlert />Pedir correção</button>
               <button disabled={busy} onClick={() => decide("REJECTED")}><XCircle />Rejeitar</button>
-            </div>
+            </div>}
           </div>
         </div>
       )}
@@ -372,6 +463,10 @@ export function CircuitAdmin({
             <div className={styles.officialActions}>
               <button type="button" onClick={closeOfficial}>Cancelar</button>
               <button type="button" disabled={busy} onClick={saveOfficial}><Save size={17} />{busy ? "Salvando..." : "Salvar alterações"}</button>
+            </div>
+            <div className={styles.recordActions}>
+              <button type="button" disabled={busy} onClick={() => mutateOfficial("PATCH", { action: activeOfficial.status === "HIDDEN" ? "restore" : "hide" })}>{activeOfficial.status === "HIDDEN" ? <Eye size={16} /> : <EyeOff size={16} />}{activeOfficial.status === "HIDDEN" ? "Restaurar no ranking" : "Ocultar do ranking"}</button>
+              <button type="button" className={styles.danger} disabled={busy} onClick={() => mutateOfficial("DELETE")}><Trash2 size={16} />Excluir definitivamente</button>
             </div>
           </div>
         </div>

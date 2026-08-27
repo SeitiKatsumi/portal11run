@@ -128,3 +128,27 @@ test("ranking inclui Bernardo dos Santos Mendonça na categoria calculada pela d
   assert.equal(bernardo?.state, "SP");
   assert.equal(bernardo?.activityDate, "2026-08-09");
 });
+
+test("admin pode ocultar, restaurar e excluir qualquer marca oficial", () => {
+  const created = circuit.createCircuitAdminOfficialResult({
+    publicName: "Atleta Gerenciável",
+    categoryAge: 11,
+    gender: "FEMALE",
+    activityDate: "2026-08-20",
+    time: "03:50.00",
+    city: "Campinas",
+    state: "SP",
+    competitionName: "Teste administrativo",
+    submissionType: "TRACK_400M",
+    actor: "admin:test"
+  }) as { id: string };
+
+  circuit.setCircuitAdminOfficialResultVisibility({ id: created.id, visible: false, actor: "admin:test" });
+  assert.equal(circuit.listCircuitAdminOfficialResults().find((item) => item.id === created.id)?.status, "HIDDEN");
+
+  circuit.setCircuitAdminOfficialResultVisibility({ id: created.id, visible: true, actor: "admin:test" });
+  assert.equal(circuit.listCircuitAdminOfficialResults().find((item) => item.id === created.id)?.status, "APPROVED");
+
+  circuit.deleteCircuitAdminOfficialResult({ id: created.id, actor: "admin:test" });
+  assert.equal(circuit.listCircuitAdminOfficialResults().find((item) => item.id === created.id), undefined);
+});

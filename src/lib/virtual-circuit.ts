@@ -216,6 +216,9 @@ const officialSeedResults = [
 
 function seedOfficialCircuitResults(db: DatabaseSync) {
   const timestamp = now();
+  const wasDeleted = db.prepare(
+    "SELECT 1 FROM virtual_circuit_audit_logs WHERE entity_type = 'official_result' AND entity_id = ? AND action = 'DELETED' LIMIT 1"
+  );
   const statement = db.prepare(
     `INSERT INTO virtual_circuit_official_results (
        id, edition_id, public_name, category_age, gender, activity_date, time_ms,
@@ -233,7 +236,6 @@ function seedOfficialCircuitResults(db: DatabaseSync) {
        competition_name = excluded.competition_name,
        submission_type = excluded.submission_type,
        validation_badge = excluded.validation_badge,
-       status = excluded.status,
        updated_at = excluded.updated_at`
   );
   for (const [
@@ -249,6 +251,7 @@ function seedOfficialCircuitResults(db: DatabaseSync) {
     validationBadge = "Oficial",
     activityDate = CIRCUIT_ACTIVITY_START
   ] of officialSeedResults) {
+    if (wasDeleted.get(id)) continue;
     statement.run(
       id,
       CIRCUIT_EDITION_ID,
@@ -1256,6 +1259,107 @@ export function updateCircuitAdminOfficialResult(input: {
     });
     db.exec("COMMIT;");
     return { ...after, formattedTime: formatCircuitTime(values.timeMs) };
+  } catch (error) {
+    db.exec("ROLLBACK;");
+    throw error;
+  }
+}
+
+export function setCircuitAdminOfficialResultVisibility(input: {
+  id: string;
+  visible: boolean;
+  actor: string;
+  ip?: string;
+}) {
+  const db = getCircuitDatabase();
+  const before = db.prepare("SELECT * FROM virtual_circuit_official_results WHERE id = ? AND edition_id = ?")
+    .get(input.id, CIRCUIT_EDITION_ID) as Record<string, unknown> | undefined;
+  if (!before) throw new Error("Resultado oficial não encontrado.");
+  const status = input.visible ? "APPROVED" : "HIDDEN";
+  db.prepare("UPDATE virtual_circuit_official_results SET status = ?, updated_at = ? WHERE id = ?")
+    .run(status, now(), input.id);
+  const after = db.prepare("SELECT * FROM virtual_circuit_official_results WHERE id = ?").get(input.id);
+  audit(db, { entityType: "official_result", entityId: input.id, action: input.visible ? "RESTORED" : "HIDDEN", actor: input.actor, before, after, ip: input.ip });
+  return after;
+}
+
+export function deleteCircuitAdminOfficialResult(input: { id: string; actor: string; ip?: string }) {
+  const db = getCircuitDatabase();
+  const before = db.prepare("SELECT * FROM virtual_circuit_official_results WHERE id = ? AND edition_id = ?")
+    .get(input.id, CIRCUIT_EDITION_ID) as Record<string, unknown> | undefined;
+  if (!before) throw new Error("Resultado oficial não encontrado.");
+  audit(db, { entityType: "official_result", entityId: input.id, action: "DELETED", actor: input.actor, before, reason: "Exclusão manual pelo painel administrativo.", ip: input.ip });
+  db.prepare("DELETE FROM virtual_circuit_official_results WHERE id = ?").run(input.id);
+}
+
+export function updateCircuitAdminSubmissionDetails(input: {
+  id: string;
+  publicName: string;
+  categoryAge: number;
+  gender: CircuitGender;
+  activityDate: string;
+  time: string;
+  city: string;
+  state: string;
+  submissionType: CircuitSubmissionType;
+  actor: string;
+  ip?: string;
+}) {
+  const db = getCircuitDatabase();
+  const before = db.prepare("SELECT * FROM virtual_circuit_submissions WHERE id = ? AND edition_id = ?")
+    .get(input.id, CIRCUIT_EDITION_ID) as Record<string, string | number | null> | undefined;
+  if (!before) throw new Error("Inscrição não encontrada.");
+  if (!Number.isInteger(input.categoryAge) || input.categoryAge < 9 || input.categoryAge > 13) throw new Error("A categoria deve estar entre 9 e 13 anos.");
+  if (!["FEMALE", "MALE"].includes(input.gender)) throw new Error("Gênero esportivo inválido.");
+  if (!["OFFICIAL_COMPETITION", "TRACK_400M", "OPEN_COURSE"].includes(input.submissionType)) throw new Error("Modalidade inválida.");
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(input.activityDate)) throw new Error("Data inválida.");
+  const state = cleanText(input.state, "Estado", 2).toUpperCase();
+  if (!/^[A-Z-]{2}$/.test(state)) throw new Error("UF inválida.");
+  const timestamp = now();
+  const publicName = normalizePublicName(cleanText(input.publicName, "Nome público"));
+  const city = cleanText(input.city, "Cidade", 120);
+  const timeMs = parseCircuitTime(input.time);
+  db.exec("BEGIN IMMEDIATE;");
+  try {
+    db.prepare("UPDATE virtual_circuit_athletes SET public_name = ?, category_age = ?, gender = ?, city = ?, state = ?, updated_at = ? WHERE id = ?")
+      .run(publicName, input.categoryAge, input.gender, city, state, timestamp, before.athlete_id);
+    db.prepare(
+      `UPDATE virtual_circuit_submissions
+       SET submission_type = ?, activity_date = ?, verified_time_ms = ?, city = ?, state = ?, validation_badge = ?, updated_at = ?
+       WHERE id = ?`
+    ).run(input.submissionType, input.activityDate, timeMs, city, state, badgeForType(input.submissionType), timestamp, input.id);
+    const after = db.prepare("SELECT * FROM virtual_circuit_submissions WHERE id = ?").get(input.id);
+    audit(db, { entityType: "submission", entityId: input.id, action: "UPDATED", actor: input.actor, before, after, reason: "Edição manual pelo painel administrativo.", ip: input.ip });
+    db.exec("COMMIT;");
+    return getCircuitAdminSubmission(input.id);
+  } catch (error) {
+    db.exec("ROLLBACK;");
+    throw error;
+  }
+}
+
+export function setCircuitAdminSubmissionVisibility(input: { id: string; visible: boolean; actor: string; ip?: string }) {
+  const db = getCircuitDatabase();
+  const before = db.prepare("SELECT * FROM virtual_circuit_submissions WHERE id = ? AND edition_id = ?")
+    .get(input.id, CIRCUIT_EDITION_ID) as Record<string, unknown> | undefined;
+  if (!before) throw new Error("Inscrição não encontrada.");
+  const status = input.visible ? "APPROVED" : "HIDDEN";
+  db.prepare("UPDATE virtual_circuit_submissions SET status = ?, updated_at = ? WHERE id = ?").run(status, now(), input.id);
+  const after = db.prepare("SELECT * FROM virtual_circuit_submissions WHERE id = ?").get(input.id);
+  audit(db, { entityType: "submission", entityId: input.id, action: input.visible ? "RESTORED" : "HIDDEN", actor: input.actor, before, after, ip: input.ip });
+  return after;
+}
+
+export function deleteCircuitAdminSubmission(input: { id: string; actor: string; ip?: string }) {
+  const db = getCircuitDatabase();
+  const before = db.prepare("SELECT * FROM virtual_circuit_submissions WHERE id = ? AND edition_id = ?")
+    .get(input.id, CIRCUIT_EDITION_ID) as Record<string, unknown> | undefined;
+  if (!before) throw new Error("Inscrição não encontrada.");
+  db.exec("BEGIN IMMEDIATE;");
+  try {
+    audit(db, { entityType: "submission", entityId: input.id, action: "DELETED", actor: input.actor, before, reason: "Exclusão manual pelo painel administrativo.", ip: input.ip });
+    db.prepare("DELETE FROM virtual_circuit_submissions WHERE id = ?").run(input.id);
+    db.exec("COMMIT;");
   } catch (error) {
     db.exec("ROLLBACK;");
     throw error;
