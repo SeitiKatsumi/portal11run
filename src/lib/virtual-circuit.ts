@@ -1358,6 +1358,7 @@ export function deleteCircuitAdminSubmission(input: { id: string; actor: string;
   db.exec("BEGIN IMMEDIATE;");
   try {
     audit(db, { entityType: "submission", entityId: input.id, action: "DELETED", actor: input.actor, before, reason: "Exclusão manual pelo painel administrativo.", ip: input.ip });
+    db.prepare("DELETE FROM virtual_circuit_medical_clearances WHERE submission_id = ?").run(input.id);
     db.prepare("DELETE FROM virtual_circuit_submissions WHERE id = ?").run(input.id);
     db.exec("COMMIT;");
   } catch (error) {

@@ -152,3 +152,14 @@ test("admin pode ocultar, restaurar e excluir qualquer marca oficial", () => {
   circuit.deleteCircuitAdminOfficialResult({ id: created.id, actor: "admin:test" });
   assert.equal(circuit.listCircuitAdminOfficialResults().find((item) => item.id === created.id), undefined);
 });
+
+test("admin pode excluir inscrição que possui termo médico vinculado", () => {
+  const created = registration({
+    method: "GUARDIAN_COMMITMENT",
+    guardianCpfConfirmation: "111.444.777-35",
+    commitmentAccepted: true
+  });
+
+  assert.doesNotThrow(() => circuit.deleteCircuitAdminSubmission({ id: created.submissionId, actor: "admin:test" }));
+  assert.equal(circuit.getCircuitAdminSubmission(created.submissionId), null);
+});
