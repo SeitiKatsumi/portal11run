@@ -2,8 +2,9 @@
   position: relative;
   display: grid;
   place-items: center;
-  min-height: 100svh;
+  min-height: calc(100svh - 140px);
   overflow: hidden;
+  clip-path: inset(0);
   isolation: isolate;
   background: var(--dark-surface);
   color: white;
@@ -198,7 +199,7 @@
 
 @media (max-width: 640px) {
   .hero {
-    min-height: 100svh;
+    min-height: calc(100svh - 80px);
   }
 
   .media img,
