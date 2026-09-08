@@ -23,7 +23,7 @@
 .lead{font-size:clamp(1.2rem,2vw,1.65rem);color:var(--text)!important;max-width:620px}
 .heroActions{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0}
 .primaryButton,.secondaryButton{min-height:48px;padding:0 22px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;font-size:.83rem;font-weight:650}
-.primaryButton{background:var(--text);color:var(--surface)}
+.primaryButton{background:#f97316;color:#171717}
 .secondaryButton{border:1px solid var(--line)}
 .quickFacts{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;color:var(--muted);font-size:.8rem}
 .quickFacts span{display:inline-flex;align-items:center;gap:7px}
@@ -67,3 +67,4 @@
 @media(max-width:900px){.hero{grid-template-columns:1fr}.categoryGuide{grid-template-columns:1fr}.categoryList{grid-template-columns:repeat(5,minmax(115px,1fr));overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity}.categoryList::-webkit-scrollbar{display:none}.categoryList article{scroll-snap-align:start}.categorySwipeHint{display:block;margin-top:10px;color:var(--accent-strong);font-size:.68rem;font-weight:700;letter-spacing:.04em}.splitHeading{grid-template-columns:1fr;gap:10px}.steps{grid-template-columns:repeat(2,1fr)}.modeGrid,.awardGrid{grid-template-columns:1fr}.finalCta{align-items:flex-start;flex-direction:column}}
 @media(max-width:720px){.page{width:min(calc(100% - 28px),var(--max));padding-top:100px}.hero{min-height:auto}.heroCopy{padding:30px 22px}.participationHighlight{grid-template-columns:1fr;gap:13px;margin-bottom:24px;padding:14px}.participationTotal{padding:0 0 12px;border-right:0;border-bottom:1px solid var(--line)}.latestParticipants ul{grid-template-columns:1fr;gap:8px}.latestParticipants li strong{min-height:0}.hero h1{font-size:3.1rem}.section{padding:28px 20px}.categoryGuide{padding:28px 20px}.categoryGuide h2{font-size:1.65rem}.categoryList{margin-right:-20px;padding-right:20px}.section h2,.finalCta h2{font-size:2.65rem}.steps{grid-template-columns:repeat(2,minmax(0,1fr))}.quickFacts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.futureCallout{align-items:flex-start;flex-direction:column}.mobileCta{display:none}}
 @media(prefers-reduced-motion:no-preference){.primaryButton,.secondaryButton,.steps article,.modeGrid article{transition:transform .18s ease}.primaryButton:hover,.secondaryButton:hover,.steps article:hover,.modeGrid article:hover{transform:translateY(-2px)}}
+
