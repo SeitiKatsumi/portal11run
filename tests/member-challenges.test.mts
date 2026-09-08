@@ -51,7 +51,10 @@ test("inicializa regras oficiais e calcula evolução pessoal sem ranking", () =
 
 test("benefício só entra na projeção após duas aprovações humanas", () => {
   insertPrivateFile("file-attendance", "ATTENDANCE_PLAN");
-  const attendance = challenges.submitAttendanceChallenge("account-test", { month: 7, year: 2026, fileId: "file-attendance", attendance: 90, truthAccepted: true });
+  // Attendance benefits apply to the month following the submitted period.
+  const today = new Date();
+  const priorMonth = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() - 1, 1));
+  const attendance = challenges.submitAttendanceChallenge("account-test", { month: priorMonth.getUTCMonth() + 1, year: priorMonth.getUTCFullYear(), fileId: "file-attendance", attendance: 90, truthAccepted: true });
   challenges.reviewChallengeSubmission({ id: attendance, status: "APPROVED", correctedValue: 90, actor: "admin:test" });
 
   let dashboard = challenges.getMemberChallengesDashboard("account-test");
