@@ -10,3 +10,6 @@ coverage
 artifacts/
 *.log
 tsconfig.tsbuildinfo
+
+data/backups/
+.tmp/

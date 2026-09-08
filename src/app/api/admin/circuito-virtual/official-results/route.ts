@@ -8,6 +8,8 @@ export async function POST(request: Request) {
   try {
     const body = (await request.json()) as Record<string, unknown>;
     const result = createCircuitAdminOfficialResult({
+      athleteNumber: Number(body.athleteNumber) || undefined,
+      confirmNew: body.confirmNew === true,
       publicName: String(body.publicName ?? ""),
       categoryAge: Number(body.categoryAge),
       gender: String(body.gender ?? "") as "MALE" | "FEMALE",

@@ -1,8 +1,10 @@
+import { migrateCircuitIdentities, backfillCircuitIdentities, resolveCircuitIdentity, validateCircuitMark, findCircuitIdentities, type CircuitMarkInput, type CircuitIdentity } from './virtual-circuit-identity.ts';
 import { mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { createCipheriv, createDecipheriv, createHash, createHmac, randomBytes, randomUUID } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
 import {
+  circuitEvolution,
   categoryForBirthDate,
   formatCircuitTime,
   normalizeEvidenceUrl,
@@ -35,13 +37,19 @@ export function getCircuitDatabase() {
   if (database) return database;
   const dbPath = path.resolve(process.cwd(), process.env.SQLITE_PATH ?? "data/portal11run.sqlite");
   mkdirSync(path.dirname(dbPath), { recursive: true });
-  database = new DatabaseSync(dbPath);
-  database.exec("PRAGMA journal_mode = WAL;");
-  database.exec("PRAGMA foreign_keys = ON;");
-  database.exec(readFileSync(path.join(process.cwd(), "data/schema.sql"), "utf8"));
-  seedCircuitEdition(database);
-  seedOfficialCircuitResults(database);
+  const connection = new DatabaseSync(dbPath);
+  try {
+  connection.exec("PRAGMA busy_timeout = 5000;");
+  connection.exec("PRAGMA journal_mode = WAL;");
+  connection.exec("PRAGMA foreign_keys = ON;");
+  connection.exec(readFileSync(path.join(process.cwd(), "data/schema.sql"), "utf8"));
+  migrateCircuitIdentities(connection, dbPath);
+  seedCircuitEdition(connection);
+  seedOfficialCircuitResults(connection);
+  backfillCircuitIdentities(connection);
+  database = connection;
   return database;
+  } catch(e) { connection.close(); throw e; }
 }
 
 function now() {
@@ -112,22 +120,6 @@ function seedCircuitEdition(db: DatabaseSync) {
         timestamp,
         CIRCUIT_EDITION_ID
       );
-      const normalized = db.prepare(
-        `UPDATE virtual_circuit_submissions
-         SET activity_date = ?, updated_at = ?
-         WHERE edition_id = ? AND activity_date < ?`
-      ).run(CIRCUIT_ACTIVITY_START, timestamp, CIRCUIT_EDITION_ID, CIRCUIT_ACTIVITY_START);
-      if (Number(normalized.changes) > 0) {
-        audit(db, {
-          entityType: "edition",
-          entityId: CIRCUIT_EDITION_ID,
-          action: "NORMALIZED_PRE_START_DATES",
-          actor: "system:migration",
-          before: { startDate: existing.start_date },
-          after: { startDate: CIRCUIT_ACTIVITY_START, normalizedSubmissions: Number(normalized.changes) },
-          reason: "Registros anteriores ao início oficial da edição foram ajustados para 01/08/2026."
-        });
-      }
       db.exec("COMMIT;");
     } catch (error) {
       db.exec("ROLLBACK;");
@@ -225,18 +217,7 @@ function seedOfficialCircuitResults(db: DatabaseSync) {
        city, state, competition_name, submission_type, validation_badge, status,
        created_at, updated_at
      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'APPROVED', ?, ?)
-     ON CONFLICT(id) DO UPDATE SET
-       public_name = excluded.public_name,
-       category_age = excluded.category_age,
-       gender = excluded.gender,
-       activity_date = excluded.activity_date,
-       time_ms = excluded.time_ms,
-       city = excluded.city,
-       state = excluded.state,
-       competition_name = excluded.competition_name,
-       submission_type = excluded.submission_type,
-       validation_badge = excluded.validation_badge,
-       updated_at = excluded.updated_at`
+     ON CONFLICT(id) DO NOTHING`
   );
   for (const [
     id,
@@ -598,6 +579,7 @@ export function createCircuitRegistration(input: RegistrationInput) {
       }
     }
 
+    backfillCircuitIdentities(db);
     db.prepare(
       `INSERT INTO virtual_circuit_athlete_guardians (athlete_id, guardian_id, is_primary, authorization_status)
        VALUES (?, ?, 1, 'AUTHORIZED')
@@ -737,6 +719,7 @@ export function createCircuitRegistration(input: RegistrationInput) {
     return {
       submissionId,
       athleteId: athlete.id,
+      athleteNumber: Number((db.prepare("SELECT circuit_number FROM virtual_circuit_athletes WHERE id=?").get(athlete.id) as {circuit_number:number}).circuit_number),
       guardianId: guardian.id,
       accessToken: token,
       expiresAt: expires,
@@ -939,6 +922,7 @@ export type RankingFilters = {
   start?: string;
   end?: string;
   includeOutsideEdition?: boolean;
+  allMarks?: boolean;
 };
 
 export function listCircuitRanking(filters: RankingFilters = {}) {
@@ -954,24 +938,22 @@ export function listCircuitRanking(filters: RankingFilters = {}) {
   if (start && end && start > end) return [];
   const submissionRows = db
     .prepare(
-      `SELECT s.id, s.athlete_id, a.public_name, a.category_age, a.gender, s.city, s.state,
+      `SELECT s.id, s.athlete_id, i.number AS athlete_number, i.public_name, i.category_age, i.gender, s.city, s.state,
               s.activity_date, COALESCE(s.verified_time_ms, s.declared_time_ms) AS time_ms,
               s.submission_type, s.validation_badge
        FROM virtual_circuit_submissions s
        JOIN virtual_circuit_athletes a ON a.id = s.athlete_id
+       JOIN virtual_circuit_identities i ON i.number = a.circuit_number
        WHERE s.edition_id = ? AND s.status = 'APPROVED'`
     )
     .all(edition.id) as RankingRow[];
   const officialRows = db
     .prepare(
-      `SELECT r.id, COALESCE(a.id, 'official:' || r.id) AS athlete_id,
-              r.public_name, r.category_age, r.gender, r.city, r.state,
+      `SELECT r.id, 'official:' || r.id AS athlete_id, i.number AS athlete_number,
+              i.public_name, i.category_age, i.gender, r.city, r.state,
               r.activity_date, r.time_ms, r.submission_type, r.validation_badge
        FROM virtual_circuit_official_results r
-       LEFT JOIN virtual_circuit_athletes a
-         ON lower(trim(a.public_name)) = lower(trim(r.public_name))
-        AND a.category_age = r.category_age
-        AND a.gender = r.gender
+       JOIN virtual_circuit_identities i ON i.number = r.circuit_number
        WHERE r.edition_id = ? AND r.status = 'APPROVED'`
     )
     .all(edition.id) as RankingRow[];
@@ -990,6 +972,7 @@ export function listCircuitRanking(filters: RankingFilters = {}) {
   const rankable: RankableSubmission[] = rows.map((row) => ({
     id: row.id,
     athleteId: row.athlete_id,
+    athleteNumber: row.athlete_number,
     publicName: row.public_name,
     categoryAge: row.category_age,
     gender: row.gender,
@@ -1001,12 +984,13 @@ export function listCircuitRanking(filters: RankingFilters = {}) {
     badge: row.validation_badge || badgeForType(row.submission_type)
   }));
   const categoryPositions = new Map<string, number>();
-  return selectBestMarks(rankable).map((item, index) => {
+  return (filters.allMarks ? rankable : selectBestMarks(rankable)).map((item, index) => {
     const categoryKey = `${item.categoryAge}-${item.gender}`;
     const categoryPosition = (categoryPositions.get(categoryKey) ?? 0) + 1;
     categoryPositions.set(categoryKey, categoryPosition);
     return {
       ...item,
+      athleteNumber: item.athleteNumber!,
       position: index + 1,
       categoryPosition,
       formattedTime: formatCircuitTime(item.timeMs)
@@ -1015,6 +999,7 @@ export function listCircuitRanking(filters: RankingFilters = {}) {
 }
 
 type RankingRow = {
+  athlete_number: number;
   id: string;
   athlete_id: string;
   public_name: string;
@@ -1036,7 +1021,7 @@ export function getCircuitAdminDashboard() {
   const db = getCircuitDatabase();
   const scalar = (sql: string) => Number((db.prepare(sql).get() as { total: number }).total);
   return {
-    athletes: scalar("SELECT COUNT(*) AS total FROM virtual_circuit_athletes"),
+    athletes: scalar("SELECT COUNT(*) AS total FROM virtual_circuit_identities i WHERE EXISTS(SELECT 1 FROM virtual_circuit_official_results r WHERE r.circuit_number=i.number) OR EXISTS(SELECT 1 FROM virtual_circuit_athletes a WHERE a.circuit_number=i.number)"),
     guardians: scalar("SELECT COUNT(*) AS total FROM virtual_circuit_guardians"),
     submissions: scalar("SELECT COUNT(*) AS total FROM virtual_circuit_submissions"),
     receivedToday: scalar("SELECT COUNT(*) AS total FROM virtual_circuit_submissions WHERE date(created_at) = date('now')"),
@@ -1074,12 +1059,13 @@ export function listCircuitAdminSubmissions(status?: string) {
   } & Record<string, string | number | null>;
   const rows = db
     .prepare(
-      `SELECT s.*, a.full_name AS athlete_name, a.public_name, a.category_age, a.gender, a.document_file_id,
+      `SELECT s.*, a.full_name AS athlete_name, i.public_name, i.category_age, i.gender, a.circuit_number, a.document_file_id,
               g.full_name AS guardian_name, g.email AS guardian_email, g.phone AS guardian_phone,
               mc.status AS medical_status, mc.clearance_method, mc.certificate_file_id AS medical_certificate_file_id,
               mc.promised_due_date
        FROM virtual_circuit_submissions s
        JOIN virtual_circuit_athletes a ON a.id = s.athlete_id
+       JOIN virtual_circuit_identities i ON i.number=a.circuit_number
        JOIN virtual_circuit_guardians g ON g.id = s.guardian_id
        LEFT JOIN virtual_circuit_medical_clearances mc ON mc.submission_id = s.id
        WHERE (? IS NULL OR s.status = ?)
@@ -1095,6 +1081,7 @@ export function listCircuitAdminSubmissions(status?: string) {
 }
 
 export type CircuitOfficialResult = {
+  circuit_number: number;
   id: string;
   public_name: string;
   category_age: number;
@@ -1115,17 +1102,20 @@ export function listCircuitAdminOfficialResults() {
   const db = getCircuitDatabase();
   const rows = db
     .prepare(
-      `SELECT id, public_name, category_age, gender, activity_date, time_ms, city, state,
-              competition_name, validation_badge, status, created_at, updated_at
-       FROM virtual_circuit_official_results
+      `SELECT r.id, r.circuit_number, i.public_name, i.category_age, i.gender, r.activity_date, r.time_ms, r.city, r.state,
+              r.competition_name, r.validation_badge, r.status, r.created_at, r.updated_at
+       FROM virtual_circuit_official_results r JOIN virtual_circuit_identities i ON i.number=r.circuit_number
        WHERE edition_id = ?
-       ORDER BY category_age DESC, gender, time_ms ASC, public_name`
+       ORDER BY i.category_age DESC, i.gender, r.time_ms ASC, i.public_name`
     )
     .all(CIRCUIT_EDITION_ID) as Omit<CircuitOfficialResult, "formattedTime">[];
   return rows.map((row) => ({ ...row, formattedTime: formatCircuitTime(row.time_ms) }));
 }
 
 export function createCircuitAdminOfficialResult(input: {
+  athleteNumber?: number;
+  confirmNew?: boolean;
+  inTransaction?: boolean;
   publicName: string;
   categoryAge: number;
   gender: CircuitGender;
@@ -1139,16 +1129,8 @@ export function createCircuitAdminOfficialResult(input: {
   ip?: string;
 }) {
   const db = getCircuitDatabase();
-  if (!Number.isInteger(input.categoryAge) || input.categoryAge < 9 || input.categoryAge > 13) {
-    throw new Error("A categoria deve estar entre 9 e 13 anos.");
-  }
-  if (!["FEMALE", "MALE"].includes(input.gender)) throw new Error("Gênero esportivo inválido.");
-  if (!["OFFICIAL_COMPETITION", "TRACK_400M", "OPEN_COURSE"].includes(input.submissionType)) {
-    throw new Error("Modalidade inválida.");
-  }
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(input.activityDate)) throw new Error("Data inválida.");
-  const state = cleanText(input.state, "Estado", 2).toUpperCase();
-  if (!/^[A-Z-]{2}$/.test(state)) throw new Error("UF inválida.");
+  validateCircuitMark(input);
+  const state = input.state;
   const id = randomUUID();
   const timestamp = now();
   const values = {
@@ -1157,15 +1139,18 @@ export function createCircuitAdminOfficialResult(input: {
     city: cleanText(input.city, "Cidade", 120),
     competitionName: cleanText(input.competitionName, "Competição ou identificação do teste", 180)
   };
-  db.exec("BEGIN IMMEDIATE;");
+  if (!input.inTransaction) db.exec("BEGIN IMMEDIATE;");
   try {
+    const number = resolveCircuitIdentity(db, input);
+    const duplicate = db.prepare("SELECT id FROM virtual_circuit_official_results WHERE circuit_number=? AND activity_date=? AND time_ms=? AND submission_type=?").get(number,input.activityDate,values.timeMs,input.submissionType);
+    if(duplicate) throw new Error("Esta marca já está cadastrada para o atleta.");
     db.prepare(
       `INSERT INTO virtual_circuit_official_results
-        (id, edition_id, public_name, category_age, gender, activity_date, time_ms, city, state,
+        (id, circuit_number, edition_id, public_name, category_age, gender, activity_date, time_ms, city, state,
          competition_name, submission_type, validation_badge, status, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'APPROVED', ?, ?)`
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'APPROVED', ?, ?)`
     ).run(
-      id, CIRCUIT_EDITION_ID, values.publicName, input.categoryAge, input.gender, input.activityDate,
+      id, number, CIRCUIT_EDITION_ID, values.publicName, input.categoryAge, input.gender, input.activityDate,
       values.timeMs, values.city, state, values.competitionName, input.submissionType,
       badgeForType(input.submissionType), timestamp, timestamp
     );
@@ -1179,10 +1164,10 @@ export function createCircuitAdminOfficialResult(input: {
       reason: "Inclusão direta pelo painel administrativo.",
       ip: input.ip
     });
-    db.exec("COMMIT;");
+    if (!input.inTransaction) db.exec("COMMIT;");
     return { ...after, formattedTime: formatCircuitTime(values.timeMs) };
   } catch (error) {
-    db.exec("ROLLBACK;");
+    if (!input.inTransaction) db.exec("ROLLBACK;");
     throw error;
   }
 }
@@ -1209,7 +1194,7 @@ export function updateCircuitAdminOfficialResult(input: {
     throw new Error("A categoria deve estar entre 9 e 13 anos.");
   }
   if (!["FEMALE", "MALE"].includes(input.gender)) throw new Error("Gênero esportivo inválido.");
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(input.activityDate)) throw new Error("Data inválida.");
+  validateCircuitActivityDate(input.activityDate, CIRCUIT_ACTIVITY_START, "9999-12-31");
   const state = cleanText(input.state, "Estado", 2).toUpperCase();
   if (!/^[A-Z-]{2}$/.test(state)) throw new Error("UF inválida.");
   const timestamp = now();
@@ -1227,14 +1212,10 @@ export function updateCircuitAdminOfficialResult(input: {
   try {
     db.prepare(
       `UPDATE virtual_circuit_official_results
-       SET public_name = ?, category_age = ?, gender = ?, activity_date = ?, time_ms = ?,
-           city = ?, state = ?, competition_name = ?, validation_badge = 'Oficial',
-           status = 'APPROVED', updated_at = ?
+       SET activity_date = ?, time_ms = ?,
+           city = ?, state = ?, competition_name = ?, updated_at = ?
        WHERE id = ? AND edition_id = ?`
     ).run(
-      values.publicName,
-      values.categoryAge,
-      values.gender,
       values.activityDate,
       values.timeMs,
       values.city,
@@ -1312,17 +1293,14 @@ export function updateCircuitAdminSubmissionDetails(input: {
   if (!Number.isInteger(input.categoryAge) || input.categoryAge < 9 || input.categoryAge > 13) throw new Error("A categoria deve estar entre 9 e 13 anos.");
   if (!["FEMALE", "MALE"].includes(input.gender)) throw new Error("Gênero esportivo inválido.");
   if (!["OFFICIAL_COMPETITION", "TRACK_400M", "OPEN_COURSE"].includes(input.submissionType)) throw new Error("Modalidade inválida.");
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(input.activityDate)) throw new Error("Data inválida.");
+  validateCircuitActivityDate(input.activityDate, CIRCUIT_ACTIVITY_START, "9999-12-31");
   const state = cleanText(input.state, "Estado", 2).toUpperCase();
   if (!/^[A-Z-]{2}$/.test(state)) throw new Error("UF inválida.");
   const timestamp = now();
-  const publicName = normalizePublicName(cleanText(input.publicName, "Nome público"));
   const city = cleanText(input.city, "Cidade", 120);
   const timeMs = parseCircuitTime(input.time);
   db.exec("BEGIN IMMEDIATE;");
   try {
-    db.prepare("UPDATE virtual_circuit_athletes SET public_name = ?, category_age = ?, gender = ?, city = ?, state = ?, updated_at = ? WHERE id = ?")
-      .run(publicName, input.categoryAge, input.gender, city, state, timestamp, before.athlete_id);
     db.prepare(
       `UPDATE virtual_circuit_submissions
        SET submission_type = ?, activity_date = ?, verified_time_ms = ?, city = ?, state = ?, validation_badge = ?, updated_at = ?
@@ -1488,4 +1466,81 @@ export function revealSensitiveForAdmin(type: "athlete" | "guardian", id: string
     | { cpf_encrypted: string; birth_date_encrypted: string }
     | undefined;
   return row ? { cpf: decrypt(row.cpf_encrypted), birthDate: decrypt(row.birth_date_encrypted) } : null;
+}
+
+export function listCircuitAthletes(query = '') {
+  const db=getCircuitDatabase();
+  const marks = db.prepare(`SELECT r.id, r.circuit_number AS number, r.activity_date, r.time_ms, r.status, r.submission_type, 'official' AS source FROM virtual_circuit_official_results r
+    UNION ALL SELECT s.id,a.circuit_number,s.activity_date,COALESCE(s.verified_time_ms,s.declared_time_ms),s.status,s.submission_type,'submission' FROM virtual_circuit_submissions s JOIN virtual_circuit_athletes a ON a.id=s.athlete_id`).all() as {id:string;number:number;activity_date:string;time_ms:number;status:string;submission_type:CircuitSubmissionType;source:string}[];
+  return findCircuitIdentities(db,query).map(person=>{
+    const history=marks.filter(m=>m.number===person.number).sort((a,b)=>a.activity_date.localeCompare(b.activity_date)||a.time_ms-b.time_ms);
+    const valid=history.filter(m=>m.status==='APPROVED' && m.activity_date>=CIRCUIT_ACTIVITY_START && m.activity_date<=CIRCUIT_ACTIVITY_END);
+    const evolution=circuitEvolution(valid.map(m=>({id:m.id,athleteId:String(person.number),publicName:person.public_name,categoryAge:person.category_age,gender:person.gender,city:person.city,state:person.state,activityDate:m.activity_date,timeMs:m.time_ms,type:m.submission_type,badge:badgeForType(m.submission_type)})))[0];
+    return {...person,history:history.map(m=>({...m,formattedTime:formatCircuitTime(m.time_ms)})),count:history.length,bestTime:valid.length?formatCircuitTime(Math.min(...valid.map(m=>m.time_ms))):null,percent:evolution?.percent??null};
+  });
+}
+
+export function updateCircuitIdentity(input: { number:number; publicName:string; categoryAge:number; gender:CircuitGender; city:string; state:string; actor:string }) {
+  const db=getCircuitDatabase();
+  const before=db.prepare('SELECT * FROM virtual_circuit_identities WHERE number=?').get(input.number);
+  if(!before) throw new Error('Atleta não encontrado.');
+  validateCircuitMark({...input,activityDate:'2026-08-01',time:'05:00.00',competitionName:'Perfil',submissionType:'TRACK_400M'});
+  db.exec('BEGIN IMMEDIATE');
+  try {
+    db.prepare('UPDATE virtual_circuit_identities SET public_name=?,category_age=?,gender=?,city=?,state=? WHERE number=?').run(normalizePublicName(input.publicName),input.categoryAge,input.gender,input.city,input.state,input.number);
+    audit(db,{entityType:'athlete_identity',entityId:String(input.number),action:'PROFILE_UPDATED',actor:input.actor,before,after:input});
+    db.exec('COMMIT');
+  } catch(e) {db.exec('ROLLBACK');throw e;}
+}
+
+export function linkCircuitMark(input:{id:string;source:string;athleteNumber:number;actor:string}) {
+  const db=getCircuitDatabase();
+  const target=db.prepare('SELECT * FROM virtual_circuit_identities WHERE number=?').get(input.athleteNumber) as CircuitIdentity|undefined;
+  if(!target) throw new Error('Atleta não encontrado.');
+  db.exec('BEGIN IMMEDIATE');
+  try {
+    if(input.source==='official') {
+      const before=db.prepare('SELECT * FROM virtual_circuit_official_results WHERE id=?').get(input.id) as Record<string,string|number>|undefined;
+      if(!before) throw new Error('Marca não encontrada.');
+      const sourceIdentity=db.prepare('SELECT category_age,gender FROM virtual_circuit_identities WHERE number=?').get(before.circuit_number) as CircuitIdentity;
+      if(sourceIdentity.category_age!==target.category_age || sourceIdentity.gender!==target.gender) throw new Error('Confira categoria e gênero antes de vincular.');
+      db.prepare('UPDATE virtual_circuit_official_results SET circuit_number=? WHERE id=?').run(target.number,input.id);
+      audit(db,{entityType:'official_result',entityId:input.id,action:'IDENTITY_LINKED',actor:input.actor,before,after:{athleteNumber:target.number}});
+    } else if(input.source==='submission') {
+      const before=db.prepare('SELECT a.id,a.circuit_number,i.category_age,i.gender FROM virtual_circuit_athletes a JOIN virtual_circuit_submissions s ON s.athlete_id=a.id JOIN virtual_circuit_identities i ON i.number=a.circuit_number WHERE s.id=?').get(input.id) as {id:string;circuit_number:number;category_age:number;gender:string}|undefined;
+      if(!before) throw new Error('Cadastro não encontrado.');
+      if(before.category_age!==target.category_age || before.gender!==target.gender) throw new Error('Confira categoria e gênero antes de vincular.');
+      if(db.prepare('SELECT id FROM virtual_circuit_athletes WHERE circuit_number=? AND id<>?').get(target.number,before.id)) throw new Error('Não é possível unir dois cadastros com CPFs diferentes.');
+      db.prepare('UPDATE virtual_circuit_athletes SET circuit_number=? WHERE id=?').run(target.number,before.id);
+      audit(db,{entityType:'athlete_identity',entityId:before.id,action:'IDENTITY_LINKED',actor:input.actor,before,after:{athleteNumber:target.number}});
+    } else throw new Error('Origem inválida.');
+    db.prepare('UPDATE virtual_circuit_identities SET review_required=0 WHERE number=?').run(target.number);
+    db.exec('COMMIT');
+  } catch(e) {db.exec('ROLLBACK');throw e;}
+}
+
+export function createCircuitBatch(rows:CircuitMarkInput[],key:string,actor:string) {
+  if(!Array.isArray(rows)||!rows.length||rows.length>500||!/^[a-zA-Z0-9-]{16,80}$/.test(key)) throw new Error('Lote inválido (máximo 500 linhas).');
+  const db=getCircuitDatabase(); const payload=JSON.stringify(rows);
+  db.exec('BEGIN IMMEDIATE');
+  try {
+    const previous=db.prepare('SELECT * FROM virtual_circuit_batches WHERE key=?').get(key) as {payload:string;result:string}|undefined;
+    if(previous) {
+      if(previous.payload!==payload) throw new Error('Chave de lote já usada com outros dados.');
+      db.exec('COMMIT');return JSON.parse(previous.result);
+    }
+    const results:Record<string,unknown>[]=[];
+    for(let i=0;i<rows.length;i++) {
+      const row={...rows[i]};
+      try {
+        if(row.batchAthlete!==undefined) {
+          if(!Number.isInteger(row.batchAthlete)||row.batchAthlete<0||row.batchAthlete>=i) throw new Error('Escolha uma linha anterior do lote.');
+          row.athleteNumber=Number(results[row.batchAthlete].circuit_number);
+        }
+        results.push(createCircuitAdminOfficialResult({...row,actor,inTransaction:true}));
+      } catch(e) {throw new Error(`Linha ${i+1}: ${e instanceof Error?e.message:'dados inválidos'}`);}
+    }
+    db.prepare('INSERT INTO virtual_circuit_batches VALUES(?,?,?)').run(key,payload,JSON.stringify(results));
+    db.exec('COMMIT');return results;
+  } catch(e) {db.exec('ROLLBACK');throw e;}
 }

@@ -19,6 +19,7 @@ import {
   XCircle,
   type LucideIcon
 } from "lucide-react";
+import { CircuitAthletes, CircuitAthletePicker } from './CircuitAthletes';
 import { useMemo, useState } from "react";
 import type { CircuitOfficialResult } from "@/lib/virtual-circuit";
 import { CIRCUIT_CATEGORY_AGES, circuitCategoryLabel, circuitCategoryName } from "@/lib/virtual-circuit-category";
@@ -67,6 +68,8 @@ type Submission = {
 } & Record<string, unknown>;
 
 type OfficialDraft = {
+  athleteNumber?: number;
+  confirmNew?: boolean;
   publicName: string;
   categoryAge: string;
   gender: "FEMALE" | "MALE";
@@ -107,6 +110,7 @@ export function CircuitAdmin({
   initialSubmissions: Submission[];
   initialOfficialResults: CircuitOfficialResult[];
 }) {
+  const [athleteRevision,setAthleteRevision]=useState(0);
   const [metrics, setMetrics] = useState(initialMetrics);
   const [items, setItems] = useState(initialSubmissions);
   const [officialResults, setOfficialResults] = useState(initialOfficialResults);
@@ -129,6 +133,7 @@ export function CircuitAdmin({
   async function refresh() {
     const response = await fetch("/api/admin/circuito-virtual");
     const json = await response.json();
+    setAthleteRevision(v=>v+1);
     setMetrics(json.metrics);
     setItems(json.submissions);
     setOfficialResults(json.officialResults);
@@ -272,6 +277,7 @@ export function CircuitAdmin({
 
   return (
     <main className={`admin-panel ${styles.panel}`}>
+      <CircuitAthletes revision={athleteRevision} onChange={refresh} />
       <section className={styles.hero}>
         <div>
           <span>Circuito Virtual</span>
@@ -349,7 +355,7 @@ export function CircuitAdmin({
               key={item.id}
               onClick={() => openOfficial(item)}
             >
-              <strong>{item.public_name}</strong>
+              <strong>#{item.circuit_number} · {item.public_name}</strong>
               <span>{circuitCategoryName(item.category_age)} · {item.category_age} anos · {item.gender === "FEMALE" ? "F" : "M"}</span>
               <span>{new Date(`${item.activity_date}T12:00:00`).toLocaleDateString("pt-BR")}</span>
               <span>{item.city}/{item.state}</span>
@@ -381,9 +387,10 @@ export function CircuitAdmin({
               </p>
             </div>
             <div className={styles.officialForm}>
-              <label className={styles.fullField}>Nome público<input value={submissionDraft.publicName} onChange={(event) => setSubmissionDraft({ ...submissionDraft, publicName: event.target.value })} /></label>
-              <label>Categoria 2026<select value={submissionDraft.categoryAge} onChange={(event) => setSubmissionDraft({ ...submissionDraft, categoryAge: event.target.value })}>{CIRCUIT_CATEGORY_AGES.map((age) => <option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}</select></label>
-              <label>Gênero esportivo<select value={submissionDraft.gender} onChange={(event) => setSubmissionDraft({ ...submissionDraft, gender: event.target.value as "FEMALE" | "MALE" })}><option value="FEMALE">Feminino</option><option value="MALE">Masculino</option></select></label>
+              <label className={styles.fullField}>Nome público<input disabled value={submissionDraft.publicName} onChange={(event) => setSubmissionDraft({ ...submissionDraft, publicName: event.target.value })} /></label>
+
+              <label>Categoria 2026<select disabled value={submissionDraft.categoryAge} onChange={(event) => setSubmissionDraft({ ...submissionDraft, categoryAge: event.target.value })}>{CIRCUIT_CATEGORY_AGES.map((age) => <option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}</select></label>
+              <label>Gênero esportivo<select disabled value={submissionDraft.gender} onChange={(event) => setSubmissionDraft({ ...submissionDraft, gender: event.target.value as "FEMALE" | "MALE" })}><option value="FEMALE">Feminino</option><option value="MALE">Masculino</option></select></label>
               <label>Modalidade<select value={submissionDraft.submissionType} onChange={(event) => setSubmissionDraft({ ...submissionDraft, submissionType: event.target.value as OfficialDraft["submissionType"] })}><option value="TRACK_400M">Pista de 400 m</option><option value="OPEN_COURSE">Percurso livre</option><option value="OFFICIAL_COMPETITION">Competição oficial</option></select></label>
               <label>Data<input type="date" value={submissionDraft.activityDate} onChange={(event) => setSubmissionDraft({ ...submissionDraft, activityDate: event.target.value })} /></label>
               <label>Marca (MM:SS.CC)<input value={submissionDraft.time} onChange={(event) => setSubmissionDraft({ ...submissionDraft, time: event.target.value })} /></label>
@@ -426,18 +433,18 @@ export function CircuitAdmin({
           <div className={styles.drawer}>
             <button className={styles.close} onClick={closeOfficial}><X size={18} /></button>
             <span className={styles.kicker}>Resultado oficial importado</span>
-            <h2>Editar marca</h2>
+            <h2>Editar marca</h2><p>Para alterar nome, categoria ou gênero, use Editar identificação no histórico do atleta.</p>
             <div className={styles.officialForm}>
               <label className={styles.fullField}>Nome público
-                <input value={officialDraft.publicName} onChange={(event) => setOfficialDraft({ ...officialDraft, publicName: event.target.value })} />
+                <input disabled value={officialDraft.publicName} onChange={(event) => setOfficialDraft({ ...officialDraft, publicName: event.target.value })} />
               </label>
               <label>Categoria 2026
-                <select value={officialDraft.categoryAge} onChange={(event) => setOfficialDraft({ ...officialDraft, categoryAge: event.target.value })}>
+                <select disabled value={officialDraft.categoryAge} onChange={(event) => setOfficialDraft({ ...officialDraft, categoryAge: event.target.value })}>
                   {CIRCUIT_CATEGORY_AGES.map((age) => <option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}
                 </select>
               </label>
               <label>Gênero esportivo
-                <select value={officialDraft.gender} onChange={(event) => setOfficialDraft({ ...officialDraft, gender: event.target.value as "FEMALE" | "MALE" })}>
+                <select disabled value={officialDraft.gender} onChange={(event) => setOfficialDraft({ ...officialDraft, gender: event.target.value as "FEMALE" | "MALE" })}>
                   <option value="FEMALE">Feminino</option>
                   <option value="MALE">Masculino</option>
                 </select>
@@ -481,6 +488,7 @@ export function CircuitAdmin({
             <p className={styles.syncNotice}>Este fluxo dispensa o cadastro público. Ao salvar, a marca será aprovada e publicada imediatamente no ranking do desafio.</p>
             <div className={styles.officialForm}>
               <label className={styles.fullField}>Nome do atleta<input autoFocus value={officialDraft.publicName} onChange={event=>setOfficialDraft({...officialDraft,publicName:event.target.value})}/></label>
+              <CircuitAthletePicker name={officialDraft.publicName} onSelect={(athleteNumber,confirmNew)=>setOfficialDraft(d=>d?{...d,athleteNumber,confirmNew}:d)} />
               <label>Categoria 2026<select value={officialDraft.categoryAge} onChange={event=>setOfficialDraft({...officialDraft,categoryAge:event.target.value})}>{CIRCUIT_CATEGORY_AGES.map(age=><option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}</select></label>
               <label>Gênero esportivo<select value={officialDraft.gender} onChange={event=>setOfficialDraft({...officialDraft,gender:event.target.value as "FEMALE"|"MALE"})}><option value="FEMALE">Feminino</option><option value="MALE">Masculino</option></select></label>
               <label>Modalidade<select value={officialDraft.submissionType} onChange={event=>setOfficialDraft({...officialDraft,submissionType:event.target.value as OfficialDraft["submissionType"]})}><option value="TRACK_400M">Pista de 400 m</option><option value="OPEN_COURSE">Percurso livre</option><option value="OFFICIAL_COMPETITION">Competição oficial</option></select></label>

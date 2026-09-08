@@ -1,6 +1,6 @@
 export const CIRCUIT_EDITION_START = "2026-08-01";
-export const CIRCUIT_EDITION_END = "2026-11-30";
-export const CIRCUIT_REGULATIONS_VERSION = "1.1-2026";
+export const CIRCUIT_EDITION_END = "2026-11-14";
+export const CIRCUIT_REGULATIONS_VERSION = "1.2-2026";
 
 export type CircuitRankingPeriod = "monthly" | "bimonthly" | "absolute";
 export type CircuitPrize =
@@ -24,18 +24,18 @@ export const CIRCUIT_MONTHS: readonly CircuitPeriodDefinition[] = [
   { id: "2026-08", label: "Agosto de 2026", shortLabel: "01/08 a 31/08", start: "2026-08-01", end: "2026-08-31" },
   { id: "2026-09", label: "Setembro de 2026", shortLabel: "01/09 a 30/09", start: "2026-09-01", end: "2026-09-30" },
   { id: "2026-10", label: "Outubro de 2026", shortLabel: "01/10 a 31/10", start: "2026-10-01", end: "2026-10-31" },
-  { id: "2026-11", label: "Novembro de 2026", shortLabel: "01/11 a 30/11", start: "2026-11-01", end: "2026-11-30" }
+  { id: "2026-11", label: "Novembro de 2026", shortLabel: "01/11 a 14/11", start: "2026-11-01", end: "2026-11-14" }
 ];
 
 export const CIRCUIT_BIMONTHS: readonly CircuitPeriodDefinition[] = [
   { id: "2026-08-01|2026-09-30", label: "1º bimestre · agosto e setembro", shortLabel: "01/08 a 30/09", start: "2026-08-01", end: "2026-09-30" },
-  { id: "2026-10-01|2026-11-30", label: "2º bimestre · outubro e novembro", shortLabel: "01/10 a 30/11", start: "2026-10-01", end: "2026-11-30" }
+  { id: "2026-10-01|2026-11-14", label: "2º bimestre · outubro e novembro", shortLabel: "01/10 a 14/11", start: "2026-10-01", end: "2026-11-14" }
 ];
 
 export const CIRCUIT_ABSOLUTE: CircuitPeriodDefinition = {
   id: "2026-edition",
   label: "Ranking absoluto da edição 2026",
-  shortLabel: "01/08 a 30/11",
+  shortLabel: "01/08 a 14/11",
   start: CIRCUIT_EDITION_START,
   end: CIRCUIT_EDITION_END
 };

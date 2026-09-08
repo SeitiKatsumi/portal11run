@@ -15,7 +15,7 @@ import {
 } from "@/lib/virtual-circuit-schedule";
 import styles from "./CircuitUI.module.css";
 
-export type CircuitRankingItem = { id:string;position:number;categoryPosition:number;publicName:string;categoryAge:number;gender:string;city:string;state:string;formattedTime:string;activityDate:string;badge:string };
+export type CircuitRankingItem = { id:string;athleteNumber:number;position:number;categoryPosition:number;publicName:string;categoryAge:number;gender:string;city:string;state:string;formattedTime:string;activityDate:string;badge:string };
 
 const prizeDetails: Record<CircuitPrize, { label: string; icon: React.ReactNode }> = {
   cash: { label: "R$ 500,00 para o líder da categoria", icon: <Banknote size={16} /> },
@@ -37,6 +37,10 @@ function formatLocation(city: string, state: string) {
   return state && state !== "--" ? `${city}/${state}` : city;
 }
 
+function currentPeriod(options: readonly CircuitPeriodDefinition[]) {
+ const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+ return (options.find(p=>today>=p.start&&today<=p.end)||(today<options[0].start?options[0]:options[options.length-1])).id;
+}
 function selectedPeriod(period: CircuitRankingPeriod, selection: string): CircuitPeriodDefinition {
   if (period === "absolute") return CIRCUIT_ABSOLUTE;
   const options = period === "monthly" ? CIRCUIT_MONTHS : CIRCUIT_BIMONTHS;
@@ -59,21 +63,25 @@ export function CircuitRanking({ initialRanking = [] }: { initialRanking?: Circu
   const [periodSelection,setPeriodSelection]=useState(CIRCUIT_MONTHS[0].id);
   const [ranking,setRanking]=useState<CircuitRankingItem[]>(initialRanking);
   const [loading,setLoading]=useState(false);
+  const [error,setError]=useState("");
   const activePeriod = selectedPeriod(period, periodSelection);
 
   useEffect(()=>{
     const query=new URLSearchParams(Object.entries({ ...filters, start: activePeriod.start, end: activePeriod.end }).filter(([,value])=>value));
-    setLoading(true);
-    fetch(`/api/circuito-virtual/ranking?${query}`, { cache: "no-store" })
-      .then((response)=>response.json())
+    const controller=new AbortController();
+    setLoading(true);setError("");
+    fetch(`/api/circuito-virtual/ranking?${query}`, { cache: "no-store",signal:controller.signal })
+      .then((response)=>{if(!response.ok)throw new Error("Falha ao carregar ranking.");return response.json();})
       .then((response)=>setRanking(response.ranking||[]))
-      .finally(()=>setLoading(false));
+      .catch(e=>{if(e.name!=="AbortError")setError(e.message);})
+      .finally(()=>{if(!controller.signal.aborted)setLoading(false);});
+    return ()=>controller.abort();
   },[filters,activePeriod.start,activePeriod.end]);
 
   function selectPeriod(nextPeriod: CircuitRankingPeriod) {
     setPeriod(nextPeriod);
-    if (nextPeriod === "monthly") setPeriodSelection(CIRCUIT_MONTHS[0].id);
-    if (nextPeriod === "bimonthly") setPeriodSelection(CIRCUIT_BIMONTHS[0].id);
+    if (nextPeriod === "monthly") setPeriodSelection(currentPeriod(CIRCUIT_MONTHS));
+    if (nextPeriod === "bimonthly") setPeriodSelection(currentPeriod(CIRCUIT_BIMONTHS));
   }
 
   const periodOptions = period === "monthly" ? CIRCUIT_MONTHS : CIRCUIT_BIMONTHS;
@@ -94,6 +102,7 @@ export function CircuitRanking({ initialRanking = [] }: { initialRanking?: Circu
     </div>
     <div className={styles.filters}><label><span>Categoria</span><select value={filters.age} onChange={event=>setFilters({...filters,age:event.target.value})}><option value="">Todas as categorias</option>{CIRCUIT_CATEGORY_AGES.map(age=><option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}</select></label><label><span>Gênero</span><select value={filters.gender} onChange={event=>setFilters({...filters,gender:event.target.value})}><option value="">Todos</option><option value="FEMALE">Feminino</option><option value="MALE">Masculino</option></select></label><label><span>UF</span><input maxLength={2} value={filters.state} onChange={event=>setFilters({...filters,state:event.target.value.toUpperCase()})}/></label><label><span>Atleta</span><div className={styles.search}><Search size={15}/><input value={filters.name} onChange={event=>setFilters({...filters,name:event.target.value})}/></div></label></div>
     <p className={styles.rankingHint}>Os ícones mostram as premiações cumulativas que cada atleta conquistaria se o período terminasse hoje.</p>
-    <div className={styles.rankTable}><div className={styles.rankHead}><span>#</span><span>Atleta</span><span>Categoria</span><span>Data</span><span>Local</span><span>Marca</span><span>Premiação atual</span><span>Validação</span></div>{loading?<p className={styles.empty}>Carregando ranking…</p>:ranking.length?ranking.map(item=><div className={styles.rankRow} key={item.id}><b className={styles.rankPosition}>{item.categoryPosition}</b><strong className={styles.rankName}>{item.publicName}<small className={styles.rankMobileCategory}>{circuitCategoryName(item.categoryAge)} · {item.categoryAge} anos · {item.gender==="FEMALE"?"F":"M"}</small></strong><span className={styles.rankCategory} title={circuitCategoryLabel(item.categoryAge)}>{circuitCategoryName(item.categoryAge)} · {item.categoryAge} anos · {item.gender==="FEMALE"?"F":"M"}</span><time className={styles.rankDate} dateTime={item.activityDate}>{formatDate(item.activityDate)}</time><span className={styles.rankLocation}>{formatLocation(item.city, item.state)}</span><strong className={styles.rankTime}><span className={styles.rankTimeLabel}>Marca</span>{item.formattedTime}</strong><CurrentPrizes period={period} position={item.categoryPosition} categoryAge={item.categoryAge}/><em className={styles.rankBadge}>{item.badge}</em></div>):<p className={styles.empty}>Ainda não há marcas validadas para este período.</p>}</div>
+    {error&&<p role="alert">{error}</p>}
+    <div className={styles.rankTable}><div className={styles.rankHead}><span>#</span><span>Atleta</span><span>Categoria</span><span>Data</span><span>Local</span><span>Marca</span><span>Premiação atual</span><span>Validação</span></div>{loading?<p className={styles.empty}>Carregando ranking…</p>:ranking.length?ranking.map(item=><div className={styles.rankRow} key={item.id}><b className={styles.rankPosition}>{item.categoryPosition}</b><strong className={styles.rankName}>#{item.athleteNumber} · {item.publicName}<small className={styles.rankMobileCategory}>{circuitCategoryName(item.categoryAge)} · {item.categoryAge} anos · {item.gender==="FEMALE"?"F":"M"}</small></strong><span className={styles.rankCategory} title={circuitCategoryLabel(item.categoryAge)}>{circuitCategoryName(item.categoryAge)} · {item.categoryAge} anos · {item.gender==="FEMALE"?"F":"M"}</span><time className={styles.rankDate} dateTime={item.activityDate}>{formatDate(item.activityDate)}</time><span className={styles.rankLocation}>{formatLocation(item.city, item.state)}</span><strong className={styles.rankTime}><span className={styles.rankTimeLabel}>Marca</span>{item.formattedTime}</strong><CurrentPrizes period={period} position={item.categoryPosition} categoryAge={item.categoryAge}/><em className={styles.rankBadge}>{item.badge}</em></div>):<p className={styles.empty}>Ainda não há marcas validadas para este período.</p>}</div>
   </div>;
 }

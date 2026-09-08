@@ -33,11 +33,11 @@ test("calcula a categoria pela idade no ano da edição", () => {
   assert.throws(() => categoryForBirthDate("2012-01-01", 2026));
 });
 
-test("normaliza atividades anteriores ao início e encerra a edição em novembro", () => {
-  assert.equal(validateCircuitActivityDate("2026-07-01", "2026-08-01", "2026-11-30"), "2026-08-01");
-  assert.equal(validateCircuitActivityDate("2026-08-01", "2026-08-01", "2026-11-30"), "2026-08-01");
-  assert.equal(validateCircuitActivityDate("2026-09-10", "2026-08-01", "2026-11-30"), "2026-09-10");
-  assert.throws(() => validateCircuitActivityDate("2026-12-01", "2026-08-01", "2026-11-30"));
+test("preserva datas anteriores ao início e encerra a edição em novembro", () => {
+  assert.equal(validateCircuitActivityDate("2026-07-01", "2026-08-01", "2026-11-14"), "2026-07-01");
+  assert.equal(validateCircuitActivityDate("2026-08-01", "2026-08-01", "2026-11-14"), "2026-08-01");
+  assert.equal(validateCircuitActivityDate("2026-09-10", "2026-08-01", "2026-11-14"), "2026-09-10");
+  assert.throws(() => validateCircuitActivityDate("2026-12-01", "2026-08-01", "2026-11-14"));
 });
 
 test("valida dígitos verificadores do CPF", () => {
@@ -68,18 +68,18 @@ test("decide altimetria com tolerância configurável", () => {
 });
 
 test("calcula períodos mensal, bimestral e absoluto", () => {
-  assert.deepEqual(periodBounds("month", "2026-09-12", "2026-08-01", "2026-11-30"), { start: "2026-09-01", end: "2026-09-30" });
-  assert.deepEqual(periodBounds("bimester", "2026-08-12", "2026-08-01", "2026-11-30"), { start: "2026-08-01", end: "2026-09-30" });
-  assert.deepEqual(periodBounds("bimester", "2026-10-12", "2026-08-01", "2026-11-30"), { start: "2026-10-01", end: "2026-11-30" });
-  assert.deepEqual(periodBounds("edition", "2026-09-12", "2026-08-01", "2026-11-30"), { start: "2026-08-01", end: "2026-11-30" });
+  assert.deepEqual(periodBounds("month", "2026-09-12", "2026-08-01", "2026-11-14"), { start: "2026-09-01", end: "2026-09-30" });
+  assert.deepEqual(periodBounds("bimester", "2026-08-12", "2026-08-01", "2026-11-14"), { start: "2026-08-01", end: "2026-09-30" });
+  assert.deepEqual(periodBounds("bimester", "2026-10-12", "2026-08-01", "2026-11-14"), { start: "2026-10-01", end: "2026-11-14" });
+  assert.deepEqual(periodBounds("edition", "2026-09-12", "2026-08-01", "2026-11-14"), { start: "2026-08-01", end: "2026-11-14" });
   assert.deepEqual(CIRCUIT_MONTHS.map(({ start, end }) => ({ start, end })), [
     { start: "2026-08-01", end: "2026-08-31" },
     { start: "2026-09-01", end: "2026-09-30" },
     { start: "2026-10-01", end: "2026-10-31" },
-    { start: "2026-11-01", end: "2026-11-30" }
+    { start: "2026-11-01", end: "2026-11-14" }
   ]);
   assert.equal(CIRCUIT_BIMONTHS.length, 2);
-  assert.deepEqual({ start: CIRCUIT_ABSOLUTE.start, end: CIRCUIT_ABSOLUTE.end }, { start: "2026-08-01", end: "2026-11-30" });
+  assert.deepEqual({ start: CIRCUIT_ABSOLUTE.start, end: CIRCUIT_ABSOLUTE.end }, { start: "2026-08-01", end: "2026-11-14" });
 });
 
 test("aplica premiações cumulativas por período e posição", () => {

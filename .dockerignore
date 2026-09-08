@@ -7,3 +7,10 @@ data/*.sqlite-shm
 data/*.sqlite-wal
 data/uploads
 .next-start-*.log
+
+.tmp
+artifacts
+data/backups
+data/virtual-circuit-private
+.env*
+*.log

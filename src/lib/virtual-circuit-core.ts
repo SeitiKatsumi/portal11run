@@ -69,7 +69,8 @@ export function validateCircuitActivityDate(value: string, start: string, end: s
   ) {
     throw new Error(`A atividade deve ter sido realizada até ${end}.`);
   }
-  return value < start ? start : value;
+  void start;
+  return value;
 }
 
 export function normalizePublicName(value: string) {
@@ -129,6 +130,7 @@ export function activityFingerprint(input: {
 }
 
 export type RankableSubmission = {
+  athleteNumber?: number;
   id: string;
   athleteId: string;
   publicName: string;
@@ -145,7 +147,8 @@ export type RankableSubmission = {
 export function selectBestMarks(items: RankableSubmission[]) {
   const best = new Map<string, RankableSubmission>();
   for (const item of items) {
-    const current = best.get(item.athleteId);
+    const identity = String(item.athleteNumber ?? item.athleteId);
+    const current = best.get(identity);
     if (
       !current ||
       item.timeMs < current.timeMs ||
@@ -154,7 +157,7 @@ export function selectBestMarks(items: RankableSubmission[]) {
         validationPriority[item.type] === validationPriority[current.type] &&
         item.activityDate < current.activityDate)
     ) {
-      best.set(item.athleteId, item);
+      best.set(identity, item);
     }
   }
   return [...best.values()].sort(
@@ -185,4 +188,17 @@ export function periodBounds(period: CircuitPeriod, anchor: string, editionStart
     start: start.toISOString().slice(0, 10) < editionStart ? editionStart : start.toISOString().slice(0, 10),
     end: end.toISOString().slice(0, 10) > editionEnd ? editionEnd : end.toISOString().slice(0, 10)
   };
+}
+
+export function circuitEvolution(items: RankableSubmission[]) {
+  const groups = new Map<string, RankableSubmission[]>();
+  for (const item of items) { const identity=String(item.athleteNumber??item.athleteId); const group=groups.get(identity); if(group)group.push(item);else groups.set(identity,[item]); }
+  return [...groups.values()].map(history => {
+    history.sort((a,b)=>a.activityDate.localeCompare(b.activityDate)||a.timeMs-b.timeMs||a.id.localeCompare(b.id));
+    const first=history[0];
+    const later=history.filter(mark=>mark.activityDate>first.activityDate);
+    const best=later.length ? [...later].sort((a,b)=>a.timeMs-b.timeMs||a.activityDate.localeCompare(b.activityDate)||a.id.localeCompare(b.id))[0] : first;
+    const percent=later.length ? Math.max(0,(first.timeMs-best.timeMs)/first.timeMs*100) : null;
+    return {...first,athleteNumber:Number(first.athleteNumber??first.athleteId),firstTime:formatCircuitTime(first.timeMs),bestTime:formatCircuitTime(best.timeMs),bestDate:best.activityDate,percent,history};
+  }).sort((a,b)=>(b.percent??-1)-(a.percent??-1)||a.bestDate.localeCompare(b.bestDate)||a.athleteNumber-b.athleteNumber);
 }

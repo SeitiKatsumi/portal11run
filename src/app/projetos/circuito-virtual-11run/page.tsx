@@ -1,3 +1,4 @@
+import { CircuitEvolution } from '@/components/CircuitEvolution';
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CalendarDays, CheckCircle2, Clock3, MapPin, Medal, Route, ShieldCheck, Trophy, Users } from "lucide-react";
@@ -37,6 +38,10 @@ const modes = [
 export default function VirtualCircuitPage() {
   const edition = getCircuitEdition();
   const ranking = listCircuitRanking();
+  const today = new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  const month=CIRCUIT_MONTHS.find(p=>today>=p.start && today<=p.end) || (today<CIRCUIT_MONTHS[0].start?CIRCUIT_MONTHS[0]:CIRCUIT_MONTHS[CIRCUIT_MONTHS.length-1]);
+  const bimester=CIRCUIT_BIMONTHS.find(p=>today>=p.start && today<=p.end) || (today<CIRCUIT_BIMONTHS[0].start?CIRCUIT_BIMONTHS[0]:CIRCUIT_BIMONTHS[CIRCUIT_BIMONTHS.length-1]);
+  const leaders=[{title:'Primeiros do mês',period:month,prizes:CIRCUIT_AWARD_COPY.monthly},{title:'Primeiros do bimestre',period:bimester,prizes:CIRCUIT_AWARD_COPY.bimonthly},{title:'Premiação absoluta',period:CIRCUIT_ABSOLUTE,prizes:CIRCUIT_AWARD_COPY.absolute}].map(block=>({...block,rows:listCircuitRanking({start:block.period.start,end:block.period.end}).filter(r=>r.categoryPosition===1)}));
   const participants = listCircuitRanking({ includeOutsideEdition: true });
   const latestParticipants = [...participants]
     .sort((a, b) => b.activityDate.localeCompare(a.activityDate) || a.publicName.localeCompare(b.publicName, "pt-BR"))
@@ -85,12 +90,12 @@ export default function VirtualCircuitPage() {
               <a className={styles.secondaryButton} href="#ranking">Ver ranking nacional</a>
             </div>
             <div className={styles.quickFacts}>
-              <span><Clock3 size={17} /> 1 ago — 30 nov 2026</span>
+              <span><Clock3 size={17} /> 1 ago — 14 nov 2026</span>
               <span><ShieldCheck size={17} /> Participação gratuita</span>
               <span><Users size={17} /> Exclusivo para brasileiros</span>
             </div>
             <p className={styles.datePolicy}>
-              Inscrições abertas. Atividades anteriores a 1º de agosto serão registradas com a data de 01/08/2026.
+              Atividades fora de 01/08 a 14/11 ficam apenas no histórico, com a data original.
             </p>
           </div>
           <div className={styles.heroImage}>
@@ -103,6 +108,16 @@ export default function VirtualCircuitPage() {
               />
             </a>
           </div>
+        </section>
+
+        <section className={styles.section} aria-labelledby="leaders-title">
+          <span className={styles.eyebrow}>Classificações e premiações</span><h2 id="leaders-title">Os líderes de cada disputa.</h2>
+          <p>Primeiros por categoria e gênero. Classificação provisória até a homologação. Encerramento geral: 14 de novembro de 2026.</p>
+          <div className={styles.awardGrid}>{leaders.map(block=><article key={block.title}><h3>{block.title}</h3><p>{block.period.shortLabel} · {circuitPeriodStatus(block.period)}</p>{block.rows.length?<ol>{block.rows.map(r=><li key={r.athleteNumber}><strong>#{r.athleteNumber} {r.publicName}</strong><p>Sub {r.categoryAge+1} · {r.gender==='FEMALE'?'F':'M'} · {r.formattedTime}</p></li>)}</ol>:<p>Aguardando marcas validadas.</p>}<details><summary>Ver premiação</summary>{block.prizes.map(prize=><p key={prize}>{prize}</p>)}</details></article>)}</div>
+        </section>
+        <CircuitEvolution />
+        <section className={styles.section} id="ranking">
+          <CircuitRanking initialRanking={ranking} />
         </section>
 
         <section className={styles.categoryGuide} aria-labelledby="categorias-2026">
@@ -171,7 +186,7 @@ export default function VirtualCircuitPage() {
             <article>
               <CalendarDays />
               <span>Premiação mensal</span>
-              <h3>Do primeiro ao último dia de cada mês</h3>
+              <h3>Mensal · novembro termina em 14/11</h3>
               <div className={styles.periodList}>{CIRCUIT_MONTHS.map((period) => <span key={period.id}><b>{period.label.replace(" de 2026", "")}</b><small>{period.shortLabel} · {circuitPeriodStatus(period)}</small></span>)}</div>
               <ul>{CIRCUIT_AWARD_COPY.monthly.map((prize) => <li key={prize}>{prize}</li>)}</ul>
             </article>
@@ -185,7 +200,7 @@ export default function VirtualCircuitPage() {
             <article className={styles.finalAward}>
               <Medal />
               <span>Ranking absoluto</span>
-              <h3>01/08 a 30/11 · {circuitPeriodStatus(CIRCUIT_ABSOLUTE)}</h3>
+              <h3>01/08 a 14/11 · {circuitPeriodStatus(CIRCUIT_ABSOLUTE)}</h3>
               <p>A melhor marca validada de cada atleta em toda a edição.</p>
               <ul>{CIRCUIT_AWARD_COPY.absolute.map((prize) => <li key={prize}>{prize.startsWith("R$ 500") ? <strong>{prize}</strong> : prize}</li>)}</ul>
             </article>
@@ -195,10 +210,6 @@ export default function VirtualCircuitPage() {
             <div><strong>Oportunidade 11Run Futuro</strong><p>Na premiação absoluta, atletas Sub 10, Sub 11 e Sub 12 poderão ser avaliados para uma oportunidade no projeto. A classificação não garante ingresso automático.</p></div>
             <Link href="/onze-futuro">Conheça o 11Run Futuro</Link>
           </div>
-        </section>
-
-        <section className={styles.section} id="ranking">
-          <CircuitRanking initialRanking={ranking} />
         </section>
 
         <section className={styles.section} id="inscricao">

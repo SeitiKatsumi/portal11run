@@ -44,3 +44,19 @@ O rollback do container não remove as tabelas. Para voltar a aplicação, selec
 - Antivírus de upload e CAPTCHA gerenciado.
 
 Sem essas integrações, o registro `MANUAL_FALLBACK` mantém o fluxo operacional e nenhuma rejeição automática é feita.
+
+## Identidade e evolução — setembro de 2026
+
+A edição encerra em 14/11/2026 (São Paulo). Datas reais fora de 01/08–14/11 permanecem no histórico e não entram nas classificações. Não reconstruímos datas antigas sem backup ou auditoria com a data original.
+
+A migração em `src/lib/virtual-circuit-identity.ts` acrescenta uma tabela de identidades numéricas e vínculos nas tabelas existentes. Cada cadastro público mantém seu UUID, CPF, responsável e documentos. Marcas manuais legadas recebem identidades separadas, pendentes de revisão; nomes nunca são unidos automaticamente. A migração é transacional e repetível. Antes das alterações, salva `before.sqlite` por VACUUM INTO e copia os uploads privados em `backups/circuit-*`, junto ao banco. Falha no backup impede a migração. Esses arquivos não vão ao GitHub.
+
+No admin, abra **Atletas**, selecione o histórico e confirme cada vínculo. Vincular cadastro público move todas as marcas daquele cadastro; não une dois CPFs distintos. Números antigos permanecem disponíveis para corrigir vínculos. O nome público, categoria e gênero são editados no perfil; a edição de marca não muda status ou modalidade.
+
+**Adicionar em lote:** cole colunas separadas por tabulação, com cabeçalho opcional: nome, idade em 2026 (9–13), gênero (F/M), data (DD/MM/AAAA ou AAAA-MM-DD), tempo (MM:SS.CC), cidade, UF, modalidade (pista/livre/oficial), competição/teste, número opcional. Revise a identidade de cada linha, escolhendo atleta existente, outra linha anterior ou nova pessoa. O limite é 500 marcas. Erros não salvam parte do lote; a chave de operação torna tentativas repetidas idempotentes.
+
+APIs autenticadas: GET/PATCH `/api/admin/circuito-virtual/athletes`, POST `/api/admin/circuito-virtual/batch`. A consulta pública de ranking aceita `mode=evolution`, além dos filtros existentes. O número é adicional aos IDs originais. A evolução usa a melhor marca do primeiro dia e a melhor posterior, em duas datas distintas, com percentual mínimo de zero. O ranking de evolução não altera a premiação por tempo.
+
+Validação: `pnpm test`, `pnpm lint`, `pnpm typecheck`, `pnpm build`. No Windows com diretório redirecionado, executar o Next pelo caminho físico do projeto evita erros de resolução de caminhos. Em produção, Docker mantém porta 80 e `/data` persistente.
+
+Antes do deploy, registrar contagens e imagem atual. Depois, conferir integridade, contagens, rankings e logs da migração. Para recuperação, manter o backup e a imagem anterior; não reativar cegamente uma imagem antiga, pois o seed anterior sobrescrevia marcas. Suspender gravações e preservar também as atividades recebidas após a publicação antes de qualquer restauração do banco.

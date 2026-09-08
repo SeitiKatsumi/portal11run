@@ -131,6 +131,7 @@ test("ranking inclui Bernardo dos Santos Mendonça na categoria calculada pela d
 
 test("admin pode ocultar, restaurar e excluir qualquer marca oficial", () => {
   const created = circuit.createCircuitAdminOfficialResult({
+    confirmNew: true,
     publicName: "Atleta Gerenciável",
     categoryAge: 11,
     gender: "FEMALE",
@@ -162,4 +163,13 @@ test("admin pode excluir inscrição que possui termo médico vinculado", () => 
 
   assert.doesNotThrow(() => circuit.deleteCircuitAdminSubmission({ id: created.submissionId, actor: "admin:test" }));
   assert.equal(circuit.getCircuitAdminSubmission(created.submissionId), null);
+});
+
+test('marca manual vincula ao cadastro público sem alterar responsável ou documentos',()=>{
+ const created=registration({method:'GUARDIAN_COMMITMENT',guardianCpfConfirmation:'111.444.777-35',commitmentAccepted:true});
+ const athlete=circuit.getCircuitDatabase().prepare('SELECT id,circuit_number,document_file_id FROM virtual_circuit_athletes WHERE id=?').get(created.athleteId)!;
+ const manual=circuit.createCircuitAdminOfficialResult({publicName:'Atleta T.',categoryAge:11,gender:'FEMALE',activityDate:'2026-09-03',time:'03:20.00',city:'Itatiba',state:'SP',competitionName:'Teste',submissionType:'TRACK_400M',confirmNew:true,actor:'test'}) as {id:string};
+ circuit.linkCircuitMark({id:manual.id,source:'official',athleteNumber:Number(athlete.circuit_number),actor:'test'});
+ assert.ok(circuit.listCircuitAthletes().find(a=>a.number===athlete.circuit_number)!.history.some(m=>m.id===created.submissionId));
+ assert.equal(circuit.getCircuitDatabase().prepare('SELECT document_file_id FROM virtual_circuit_athletes WHERE id=?').get(created.athleteId)!.document_file_id,athlete.document_file_id);
 });
