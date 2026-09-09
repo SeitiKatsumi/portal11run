@@ -1,4 +1,5 @@
 "use client";
+import { CIRCUIT_TRACK_RULE } from "@/lib/virtual-circuit-schedule";
 import { formatCircuitAthleteNumber } from '@/lib/virtual-circuit-display';
 
 import {
@@ -489,9 +490,9 @@ export function CircuitAdmin({
             <p className={styles.syncNotice}>Este fluxo dispensa o cadastro público. Ao salvar, a marca será aprovada e publicada imediatamente no ranking do desafio.</p>
             <div className={styles.officialForm}>
               <label className={styles.fullField}>Nome do atleta<input autoFocus value={officialDraft.publicName} onChange={event=>setOfficialDraft({...officialDraft,publicName:event.target.value})}/></label>
-              <CircuitAthletePicker name={officialDraft.publicName} onSelect={(athleteNumber,confirmNew)=>setOfficialDraft(d=>d?{...d,athleteNumber,confirmNew}:d)} />
-              <label>Categoria 2026<select value={officialDraft.categoryAge} onChange={event=>setOfficialDraft({...officialDraft,categoryAge:event.target.value})}>{CIRCUIT_CATEGORY_AGES.map(age=><option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}</select></label>
-              <label>Gênero esportivo<select value={officialDraft.gender} onChange={event=>setOfficialDraft({...officialDraft,gender:event.target.value as "FEMALE"|"MALE"})}><option value="FEMALE">Feminino</option><option value="MALE">Masculino</option></select></label>
+              <CircuitAthletePicker name={officialDraft.publicName} onSelect={(athleteNumber,confirmNew,athlete)=>setOfficialDraft(d=>d?{...d,athleteNumber,confirmNew,...(athlete?{categoryAge:String(athlete.category_age),gender:athlete.gender}:{})}:d)} />
+              <label>Categoria 2026<select disabled={Boolean(officialDraft.athleteNumber)} value={officialDraft.categoryAge} onChange={event=>setOfficialDraft({...officialDraft,categoryAge:event.target.value})}>{CIRCUIT_CATEGORY_AGES.map(age=><option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}</select></label>
+              <label>Gênero esportivo<select disabled={Boolean(officialDraft.athleteNumber)} value={officialDraft.gender} onChange={event=>setOfficialDraft({...officialDraft,gender:event.target.value as "FEMALE"|"MALE"})}><option value="FEMALE">Feminino</option><option value="MALE">Masculino</option></select></label>
               <label>Modalidade<select value={officialDraft.submissionType} onChange={event=>setOfficialDraft({...officialDraft,submissionType:event.target.value as OfficialDraft["submissionType"]})}><option value="TRACK_400M">Pista de 400 m</option><option value="OPEN_COURSE">Percurso livre</option><option value="OFFICIAL_COMPETITION">Competição oficial</option></select></label>
               <label>Data do teste<input type="date" value={officialDraft.activityDate} onChange={event=>setOfficialDraft({...officialDraft,activityDate:event.target.value})}/></label>
               <label>Marca (MM:SS.CC)<input placeholder="03:26.70" value={officialDraft.time} onChange={event=>setOfficialDraft({...officialDraft,time:event.target.value})}/></label>
@@ -499,6 +500,7 @@ export function CircuitAdmin({
               <label>UF<input maxLength={2} value={officialDraft.state} onChange={event=>setOfficialDraft({...officialDraft,state:event.target.value.toUpperCase()})}/></label>
               <label className={styles.fullField}>Competição ou identificação do teste<input value={officialDraft.competitionName} onChange={event=>setOfficialDraft({...officialDraft,competitionName:event.target.value})}/></label>
             </div>
+            {officialDraft.submissionType==='TRACK_400M'&&<p className={styles.syncNotice}>{CIRCUIT_TRACK_RULE}</p>}
             {error&&<p className={styles.error}>{error}</p>}
             <div className={styles.officialActions}><button type="button" onClick={closeCreateOfficial}>Cancelar</button><button type="button" disabled={busy} onClick={createOfficial}><Save size={17}/>{busy?"Salvando...":"Adicionar ao desafio"}</button></div>
           </div>

@@ -1,0 +1,30 @@
+// Local browser regression. Start the app with a disposable SQLite copy before running.
+// Set PLAYWRIGHT_MODULE, PLAYWRIGHT_BROWSER_PATH, ADMIN_USER and ADMIN_PASSWORD.
+import assert from 'node:assert/strict';
+import {createRequire} from 'node:module';
+const {chromium}=createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE||'playwright');
+const browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_BROWSER_PATH});
+const page=await browser.newPage({httpCredentials:{username:process.env.ADMIN_USER,password:process.env.ADMIN_PASSWORD}});
+const base='http://127.0.0.1';let created;
+try{
+ const response=await page.request.get(base+'/api/admin/circuito-virtual/athletes');assert.equal(response.status(),200);const {athletes}=await response.json();
+ const male=athletes.find(a=>a.gender==='MALE'&&a.category_age>9&&a.count>0);const female=athletes.find(a=>a.gender==='FEMALE'&&a.count>0);assert.ok(male&&female);
+ await page.goto(base+'/admin/circuito-virtual',{waitUntil:'networkidle'});await page.getByRole('button',{name:'Adicionar atleta',exact:true}).click();const dialog=page.getByRole('dialog',{name:'Adicionar atleta diretamente'});
+ for(const a of [female,male]){await dialog.getByLabel('Nome do atleta',{exact:true}).fill(a.public_name.slice(0,3));await dialog.getByLabel('Vincular atleta').locator(`option[value="${a.number}"]`).waitFor({state:'attached'});await dialog.getByLabel('Vincular atleta').selectOption(String(a.number));assert.equal(await dialog.getByLabel('Categoria 2026').inputValue(),String(a.category_age));assert.equal(await dialog.getByLabel('Gênero esportivo').inputValue(),a.gender);assert.ok(await dialog.getByLabel('Gênero esportivo').isDisabled());}
+ await dialog.getByLabel('Vincular atleta').selectOption('new');assert.ok(await dialog.getByLabel('Gênero esportivo').isEnabled());await dialog.getByLabel('Vincular atleta').selectOption(String(male.number));
+ for(const [label,value] of [['Data do teste','2026-09-09'],['Marca (MM:SS.CC)','04:57.12'],['Cidade','QA local'],['UF','SP']])await dialog.getByLabel(label,{exact:true}).fill(value);
+ const wait=page.waitForResponse(r=>r.url().endsWith('/official-results')&&r.request().method()==='POST');await dialog.getByRole('button',{name:'Adicionar ao desafio',exact:true}).click();const saved=await wait;const body=await saved.json();assert.equal(saved.status(),201,JSON.stringify(body));created=body.result.id;assert.equal(body.result.circuit_number,male.number);await dialog.waitFor({state:'hidden'});
+ await page.getByLabel('Buscar nome ou número').fill(String(male.number));await page.getByRole('button').filter({hasText:male.public_name}).first().click();await page.getByRole('button',{name:'Editar identificação',exact:true}).click();assert.equal(await page.getByLabel('Gênero esportivo').inputValue(),'MALE');assert.deepEqual(await page.getByLabel('Gênero esportivo').locator('option').allTextContents(),['Feminino','Masculino']);
+ await page.getByRole('button',{name:'Adicionar em lote',exact:true}).click();await page.getByLabel('Linhas do Excel').fill([1,2].map(i=>`${male.public_name}\t9\tF\t0${i}/09/2026\t05:00.00\tQA\tSP\tpista\tQA`).join('\n'));await page.getByRole('button',{name:'Revisar linhas'}).click();await page.getByLabel('Identidade linha 1',{exact:true}).selectOption(String(male.number));await page.getByLabel('Identidade linha 2',{exact:true}).selectOption('line:0');
+ for(const i of [1,2]){assert.equal(await page.getByLabel(`Linha ${i}: gender`,{exact:true}).inputValue(),'MALE');assert.equal(await page.getByLabel(`Linha ${i}: categoryAge`,{exact:true}).inputValue(),String(male.category_age));}
+ for(const width of [1440,768,390]){await page.setViewportSize({width,height:960});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth),width);}
+ await page.goto(base+'/projetos/circuito-virtual-11run',{waitUntil:'networkidle'});
+ const illustration=page.getByRole('img',{name:'Pista de 400 metros:',exact:false});
+ const slider=page.getByRole('slider',{name:'Explore o percurso'});await slider.focus();await page.keyboard.press('End');assert.equal(await slider.inputValue(),'1000');assert.ok(Math.abs(Number(await illustration.locator('circle').getAttribute('cx'))-410)<1);
+ await page.getByRole('button',{name:'Reiniciar',exact:true}).click();await page.getByRole('button',{name:'Animar 2,5 voltas',exact:true}).click();await page.waitForTimeout(250);await page.getByRole('button',{name:'Pausar animação',exact:true}).click();const distance=await slider.inputValue();assert.ok(Number(distance)>0);await page.waitForTimeout(150);assert.equal(await slider.inputValue(),distance);
+ assert.match(await page.locator('#regulamento').innerText(),/1.3-2026/);
+ await page.getByText('8. Dos testes em pista',{exact:true}).click();assert.match(await page.locator('#regulamento').innerText(),/Não serão aceitas distâncias medidas por GPS/);
+ await page.getByText('15.1. Da comprovação obrigatória para prêmios bimestrais e em dinheiro',{exact:true}).click();assert.match(await page.locator('#regulamento').innerText(),/vídeo na íntegra/);
+ for(const width of [1440,768,390]){await page.setViewportSize({width,height:960});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth),width);}
+ console.log('PASS: seleção, gênero, categoria, marca vinculada, edição, lote e responsividade');
+}finally{if(created)assert.ok((await page.request.delete(base+'/api/admin/circuito-virtual/official-results/'+created)).ok());await browser.close();}

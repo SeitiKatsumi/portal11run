@@ -1,6 +1,6 @@
 export const CIRCUIT_EDITION_START = "2026-08-01";
 export const CIRCUIT_EDITION_END = "2026-11-14";
-export const CIRCUIT_REGULATIONS_VERSION = "1.2-2026";
+export const CIRCUIT_REGULATIONS_VERSION = "1.3-2026";
 
 export type CircuitRankingPeriod = "monthly" | "bimonthly" | "absolute";
 export type CircuitPrize =
@@ -88,3 +88,6 @@ function todayInSaoPaulo() {
     day: "2-digit"
   }).format(new Date());
 }
+
+export const CIRCUIT_TRACK_RULE = "Na pista oficial de 400 m, os 1.000 m devem ser medidos pelas marcações oficiais: duas voltas completas e mais meia volta (400 + 400 + 200 m), seguindo a linha de medição da raia 1. Não serão aceitas distâncias medidas por GPS de relógio, celular ou aplicativo para comprovar testes em pista, pois podem apresentar erro. O vídeo deve ser integral, contínuo e sem cortes, mostrando largada, percurso e chegada.";
+export const CIRCUIT_PRIZE_EVIDENCE_RULE = "Para receber qualquer premiação bimestral ou premiação em dinheiro, é imprescindível comprovar a marca em teste na pista oficial de 400 m, com vídeo na íntegra, contínuo e sem cortes, ou em competição oficial, com resultado oficial verificável. Marca em percurso aberto ou distância comprovada apenas por GPS não atende a essa exigência. A entrega depende da homologação da comissão.";

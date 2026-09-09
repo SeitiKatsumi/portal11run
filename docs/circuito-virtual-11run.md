@@ -69,3 +69,13 @@ Antes do deploy, registrar contagens e imagem atual. Depois, conferir integridad
 - O gráfico mostra a variação percentual de cada marca em relação à referência: melhorias sobem e pioras permanecem negativas. Botões dos atletas alternam linhas; os pontos mostram tempo e percentual. A tabela acessível contém os mesmos valores.
 
 Verificação: `pnpm test`, `pnpm lint`, `pnpm typecheck`, `pnpm build`. No circuito público, conferir os três quadros de líderes e tocar nos atletas/pontos do gráfico. No admin, conferir a numeração nas marcas, atletas e opções de vínculo. Esta atualização não migra nem altera dados.
+
+## Seleção de atletas e comprovação em pista — regulamento 1.3
+
+A seleção de atleta existente preenche categoria e gênero no cadastro de marca e no lote. Na inclusão individual, esses campos ficam protegidos enquanto houver vínculo; a edição da identificação usa opções Feminino/Masculino. A validação do servidor permanece ativa.
+
+O regulamento 1.3 exige 1.000 m pelas marcações oficiais da pista de 400 m (duas voltas e meia na raia 1), sem aceitar GPS como medição em pista. Prêmios bimestrais e em dinheiro exigem teste em pista oficial com vídeo integral ou competição oficial com resultado verificável, sujeito a homologação. Resultados e aceites anteriores são preservados.
+
+`CircuitTrackGuide.tsx` contém a ilustração vetorial com animação iniciada pelo usuário, pausa, reinício e controle de percurso. Não usa imagens pesadas nem dependências novas.
+
+Além de `pnpm test`, `pnpm lint`, `pnpm typecheck` e `pnpm build`, executar `node tests/circuit-athlete-selection.browser.mjs` com o servidor local na porta 80 e cópia descartável do SQLite. Definir `ADMIN_USER`, `ADMIN_PASSWORD`, `PLAYWRIGHT_MODULE` (instalação disponível do Playwright) e `PLAYWRIGHT_BROWSER_PATH`. A regressão verifica seleção, gravação vinculada, lote, regulamento, animação e responsividade; remove a marca criada ao terminar.

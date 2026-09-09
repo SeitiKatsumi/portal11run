@@ -1,4 +1,7 @@
+import { CIRCUIT_TRACK_RULE, CIRCUIT_PRIZE_EVIDENCE_RULE } from './virtual-circuit-schedule.ts';
 export const circuitFaq = [
+  ["Posso medir os 1.000 m da pista pelo GPS?", CIRCUIT_TRACK_RULE],
+  ["Qual comprovação é exigida para prêmios bimestrais e em dinheiro?", CIRCUIT_PRIZE_EVIDENCE_RULE],
   ["Quem pode participar?", "Atletas brasileiros das categorias Sub 10 a Sub 14, com autorização de um responsável legal, residentes no Brasil ou no exterior. Em 2026, isso corresponde aos nascidos de 2017 a 2013."],
   ["Preciso morar perto de uma pista?", "Não. São aceitas competições oficiais, pistas de 400 metros e percursos abertos."],
   ["A participação é gratuita?", "Sim, nesta primeira edição a participação é gratuita."],
@@ -35,7 +38,7 @@ export const circuitRegulations = [
   ["5. Da distância", "Todos os resultados devem corresponder a 1.000 metros. Distâncias inferiores não serão aceitas."],
   ["6. Das formas de participação", "São aceitas marcas de competição oficial, teste em pista oficial de 400 metros e teste em percurso aberto, cada uma com comprovação própria."],
   ["7. Das competições oficiais", "É obrigatório informar competição, data, marca e resultado público. A marca só será oficial após confirmação."],
-  ["8. Dos testes em pista", "O teste deve ocorrer em pista de 400 metros, completando duas voltas e 200 metros. O vídeo precisa permitir análise da largada, percurso e chegada."],
+  ["8. Dos testes em pista", CIRCUIT_TRACK_RULE],
   ["9. Dos percursos abertos", "O percurso precisa ter ao menos 1.000 metros, registro eletrônico e vídeo público. O ponto final deve estar na mesma elevação ou acima do inicial, respeitada a tolerância."],
   ["10. Do acompanhamento", "É permitido correr acompanhado, em grupo ou com pacer humano. É proibido auxílio físico, revezamento, transporte parcial ou vantagem motorizada."],
   ["11. Das tentativas", "O atleta pode enviar quantas atividades desejar. Apenas a melhor marca aprovada em cada período participa da classificação."],
@@ -43,6 +46,7 @@ export const circuitRegulations = [
   ["13. Do ranking", "O ranking é separado pelas categorias Sub 10, Sub 11, Sub 12, Sub 13 e Sub 14 e por gênero esportivo. Apenas marcas aprovadas geram posição e direito a premiação."],
   ["14. Dos desempates", "Prevalecem menor tempo, maior nível de comprovação e marca realizada primeiro. A comissão pode solicitar teste em posições premiadas."],
   ["15. Das premiações", "As premiações são cumulativas e separadas por categoria e gênero. No ranking mensal, o primeiro recebe uma camiseta 11Run. No ranking bimestral, o primeiro recebe tênis e camiseta, e o segundo e o terceiro recebem camiseta. No ranking absoluto, o líder recebe R$ 500,00, tênis, camiseta, troféu, certificado físico e digital; segundo e terceiro recebem camiseta, troféu, certificado físico e digital; quarto e quinto recebem camiseta, certificado físico e digital; do sexto ao décimo recebem camiseta e certificado digital; e todos os demais concluintes com marca validada recebem certificado digital. Atletas Sub 10, Sub 11 e Sub 12 também podem ser avaliados para uma oportunidade no 11Run Futuro. Prêmios dependem de homologação, conferência documental e cumprimento do regulamento e podem ser substituídos por equivalentes."],
+  ["15.1. Da comprovação obrigatória para prêmios bimestrais e em dinheiro", CIRCUIT_PRIZE_EVIDENCE_RULE],
   ["16. Do teste final", "Finalistas e candidatos ao 11Run Futuro podem ser convocados para teste presencial. Despesas só serão cobertas quando expressamente informado."],
   ["17. Do 11Run Futuro", "A liderança não garante ingresso. A decisão considera resultado, evolução, comprometimento, contexto familiar, disponibilidade e avaliação da comissão."],
   ["18. Da desclassificação", "Fraude, dados falsos, documentos falsos, atividade de terceiros, edição impeditiva do vídeo, distância inferior, descida indevida ou auxílio proibido podem causar desclassificação."],

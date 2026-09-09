@@ -1,3 +1,5 @@
+import { CircuitTrackGuide } from '@/components/CircuitTrackGuide';
+import { CIRCUIT_PRIZE_EVIDENCE_RULE } from '@/lib/virtual-circuit-schedule';
 import { formatCircuitAthleteNumber } from '@/lib/virtual-circuit-display';
 import { CircuitEvolution } from '@/components/CircuitEvolution';
 import type { Metadata } from "next";
@@ -32,7 +34,7 @@ export const dynamic = "force-dynamic";
 
 const modes = [
   ["Competição oficial", "Resultado público emitido por federação ou organização esportiva.", Trophy],
-  ["Pista oficial de 400m", "Duas voltas completas e mais 200 metros, com vídeo público.", Route],
+  ["Pista oficial de 400m", "2,5 voltas pelas marcações oficiais, com vídeo integral e sem cortes. Distância por GPS não é aceita na pista.", Route],
   ["Percurso aberto", "Registro no Strava, vídeo público e análise de distância e altimetria.", MapPin]
 ] as const;
 
@@ -116,6 +118,7 @@ export default function VirtualCircuitPage() {
             {leaders.map(block => <article key={block.title}>
               <h3>{block.title}</h3>
               <p>{block.period.shortLabel} · {circuitPeriodStatus(block.period)}</p>
+              {block.title!=='Primeiros do mês'&&<p><strong>{block.title==='Premiação absoluta'?'Premiação em dinheiro':'Premiação bimestral'} condicionada à comprovação em pista oficial com vídeo integral ou competição oficial.</strong></p>}
               <div className={styles.leaderCategories}>
                 {CIRCUIT_CATEGORY_AGES.map(age => <section className={styles.leaderCategory} key={age} aria-label={`${block.title}: ${circuitCategoryName(age)}`}>
                   <h4>{circuitCategoryName(age)}</h4>
@@ -191,13 +194,14 @@ export default function VirtualCircuitPage() {
               <article key={title}><Icon size={25} /><h3>{title}</h3><p>{text}</p><CheckCircle2 size={18} /></article>
             ))}
           </div>
+          <CircuitTrackGuide />
         </section>
 
         <section className={`${styles.section} ${styles.awards}`}>
           <div>
             <span className={styles.eyebrow}>Muito mais que um ranking</span>
             <h2>Três disputas. Premiações que se acumulam.</h2>
-            <p>Mensal, bimestral e absoluta: cada classificação considera categoria e gênero, com datas próprias e marcas validadas.</p>
+            <p>Mensal, bimestral e absoluta: cada classificação considera categoria e gênero, com datas próprias e marcas validadas.</p><p><strong>Comprovação obrigatória.</strong> {CIRCUIT_PRIZE_EVIDENCE_RULE}</p>
           </div>
           <div className={styles.awardGrid}>
             <article>
