@@ -79,3 +79,9 @@ O regulamento 1.3 exige 1.000 m pelas marcações oficiais da pista de 400 m (du
 `CircuitTrackGuide.tsx` contém a ilustração vetorial com animação iniciada pelo usuário, pausa, reinício e controle de percurso. Não usa imagens pesadas nem dependências novas.
 
 Além de `pnpm test`, `pnpm lint`, `pnpm typecheck` e `pnpm build`, executar `node tests/circuit-athlete-selection.browser.mjs` com o servidor local na porta 80 e cópia descartável do SQLite. Definir `ADMIN_USER`, `ADMIN_PASSWORD`, `PLAYWRIGHT_MODULE` (instalação disponível do Playwright) e `PLAYWRIGHT_BROWSER_PATH`. A regressão verifica seleção, gravação vinculada, lote, regulamento, animação e responsividade; remove a marca criada ao terminar.
+
+## Histórico individual no gráfico
+
+O destaque padrão continua mostrando as cinco maiores evoluções. O seletor “Atleta no gráfico” permite consultar qualquer atleta do período, incluindo os demais colocados, evolução zero e uma única data (sem comparação). Todas as marcas aprovadas são exibidas, inclusive múltiplas marcas no mesmo dia; a referência permanece a melhor marca do primeiro dia.
+
+Regressão: `node tests/circuit-chart-selection.browser.mjs`, com servidor local na porta 80 e as variáveis de Playwright descritas acima. A verificação usa respostas simuladas apenas para o ranking de evolução e não grava dados.
