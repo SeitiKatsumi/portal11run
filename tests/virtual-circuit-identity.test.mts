@@ -69,3 +69,30 @@ test('reiniciar aplicação não sobrescreve edições de marcas carregadas pelo
  const after=db.prepare('SELECT competition_name,activity_date,status FROM virtual_circuit_official_results WHERE id=?').get(row.id)!;
  assert.equal(after.competition_name,'Edição preservada');assert.equal(after.activity_date,'2026-04-25');assert.equal(after.status,'HIDDEN');
 });
+import { formatCircuitAthleteNumber, circuitMarkProgress } from '../src/lib/virtual-circuit-display.ts';
+
+test('exibição numérica e gráfico sobem com melhora sem ocultar pioras',()=>{
+ assert.equal(formatCircuitAthleteNumber(1),'Nº 001');
+ assert.equal(formatCircuitAthleteNumber(1024),'Nº 1024');
+ assert.equal(circuitMarkProgress(300000,300000),0);
+ assert.equal(circuitMarkProgress(300000,270000),10);
+ assert.equal(circuitMarkProgress(300000,330000),-10);
+});
+
+test('últimos participantes usam inclusão aprovada, com identidade única, independente da data e do melhor tempo',()=>{
+ const db=circuit.getCircuitDatabase();
+ const first=circuit.createCircuitAdminOfficialResult({...input,publicName:'Recente Primeiro',activityDate:'2027-01-01'}) as {id:string;circuit_number:number};
+ const second=circuit.createCircuitAdminOfficialResult({...input,publicName:'Recente Segundo',activityDate:'2026-08-01'}) as {id:string;circuit_number:number};
+ const slower=circuit.createCircuitAdminOfficialResult({...input,publicName:'Recente Primeiro',athleteNumber:first.circuit_number,activityDate:'2026-08-02',time:'06:00.00'}) as {id:string};
+ const hidden=circuit.createCircuitAdminOfficialResult({...input,publicName:'Recente Oculto'}) as {id:string};
+ const update=db.prepare('UPDATE virtual_circuit_official_results SET created_at=?,updated_at=? WHERE id=?');
+ update.run('2099-01-01T00:00:00Z','2099-12-31T00:00:00Z',first.id);
+ update.run('2099-01-02T00:00:00Z','2099-01-02T00:00:00Z',second.id);
+ update.run('2099-01-03T00:00:00Z','2099-01-03T00:00:00Z',slower.id);
+ update.run('2099-01-04T00:00:00Z','2099-01-04T00:00:00Z',hidden.id);
+ circuit.setCircuitAdminOfficialResultVisibility({id:hidden.id,visible:false,actor:'test'});
+ const recent=circuit.listLatestCircuitParticipants();
+ assert.deepEqual(recent.slice(0,2).map(a=>a.athleteNumber),[first.circuit_number,second.circuit_number]);
+ assert.equal(new Set(recent.map(a=>a.athleteNumber)).size,recent.length);
+ assert.ok(!recent.some(a=>a.publicName==='Recente Oculto'));
+});

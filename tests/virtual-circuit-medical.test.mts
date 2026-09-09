@@ -22,12 +22,12 @@ function privateFile(purpose: string) {
   });
 }
 
-function registration(medical: Record<string, unknown>) {
+function registration(medical: Record<string, unknown>, athleteCpf = "529.982.247-25") {
   return circuit.createCircuitRegistration({
     athlete: {
       fullName: "Atleta Teste",
       publicName: "Atleta T.",
-      cpf: "529.982.247-25",
+      cpf: athleteCpf,
       birthDate: "2015-04-10",
       city: "Itatiba",
       state: "SP",
@@ -172,4 +172,14 @@ test('marca manual vincula ao cadastro público sem alterar responsável ou docu
  circuit.linkCircuitMark({id:manual.id,source:'official',athleteNumber:Number(athlete.circuit_number),actor:'test'});
  assert.ok(circuit.listCircuitAthletes().find(a=>a.number===athlete.circuit_number)!.history.some(m=>m.id===created.submissionId));
  assert.equal(circuit.getCircuitDatabase().prepare('SELECT document_file_id FROM virtual_circuit_athletes WHERE id=?').get(created.athleteId)!.document_file_id,athlete.document_file_id);
+});
+
+test('últimos participantes incluem inscrições públicas aprovadas e ignoram pendentes',()=>{
+ const publicEntry=registration({method:'GUARDIAN_COMMITMENT',guardianCpfConfirmation:'111.444.777-35',commitmentAccepted:true},'123.456.789-09');
+ const db=circuit.getCircuitDatabase();
+ const number=Number(db.prepare('SELECT circuit_number FROM virtual_circuit_athletes WHERE id=?').get(publicEntry.athleteId)!.circuit_number);
+ db.prepare("UPDATE virtual_circuit_submissions SET created_at='2099-01-01T00:00:00Z' WHERE id=?").run(publicEntry.submissionId);
+ assert.ok(!circuit.listLatestCircuitParticipants().some(a=>a.athleteNumber===number));
+ db.prepare("UPDATE virtual_circuit_submissions SET status='APPROVED' WHERE id=?").run(publicEntry.submissionId);
+ assert.equal(circuit.listLatestCircuitParticipants()[0].athleteNumber,number);
 });

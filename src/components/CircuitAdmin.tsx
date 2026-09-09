@@ -1,4 +1,5 @@
 "use client";
+import { formatCircuitAthleteNumber } from '@/lib/virtual-circuit-display';
 
 import {
   CheckCircle2,
@@ -355,7 +356,7 @@ export function CircuitAdmin({
               key={item.id}
               onClick={() => openOfficial(item)}
             >
-              <strong>#{item.circuit_number} · {item.public_name}</strong>
+              <strong>{formatCircuitAthleteNumber(item.circuit_number)} · {item.public_name}</strong>
               <span>{circuitCategoryName(item.category_age)} · {item.category_age} anos · {item.gender === "FEMALE" ? "F" : "M"}</span>
               <span>{new Date(`${item.activity_date}T12:00:00`).toLocaleDateString("pt-BR")}</span>
               <span>{item.city}/{item.state}</span>

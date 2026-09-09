@@ -1,10 +1,11 @@
+import { formatCircuitAthleteNumber } from '@/lib/virtual-circuit-display';
 import { CircuitEvolution } from '@/components/CircuitEvolution';
 import type { Metadata } from "next";
 import Link from "next/link";
 import { CalendarDays, CheckCircle2, Clock3, MapPin, Medal, Route, ShieldCheck, Trophy, Users } from "lucide-react";
 import { CircuitRegistration } from "@/components/CircuitRegistration";
 import { CircuitRanking } from "@/components/CircuitRanking";
-import { CIRCUIT_HERO_IMAGE, getCircuitEdition, listCircuitRanking } from "@/lib/virtual-circuit";
+import { CIRCUIT_HERO_IMAGE, getCircuitEdition, listCircuitRanking, listLatestCircuitParticipants } from "@/lib/virtual-circuit";
 import { CIRCUIT_CATEGORY_AGES, circuitCategoryBirthYear, circuitCategoryName } from "@/lib/virtual-circuit-category";
 import {
   CIRCUIT_ABSOLUTE,
@@ -43,9 +44,7 @@ export default function VirtualCircuitPage() {
   const bimester=CIRCUIT_BIMONTHS.find(p=>today>=p.start && today<=p.end) || (today<CIRCUIT_BIMONTHS[0].start?CIRCUIT_BIMONTHS[0]:CIRCUIT_BIMONTHS[CIRCUIT_BIMONTHS.length-1]);
   const leaders=[{title:'Primeiros do mês',period:month,prizes:CIRCUIT_AWARD_COPY.monthly},{title:'Primeiros do bimestre',period:bimester,prizes:CIRCUIT_AWARD_COPY.bimonthly},{title:'Premiação absoluta',period:CIRCUIT_ABSOLUTE,prizes:CIRCUIT_AWARD_COPY.absolute}].map(block=>({...block,rows:listCircuitRanking({start:block.period.start,end:block.period.end}).filter(r=>r.categoryPosition===1)}));
   const participants = listCircuitRanking({ includeOutsideEdition: true });
-  const latestParticipants = [...participants]
-    .sort((a, b) => b.activityDate.localeCompare(a.activityDate) || a.publicName.localeCompare(b.publicName, "pt-BR"))
-    .slice(0, 3);
+  const latestParticipants = listLatestCircuitParticipants();
   const faqSchema = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -73,7 +72,7 @@ export default function VirtualCircuitPage() {
                 <span className={styles.latestLabel}><Clock3 size={13} /> Últimos participantes</span>
                 <ul>
                   {latestParticipants.map((participant) => (
-                    <li key={participant.athleteId}>
+                    <li key={participant.athleteNumber}>
                       <strong>{participant.publicName}</strong>
                       <small>{circuitCategoryName(participant.categoryAge)} · {participant.state}</small>
                     </li>
@@ -113,7 +112,25 @@ export default function VirtualCircuitPage() {
         <section className={styles.section} aria-labelledby="leaders-title">
           <span className={styles.eyebrow}>Classificações e premiações</span><h2 id="leaders-title">Os líderes de cada disputa.</h2>
           <p>Primeiros por categoria e gênero. Classificação provisória até a homologação. Encerramento geral: 14 de novembro de 2026.</p>
-          <div className={styles.awardGrid}>{leaders.map(block=><article key={block.title}><h3>{block.title}</h3><p>{block.period.shortLabel} · {circuitPeriodStatus(block.period)}</p>{block.rows.length?<ol>{block.rows.map(r=><li key={r.athleteNumber}><strong>#{r.athleteNumber} {r.publicName}</strong><p>Sub {r.categoryAge+1} · {r.gender==='FEMALE'?'F':'M'} · {r.formattedTime}</p></li>)}</ol>:<p>Aguardando marcas validadas.</p>}<details><summary>Ver premiação</summary>{block.prizes.map(prize=><p key={prize}>{prize}</p>)}</details></article>)}</div>
+          <div className={styles.awardGrid}>
+            {leaders.map(block => <article key={block.title}>
+              <h3>{block.title}</h3>
+              <p>{block.period.shortLabel} · {circuitPeriodStatus(block.period)}</p>
+              <div className={styles.leaderCategories}>
+                {CIRCUIT_CATEGORY_AGES.map(age => <section className={styles.leaderCategory} key={age} aria-label={`${block.title}: ${circuitCategoryName(age)}`}>
+                  <h4>{circuitCategoryName(age)}</h4>
+                  {(['FEMALE', 'MALE'] as const).map(gender => {
+                    const leader = block.rows.find(r => r.categoryAge === age && r.gender === gender);
+                    return <div className={styles.leaderEntry} key={gender}>
+                      <span>{gender === 'FEMALE' ? '1ª Feminino' : '1º Masculino'}</span>
+                      {leader ? <><strong>{leader.publicName}</strong><div><small>{formatCircuitAthleteNumber(leader.athleteNumber)}</small><b>{leader.formattedTime}</b></div></> : <p>Aguardando marca validada</p>}
+                    </div>;
+                  })}
+                </section>)}
+              </div>
+              <details><summary>Ver premiação</summary>{block.prizes.map(prize => <p key={prize}>{prize}</p>)}</details>
+            </article>)}
+          </div>
         </section>
         <CircuitEvolution />
         <section className={styles.section} id="ranking">

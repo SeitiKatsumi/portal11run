@@ -60,3 +60,12 @@ APIs autenticadas: GET/PATCH `/api/admin/circuito-virtual/athletes`, POST `/api/
 Validação: `pnpm test`, `pnpm lint`, `pnpm typecheck`, `pnpm build`. No Windows com diretório redirecionado, executar o Next pelo caminho físico do projeto evita erros de resolução de caminhos. Em produção, Docker mantém porta 80 e `/data` persistente.
 
 Antes do deploy, registrar contagens e imagem atual. Depois, conferir integridade, contagens, rankings e logs da migração. Para recuperação, manter o backup e a imagem anterior; não reativar cegamente uma imagem antiga, pois o seed anterior sobrescrevia marcas. Suspender gravações e preservar também as atividades recebidas após a publicação antes de qualquer restauração do banco.
+
+## Apresentação do circuito — 9 de setembro de 2026
+
+- “Últimos participantes” considera a inclusão mais recente de uma marca aprovada, de origem pública ou administrativa, agrupada pelo número permanente. Data da atividade, melhor tempo e edição do registro não determinam essa ordem.
+- Números aparecem como `Nº 001`, sem modificar os IDs armazenados.
+- Cada quadro de líderes apresenta Sub 10 a Sub 14, com feminino antes do masculino e indicação de ausência de marca validada.
+- O gráfico mostra a variação percentual de cada marca em relação à referência: melhorias sobem e pioras permanecem negativas. Botões dos atletas alternam linhas; os pontos mostram tempo e percentual. A tabela acessível contém os mesmos valores.
+
+Verificação: `pnpm test`, `pnpm lint`, `pnpm typecheck`, `pnpm build`. No circuito público, conferir os três quadros de líderes e tocar nos atletas/pontos do gráfico. No admin, conferir a numeração nas marcas, atletas e opções de vínculo. Esta atualização não migra nem altera dados.

@@ -925,6 +925,28 @@ export type RankingFilters = {
   allMarks?: boolean;
 };
 
+// Recency is the insertion time of an approved entry, never its performance/date.
+export function listLatestCircuitParticipants() {
+  const edition = getCircuitEdition();
+  return getCircuitDatabase().prepare(`
+    SELECT i.number AS athleteNumber, i.public_name AS publicName,
+           i.category_age AS categoryAge, i.state
+    FROM (
+      SELECT a.circuit_number AS number, s.created_at
+      FROM virtual_circuit_submissions s
+      JOIN virtual_circuit_athletes a ON a.id = s.athlete_id
+      WHERE s.edition_id = ? AND s.status = 'APPROVED'
+      UNION ALL
+      SELECT circuit_number, created_at FROM virtual_circuit_official_results
+      WHERE edition_id = ? AND status = 'APPROVED'
+    ) entries
+    JOIN virtual_circuit_identities i ON i.number = entries.number
+    GROUP BY i.number
+    ORDER BY MAX(julianday(entries.created_at)) DESC, i.number DESC
+    LIMIT 3
+  `).all(edition.id, edition.id) as {athleteNumber:number;publicName:string;categoryAge:number;state:string}[];
+}
+
 export function listCircuitRanking(filters: RankingFilters = {}) {
   const edition = getCircuitEdition();
   const db = getCircuitDatabase();
