@@ -70,6 +70,7 @@ test("termo do responsável permite homologação sem atestado", () => {
     actor: "admin:test"
   }) as Record<string, unknown>;
   assert.equal(approved.status, "APPROVED");
+  assert.equal(circuit.listCircuitRanking({allMarks:true}).find(m=>m.id===created.submissionId)?.competitionName,"Teste");
 });
 
 test("termo de responsabilidade exige o mesmo CPF do responsável", () => {

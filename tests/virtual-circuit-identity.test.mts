@@ -96,3 +96,12 @@ test('últimos participantes usam inclusão aprovada, com identidade única, ind
  assert.equal(new Set(recent.map(a=>a.athleteNumber)).size,recent.length);
  assert.ok(!recent.some(a=>a.publicName==='Recente Oculto'));
 });
+
+
+test('histórico reúne competição oficial e teste em pista com nomes e modalidades preservados',()=>{
+ const first=circuit.createCircuitAdminOfficialResult({...input,publicName:'Competição Gráfico',submissionType:'OFFICIAL_COMPETITION',competitionName:'Torneio QA'}) as {id:string;circuit_number:number};
+ circuit.createCircuitAdminOfficialResult({...input,publicName:'Competição Gráfico',athleteNumber:first.circuit_number,activityDate:'2026-09-02',time:'04:30.00'});
+ const history=circuitEvolution(circuit.listCircuitRanking({allMarks:true})).find(a=>a.athleteNumber===first.circuit_number)!.history;
+ assert.equal(history.length,2);assert.equal(history[0].type,'OFFICIAL_COMPETITION');assert.equal(history[0].competitionName,'Torneio QA');assert.equal(history[1].type,'TRACK_400M');
+ assert.equal(circuit.listCircuitAthletes().find(a=>a.number===first.circuit_number)!.history[0].competition_name,'Torneio QA');
+});

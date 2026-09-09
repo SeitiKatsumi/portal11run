@@ -85,3 +85,9 @@ Além de `pnpm test`, `pnpm lint`, `pnpm typecheck` e `pnpm build`, executar `no
 O destaque padrão continua mostrando as cinco maiores evoluções. O seletor “Atleta no gráfico” permite consultar qualquer atleta do período, incluindo os demais colocados, evolução zero e uma única data (sem comparação). Todas as marcas aprovadas são exibidas, inclusive múltiplas marcas no mesmo dia; a referência permanece a melhor marca do primeiro dia.
 
 Regressão: `node tests/circuit-chart-selection.browser.mjs`, com servidor local na porta 80 e as variáveis de Playwright descritas acima. A verificação usa respostas simuladas apenas para o ranking de evolução e não grava dados.
+
+## Vinte evoluções e confirmação de vínculo
+
+O gráfico destaca até vinte atletas com evolução positiva, com linhas de 1,5 px, pontos menores e legenda em grade. A consulta individual continua disponível. Histórico, tabela e detalhes dos pontos identificam a modalidade e o nome da competição/teste; a origem administrativa não é confundida com a modalidade.
+
+“Confirmar vínculo atual” grava a confirmação e mostra o resultado junto à atividade. Alterações para outro atleta usam confirmação inline, com retorno de erro ou sucesso visível e preservação das validações do servidor.

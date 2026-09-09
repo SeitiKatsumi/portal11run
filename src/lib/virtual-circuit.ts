@@ -962,7 +962,7 @@ export function listCircuitRanking(filters: RankingFilters = {}) {
     .prepare(
       `SELECT s.id, s.athlete_id, i.number AS athlete_number, i.public_name, i.category_age, i.gender, s.city, s.state,
               s.activity_date, COALESCE(s.verified_time_ms, s.declared_time_ms) AS time_ms,
-              s.submission_type, s.validation_badge
+              s.submission_type, s.validation_badge, CASE WHEN json_valid(s.activity_data_json) THEN COALESCE(json_extract(s.activity_data_json,'$.competitionName'),json_extract(s.activity_data_json,'$.trackName')) END AS competition_name
        FROM virtual_circuit_submissions s
        JOIN virtual_circuit_athletes a ON a.id = s.athlete_id
        JOIN virtual_circuit_identities i ON i.number = a.circuit_number
@@ -973,7 +973,7 @@ export function listCircuitRanking(filters: RankingFilters = {}) {
     .prepare(
       `SELECT r.id, 'official:' || r.id AS athlete_id, i.number AS athlete_number,
               i.public_name, i.category_age, i.gender, r.city, r.state,
-              r.activity_date, r.time_ms, r.submission_type, r.validation_badge
+              r.activity_date, r.time_ms, r.submission_type, r.validation_badge, r.competition_name
        FROM virtual_circuit_official_results r
        JOIN virtual_circuit_identities i ON i.number = r.circuit_number
        WHERE r.edition_id = ? AND r.status = 'APPROVED'`
@@ -995,6 +995,7 @@ export function listCircuitRanking(filters: RankingFilters = {}) {
     id: row.id,
     athleteId: row.athlete_id,
     athleteNumber: row.athlete_number,
+    competitionName: typeof row.competition_name === 'string' ? row.competition_name : null,
     publicName: row.public_name,
     categoryAge: row.category_age,
     gender: row.gender,
@@ -1021,6 +1022,7 @@ export function listCircuitRanking(filters: RankingFilters = {}) {
 }
 
 type RankingRow = {
+  competition_name: string | null;
   athlete_number: number;
   id: string;
   athlete_id: string;
@@ -1492,8 +1494,8 @@ export function revealSensitiveForAdmin(type: "athlete" | "guardian", id: string
 
 export function listCircuitAthletes(query = '') {
   const db=getCircuitDatabase();
-  const marks = db.prepare(`SELECT r.id, r.circuit_number AS number, r.activity_date, r.time_ms, r.status, r.submission_type, 'official' AS source FROM virtual_circuit_official_results r
-    UNION ALL SELECT s.id,a.circuit_number,s.activity_date,COALESCE(s.verified_time_ms,s.declared_time_ms),s.status,s.submission_type,'submission' FROM virtual_circuit_submissions s JOIN virtual_circuit_athletes a ON a.id=s.athlete_id`).all() as {id:string;number:number;activity_date:string;time_ms:number;status:string;submission_type:CircuitSubmissionType;source:string}[];
+  const marks = db.prepare(`SELECT r.id, r.circuit_number AS number, r.activity_date, r.time_ms, r.status, r.submission_type, r.competition_name, 'official' AS source FROM virtual_circuit_official_results r
+    UNION ALL SELECT s.id,a.circuit_number,s.activity_date,COALESCE(s.verified_time_ms,s.declared_time_ms),s.status,s.submission_type,CASE WHEN json_valid(s.activity_data_json) THEN COALESCE(json_extract(s.activity_data_json,'$.competitionName'),json_extract(s.activity_data_json,'$.trackName')) END,'submission' FROM virtual_circuit_submissions s JOIN virtual_circuit_athletes a ON a.id=s.athlete_id`).all() as {id:string;number:number;activity_date:string;time_ms:number;status:string;submission_type:CircuitSubmissionType;competition_name:string|null;source:string}[];
   return findCircuitIdentities(db,query).map(person=>{
     const history=marks.filter(m=>m.number===person.number).sort((a,b)=>a.activity_date.localeCompare(b.activity_date)||a.time_ms-b.time_ms);
     const valid=history.filter(m=>m.status==='APPROVED' && m.activity_date>=CIRCUIT_ACTIVITY_START && m.activity_date<=CIRCUIT_ACTIVITY_END);

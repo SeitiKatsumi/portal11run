@@ -130,6 +130,7 @@ export function activityFingerprint(input: {
 }
 
 export type RankableSubmission = {
+  competitionName?: string | null;
   athleteNumber?: number;
   id: string;
   athleteId: string;
