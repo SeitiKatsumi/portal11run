@@ -1,6 +1,6 @@
 "use client";
 import { CIRCUIT_TRACK_RULE } from "@/lib/virtual-circuit-schedule";
-import { formatCircuitAthleteNumber } from '@/lib/virtual-circuit-display';
+import { formatCircuitAthleteNumber, circuitActivityLabel } from '@/lib/virtual-circuit-display';
 
 import {
   CheckCircle2,
@@ -22,7 +22,7 @@ import {
   type LucideIcon
 } from "lucide-react";
 import { CircuitAthletes, CircuitAthletePicker } from './CircuitAthletes';
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CircuitOfficialResult } from "@/lib/virtual-circuit";
 import { CIRCUIT_CATEGORY_AGES, circuitCategoryLabel, circuitCategoryName } from "@/lib/virtual-circuit-category";
 import styles from "./CircuitAdmin.module.css";
@@ -112,6 +112,8 @@ export function CircuitAdmin({
   initialSubmissions: Submission[];
   initialOfficialResults: CircuitOfficialResult[];
 }) {
+  const [area,setArea]=useState('athletes');
+  const [statusFilter,setStatusFilter]=useState('');
   const [athleteRevision,setAthleteRevision]=useState(0);
   const [metrics, setMetrics] = useState(initialMetrics);
   const [items, setItems] = useState(initialSubmissions);
@@ -129,8 +131,24 @@ export function CircuitAdmin({
   const [dateFilter, setDateFilter] = useState("");
   const [sortOrder, setSortOrder] = useState<SortOrder>("date-desc");
 
-  const filteredItems = useMemo(() => filterAndSort(items, (item) => item.public_name || item.athlete_name, search, dateFilter, sortOrder), [items, search, dateFilter, sortOrder]);
-  const filteredOfficialResults = useMemo(() => filterAndSort(officialResults, (item) => item.public_name, search, dateFilter, sortOrder), [officialResults, search, dateFilter, sortOrder]);
+  const dialogOpen=Boolean(active||activeOfficial||creatingOfficial);
+  useEffect(()=>{
+    if(!dialogOpen)return;
+    const previous=document.activeElement as HTMLElement|null;
+    const dialog=document.querySelector<HTMLElement>('[role="dialog"]');
+    const overflow=document.body.style.overflow;document.body.style.overflow='hidden';
+    const controls=()=>Array.from(dialog?.querySelectorAll<HTMLElement>('button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href]')||[]).filter(el=>el.offsetParent!==null);
+    controls()[0]?.focus();
+    const keyboard=(event:KeyboardEvent)=>{
+      if(event.key==='Escape'){setActive(null);setActiveOfficial(null);setCreatingOfficial(false);setSubmissionDraft(null);setOfficialDraft(null);setError('');}
+      if(event.key==='Tab'){const items=controls();const first=items[0],last=items.at(-1);if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}}
+    };
+    document.addEventListener('keydown',keyboard);
+    return()=>{document.removeEventListener('keydown',keyboard);document.body.style.overflow=overflow;if(previous?.isConnected)previous.focus({preventScroll:true});};
+  },[dialogOpen]);
+
+  const filteredItems = useMemo(() => filterAndSort(items.filter(item=>!statusFilter||item.status===statusFilter), (item) => item.public_name || item.athlete_name, search, dateFilter, sortOrder), [items, search, dateFilter, sortOrder,statusFilter]);
+  const filteredOfficialResults = useMemo(() => filterAndSort(officialResults.filter(item=>!statusFilter||item.status===statusFilter), (item) => item.public_name, search, dateFilter, sortOrder), [officialResults, search, dateFilter, sortOrder,statusFilter]);
 
   async function refresh() {
     const response = await fetch("/api/admin/circuito-virtual", {signal:AbortSignal.timeout(20000)});
@@ -295,14 +313,14 @@ export function CircuitAdmin({
 
   return (
     <main className={`admin-panel ${styles.panel}`}>
-      <CircuitAthletes revision={athleteRevision} onChange={refresh} onEditActivity={async(id,source)=>{if(source==='submission'){await openSubmission(id);return;}const item=officialResults.find(r=>r.id===id);if(!item)throw new Error('Atividade não encontrada. Atualize o painel.');openOfficial(item);}} />
+
       <section className={styles.hero}>
         <div>
           <span>Circuito Virtual</span>
-          <h1>Inscrições, validação e ranking.</h1>
-          <p>Gerencie envios do formulário e marcas oficiais importadas no mesmo painel.</p>
+          <h1>Circuito Virtual</h1>
+          <p>Atletas, atividades e evolução. Edição 2026.</p>
         </div>
-        <button onClick={refresh}><RefreshCw size={16} />Atualizar</button>
+        <div className={styles.heroActions}><button type="button" onClick={()=>refresh().catch(e=>setError(e.message))}><RefreshCw size={16} />Atualizar</button><button type="button" className={styles.primaryButton} onClick={openCreateOfficial}><Plus size={16}/>Adicionar atividade</button></div>
       </section>
 
       <section className={styles.metrics}>
@@ -322,16 +340,22 @@ export function CircuitAdmin({
         ))}
       </section>
 
+      <nav className={styles.areaTabs} aria-label="Áreas do circuito"><button type="button" aria-pressed={area==='athletes'} onClick={()=>setArea('athletes')}><Users size={17}/>Gestão de atletas</button><button type="button" aria-pressed={area==='activities'} onClick={()=>setArea('activities')}><ClipboardCheck size={17}/>Registros e validação</button></nav>
+      {error&&!active&&!activeOfficial&&!creatingOfficial&&<p role="alert" className={styles.error}>{error}</p>}
+      {area==='athletes'&&<>
+      <CircuitAthletes revision={athleteRevision} onChange={refresh} onEditActivity={async(id,source)=>{if(source==='submission'){await openSubmission(id);return;}const item=officialResults.find(r=>r.id===id);if(!item)throw new Error('Atividade não encontrada. Atualize o painel.');openOfficial(item);}} />
+      </>}
+      {area==='activities'&&<>
       <section className={styles.filters} aria-label="Filtros dos registros">
         <label><Search size={17} /><span>Buscar atleta</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Ex.: Emanuelly" /></label>
         <label><span>Data da atividade</span><input type="date" value={dateFilter} onChange={(event) => setDateFilter(event.target.value)} /></label>
-        <label><span>Ordenar</span><select value={sortOrder} onChange={(event) => setSortOrder(event.target.value as SortOrder)}><option value="date-desc">Data mais recente</option><option value="date-asc">Data mais antiga</option><option value="name-asc">Nome A–Z</option><option value="name-desc">Nome Z–A</option></select></label>
-        <button type="button" onClick={() => { setSearch(""); setDateFilter(""); setSortOrder("date-desc"); }}>Limpar filtros</button>
+        <label><span>Status</span><select value={statusFilter} onChange={e=>setStatusFilter(e.target.value)}><option value="">Todos os status</option>{Object.entries(labels).map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label><label><span>Ordenar</span><select value={sortOrder} onChange={(event) => setSortOrder(event.target.value as SortOrder)}><option value="date-desc">Data mais recente</option><option value="date-asc">Data mais antiga</option><option value="name-asc">Nome A–Z</option><option value="name-desc">Nome Z–A</option></select></label>
+        <button type="button" onClick={() => { setSearch(""); setDateFilter(""); setSortOrder("date-desc"); setStatusFilter(""); }}>Limpar filtros</button>
       </section>
 
       <section className={styles.queue}>
         <div className={styles.sectionTitle}>
-          <div><span>Cadastros do desafio</span><h2>Inscrições e atividades</h2><p>Inclui pendências, aprovadas e ocultas. Aqui também aparecem atletas cadastrados pelo formulário, como Emanuelly.</p></div>
+          <div><span>Cadastros do desafio</span><h2>Inscrições e atividades</h2><p>Atividades enviadas pelo formulário público. Selecione uma linha para editar ou validar.</p></div>
           <button type="button" onClick={() => window.open("/api/admin/circuito-virtual/export", "_blank")}>
             <FileDown size={16} />Exportar CSV
           </button>
@@ -345,7 +369,7 @@ export function CircuitAdmin({
               <strong>{item.public_name || item.athlete_name}</strong>
               <span>{circuitCategoryName(item.category_age)} · {item.category_age} anos · {item.gender === "FEMALE" ? "F" : "M"}</span>
               <b>{item.formattedTime}</b>
-              <span>{item.submission_type.replaceAll("_", " ")}</span>
+              <span>{circuitActivityLabel(item.submission_type)}</span>
               <em>{labels[item.status] || item.status}</em>
               <span>{item.status === "HIDDEN" ? "Oculto · Gerenciar →" : "Gerenciar →"}</span>
             </button>
@@ -358,10 +382,10 @@ export function CircuitAdmin({
         <div className={styles.sectionTitle}>
           <div>
             <span>Ranking publicado</span>
-            <h2>Marcas oficiais importadas</h2>
-            <p>Estas marcas aparecem diretamente no ranking público e permanecem editáveis.</p>
+            <h2>Atividades adicionadas pelo admin</h2>
+            <p>Competições e testes cadastrados pela equipe. Registros ocultos permanecem disponíveis para edição.</p>
           </div>
-          <div className={styles.titleActions}><strong className={styles.resultCount}>{officialResults.length} registros</strong><button type="button" onClick={openCreateOfficial}><Plus size={16} />Adicionar atleta</button></div>
+          <div className={styles.titleActions}><strong className={styles.resultCount}>{officialResults.length} registros</strong></div>
         </div>
         <div className={`${styles.table} ${styles.officialTable}`}>
           <div className={`${styles.head} ${styles.officialHead}`}>
@@ -385,6 +409,8 @@ export function CircuitAdmin({
         </div>
       </section>
 
+      </>}
+
       {active && submissionDraft && (
         <div className={styles.overlay} role="dialog" aria-modal="true" aria-label="Editar atividade enviada">
           <div className={styles.drawer}>
@@ -405,10 +431,7 @@ export function CircuitAdmin({
               </p>
             </div>
             <div className={styles.officialForm}>
-              <label className={styles.fullField}>Nome público<input disabled value={submissionDraft.publicName} onChange={(event) => setSubmissionDraft({ ...submissionDraft, publicName: event.target.value })} /></label>
-
-              <label>Categoria 2026<select disabled value={submissionDraft.categoryAge} onChange={(event) => setSubmissionDraft({ ...submissionDraft, categoryAge: event.target.value })}>{CIRCUIT_CATEGORY_AGES.map((age) => <option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}</select></label>
-              <label>Gênero esportivo<select disabled value={submissionDraft.gender} onChange={(event) => setSubmissionDraft({ ...submissionDraft, gender: event.target.value as "FEMALE" | "MALE" })}><option value="FEMALE">Feminino</option><option value="MALE">Masculino</option></select></label>
+              <p className={styles.identitySummary}>Nome, categoria e gênero são alterados em “Editar identificação”, no histórico do atleta.</p>
               <label>Modalidade<select value={submissionDraft.submissionType} onChange={(event) => setSubmissionDraft({ ...submissionDraft, submissionType: event.target.value as OfficialDraft["submissionType"] })}><option value="TRACK_400M">Pista de 400 m</option><option value="OPEN_COURSE">Percurso livre</option><option value="OFFICIAL_COMPETITION">Competição oficial</option></select></label>
               <label>Data<input type="date" value={submissionDraft.activityDate} onChange={(event) => setSubmissionDraft({ ...submissionDraft, activityDate: event.target.value })} /></label>
               <label>Marca (MM:SS.CC)<input value={submissionDraft.time} onChange={(event) => setSubmissionDraft({ ...submissionDraft, time: event.target.value })} /></label>
@@ -450,23 +473,10 @@ export function CircuitAdmin({
         <div className={styles.overlay} role="dialog" aria-modal="true" aria-label="Editar resultado oficial">
           <div className={styles.drawer}>
             <button aria-label="Fechar edição" className={styles.close} onClick={closeOfficial}><X size={18} /></button>
-            <span className={styles.kicker}>Resultado oficial importado</span>
+            <span className={styles.kicker}>Atividade administrativa</span>
             <h2>Editar marca</h2><p>Para alterar nome, categoria ou gênero, use Editar identificação no histórico do atleta.</p>
             <div className={styles.officialForm}>
-              <label className={styles.fullField}>Nome público
-                <input disabled value={officialDraft.publicName} onChange={(event) => setOfficialDraft({ ...officialDraft, publicName: event.target.value })} />
-              </label>
-              <label>Categoria 2026
-                <select disabled value={officialDraft.categoryAge} onChange={(event) => setOfficialDraft({ ...officialDraft, categoryAge: event.target.value })}>
-                  {CIRCUIT_CATEGORY_AGES.map((age) => <option key={age} value={age}>{circuitCategoryLabel(age)}</option>)}
-                </select>
-              </label>
-              <label>Gênero esportivo
-                <select disabled value={officialDraft.gender} onChange={(event) => setOfficialDraft({ ...officialDraft, gender: event.target.value as "FEMALE" | "MALE" })}>
-                  <option value="FEMALE">Feminino</option>
-                  <option value="MALE">Masculino</option>
-                </select>
-              </label>
+              <div className={styles.identitySummary}><strong>{officialDraft.publicName}</strong><span>{circuitCategoryLabel(Number(officialDraft.categoryAge))} · {officialDraft.gender==='FEMALE'?'Feminino':'Masculino'}</span></div>
               <label>Modalidade<select value={officialDraft.submissionType} onChange={event=>setOfficialDraft({...officialDraft,submissionType:event.target.value as OfficialDraft["submissionType"]})}><option value="TRACK_400M">Pista de 400 m</option><option value="OPEN_COURSE">Percurso livre</option><option value="OFFICIAL_COMPETITION">Competição oficial</option></select></label>
               <label>Data
                 <input type="date" value={officialDraft.activityDate} onChange={(event) => setOfficialDraft({ ...officialDraft, activityDate: event.target.value })} />
@@ -503,7 +513,7 @@ export function CircuitAdmin({
           <div className={styles.drawer}>
             <button className={styles.close} onClick={closeCreateOfficial}><X size={18} /></button>
             <span className={styles.kicker}>Inclusão administrativa direta</span>
-            <h2>Adicionar atleta</h2>
+            <h2>Adicionar atividade</h2>
             <p className={styles.syncNotice}>Este fluxo dispensa o cadastro público. Ao salvar, a marca será aprovada e publicada imediatamente no ranking do desafio.</p>
             <div className={styles.officialForm}>
               <label className={styles.fullField}>Nome do atleta<input autoFocus value={officialDraft.publicName} onChange={event=>setOfficialDraft({...officialDraft,publicName:event.target.value})}/></label>
