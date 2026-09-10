@@ -45,6 +45,9 @@ test('homônimos permanecem separados; vínculo explícito reúne histórico, du
  circuit.updateCircuitAdminOfficialResult({...input,id:second.id,time:'04:29.00'});
  const stored=circuit.getCircuitDatabase().prepare('SELECT * FROM virtual_circuit_official_results WHERE id=?').get(second.id)!;
  assert.equal(stored.status,'HIDDEN');assert.equal(stored.submission_type,'TRACK_400M');assert.equal(stored.validation_badge,'Pista 400m');
+ circuit.updateCircuitAdminOfficialResult({...input,id:second.id,time:'04:29.00',submissionType:'OFFICIAL_COMPETITION'});
+ const changed=circuit.listCircuitAdminOfficialResults().find(r=>r.id===second.id)!;assert.equal(changed.status,'HIDDEN');assert.equal(changed.submission_type,'OFFICIAL_COMPETITION');assert.equal(changed.validation_badge,'Oficial');
+ assert.throws(()=>circuit.updateCircuitAdminOfficialResult({...input,id:second.id,submissionType:'INVALID' as typeof input.submissionType}),/Modalidade inválida/);
  assert.equal(circuitEvolution(circuit.listCircuitRanking({name:'Ána Teste',allMarks:true})).find(a=>a.athleteNumber===first.circuit_number)?.percent,null);
 });
 test('lote salva todas as linhas, vincula linhas entre si, repete sem duplicar e desfaz falha',()=>{

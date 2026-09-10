@@ -27,6 +27,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
       city: String(body.city ?? ""),
       state: String(body.state ?? ""),
       competitionName: String(body.competitionName ?? ""),
+      submissionType: body.submissionType === undefined ? undefined : String(body.submissionType) as "OFFICIAL_COMPETITION" | "TRACK_400M" | "OPEN_COURSE",
       actor,
       ip: clientIp(request)
     });

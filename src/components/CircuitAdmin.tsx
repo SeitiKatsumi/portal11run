@@ -133,7 +133,8 @@ export function CircuitAdmin({
   const filteredOfficialResults = useMemo(() => filterAndSort(officialResults, (item) => item.public_name, search, dateFilter, sortOrder), [officialResults, search, dateFilter, sortOrder]);
 
   async function refresh() {
-    const response = await fetch("/api/admin/circuito-virtual");
+    const response = await fetch("/api/admin/circuito-virtual", {signal:AbortSignal.timeout(20000)});
+    if (!response.ok) throw new Error("Não foi possível atualizar o painel. Tente novamente.");
     const json = await response.json();
     setAthleteRevision(v=>v+1);
     setMetrics(json.metrics);
@@ -143,9 +144,9 @@ export function CircuitAdmin({
 
   async function openSubmission(id: string) {
     setError("");
-    const response = await fetch(`/api/admin/circuito-virtual/submissions/${id}`);
+    const response = await fetch(`/api/admin/circuito-virtual/submissions/${id}`, {signal:AbortSignal.timeout(20000)});
     const json = await response.json();
-    if (!response.ok) return setError(json.error || "Falha ao carregar.");
+    if (!response.ok) throw new Error(json.error || "Falha ao carregar a atividade.");
     const item = json.submission as Submission;
     setActive(item);
     setSubmissionDraft({
@@ -165,8 +166,10 @@ export function CircuitAdmin({
     if (!active || !reason.trim()) return setError("Informe uma justificativa para registrar a decisão.");
     setBusy(true);
     setError("");
+    try {
     const response = await fetch(`/api/admin/circuito-virtual/submissions/${active.id}`, {
       method: "PATCH",
+      signal: AbortSignal.timeout(20000),
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status, reason, verifiedTime: verifiedTime || undefined })
     });
@@ -177,6 +180,7 @@ export function CircuitAdmin({
     setReason("");
     setVerifiedTime("");
     await refresh();
+    } catch (e) { setError(e instanceof Error ? e.message : "Falha de conexão. Tente novamente."); } finally { setBusy(false); }
   }
 
   function openOfficial(item: CircuitOfficialResult) {
@@ -190,7 +194,8 @@ export function CircuitAdmin({
       time: item.formattedTime,
       city: item.city,
       state: item.state,
-      competitionName: item.competition_name
+      competitionName: item.competition_name,
+      submissionType: item.submission_type
     });
   }
 
@@ -215,20 +220,24 @@ export function CircuitAdmin({
   async function createOfficial() {
     if (!officialDraft) return;
     setBusy(true); setError("");
-    const response = await fetch("/api/admin/circuito-virtual/official-results", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(officialDraft) });
+    try {
+    const response = await fetch("/api/admin/circuito-virtual/official-results", { method: "POST", signal: AbortSignal.timeout(20000), headers: { "Content-Type": "application/json" }, body: JSON.stringify(officialDraft) });
     const json = await response.json();
     setBusy(false);
     if (!response.ok) return setError(json.error || "Falha ao adicionar atleta.");
     closeCreateOfficial();
     await refresh();
+    } catch (e) { setError(e instanceof Error ? e.message : "Falha de conexão. Tente novamente."); } finally { setBusy(false); }
   }
 
   async function saveOfficial() {
     if (!activeOfficial || !officialDraft) return;
     setBusy(true);
     setError("");
+    try {
     const response = await fetch(`/api/admin/circuito-virtual/official-results/${activeOfficial.id}`, {
       method: "PATCH",
+      signal: AbortSignal.timeout(20000),
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(officialDraft)
     });
@@ -237,6 +246,7 @@ export function CircuitAdmin({
     if (!response.ok) return setError(json.error || "Falha ao atualizar resultado oficial.");
     closeOfficial();
     await refresh();
+    } catch (e) { setError(e instanceof Error ? e.message : "Falha de conexão. Tente novamente."); } finally { setBusy(false); }
   }
 
   async function saveSubmission() {
@@ -248,8 +258,10 @@ export function CircuitAdmin({
     if (!active) return;
     if (method === "DELETE" && !window.confirm(`Excluir definitivamente o registro de ${active.public_name}?`)) return;
     setBusy(true); setError("");
+    try {
     const response = await fetch(`/api/admin/circuito-virtual/submissions/${active.id}`, {
       method,
+      signal: AbortSignal.timeout(20000),
       headers: body ? { "Content-Type": "application/json" } : undefined,
       body: body ? JSON.stringify(body) : undefined
     });
@@ -257,14 +269,17 @@ export function CircuitAdmin({
     setBusy(false);
     if (!response.ok) return setError(json.error || "Falha ao atualizar registro.");
     setActive(null); setSubmissionDraft(null); await refresh();
+    } catch (e) { setError(e instanceof Error ? e.message : "Falha de conexão. Tente novamente."); } finally { setBusy(false); }
   }
 
   async function mutateOfficial(method: "PATCH" | "DELETE", body?: Record<string, unknown>) {
     if (!activeOfficial) return;
     if (method === "DELETE" && !window.confirm(`Excluir definitivamente o registro de ${activeOfficial.public_name}?`)) return;
     setBusy(true); setError("");
+    try {
     const response = await fetch(`/api/admin/circuito-virtual/official-results/${activeOfficial.id}`, {
       method,
+      signal: AbortSignal.timeout(20000),
       headers: body ? { "Content-Type": "application/json" } : undefined,
       body: body ? JSON.stringify(body) : undefined
     });
@@ -272,6 +287,7 @@ export function CircuitAdmin({
     setBusy(false);
     if (!response.ok) return setError(json.error || "Falha ao atualizar registro.");
     closeOfficial(); await refresh();
+    } catch (e) { setError(e instanceof Error ? e.message : "Falha de conexão. Tente novamente."); } finally { setBusy(false); }
   }
 
   const totalActivities = metrics.submissions + officialResults.length;
@@ -279,7 +295,7 @@ export function CircuitAdmin({
 
   return (
     <main className={`admin-panel ${styles.panel}`}>
-      <CircuitAthletes revision={athleteRevision} onChange={refresh} />
+      <CircuitAthletes revision={athleteRevision} onChange={refresh} onEditActivity={async(id,source)=>{if(source==='submission'){await openSubmission(id);return;}const item=officialResults.find(r=>r.id===id);if(!item)throw new Error('Atividade não encontrada. Atualize o painel.');openOfficial(item);}} />
       <section className={styles.hero}>
         <div>
           <span>Circuito Virtual</span>
@@ -325,7 +341,7 @@ export function CircuitAdmin({
             <span>Atleta</span><span>Categoria</span><span>Marca</span><span>Modalidade</span><span>Status</span><span></span>
           </div>
           {filteredItems.map((item) => (
-            <button className={styles.row} key={item.id} onClick={() => openSubmission(item.id)}>
+            <button className={styles.row} key={item.id} onClick={() => {openSubmission(item.id).catch(e=>setError(e.message));}}>
               <strong>{item.public_name || item.athlete_name}</strong>
               <span>{circuitCategoryName(item.category_age)} · {item.category_age} anos · {item.gender === "FEMALE" ? "F" : "M"}</span>
               <b>{item.formattedTime}</b>
@@ -370,9 +386,9 @@ export function CircuitAdmin({
       </section>
 
       {active && submissionDraft && (
-        <div className={styles.overlay} role="dialog" aria-modal="true">
+        <div className={styles.overlay} role="dialog" aria-modal="true" aria-label="Editar atividade enviada">
           <div className={styles.drawer}>
-            <button className={styles.close} onClick={() => { setActive(null); setSubmissionDraft(null); }}>×</button>
+            <button aria-label="Fechar edição" className={styles.close} onClick={() => { setActive(null); setSubmissionDraft(null); }}>×</button>
             <span className={styles.kicker}>Cadastro e atividade</span>
             <h2>{active.athlete_name}</h2>
             <div className={styles.details}>
@@ -433,7 +449,7 @@ export function CircuitAdmin({
       {activeOfficial && officialDraft && (
         <div className={styles.overlay} role="dialog" aria-modal="true" aria-label="Editar resultado oficial">
           <div className={styles.drawer}>
-            <button className={styles.close} onClick={closeOfficial}><X size={18} /></button>
+            <button aria-label="Fechar edição" className={styles.close} onClick={closeOfficial}><X size={18} /></button>
             <span className={styles.kicker}>Resultado oficial importado</span>
             <h2>Editar marca</h2><p>Para alterar nome, categoria ou gênero, use Editar identificação no histórico do atleta.</p>
             <div className={styles.officialForm}>
@@ -451,6 +467,7 @@ export function CircuitAdmin({
                   <option value="MALE">Masculino</option>
                 </select>
               </label>
+              <label>Modalidade<select value={officialDraft.submissionType} onChange={event=>setOfficialDraft({...officialDraft,submissionType:event.target.value as OfficialDraft["submissionType"]})}><option value="TRACK_400M">Pista de 400 m</option><option value="OPEN_COURSE">Percurso livre</option><option value="OFFICIAL_COMPETITION">Competição oficial</option></select></label>
               <label>Data
                 <input type="date" value={officialDraft.activityDate} onChange={(event) => setOfficialDraft({ ...officialDraft, activityDate: event.target.value })} />
               </label>

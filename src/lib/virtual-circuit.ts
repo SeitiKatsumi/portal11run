@@ -1105,6 +1105,7 @@ export function listCircuitAdminSubmissions(status?: string) {
 }
 
 export type CircuitOfficialResult = {
+  submission_type: CircuitSubmissionType;
   circuit_number: number;
   id: string;
   public_name: string;
@@ -1127,7 +1128,7 @@ export function listCircuitAdminOfficialResults() {
   const rows = db
     .prepare(
       `SELECT r.id, r.circuit_number, i.public_name, i.category_age, i.gender, r.activity_date, r.time_ms, r.city, r.state,
-              r.competition_name, r.validation_badge, r.status, r.created_at, r.updated_at
+              r.competition_name, r.submission_type, r.validation_badge, r.status, r.created_at, r.updated_at
        FROM virtual_circuit_official_results r JOIN virtual_circuit_identities i ON i.number=r.circuit_number
        WHERE edition_id = ?
        ORDER BY i.category_age DESC, i.gender, r.time_ms ASC, i.public_name`
@@ -1206,6 +1207,7 @@ export function updateCircuitAdminOfficialResult(input: {
   city: string;
   state: string;
   competitionName: string;
+  submissionType?: CircuitSubmissionType;
   actor: string;
   ip?: string;
 }) {
@@ -1232,12 +1234,15 @@ export function updateCircuitAdminOfficialResult(input: {
     state,
     competitionName: cleanText(input.competitionName, "Competição", 180)
   };
+  const type=input.submissionType??before.submission_type as CircuitSubmissionType;
+  if (!["OFFICIAL_COMPETITION","TRACK_400M","OPEN_COURSE"].includes(type)) throw new Error("Modalidade inválida.");
+  const badge=type===before.submission_type?before.validation_badge:badgeForType(type);
   db.exec("BEGIN IMMEDIATE;");
   try {
     db.prepare(
       `UPDATE virtual_circuit_official_results
        SET activity_date = ?, time_ms = ?,
-           city = ?, state = ?, competition_name = ?, updated_at = ?
+           city = ?, state = ?, competition_name = ?, submission_type = ?, validation_badge = ?, updated_at = ?
        WHERE id = ? AND edition_id = ?`
     ).run(
       values.activityDate,
@@ -1245,6 +1250,8 @@ export function updateCircuitAdminOfficialResult(input: {
       values.city,
       values.state,
       values.competitionName,
+      type,
+      badge,
       timestamp,
       input.id,
       CIRCUIT_EDITION_ID
