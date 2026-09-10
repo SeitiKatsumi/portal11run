@@ -91,3 +91,9 @@ Regressão: `node tests/circuit-chart-selection.browser.mjs`, com servidor local
 O gráfico destaca até vinte atletas com evolução positiva, com linhas de 1,5 px, pontos menores e legenda em grade. A consulta individual continua disponível. Histórico, tabela e detalhes dos pontos identificam a modalidade e o nome da competição/teste; a origem administrativa não é confundida com a modalidade.
 
 “Confirmar vínculo atual” grava a confirmação e mostra o resultado junto à atividade. Alterações para outro atleta usam confirmação inline, com retorno de erro ou sucesso visível e preservação das validações do servidor.
+
+## Pista de oito raias — 10 de setembro de 2026
+
+Ilustração corrigida: largada na referência dos 200 m da raia 1, chegada comum ao final da reta dos 100 m, extensão da reta de velocidade e oito raias numeradas. O percurso laranja e o marcador animado permanecem na raia 1. A figura é esquemática e não substitui as marcações oficiais do local.
+
+Referência: plano de marcações da pista padrão de 400 m da World Athletics, disponível em https://worldathletics.org/about-iaaf/documents/technical-information . A regressão de navegador verifica nove limites formando oito raias, posição inicial e chegada após 1.000 m. Nenhum registro do circuito é alterado.
