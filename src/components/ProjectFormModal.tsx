@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ArrowRight, X } from "lucide-react";
 import { formProjects, type FormProjectSlug } from "@/lib/content";
+import { isCrossRegistrationOpen } from "@/lib/circuit-categories";
 import { LeadForm } from "./LeadForm";
 
 type ProjectFormModalProps = {
@@ -17,7 +18,7 @@ type ProjectFormModalProps = {
 const modalCopy: Record<FormProjectSlug, { label: string; title: string; text: string }> = {
   "circuito-cross-country-ivcl-11run": {
     label: "Inscrever atleta", title: "Sua primeira largada no Cross",
-    text: "15 de novembro de 2026 · IVCL, Campinas. Preencha os dados e aguarde a confirmação da organização."
+    text: "Inscrição gratuita até 12 de novembro de 2026. Evento em 15 de novembro · IVCL, Campinas. Preencha os dados e aguarde a confirmação da organização."
   },
   "app-11run": {
     label: "Acessar App 11Run",
@@ -51,6 +52,7 @@ export function ProjectFormModal({ project, label, className = "button primary",
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const copy = modalCopy[project];
+  const registrationClosed = project === "circuito-cross-country-ivcl-11run" && !isCrossRegistrationOpen();
 
   useEffect(() => {
     setMounted(true);
@@ -96,8 +98,8 @@ export function ProjectFormModal({ project, label, className = "button primary",
 
   return (
     <>
-      <button className={className} type="button" onClick={() => setOpen(true)}>
-        {label ?? copy.label}
+      <button className={className} type="button" onClick={() => setOpen(true)} disabled={registrationClosed}>
+        {registrationClosed ? "Inscrições encerradas" : label ?? copy.label}
         <ArrowRight size={18} />
       </button>
 

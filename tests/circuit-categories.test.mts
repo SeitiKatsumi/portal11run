@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { circuitCategories, circuitCategoryForBirthDate, circuitRaceOptions } from "../src/lib/circuit-categories.ts";
+import { circuitCategories, circuitCategoryForBirthDate, circuitRaceOptions, isCrossRegistrationOpen } from "../src/lib/circuit-categories.ts";
 
 test("categorias dos circuitos seguem idade no ano e distâncias do documento", () => {
   assert.equal(circuitCategories.length, 9);
@@ -19,4 +19,9 @@ test("categorias dos circuitos seguem idade no ano e distâncias do documento", 
   assert.equal(circuitCategoryForBirthDate("2008-12-31", 2026), undefined);
   assert.equal(circuitCategoryForBirthDate("2009-01-01", 2026)?.distance, "3.000 m");
   assert.equal(circuitCategoryForBirthDate("2012-01-01", 2026)?.distance, "2.000 m");
+});
+
+test("inscrições encerram ao fim de 12/11 no horário de São Paulo", () => {
+  assert.equal(isCrossRegistrationOpen(Date.parse("2026-11-12T23:59:59.999-03:00")), true);
+  assert.equal(isCrossRegistrationOpen(Date.parse("2026-11-13T00:00:00-03:00")), false);
 });

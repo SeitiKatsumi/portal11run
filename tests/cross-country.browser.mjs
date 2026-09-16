@@ -16,6 +16,14 @@ try {
   assert.equal(await page.locator('#categorias article').count(),9);
   assert.equal(await page.locator('#programacao ol li').count(),20);
   assert.match(await page.locator('#programacao').innerText(),/Sub 14.*1.500 m/);
+  const schedule=await page.locator('#programacao').innerText();
+  assert.ok(schedule.includes('Sub 14 (1.500 m) + Sub 15 (2.000 m)'));
+  assert.ok(schedule.includes('Sub 16 (2.000 m) + Sub 17 e Sub 18 (3.000 m)'));
+  assert.equal(schedule.includes('Horário a confirmar'),false);
+  assert.equal(await page.locator('#diferenciais article').count(),3);
+  assert.match(await page.locator('#inscricao').innerText(),/Inscrições gratuitas até 12 de novembro/);
+  assert.match(await page.locator('main').innerText(),/Troféus e brindes 11Run para os três primeiros/);
+  assert.ok((await page.locator('.hero-metrics').innerText()).includes('Circuito de grama e terra com chegada na pista de atletismo'));
   for(const width of [1440,768,390]) {
     await page.setViewportSize({width,height:1000});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth),width,`public overflow ${width}`);

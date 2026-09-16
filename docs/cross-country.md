@@ -3,10 +3,13 @@
 - Página: `/circuito-cross-country-ivcl-11run`
 - Inscrição: `/cadastro/circuito-cross-country-ivcl-11run` ou botão na página.
 - Gestão: `/admin/cross-country`, sob a autenticação administrativa existente.
+- Inscrições gratuitas até o fim de 12/11/2026 (São Paulo). Novos envios são bloqueados após o prazo; a edição administrativa permanece disponível.
 - Primeira edição: 15/11/2026, IVCL, Campinas. Segunda e terceira: datas a confirmar.
 - Fonte de categorias e programação: `Circuito de Fundo  - IVCL 11RunBrazil.docx` fornecido pelo organizador.
-- O horário dos 1.500 m (Sub 14) não consta no documento e permanece a confirmar. Os dois períodos do documento estão publicados como programação prevista.
-- Fotos reutilizadas do Circuito Futuro 11, aguardando as novas imagens do organizador.
+- Largadas confirmadas pelo organizador: Sub 10 + Sub 11; Sub 12 + Sub 13; Sub 14 + Sub 15; Sub 16 + Sub 17 + Sub 18. Distâncias mantidas, feminino e masculino separados. O Sub 14 está nos horários do grupo Sub 14 + Sub 15 nos dois períodos.
+- Premiação atualizada: pódio dos três primeiros de cada categoria e gênero, com troféus e brindes 11Run.
+- Diferenciais: transmissão pelo YouTube, fotos profissionais gratuitas após o evento e pontuação do ranking em tempo real no site.
+- Logo e foto do hero fornecidos pelo organizador, otimizados em WebP. Enquadramento centralizado e adaptação para telas menores.
 
 ## Implementação
 

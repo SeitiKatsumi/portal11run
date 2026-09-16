@@ -1,4 +1,4 @@
-import { circuitCategoryForBirthDate, circuitRaceOptions, crossCountryTerm } from "./circuit-categories";
+import { circuitCategoryForBirthDate, circuitRaceOptions, crossCountryTerm, isCrossRegistrationOpen } from "./circuit-categories";
 import { mkdirSync, readFileSync } from "fs";
 import path from "path";
 import { createHash } from "node:crypto";
@@ -198,7 +198,7 @@ function getDatabase() {
   return database;
 }
 
-export function validateLead(payload: LeadPayload, options?: { photoCount?: number; paymentReceiptCount?: number }) {
+export function validateLead(payload: LeadPayload, options?: { photoCount?: number; paymentReceiptCount?: number; existingRegistration?: boolean }) {
   const missing = requiredFields.filter((field) => {
     const value = payload[field];
     return value === undefined || value === "" || value === false;
@@ -268,6 +268,7 @@ export function validateLead(payload: LeadPayload, options?: { photoCount?: numb
   }
 
   if (payload.project_type === "circuito-cross-country-ivcl-11run") {
+    if (!options?.existingRegistration && !isCrossRegistrationOpen()) return { ok: false, error: "As inscrições gratuitas encerraram em 12 de novembro de 2026, no horário de São Paulo." };
     for (const field of ["name", "phone", "city", "state", "athlete_name", "birth_date", "gender", "term_acceptor_name", "term_acceptor_cpf"]) {
       if (typeof payload[field] !== "string" || !String(payload[field]).trim()) return { ok: false, error: `Preencha o campo obrigatório: ${field}.` };
     }
@@ -351,7 +352,7 @@ export function saveLead(payload: LeadPayload, photos: string[] = [], requestMet
     payload.event_edition = "1ª edição · 15/11/2026";
     payload.guardian_name = String(payload.name);
     payload.term_snapshot = JSON.stringify(crossCountryTerm);
-    payload.term_version = "cross-2026-09-16";
+    payload.term_version = "cross-2026-09-16.2";
     payload.term_accepted_at = now;
   }
   if (payload.project_type === "onze-futuro" && payload.accepted_terms === true) {
@@ -581,7 +582,7 @@ export function updateLeadProfile(id: string, updates: Partial<Record<EditableLe
   }
 
   if (current.project_type === "circuito-cross-country-ivcl-11run") {
-    const validation = validateLead(payload as LeadPayload);
+    const validation = validateLead(payload as LeadPayload, { existingRegistration: true });
     if (!validation.ok) throw new Error(validation.error);
     const category = circuitCategoryForBirthDate(String(payload.birth_date), 2026)!;
     payload.category = category.category;

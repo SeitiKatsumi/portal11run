@@ -38,7 +38,7 @@ export default async function Page({ params }: PageProps) {
   }
 
   const isCross = resolvedProject === "circuito-cross-country-ivcl-11run";
-  const formImage = isCross ? "/assets/circuito-futuro-11-hero.webp" : "/assets/11run-reference.jpg";
+  const formImage = isCross ? "/assets/cross-country-atletas.webp" : "/assets/11run-reference.jpg";
 
   return (
     <>
@@ -51,7 +51,7 @@ export default async function Page({ params }: PageProps) {
           <span className="eyebrow">cadastro</span>
           <h1>{config.title}</h1>
           <p>
-            {isCross ? "Primeira edição · 15 de novembro de 2026 · IVCL, Campinas. Inscrição para atletas de 9 a 17 anos em 2026, com autorização do responsável legal." : "Envie suas informações para a equipe 11RUN. Entraremos em contato sobre os próximos passos do seu cadastro."}
+            {isCross ? "Inscrições gratuitas até 12 de novembro de 2026. Primeira edição · 15 de novembro de 2026 · IVCL, Campinas. Inscrição para atletas de 9 a 17 anos em 2026, com autorização do responsável legal." : "Envie suas informações para a equipe 11RUN. Entraremos em contato sobre os próximos passos do seu cadastro."}
           </p>
         </div>
         <img src={formImage} alt={`Cadastro ${config.label}`} />

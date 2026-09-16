@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { circuitCategoryForBirthDate, crossCountryTerm } from "@/lib/circuit-categories";
+import { circuitCategoryForBirthDate, crossCountryTerm, isCrossRegistrationOpen } from "@/lib/circuit-categories";
 import { onzeFuturoTerm } from "@/lib/onze-futuro-policy";
 import { useRouter } from "next/navigation";
 import { Loader2, Send, ShieldCheck, Upload } from "lucide-react";
@@ -130,7 +130,7 @@ const termsByProject: Partial<Record<FormProjectSlug, { title: string; clauses: 
 const fieldGroups: Partial<Record<FormProjectSlug, { title: string; eyebrow: string; text: string; fields: string[] }[]>> = {
   "circuito-cross-country-ivcl-11run": [
     { eyebrow: "01 · responsável", title: "Contato do responsável legal", text: "Usaremos este contato para confirmar a inscrição e enviar as orientações do evento.", fields: ["name", "email", "phone", "city", "state"] },
-    { eyebrow: "02 · atleta", title: "Quem vai correr", text: "Primeira edição · 15/11/2026 · IVCL, Campinas. A categoria é definida automaticamente pelo ano de nascimento.", fields: ["athlete_name", "birth_date", "gender", "team", "message"] }
+    { eyebrow: "02 · atleta", title: "Quem vai correr", text: "Inscrição gratuita até 12/11/2026. Evento em 15/11/2026 · IVCL, Campinas. A categoria é definida automaticamente pelo ano de nascimento.", fields: ["athlete_name", "birth_date", "gender", "team", "message"] }
   ],
   "onze-futuro": [
     {
@@ -394,6 +394,8 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
       </section>
     ));
   }
+
+  if (isCross && !isCrossRegistrationOpen()) return <p role="status">As inscrições gratuitas encerraram em 12 de novembro de 2026, no horário de São Paulo.</p>;
 
   return (
     <form className="lead-form" onSubmit={onSubmit}>

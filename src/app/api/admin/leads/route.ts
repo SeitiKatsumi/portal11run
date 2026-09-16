@@ -31,7 +31,7 @@ export async function PATCH(request: Request) {
     if (profile) {
       const current = getLeadById(body.id);
       if (current?.project_type === "circuito-cross-country-ivcl-11run") {
-        const validation = validateLead({ ...JSON.parse(current.payload_json), ...profile } as LeadPayload);
+        const validation = validateLead({ ...JSON.parse(current.payload_json), ...profile } as LeadPayload, { existingRegistration: true });
         if (!validation.ok) return NextResponse.json({ ok: false, error: validation.error }, { status: 400 });
       }
     }

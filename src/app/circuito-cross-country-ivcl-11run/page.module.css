@@ -23,7 +23,7 @@
 .categories p { margin: 0 0 4px; }
 .categories small { color: var(--muted); }
 .note { display: flex; align-items: flex-start; gap: 10px; line-height: 1.6; color: var(--muted); margin-bottom: 0; }
-.note svg, .aboutFacts svg, .pending svg { flex-shrink: 0; }
+.note svg, .aboutFacts svg { flex-shrink: 0; }
 .schedule { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
 .schedule article { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
 .schedule header { padding: 22px; background: #eff5f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
@@ -35,8 +35,6 @@
 .schedule time { font-variant-numeric: tabular-nums; color: var(--cross-green); font-weight: 600; }
 .schedule strong { font-size: .93rem; font-weight: 500; }
 .schedule small { display: block; margin-top: 4px; color: var(--muted); }
-.pending { display: flex; align-items: flex-start; gap: 14px; border: 1px solid #e6c4a6; border-radius: 14px; padding: 20px; margin-top: 22px; background: #fff8f0; }
-.pending p { margin: 6px 0 0; color: var(--muted); line-height: 1.6; }
 .rules { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; }
 .rules svg { color: var(--cross-green); }
 .rules h3 { font-size: 1.15rem; margin: 18px 0 10px; }
@@ -56,7 +54,7 @@
 .aboutFacts p { font-size: .95rem; }
 @media (max-width: 900px) {
   .page :global(.hero-section) { grid-template-columns: 1fr; }
-  .page :global(.hero-visual) { aspect-ratio: 16 / 9; }
+  .page :global(.hero-visual) { aspect-ratio: 4 / 5; }
   .editions article { padding: 20px; }
   .registration { align-items: flex-start; flex-direction: column; }
   .about { grid-template-columns: 1fr; gap: 24px; }
@@ -78,3 +76,5 @@
 }
 
 .logo { display: block; width: 100%; height: auto; margin-top: 22px; }
+
+.page :global(.hero-visual img) { object-fit: cover; object-position: center center; }
