@@ -1,17 +1,12 @@
 .page { --cross-green: #285442; }
 .page :global(.hero-section) { padding-bottom: 36px; gap: 36px; grid-template-columns: 1.05fr 1fr; }
 .page :global(.hero-copy h1) { font-size: clamp(2.7rem, 5.2vw, 5.4rem); line-height: 1.02; letter-spacing: -.055em; }
-.page :global(.hero-visual) { aspect-ratio: 1 / 1.06; }
+.page :global(.hero-visual) { aspect-ratio: 2 / 3; }
 .page :global(.hero-metrics) { gap: 12px; }
 .page :global(.metric-card) { min-width: 0; }
 .page :global(.metric-card strong) { font-size: clamp(1.3rem, 2.1vw, 2rem); }
 .page :global(.section) { scroll-margin-top: 110px; }
-.editions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding-block: 0 48px; }
-.editions article { border: 1px solid var(--line); border-radius: 20px; padding: 26px; background: var(--surface); }
-.editions article.current { border-color: var(--cross-green); background: #eff5f0; }
-.editions h2 { font-size: 1.35rem; margin: 16px 0; letter-spacing: -.03em; }
-.editions p, .aboutFacts p { display: flex; align-items: center; gap: 10px; }
-.editions small { color: var(--muted); }
+.aboutFacts p { display: flex; align-items: center; gap: 10px; }
 .panel { padding: clamp(24px, 4vw, 54px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); margin-bottom: 30px; }
 .heading { max-width: 800px; margin-bottom: 30px; }
 .heading h2, .registration h2, .about h2 { font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1.08; letter-spacing: -.045em; margin: 14px 0 18px; }
@@ -54,8 +49,7 @@
 .aboutFacts p { font-size: .95rem; }
 @media (max-width: 900px) {
   .page :global(.hero-section) { grid-template-columns: 1fr; }
-  .page :global(.hero-visual) { aspect-ratio: 4 / 5; }
-  .editions article { padding: 20px; }
+  .page :global(.hero-visual) { aspect-ratio: 2 / 3; }
   .registration { align-items: flex-start; flex-direction: column; }
   .about { grid-template-columns: 1fr; gap: 24px; }
 }
@@ -63,9 +57,7 @@
   .page :global(.hero-section) { padding-top: 112px; gap: 24px; }
   .page :global(.hero-metrics) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .page :global(.metric-card) { padding: 16px; }
-  .editions, .schedule, .rules { grid-template-columns: 1fr; }
-  .editions { padding-bottom: 28px; }
-  .editions article { padding: 22px; }
+  .schedule, .rules { grid-template-columns: 1fr; }
   .categories { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .categories article { padding: 20px 5px; }
   .schedule ol { padding-inline: 16px; }

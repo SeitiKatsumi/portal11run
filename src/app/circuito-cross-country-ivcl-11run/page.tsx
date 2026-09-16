@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { Metadata } from "next";
-import { CalendarDays, Camera, Clock3, Flag, Radio, Timer, MapPin, Medal, Route, Trees, Users } from "lucide-react";
+import { Camera, Clock3, Flag, Radio, Timer, MapPin, Medal, Route, Trees, Users } from "lucide-react";
 import { HeroSection } from "@/components/HeroSection";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { circuitCategories, crossCountryTerm } from "@/lib/circuit-categories";
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "CIRCUITO DE CROSS COUNTRY IVCL 11RUN · Primeira edição",
   description: "15 de novembro de 2026, no IVCL em Campinas. CROSS COUNTRY para atletas Sub 10 a Sub 18, com provas de 800 a 3.000 m. Programação e inscrições.",
   alternates: { canonical: "/circuito-cross-country-ivcl-11run" },
-  openGraph: { images: ["/assets/cross-country-atletas.webp"] }
+  openGraph: { images: ["/assets/cross-country-trofeu.webp"] }
 };
 
 const project = "circuito-cross-country-ivcl-11run";
@@ -36,15 +36,16 @@ export default function CrossCountryPage() {
     <HeroSection eyebrow="Primeira edição · 15 de novembro de 2026" title={<Image src="/assets/cross-country-ivcl-logo.webp" alt="CIRCUITO DE CROSS COUNTRY IVCL 11RUN" width={1200} height={625} className={styles.logo} priority unoptimized />}
       subtitle="Uma nova largada. Um novo terreno. A corrida de base encontra a natureza em um percurso preparado especialmente para o CROSS COUNTRY no IVCL, em Campinas. Inscrições gratuitas até 12 de novembro."
       primaryCtaSlot={<ProjectFormModal project={project} />} secondaryCta={{ label: "Ver programação", href: "#programacao" }}
-      imageSrc="/assets/cross-country-atletas.webp" imageAlt="Atletas correndo em um circuito de grama, cercado por árvores"
+      imageSrc="/assets/cross-country-trofeu.webp" imageAlt="Troféu do CIRCUITO DE CROSS COUNTRY IVCL 11RUN com grama e terra em seu interior"
       metrics={[{ value: "15 NOV", label: "Primeira edição · 2026" }, { value: "Campinas", label: "IVCL · Circuito de grama e terra com chegada na pista de atletismo" }, { value: "9 a 17", label: "Idade completada em 2026" }, { value: "800–3.000 m", label: "Distâncias por categoria" }]} />
 
-    <section className={`section ${styles.editions}`} aria-label="Edições do circuito">
-      {["Primeira edição", "Segunda edição", "Terceira edição"].map((title, index) => <article key={title} className={index === 0 ? styles.current : ""}>
-        <span className="eyebrow">0{index + 1} · {index === 0 ? "Prepare-se para a estreia" : "Próximas largadas"}</span>
-        <h2>{title}</h2><p><CalendarDays size={18} aria-hidden="true" />{index === 0 ? "15 de novembro de 2026" : "Data a confirmar"}</p>
-        <small>{index === 0 ? "IVCL · Campinas, SP" : index === 2 ? "Final · pontuação dobrada" : "Acompanhe as próximas informações"}</small>
-      </article>)}
+    <section className={`section ${styles.panel}`} id="diferenciais">
+      <div className={styles.heading}><span className="eyebrow">Diferenciais</span><h2>Cada conquista, de perto.</h2><p>Uma experiência para quem corre, para a família e para quem acompanha de longe.</p></div>
+      <div className={styles.rules}>
+        <article><Radio aria-hidden="true" /><h3>Transmissão ao vivo pelo YouTube</h3><p>Acompanhe as provas e torça pelos atletas durante a transmissão do evento.</p></article>
+        <article><Camera aria-hidden="true" /><h3>Fotos gratuitas</h3><p>Registros feitos por fotógrafo profissional, disponibilizados gratuitamente após o evento.</p></article>
+        <article><Timer aria-hidden="true" /><h3>Ranking em tempo real</h3><p>Pontuação para o ranking atualizada em tempo real no site, para acompanhar a classificação dos atletas.</p></article>
+      </div>
     </section>
 
     <section className={`section ${styles.panel}`} id="categorias">
@@ -73,15 +74,6 @@ export default function CrossCountryPage() {
         <article><Route aria-hidden="true" /><h3>A soma da jornada</h3><p>A classificação geral soma os pontos das edições. A terceira edição, a final, vale o dobro.</p></article>
       </div>
       <details className={styles.regulations}><summary>Participação e regulamento</summary><ol>{crossCountryTerm.clauses.map((clause) => <li key={clause}>{clause}</li>)}</ol><p>A operação prevista reúne sete profissionais: coordenação, largada, cronometragem, filmagem, premiação e secretaria, além de duas pessoas na apuração dos resultados.</p></details>
-    </section>
-
-    <section className={`section ${styles.panel}`} id="diferenciais">
-      <div className={styles.heading}><span className="eyebrow">Diferenciais</span><h2>Cada conquista, de perto.</h2><p>Uma experiência para quem corre, para a família e para quem acompanha de longe.</p></div>
-      <div className={styles.rules}>
-        <article><Radio aria-hidden="true" /><h3>Transmissão ao vivo pelo YouTube</h3><p>Acompanhe as provas e torça pelos atletas durante a transmissão do evento.</p></article>
-        <article><Camera aria-hidden="true" /><h3>Fotos gratuitas</h3><p>Registros feitos por fotógrafo profissional, disponibilizados gratuitamente após o evento.</p></article>
-        <article><Timer aria-hidden="true" /><h3>Ranking em tempo real</h3><p>Pontuação para o ranking atualizada em tempo real no site, para acompanhar a classificação dos atletas.</p></article>
-      </div>
     </section>
 
     <section className={`section ${styles.registration}`} id="inscricao">
