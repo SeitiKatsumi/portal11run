@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { Metadata } from "next";
-import { Camera, Clock3, Flag, Radio, Timer, MapPin, Medal, Route, Trees, Users } from "lucide-react";
+import { Camera, Clock3, Flag, Youtube, ChartNoAxesCombined, MapPin, Medal, Route, Trees, Users } from "lucide-react";
 import { HeroSection } from "@/components/HeroSection";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { circuitCategories, crossCountryTerm } from "@/lib/circuit-categories";
@@ -40,11 +40,11 @@ export default function CrossCountryPage() {
       metrics={[{ value: "15 NOV", label: "Primeira edição · 2026" }, { value: "Campinas", label: "IVCL · Circuito de grama e terra com chegada na pista de atletismo" }, { value: "9 a 17", label: "Idade completada em 2026" }, { value: "800–3.000 m", label: "Distâncias por categoria" }]} />
 
     <section className={`section ${styles.panel}`} id="diferenciais">
-      <div className={styles.heading}><span className="eyebrow">Diferenciais</span><h2>Cada conquista, de perto.</h2><p>Uma experiência para quem corre, para a família e para quem acompanha de longe.</p></div>
-      <div className={styles.rules}>
-        <article><Radio aria-hidden="true" /><h3>Transmissão ao vivo pelo YouTube</h3><p>Acompanhe as provas e torça pelos atletas durante a transmissão do evento.</p></article>
+      <div className={styles.heading}><span className="eyebrow">Diferenciais</span><h2>Uma experiência imersiva e interativa</h2></div>
+      <div className={`${styles.rules} ${styles.benefits}`}>
+        <article><Youtube className={styles.youtube} aria-hidden="true" /><h3>Transmissão ao vivo pelo YouTube</h3><p>Acompanhe as provas e torça pelos atletas durante a transmissão do evento.</p></article>
         <article><Camera aria-hidden="true" /><h3>Fotos gratuitas</h3><p>Registros feitos por fotógrafo profissional, disponibilizados gratuitamente após o evento.</p></article>
-        <article><Timer aria-hidden="true" /><h3>Ranking em tempo real</h3><p>Pontuação para o ranking atualizada em tempo real no site, para acompanhar a classificação dos atletas.</p></article>
+        <article><ChartNoAxesCombined aria-hidden="true" /><h3>Ranking em tempo real</h3><p>Pontuação para o ranking atualizada em tempo real no site, para acompanhar a classificação dos atletas.</p></article>
       </div>
     </section>
 

@@ -85,3 +85,8 @@
   .page :global(.hero-metrics) { order: 4; }
   .logo { margin-top: 0; }
 }
+
+.benefits > article > svg { width: 64px; height: 64px; stroke-width: 1.5; }
+.benefits .youtube { color: #ff0000; fill: #ff0000; }
+.benefits .youtube path:last-child { fill: #fff; stroke: #fff; }
+
