@@ -76,3 +76,5 @@
   .aboutFacts { padding: 24px; }
   .rules { gap: 12px; }
 }
+
+.logo { display: block; width: 100%; height: auto; margin-top: 22px; }

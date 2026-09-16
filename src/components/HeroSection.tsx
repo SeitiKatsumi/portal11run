@@ -16,7 +16,7 @@ export function HeroSection({
   imageAlt
 }: {
   eyebrow?: string;
-  title: string;
+  title: ReactNode;
   subtitle: string;
   primaryCta?: { label: string; href: string };
   primaryCtaSlot?: ReactNode;

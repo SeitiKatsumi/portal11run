@@ -63,7 +63,7 @@ export type ProjectPage = {
 export const projectNavItems: NavItem[] = [
   { label: "11 Run Futuro", href: "/onze-futuro" },
   { label: "Desafio Virtual 11 2026", href: "/projetos/circuito-virtual-11run" },
-      { label: "Circuito de Cross Country IVCL 11Run", href: "/circuito-cross-country-ivcl-11run" },
+      { label: "CIRCUITO DE CROSS COUNTRY IVCL 11RUN", href: "/circuito-cross-country-ivcl-11run" },
   { label: "Circuito 11 Run 2027", href: "/circuito-futuro-11" },
   { label: "11 Run Master", href: "/11-master" },
   { label: "Bolsas", href: "/bolsas" }
@@ -360,7 +360,7 @@ export const projects: ProjectPage[] = [
     comparison: [
       {
         title: "EUA",
-        text: "Rota mais direta entre desempenho esportivo, contato com técnicos, bolsas esportivas, acadêmicas ou combinadas, calendário universitário, cross country e pista."
+        text: "Rota mais direta entre desempenho esportivo, contato com técnicos, bolsas esportivas, acadêmicas ou combinadas, calendário universitário, CROSS COUNTRY e pista."
       },
       {
         title: "Japão",
@@ -533,9 +533,9 @@ export const formProjects = {
     ]
   },
   "circuito-cross-country-ivcl-11run": {
-    label: "Cross Country IVCL 11Run",
+    label: "CROSS COUNTRY IVCL 11RUN",
     projectType: "circuito-cross-country-ivcl-11run",
-    title: "Inscrição · Cross Country IVCL 11Run",
+    title: "Inscrição · CROSS COUNTRY IVCL 11RUN",
     fields: [
       { name: "athlete_name", label: "Nome completo do atleta" },
       { name: "birth_date", label: "Data de nascimento do atleta", type: "date" },

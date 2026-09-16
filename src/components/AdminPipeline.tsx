@@ -47,7 +47,7 @@ const projectLabels: Record<string, string> = {
   "onze-futuro": "Onze Futuro",
   "11-regional": "11 Master",
   "circuito-futuro-11": "Circuito Futuro 11",
-  "circuito-cross-country-ivcl-11run": "Cross Country IVCL 11Run",
+  "circuito-cross-country-ivcl-11run": "CROSS COUNTRY IVCL 11RUN",
   bolsas: "Bolsas"
 };
 

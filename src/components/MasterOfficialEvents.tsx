@@ -46,7 +46,7 @@ const events = [
   {
     day: "18",
     month: "OUT",
-    title: "Campeonato Paulista de Cross Country",
+    title: "Campeonato Paulista de CROSS COUNTRY",
     place: "Tupã (SP)",
     status: "Planejamento"
   },

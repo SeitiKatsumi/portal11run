@@ -45,7 +45,7 @@ export default function PrivacyPage() {
         <article>
           <h2>1. Escopo e identificação do controlador</h2>
           <p>
-            Esta política se aplica ao site 11run.com.br e aos módulos 11Run Futuro, Circuito Virtual 11Run, Cross Country IVCL 11Run,
+            Esta política se aplica ao site 11run.com.br e aos módulos 11Run Futuro, Circuito Virtual 11Run, CROSS COUNTRY IVCL 11RUN,
             Circuito 11Run 2027, 11Run Master, Bolsas, área de membros, administração, eventos, loja, doações,
             patrocínios, voluntariado, chat e demais formulários digitais da 11RUN.
           </p>

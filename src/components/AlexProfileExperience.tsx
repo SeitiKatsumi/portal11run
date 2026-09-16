@@ -27,7 +27,7 @@ const milestones = [
   { year: "2008", title: "IVCL/Orcampi", text: "Início da atuação como treinador de meio-fundo, fundo e marcha atlética." },
   { year: "2010–2015", title: "Núcleo de Formação BM&FBOVESPA", text: "Trabalho na formação de atletas e consolidação da experiência no alto rendimento." },
   { year: "2012", title: "Seleções paulistas", text: "Passa a integrar comissões técnicas estaduais em diferentes categorias." },
-  { year: "2015", title: "Primeiras missões mundiais", text: "Treinador do Brasil nos Mundiais de Menores e de Cross Country, além de competições pan e sul-americanas." },
+  { year: "2015", title: "Primeiras missões mundiais", text: "Treinador do Brasil nos Mundiais de Menores e de CROSS COUNTRY, além de competições pan e sul-americanas." },
   { year: "2017–2020", title: "Coordenação da Escola de Formação", text: "Liderança técnica no Instituto Vanderlei Cordeiro de Lima." },
   { year: "2018–2019", title: "Comitê técnico da CBAt", text: "Membro do comitê técnico de base nas áreas de meio-fundo e fundo." },
   { year: "2021–2026", title: "Ciclos olímpico e internacional", text: "Atletas convocados para Jogos Olímpicos, mundiais, parapan-americanos e campeonatos continentais." },
@@ -101,11 +101,11 @@ const curriculum = [
   },
   {
     title: "Seleções e competições",
-    content: "Treinador da Seleção Brasileira em Jogos Sul-Americanos da Juventude, Jogos Pan-Americanos Júnior, Mundiais Sub-20 e de Cross Country, além de campeonatos pan-americanos e sul-americanos. Também foi treinador-chefe e integrante de diversas seleções paulistas desde 2012.",
+    content: "Treinador da Seleção Brasileira em Jogos Sul-Americanos da Juventude, Jogos Pan-Americanos Júnior, Mundiais Sub-20 e de CROSS COUNTRY, além de campeonatos pan-americanos e sul-americanos. Também foi treinador-chefe e integrante de diversas seleções paulistas desde 2012.",
   },
   {
     title: "Certificações internacionais",
-    content: "Formações World Athletics em meio-fundo e fundo, velocidade e barreiras; seminário sul-americano de alto rendimento em cross country; cursos CBAt e FPA; participação no ICCE Global Coaches House e em congressos de ciências do esporte, medicina esportiva e psicologia do esporte.",
+    content: "Formações World Athletics em meio-fundo e fundo, velocidade e barreiras; seminário sul-americano de alto rendimento em CROSS COUNTRY; cursos CBAt e FPA; participação no ICCE Global Coaches House e em congressos de ciências do esporte, medicina esportiva e psicologia do esporte.",
   },
   {
     title: "Atletas e legado",

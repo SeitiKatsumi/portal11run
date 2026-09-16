@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 import { CalendarDays, Clock3, Flag, MapPin, Medal, Route, Trees, Users } from "lucide-react";
 import { HeroSection } from "@/components/HeroSection";
@@ -6,8 +7,8 @@ import { circuitCategories, crossCountryTerm } from "@/lib/circuit-categories";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "Circuito de Cross Country IVCL 11Run · Primeira edição",
-  description: "15 de novembro de 2026, no IVCL em Campinas. Cross country para atletas Sub 10 a Sub 18, com provas de 800 a 3.000 m. Programação e inscrições.",
+  title: "CIRCUITO DE CROSS COUNTRY IVCL 11RUN · Primeira edição",
+  description: "15 de novembro de 2026, no IVCL em Campinas. CROSS COUNTRY para atletas Sub 10 a Sub 18, com provas de 800 a 3.000 m. Programação e inscrições.",
   alternates: { canonical: "/circuito-cross-country-ivcl-11run" },
   openGraph: { images: ["/assets/circuito-futuro-11-hero.webp"] }
 };
@@ -32,8 +33,8 @@ const sessions = [
 
 export default function CrossCountryPage() {
   return <div className={styles.page}>
-    <HeroSection eyebrow="Primeira edição · 15 de novembro de 2026" title="Circuito de Cross Country IVCL 11Run"
-      subtitle="Uma nova largada. Um novo terreno. A corrida de base encontra a natureza em um percurso preparado especialmente para o cross country no IVCL, em Campinas."
+    <HeroSection eyebrow="Primeira edição · 15 de novembro de 2026" title={<Image src="/assets/cross-country-ivcl-logo.webp" alt="CIRCUITO DE CROSS COUNTRY IVCL 11RUN" width={1200} height={625} className={styles.logo} priority unoptimized />}
+      subtitle="Uma nova largada. Um novo terreno. A corrida de base encontra a natureza em um percurso preparado especialmente para o CROSS COUNTRY no IVCL, em Campinas."
       primaryCtaSlot={<ProjectFormModal project={project} />} secondaryCta={{ label: "Ver programação", href: "#programacao" }}
       imageSrc="/assets/circuito-futuro-11-hero.webp" imageAlt="Atleta 11RUN — imagem do Circuito Futuro 11"
       metrics={[{ value: "15 NOV", label: "Primeira edição · 2026" }, { value: "Campinas", label: "IVCL · percurso preparado" }, { value: "9 a 17", label: "Idade completada em 2026" }, { value: "800–3.000 m", label: "Distâncias por categoria" }]} />
@@ -80,8 +81,8 @@ export default function CrossCountryPage() {
     </section>
 
     <section className={`section ${styles.about}`} id="o-que-e-cross-country">
-      <div><span className="eyebrow">Conheça a modalidade</span><h2>O que é cross country?</h2><p>É a corrida em terreno natural, em um percurso demarcado ao ar livre. Grama, terra, curvas e variações do terreno fazem parte da experiência: o atleta aprende a ajustar o ritmo, escolher a trajetória e se adaptar ao caminho.</p><p>No IVCL, em Campinas, o percurso será montado especialmente para esta modalidade, com distâncias adequadas às categorias do circuito. Uma oportunidade de viver a corrida perto da natureza e desenvolver resistência, coordenação e confiança.</p></div>
-      <div className={styles.aboutFacts}><Trees size={40} aria-hidden="true" /><h3>Um cenário novo para evoluir.</h3><p><MapPin size={18} aria-hidden="true" />IVCL · Campinas, São Paulo</p><p><Route size={18} aria-hidden="true" />Percurso preparado para o cross country</p><p><Users size={18} aria-hidden="true" />Da base, com orientação e descoberta</p></div>
+      <div><span className="eyebrow">Conheça a modalidade</span><h2>O que é CROSS COUNTRY?</h2><p>É a corrida em terreno natural, em um percurso demarcado ao ar livre. Grama, terra, curvas e variações do terreno fazem parte da experiência: o atleta aprende a ajustar o ritmo, escolher a trajetória e se adaptar ao caminho.</p><p>No IVCL, em Campinas, o percurso será montado especialmente para esta modalidade, com distâncias adequadas às categorias do circuito. Uma oportunidade de viver a corrida perto da natureza e desenvolver resistência, coordenação e confiança.</p></div>
+      <div className={styles.aboutFacts}><Trees size={40} aria-hidden="true" /><h3>Um cenário novo para evoluir.</h3><p><MapPin size={18} aria-hidden="true" />IVCL · Campinas, São Paulo</p><p><Route size={18} aria-hidden="true" />Percurso preparado para o CROSS COUNTRY</p><p><Users size={18} aria-hidden="true" />Da base, com orientação e descoberta</p></div>
     </section>
   </div>;
 }
