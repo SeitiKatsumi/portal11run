@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "CIRCUITO DE CROSS COUNTRY IVCL 11RUN · Primeira edição",
   description: "15 de novembro de 2026, no IVCL em Campinas. CROSS COUNTRY para atletas Sub 10 a Sub 18, com provas de 800 a 3.000 m. Programação e inscrições.",
   alternates: { canonical: "/circuito-cross-country-ivcl-11run" },
-  openGraph: { images: ["/assets/cross-country-trofeu.webp"] }
+  openGraph: { images: ["/assets/cross-country-flyer.webp"] }
 };
 
 const project = "circuito-cross-country-ivcl-11run";
@@ -36,7 +36,7 @@ export default function CrossCountryPage() {
     <HeroSection eyebrow="Primeira edição · 15 de novembro de 2026" title={<Image src="/assets/cross-country-ivcl-logo.webp" alt="CIRCUITO DE CROSS COUNTRY IVCL 11RUN" width={1200} height={625} className={styles.logo} priority unoptimized />}
       subtitle="Uma nova largada. Um novo terreno. A corrida de base encontra a natureza em um percurso preparado especialmente para o CROSS COUNTRY no IVCL, em Campinas. Inscrições gratuitas até 12 de novembro."
       primaryCtaSlot={<ProjectFormModal project={project} />} secondaryCta={{ label: "Ver programação", href: "#programacao" }}
-      imageSrc="/assets/cross-country-trofeu.webp" imageAlt="Troféu do CIRCUITO DE CROSS COUNTRY IVCL 11RUN com grama e terra em seu interior"
+      imageSrc="/assets/cross-country-flyer.webp" imageAlt="Troféu do CIRCUITO DE CROSS COUNTRY IVCL 11RUN em um percurso de grama sinalizado"
       metrics={[{ value: "15 NOV", label: "Primeira edição · 2026" }, { value: "Campinas", label: "IVCL · Circuito de grama e terra com chegada na pista de atletismo" }, { value: "9 a 17", label: "Idade completada em 2026" }, { value: "800–3.000 m", label: "Distâncias por categoria" }]} />
 
     <section className={`section ${styles.panel}`} id="diferenciais">
