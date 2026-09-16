@@ -74,3 +74,14 @@
 .coursePhoto { margin: 0; min-width: 0; }
 .coursePhoto img { display: block; width: 100%; height: auto; border-radius: 22px; }
 .coursePhoto figcaption { margin-top: 12px; color: var(--muted); font-size: .85rem; line-height: 1.6; }
+
+@media (max-width: 600px) {
+  .page :global(.hero-copy) { display: contents; }
+  .page :global(.hero-copy > .eyebrow) { display: none; }
+  .page :global(.hero-copy > div:has(h1)) { order: 0; }
+  .page :global(.hero-section > div:has(> .hero-visual)) { order: 1; }
+  .page :global(.hero-copy > div:has(> p)) { order: 2; }
+  .page :global(.hero-copy > div:has(> .hero-actions)) { order: 3; }
+  .page :global(.hero-metrics) { order: 4; }
+  .logo { margin-top: 0; }
+}
