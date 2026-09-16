@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { Metadata } from "next";
-import { Camera, Clock3, Flag, Youtube, ChartNoAxesCombined, MapPin, Medal, Route, Trees, Users } from "lucide-react";
+import { Camera, Clock3, Flag, Youtube, MapPin, Medal, Route, Trees, Users } from "lucide-react";
 import { HeroSection } from "@/components/HeroSection";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { circuitCategories, crossCountryTerm } from "@/lib/circuit-categories";
@@ -42,9 +42,19 @@ export default function CrossCountryPage() {
     <section className={`section ${styles.panel}`} id="diferenciais">
       <div className={styles.heading}><span className="eyebrow">Diferenciais</span><h2>Uma experiência imersiva e interativa</h2></div>
       <div className={`${styles.rules} ${styles.benefits}`}>
-        <article><Youtube className={styles.youtube} aria-hidden="true" /><h3>Transmissão ao vivo pelo YouTube</h3><p>Acompanhe as provas e torça pelos atletas durante a transmissão do evento.</p></article>
-        <article><Camera aria-hidden="true" /><h3>Fotos gratuitas</h3><p>Registros feitos por fotógrafo profissional, disponibilizados gratuitamente após o evento.</p></article>
-        <article><ChartNoAxesCombined aria-hidden="true" /><h3>Ranking em tempo real</h3><p>Pontuação para o ranking atualizada em tempo real no site, para acompanhar a classificação dos atletas.</p></article>
+        <article><div className={styles.benefitPreview}>
+          <Image src="/assets/cross-country-sinalizacao.webp" alt="Percurso sinalizado do CIRCUITO DE CROSS COUNTRY" fill sizes="(max-width: 600px) 90vw, 360px" className={styles.previewPhoto} />
+          <span className={styles.previewLabel}>YouTube · transmissão</span><span className={styles.playMark} aria-hidden="true"><Youtube /></span>
+        </div><h3>Transmissão ao vivo pelo YouTube</h3><p>Acompanhe as provas e torça pelos atletas durante a transmissão do evento.</p></article>
+        <article><div className={`${styles.benefitPreview} ${styles.athletePreview}`}>
+          <Image src="/assets/cross-country-atleta-trofeu.webp" alt="Atleta no percurso de CROSS COUNTRY" fill sizes="(max-width: 600px) 90vw, 360px" className={styles.previewPhoto} />
+          <span className={styles.previewLabel}><Camera size={14} aria-hidden="true" />Galeria do evento</span>
+        </div><h3>Fotos gratuitas</h3><p>Registros feitos por fotógrafo profissional, disponibilizados gratuitamente após o evento.</p></article>
+        <article><div className={`${styles.benefitPreview} ${styles.rankingPreview}`} role="img" aria-label="Exemplo ilustrativo de ranking com três atletas e suas pontuações">
+          <div className={styles.rankingPreviewHeader}><strong>Classificação</strong><span>EXEMPLO</span></div>
+          <div className={styles.rankingPreviewColumns}><span>ATLETA</span><span>PTS</span></div>
+          {[10, 9, 8].map((points, index) => <div className={styles.rankingPreviewRow} key={points}><b>{String(index + 1).padStart(2, "0")}</b><span>Atleta {String(index + 1).padStart(2, "0")}<i style={{ width: `${80 - index * 20}%` }} /></span><strong>{points}</strong></div>)}
+        </div><h3>Ranking em tempo real</h3><p>Pontuação para o ranking atualizada em tempo real no site, para acompanhar a classificação dos atletas.</p></article>
       </div>
     </section>
 

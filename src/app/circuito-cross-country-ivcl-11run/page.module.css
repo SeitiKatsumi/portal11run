@@ -86,7 +86,24 @@
   .logo { margin-top: 0; }
 }
 
-.benefits > article > svg { width: 64px; height: 64px; stroke-width: 1.5; }
-.benefits .youtube { color: #ff0000; fill: #ff0000; }
-.benefits .youtube path:last-child { fill: #fff; stroke: #fff; }
+
+
+.benefits > article { min-width: 0; }
+.benefitPreview { position: relative; height: 216px; overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: #f6f8f6; }
+.previewPhoto { object-fit: cover; object-position: center 52%; }
+.athletePreview .previewPhoto { object-position: center 7%; }
+.previewLabel { position: absolute; left: 12px; bottom: 12px; display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: 8px; background: #fff; color: #285442; font-size: .72rem; font-weight: 500; }
+.playMark { position: absolute; inset: 0; display: grid; place-items: center; }
+.playMark svg { width: 68px; height: 68px; fill: #ff0000; color: #ff0000; filter: drop-shadow(0 2px 8px #0003); }
+.playMark svg path:last-child { fill: #fff; stroke: #fff; }
+.rankingPreview { padding: 18px; }
+.rankingPreviewHeader, .rankingPreviewColumns { display: flex; justify-content: space-between; align-items: center; }
+.rankingPreviewHeader strong { font-size: .88rem; font-weight: 600; }
+.rankingPreviewHeader > span { font-size: .56rem; letter-spacing: .08em; color: var(--muted); border: 1px solid var(--line); border-radius: 5px; padding: 4px 6px; }
+.rankingPreviewColumns { margin: 16px 0 4px; color: var(--muted); font-size: .58rem; letter-spacing: .1em; }
+.rankingPreviewRow { display: grid; grid-template-columns: 26px 1fr 24px; align-items: center; gap: 8px; padding: 9px 0; border-top: 1px solid var(--line); font-size: .75rem; }
+.rankingPreviewRow > b { color: var(--cross-green); font-weight: 500; font-variant-numeric: tabular-nums; }
+.rankingPreviewRow > strong { text-align: right; font-weight: 600; }
+.rankingPreviewRow i { display: block; height: 3px; margin-top: 5px; border-radius: 2px; background: #a3bbae; }
+@media (max-width: 600px) { .benefits { gap: 26px; } }
 
