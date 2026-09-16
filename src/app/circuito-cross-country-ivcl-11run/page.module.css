@@ -67,7 +67,7 @@
   .rules { gap: 12px; }
 }
 
-.logo { display: block; width: 100%; height: auto; margin-top: 22px; }
+.logo { position: relative; display: block; width: 100%; height: auto; margin-top: 22px; }
 
 .page :global(.hero-visual img) { object-fit: cover; object-position: center center; }
 
@@ -107,3 +107,13 @@
 .rankingPreviewRow i { display: block; height: 3px; margin-top: 5px; border-radius: 2px; background: #a3bbae; }
 @media (max-width: 600px) { .benefits { gap: 26px; } }
 
+
+.logoBase { display: block; width: 100%; height: auto; clip-path: polygon(0 0, 55% 0, 55% 48%, 100% 48%, 100% 100%, 0 100%); }
+.ivclLogo { position: absolute; left: 59%; top: 8%; width: 32%; height: 37%; object-fit: contain; }
+
+.livingTrophy { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); align-items: center; gap: clamp(24px, 4vw, 52px); padding-bottom: 32px; margin-bottom: 30px; border-bottom: 1px solid var(--line); }
+.livingTrophy > img { display: block; width: 100%; max-width: 320px; height: auto; border-radius: 18px; justify-self: center; }
+.livingTrophy h3 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 500; letter-spacing: -.04em; margin: 14px 0; }
+.livingTrophy p { color: var(--muted); line-height: 1.75; }
+.livingTrophy strong { display: block; font-weight: 500; line-height: 1.6; margin-top: 22px; color: var(--cross-green); }
+@media (max-width: 600px) { .livingTrophy { grid-template-columns: 1fr; } .livingTrophy > img { max-width: 260px; } }

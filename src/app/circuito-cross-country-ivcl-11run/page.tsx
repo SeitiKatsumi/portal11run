@@ -33,7 +33,7 @@ const sessions = [
 
 export default function CrossCountryPage() {
   return <div className={styles.page}>
-    <HeroSection eyebrow="Primeira edição · 15 de novembro de 2026" title={<Image src="/assets/cross-country-ivcl-logo.webp" alt="CIRCUITO DE CROSS COUNTRY IVCL 11RUN" width={1200} height={625} className={styles.logo} priority unoptimized />}
+    <HeroSection eyebrow="Primeira edição · 15 de novembro de 2026" title={<span className={styles.logo} role="img" aria-label="CIRCUITO DE CROSS COUNTRY IVCL 11RUN"><Image src="/assets/cross-country-ivcl-logo.webp" alt="" width={1200} height={625} className={styles.logoBase} priority unoptimized /><Image src="/assets/ivcl-original-color.webp" alt="" width={640} height={389} className={styles.ivclLogo} priority unoptimized /></span>}
       subtitle="Uma nova largada. Um novo terreno. A corrida de base encontra a natureza em um percurso preparado especialmente para o CROSS COUNTRY no IVCL, em Campinas. Inscrições gratuitas até 12 de novembro."
       primaryCtaSlot={<ProjectFormModal project={project} />} secondaryCta={{ label: "Ver programação", href: "#programacao" }}
       imageSrc="/assets/cross-country-atleta-trofeu.webp" imageAlt="Atleta e troféu do CIRCUITO DE CROSS COUNTRY IVCL 11RUN em um percurso de grama sinalizado"
@@ -77,7 +77,11 @@ export default function CrossCountryPage() {
     </section>
 
     <section className={`section ${styles.panel}`}>
-      <div className={styles.heading}><span className="eyebrow">Cada edição conta</span><h2>Premiação e classificação.</h2></div>
+      <div className={styles.heading}><span className="eyebrow">Uma conquista que continua viva</span><h2>Premiação e classificação.</h2></div>
+      <div className={styles.livingTrophy}>
+        <Image src="/assets/cross-country-trofeu.webp" alt="Troféu vivo do CROSS COUNTRY: peça transparente com terra e grama em seu interior" width={1000} height={1500} sizes="(max-width: 600px) 80vw, 320px" />
+        <div><span className="eyebrow">Da natureza para o pódio</span><h3>Troféu vivo</h3><p>Uma lembrança que carrega a essência do CROSS COUNTRY: terra e grama viva dentro de uma peça transparente, unindo a conquista do atleta ao terreno onde tudo acontece.</p><p>Mais do que guardar uma colocação, o troféu celebra crescimento, cuidado e a conexão com a natureza.</p><strong>Para os três primeiros de cada categoria e gênero, junto com brindes 11Run.</strong></div>
+      </div>
       <div className={styles.rules}>
         <article><Medal aria-hidden="true" /><h3>Três no pódio</h3><p>Troféus e brindes 11Run para os três primeiros de cada categoria, no feminino e no masculino.</p></article>
         <article><Flag aria-hidden="true" /><h3>Do 1º ao 10º</h3><p>10 pontos para o primeiro, 9 para o segundo e assim por diante, até 1 ponto para o décimo colocado.</p></article>
