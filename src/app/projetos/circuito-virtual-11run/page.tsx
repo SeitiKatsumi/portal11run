@@ -135,10 +135,10 @@ export default function VirtualCircuitPage() {
             </article>)}
           </div>
         </section>
-        <CircuitEvolution />
         <section className={styles.section} id="ranking">
           <CircuitRanking initialRanking={ranking} />
         </section>
+        <CircuitEvolution />
 
         <section className={styles.categoryGuide} aria-labelledby="categorias-2026">
           <div>
