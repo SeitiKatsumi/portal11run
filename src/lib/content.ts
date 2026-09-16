@@ -18,6 +18,7 @@ import {
   Users
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { circuitRaceOptions } from "./circuit-categories";
 
 export type ProjectKey = "app-11run" | "onze-futuro" | "11-regional" | "circuito-futuro-11" | "bolsas";
 
@@ -62,6 +63,7 @@ export type ProjectPage = {
 export const projectNavItems: NavItem[] = [
   { label: "11 Run Futuro", href: "/onze-futuro" },
   { label: "Desafio Virtual 11 2026", href: "/projetos/circuito-virtual-11run" },
+      { label: "Circuito de Cross Country IVCL 11Run", href: "/circuito-cross-country-ivcl-11run" },
   { label: "Circuito 11 Run 2027", href: "/circuito-futuro-11" },
   { label: "11 Run Master", href: "/11-master" },
   { label: "Bolsas", href: "/bolsas" }
@@ -292,7 +294,7 @@ export const projects: ProjectPage[] = [
     imageAlt: "Atleta 11RUN sentada em uma pista de atletismo",
     body: [
       "O futuro do meio-fundo e fundo começa na pista.",
-      "Vem aí o Circuito Futuro 11, o circuito de desenvolvimento competitivo em pista para atletas das categorias Sub 10 a Sub 14."
+      "Vem aí o Circuito Futuro 11, o circuito de desenvolvimento competitivo em pista para atletas das categorias Sub 10 a Sub 18."
     ],
     href: "/circuito-futuro-11",
     formHref: "/cadastro/circuito-futuro-11",
@@ -303,6 +305,8 @@ export const projects: ProjectPage[] = [
       "Sub 10 e Sub 11 - 800m",
       "Sub 12 e Sub 13 - 1.000m",
       "Sub 14 - 1.500m",
+      "Sub 15 e Sub 16 - 2.000m",
+      "Sub 17 e Sub 18 - 3.000m",
       "Categorias masculino e feminino",
       "Ranking por prova e idade",
       "Limite de 20 atletas por prova",
@@ -324,7 +328,7 @@ export const projects: ProjectPage[] = [
     metadata: {
       title: "Circuito Futuro 11",
       description:
-        "Circuito infantil de pista em cinco etapas, das categorias Sub 10 a Sub 14, com provas de 800 m, 1.000 m e 1.500 m."
+        "Circuito infantil de pista em cinco etapas, das categorias Sub 10 a Sub 18, com provas de 800 m a 3.000 m."
     }
   },
   {
@@ -401,7 +405,7 @@ export const ecosystemCards = [
   },
   {
     title: "Circuito Futuro 11",
-    text: "Circuito infantil de pista em 2027 para as categorias Sub 10 a Sub 14, com cinco etapas e distâncias progressivas.",
+    text: "Circuito infantil de pista em 2027 para as categorias Sub 10 a Sub 18, com cinco etapas e distâncias progressivas.",
     href: "/circuito-futuro-11",
     cta: "Conhecer o Circuito Futuro 11",
     icon: Flag
@@ -516,13 +520,7 @@ export const formProjects = {
         name: "race_event",
         label: "Categoria / prova de 2027",
         type: "select",
-        options: [
-          "Sub 10 - 9 anos no ano - 800m",
-          "Sub 11 - 10 anos no ano - 800m",
-          "Sub 12 - 11 anos no ano - 1.000m",
-          "Sub 13 - 12 anos no ano - 1.000m",
-          "Sub 14 - 13 anos no ano - 1.500m"
-        ]
+        options: circuitRaceOptions
       },
       {
         name: "payment_plan",
@@ -532,6 +530,17 @@ export const formProjects = {
       },
       { name: "team", label: "Equipe ou escola" },
       { name: "social_link", label: "Perfil de redes sociais" }
+    ]
+  },
+  "circuito-cross-country-ivcl-11run": {
+    label: "Cross Country IVCL 11Run",
+    projectType: "circuito-cross-country-ivcl-11run",
+    title: "Inscrição · Cross Country IVCL 11Run",
+    fields: [
+      { name: "athlete_name", label: "Nome completo do atleta" },
+      { name: "birth_date", label: "Data de nascimento do atleta", type: "date" },
+      { name: "gender", label: "Categoria de gênero", type: "select", options: ["Feminino", "Masculino"] },
+      { name: "team", label: "Equipe ou escola (opcional)" }
     ]
   },
   bolsas: {

@@ -1,3 +1,4 @@
+import { circuitCategoryForBirthDate, circuitRaceOptions, crossCountryTerm } from "./circuit-categories";
 import { mkdirSync, readFileSync } from "fs";
 import path from "path";
 import { createHash } from "node:crypto";
@@ -60,6 +61,7 @@ export const pipelineStatuses = [
 
 const initialPipelineStatusByProject: Record<string, string> = {
   "circuito-futuro-11": "Inscrições solicitadas",
+  "circuito-cross-country-ivcl-11run": "Inscrições solicitadas",
   "11-regional": "Cadastro recebido",
   "onze-futuro": "Cadastro recebido"
 };
@@ -105,6 +107,7 @@ export const editableLeadFields = [
   "social_link",
   "category",
   "race_event",
+  "gender",
   "payment_plan"
 ] as const;
 
@@ -264,7 +267,21 @@ export function validateLead(payload: LeadPayload, options?: { photoCount?: numb
     }
   }
 
+  if (payload.project_type === "circuito-cross-country-ivcl-11run") {
+    for (const field of ["name", "phone", "city", "state", "athlete_name", "birth_date", "gender", "term_acceptor_name", "term_acceptor_cpf"]) {
+      if (typeof payload[field] !== "string" || !String(payload[field]).trim()) return { ok: false, error: `Preencha o campo obrigatório: ${field}.` };
+    }
+    if (!["Feminino", "Masculino"].includes(String(payload.gender))) return { ok: false, error: "Selecione a categoria feminina ou masculina." };
+    if (!circuitCategoryForBirthDate(String(payload.birth_date), 2026)) return { ok: false, error: "O atleta deve completar de 9 a 17 anos em 2026." };
+    if (!isValidCpf(String(payload.term_acceptor_cpf))) return { ok: false, error: "CPF do responsável que aceita o termo inválido." };
+    if (payload.accepted_terms !== true || payload.accepted_contact !== true) return { ok: false, error: "Confirme a autorização de participação e o contato." };
+  }
+
   if (payload.project_type === "circuito-futuro-11") {
+    const category = circuitCategoryForBirthDate(String(payload.birth_date ?? ""), 2027);
+    if (!category || !circuitRaceOptions.includes(String(payload.race_event)) || !String(payload.race_event).startsWith(`${category.category} -`)) {
+      return { ok: false, error: "A prova deve corresponder à idade completada em 2027 (de 9 a 17 anos)." };
+    }
     const requiredCircuitoFields = [
       "guardian_name",
       "guardian_cpf",
@@ -324,6 +341,19 @@ export function validateLead(payload: LeadPayload, options?: { photoCount?: numb
 
 export function saveLead(payload: LeadPayload, photos: string[] = [], requestMeta?: { ipAddress?: string; userAgent?: string }) {
   const now = new Date().toISOString();
+  if (payload.project_type === "circuito-cross-country-ivcl-11run") {
+    const validation = validateLead(payload);
+    if (!validation.ok) throw new Error(validation.error);
+    const category = circuitCategoryForBirthDate(String(payload.birth_date), 2026)!;
+    payload.category = category.category;
+    payload.age = String(category.age);
+    payload.race_event = category.distance;
+    payload.event_edition = "1ª edição · 15/11/2026";
+    payload.guardian_name = String(payload.name);
+    payload.term_snapshot = JSON.stringify(crossCountryTerm);
+    payload.term_version = "cross-2026-09-16";
+    payload.term_accepted_at = now;
+  }
   if (payload.project_type === "onze-futuro" && payload.accepted_terms === true) {
     const snapshot = onzeFuturoTermSnapshot();
     payload.term_version = ONZE_FUTURO_TERM_VERSION;
@@ -550,6 +580,21 @@ export function updateLeadProfile(id: string, updates: Partial<Record<EditableLe
     payload[key] = value;
   }
 
+  if (current.project_type === "circuito-cross-country-ivcl-11run") {
+    const validation = validateLead(payload as LeadPayload);
+    if (!validation.ok) throw new Error(validation.error);
+    const category = circuitCategoryForBirthDate(String(payload.birth_date), 2026)!;
+    payload.category = category.category;
+    payload.age = String(category.age);
+    payload.race_event = category.distance;
+    payload.guardian_name = String(payload.name);
+    for (const field of ["category", "race_event", "guardian_name", "age"] as const) {
+      const index = cleanEntries.findIndex(([key]) => key === field);
+      if (index >= 0) cleanEntries.splice(index, 1);
+      cleanEntries.push([field, String(payload[field])]);
+    }
+  }
+
   const mirroredColumns = new Set([
     "name",
     "email",
@@ -560,6 +605,7 @@ export function updateLeadProfile(id: string, updates: Partial<Record<EditableLe
     "message",
     "athlete_name",
     "birth_date",
+    "age",
     "category",
     "school",
     "team",
@@ -575,7 +621,7 @@ export function updateLeadProfile(id: string, updates: Partial<Record<EditableLe
     $updated_at: updatedAt
   };
 
-  for (const [key, value] of cleanEntries) {
+  for (const [key, value] of cleanEntries.filter(([key]) => mirroredColumns.has(key))) {
     params[`$${key}`] = value;
   }
 

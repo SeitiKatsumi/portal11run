@@ -1,3 +1,4 @@
+import { circuitCategories } from "@/lib/circuit-categories";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, CheckCircle2 } from "lucide-react";
@@ -137,21 +138,18 @@ export function ProjectPageTemplate({ project }: { project: ProjectPage }) {
 
 function CircuitoDetails() {
   const rankings = listRankings();
-  const ageEvents = [
-    { category: "Sub 10", age: "9 anos em 2027", birthYear: "Nascidos em 2018", event: "800 m" },
-    { category: "Sub 11", age: "10 anos em 2027", birthYear: "Nascidos em 2017", event: "800 m" },
-    { category: "Sub 12", age: "11 anos em 2027", birthYear: "Nascidos em 2016", event: "1.000 m" },
-    { category: "Sub 13", age: "12 anos em 2027", birthYear: "Nascidos em 2015", event: "1.000 m" },
-    { category: "Sub 14", age: "13 anos em 2027", birthYear: "Nascidos em 2014", event: "1.500 m" }
-  ];
+  const ageEvents = circuitCategories.map((item) => ({
+    category: item.category, age: `${item.age} anos em 2027`,
+    birthYear: `Nascidos em ${2027 - item.age}`, event: item.distance
+  }));
 
   return (
     <>
       <section className="section">
         <SectionTitle
           eyebrow="ranking e faixas etárias"
-          title="Sub 10 a Sub 14. Distâncias adequadas a cada categoria."
-          text="A categoria considera a idade que o atleta completa no ano vigente. Em 2027, atletas nascidos de 2018 a 2014 competem nas categorias abaixo. Cada prova terá limite inicial de 20 atletas."
+          title="Sub 10 a Sub 18. Distâncias adequadas a cada categoria."
+          text="A categoria considera a idade que o atleta completa no ano vigente. Em 2027, atletas nascidos de 2018 a 2010 competem nas categorias abaixo. Cada prova terá limite inicial de 20 atletas."
         />
         <div className="feature-grid compact">
           {ageEvents.map((item) => (
@@ -168,7 +166,7 @@ function CircuitoDetails() {
         <SectionTitle
           eyebrow="regulamento técnico"
           title="Meio-fundo e fundo com regra clara desde a base."
-          text="O circuito usa como referência as regras oficiais do atletismo para provas de pista, com 800 m no Sub 10 e Sub 11, 1.000 m no Sub 12 e Sub 13 e 1.500 m no Sub 14."
+          text="O circuito usa como referência as regras oficiais do atletismo para provas de pista, com 800 m no Sub 10 e Sub 11, 1.000 m no Sub 12 e Sub 13, 1.500 m no Sub 14, 2.000 m no Sub 15 e Sub 16 e 3.000 m no Sub 17 e Sub 18."
         />
         <div className="editorial-block">
           <p>As inscrições dependem de autorização do responsável, confirmação da vaga e aceite do regulamento de cada etapa.</p>

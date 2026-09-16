@@ -37,7 +37,8 @@ export default async function Page({ params }: PageProps) {
     notFound();
   }
 
-  const formImage = "/assets/11run-reference.jpg";
+  const isCross = resolvedProject === "circuito-cross-country-ivcl-11run";
+  const formImage = isCross ? "/assets/circuito-futuro-11-hero.webp" : "/assets/11run-reference.jpg";
 
   return (
     <>
@@ -50,8 +51,7 @@ export default async function Page({ params }: PageProps) {
           <span className="eyebrow">cadastro</span>
           <h1>{config.title}</h1>
           <p>
-            Envie suas informações para a equipe 11RUN. Os dados ficam registrados localmente e podem ser integrados a
-            CRM, banco SQL ou automações futuras.
+            {isCross ? "Primeira edição · 15 de novembro de 2026 · IVCL, Campinas. Inscrição para atletas de 9 a 17 anos em 2026, com autorização do responsável legal." : "Envie suas informações para a equipe 11RUN. Entraremos em contato sobre os próximos passos do seu cadastro."}
           </p>
         </div>
         <img src={formImage} alt={`Cadastro ${config.label}`} />

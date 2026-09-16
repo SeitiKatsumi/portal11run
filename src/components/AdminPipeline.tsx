@@ -37,6 +37,7 @@ type MemberAccount = {
 const defaultStatuses = ["Cadastro recebido", "Em análise", "Aceitos", "Declinados", "Outros"];
 const circuitoStatuses = ["Perfil redes sociais", "Inscrições solicitadas", "Aguardando pagamento", "Aceitas", "Declinados"];
 const statusesByProject: Record<string, string[]> = {
+  "circuito-cross-country-ivcl-11run": ["Inscrições solicitadas", "Em análise", "Aceitas", "Declinados"],
   "circuito-futuro-11": circuitoStatuses
 };
 const receiptItems = ["Uniforme", "Material esportivo", "Ajuda de custo", "Inscrição ou evento", "Outro recebimento"];
@@ -46,6 +47,7 @@ const projectLabels: Record<string, string> = {
   "onze-futuro": "Onze Futuro",
   "11-regional": "11 Master",
   "circuito-futuro-11": "Circuito Futuro 11",
+  "circuito-cross-country-ivcl-11run": "Cross Country IVCL 11Run",
   bolsas: "Bolsas"
 };
 
@@ -101,6 +103,8 @@ const fieldLabels: Record<string, string> = {
   competitions: "Competições",
   within_itatiba_radius: "Raio de 40 km de Itatiba",
   race_event: "Prova",
+  gender: "Gênero",
+  event_edition: "Edição",
   payment_plan: "Plano de pagamento",
   payment_receipt_url: "Comprovante de pagamento",
   accepted_contact: "Aceite de contato",
@@ -122,6 +126,8 @@ const fieldGroups = [
       "birth_date",
       "age",
       "category",
+      "gender",
+      "event_edition",
       "school",
       "team",
       "athlete_rg",
@@ -184,6 +190,7 @@ const adminEditableFields = [
   "guardian_cpf",
   "guardian_pix",
   "race_event",
+  "gender",
   "payment_plan"
 ] as const;
 
@@ -226,13 +233,17 @@ function isInteractiveTarget(target: EventTarget | null) {
   return target instanceof HTMLElement && Boolean(target.closest("button, a, input, select, textarea, label, form, details, summary"));
 }
 
-export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initialLeads: AdminLead[]; initialMemberAccounts: MemberAccount[] }) {
+const crossEditableFields = new Set(["name", "email", "phone", "city", "state", "message", "athlete_name", "birth_date", "gender", "team"]);
+
+export function AdminPipeline({ initialLeads, initialMemberAccounts, project }: { initialLeads: AdminLead[]; initialMemberAccounts: MemberAccount[]; project?: string }) {
   const [leads, setLeads] = useState(initialLeads);
   const [memberAccounts, setMemberAccounts] = useState(initialMemberAccounts);
-  const [projectFilter, setProjectFilter] = useState("todos");
+  const [projectFilter, setProjectFilter] = useState(project ?? "todos");
   const [selectedStatus, setSelectedStatus] = useState(
-    () => defaultStatuses.find((status) => initialLeads.some((lead) => lead.pipeline_status === status)) ?? initialLeads[0]?.pipeline_status ?? defaultStatuses[0]
+    () => (statusesByProject[project ?? ""] ?? defaultStatuses).find((status) => initialLeads.some((lead) => lead.pipeline_status === status)) ?? initialLeads[0]?.pipeline_status ?? (statusesByProject[project ?? ""] ?? defaultStatuses)[0]
   );
+  const [query, setQuery] = useState("");
+  const [actionError, setActionError] = useState("");
   const [updating, setUpdating] = useState("");
   const [memberError, setMemberError] = useState("");
   const [memberErrorLead, setMemberErrorLead] = useState("");
@@ -276,8 +287,8 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
   }, [leads, projectFilter]);
 
   const selectedStatusLeads = useMemo(
-    () => filteredLeads.filter((lead) => lead.pipeline_status === selectedStatus),
-    [filteredLeads, selectedStatus]
+    () => filteredLeads.filter((lead) => lead.pipeline_status === selectedStatus && `${lead.athlete_name} ${lead.name} ${lead.city} ${lead.payload_json}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(query.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase())),
+    [filteredLeads, selectedStatus, query]
   );
 
   function changeProjectFilter(nextProject: string) {
@@ -290,19 +301,18 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
 
   async function patchLead(id: string, body: Record<string, unknown>) {
     setUpdating(id);
-    const response = await fetch("/api/admin/leads", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, ...body })
-    });
-    const result = await response.json();
-    setUpdating("");
-
-    if (!response.ok) {
-      throw new Error(result.error ?? "Erro ao atualizar cadastro.");
-    }
-
-    setLeads((current) => current.map((lead) => (lead.id === id ? result.lead : lead)));
+    setActionError("");
+    try {
+      const response = await fetch("/api/admin/leads", {
+        method: "PATCH", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, ...body })
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error ?? "Erro ao atualizar cadastro.");
+      setLeads((current) => current.map((lead) => lead.id === id ? result.lead : lead));
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Não foi possível salvar. Tente novamente.");
+    } finally { setUpdating(""); }
   }
 
   async function saveMemberAccess(event: FormEvent<HTMLFormElement>, lead: AdminLead) {
@@ -352,7 +362,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
     setProfileSuccess("");
     setProfileSaving(true);
     const formData = new FormData(event.currentTarget);
-    const profile = Object.fromEntries(adminEditableFields.map((field) => [field, String(formData.get(field) ?? "")]));
+    const profile = Object.fromEntries(adminEditableFields.filter((field) => formData.has(field)).map((field) => [field, String(formData.get(field) ?? "")]));
 
     try {
       const response = await fetch("/api/admin/leads", {
@@ -489,7 +499,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
             <form className="admin-profile-editor" onSubmit={saveAdminProfile}>
               <div className="admin-profile-editor-grid">
                 {fieldGroups.map((group) => {
-                  const fields = group.keys.filter((key) => adminEditableFields.includes(key as (typeof adminEditableFields)[number]));
+                  const fields = group.keys.filter((key) => adminEditableFields.includes(key as (typeof adminEditableFields)[number]) && (selectedLead.project_type !== "circuito-cross-country-ivcl-11run" || crossEditableFields.has(key)));
                   if (fields.length === 0) return null;
 
                   return (
@@ -499,7 +509,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
                         {fields.map((key) => (
                           <label className={multilineProfileFields.has(key) ? "wide" : undefined} key={key}>
                             <span>{formatFieldName(key)}</span>
-                            {multilineProfileFields.has(key) ? (
+                            {key === "gender" ? <select name={key} defaultValue={String(selectedDetails[key] ?? "")} required><option value="Feminino">Feminino</option><option value="Masculino">Masculino</option></select> : multilineProfileFields.has(key) ? (
                               <textarea name={key} defaultValue={String(selectedDetails[key] ?? "")} />
                             ) : (
                               <input name={key} type={profileInputTypes[key] ?? "text"} defaultValue={String(selectedDetails[key] ?? "")} />
@@ -570,14 +580,14 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
     ) : null;
 
   return (
-    <section className="admin-panel">
+    <section className={project ? "admin-panel cross-registration-admin" : "admin-panel"}>
       <div className="admin-toolbar">
         <div>
           <span className="eyebrow">painel admin</span>
-          <h1>Pipeline de cadastros</h1>
-          <p>Todos os registros do site organizados por projeto, categoria e etapa de análise.</p>
+          <h1>{project ? projectLabels[project] : "Pipeline de cadastros"}</h1>
+          <p>{project ? "15/11/2026 · IVCL, Campinas. Confira inscrições, edite dados e confirme a participação dos atletas." : "Todos os registros do site organizados por projeto, categoria e etapa de análise."}</p>
         </div>
-        <label>
+        {!project ? <label>
           <span>Projeto</span>
           <select value={projectFilter} onChange={(event) => changeProjectFilter(event.target.value)}>
             <option value="todos">Todos os projetos</option>
@@ -587,9 +597,11 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
               </option>
             ))}
           </select>
-        </label>
+        </label> : null}
       </div>
 
+      <label className="cross-admin-search"><span>Buscar atleta, responsável, cidade ou categoria</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} /></label>
+      {actionError ? <p role="alert" className="form-error">{actionError}</p> : null}
       <div className="pipeline-stage-nav" role="tablist" aria-label="Etapas do pipeline">
         {activeStatuses.map((status) => {
           const count = filteredLeads.filter((lead) => lead.pipeline_status === status).length;
@@ -632,6 +644,8 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
         ) : (
           <div className="pipeline-card-grid">
             {selectedStatusLeads.map((lead) => {
+                const isCross = lead.project_type === "circuito-cross-country-ivcl-11run";
+                const payload = parseJson<Record<string, string>>(lead.payload_json, {});
                 const photos = parseJson<string[]>(lead.photos_json, []);
                 const receipts = parseJson<Record<string, boolean>>(lead.receipts_json, {});
                 const projectLabel = projectLabels[lead.project_type] ?? lead.project_type;
@@ -650,6 +664,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
                       {updating === lead.id ? <RefreshCw className="spin" size={16} /> : null}
                     </div>
                     <h2>{lead.athlete_name || lead.name}</h2>
+                    {isCross ? <p><strong>{payload.category} · {payload.race_event} · {payload.gender}</strong></p> : null}
                     <p>
                       {lead.name} · {lead.phone}
                     </p>
@@ -662,6 +677,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
                     <label className="admin-status">
                       <span>Etapa</span>
                       <select
+                        disabled={updating === lead.id}
                         value={lead.pipeline_status}
                         onChange={(event) => patchLead(lead.id, { pipeline_status: event.target.value })}
                       >
@@ -673,7 +689,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
                       </select>
                     </label>
 
-                    {photos.length > 0 ? (
+                    {isCross ? null : photos.length > 0 ? (
                       <div className="admin-photos">
                         {photos.map((photo) => (
                           <img src={photo} alt={`Foto de ${lead.athlete_name || lead.name}`} key={photo} />
@@ -691,7 +707,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
                       Ver dados completos
                     </button>
 
-                    <div className="receipt-list">
+                    {!isCross ? <div className="receipt-list">
                       <strong>Direitos e benefícios</strong>
                       {receiptItems.map((item) => (
                         <label key={item}>
@@ -705,7 +721,7 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts }: { initial
                           {receipts[item] ? <CheckCircle2 size={15} /> : null}
                         </label>
                       ))}
-                    </div>
+                    </div> : null}
 
                     {memberRole ? (
                       <form className="member-access-card" onSubmit={(event) => saveMemberAccess(event, lead)}>

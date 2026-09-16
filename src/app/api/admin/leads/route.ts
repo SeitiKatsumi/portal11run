@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { editableLeadFields, listLeads, updateLead, updateLeadProfile, type EditableLeadField } from "@/lib/leads";
+import { getLeadById, validateLead, type LeadPayload, editableLeadFields, listLeads, updateLead, updateLeadProfile, type EditableLeadField } from "@/lib/leads";
 
 export const runtime = "nodejs";
 
@@ -28,6 +28,13 @@ export async function PATCH(request: Request) {
         ) as Partial<Record<EditableLeadField, string>>
       : null;
 
+    if (profile) {
+      const current = getLeadById(body.id);
+      if (current?.project_type === "circuito-cross-country-ivcl-11run") {
+        const validation = validateLead({ ...JSON.parse(current.payload_json), ...profile } as LeadPayload);
+        if (!validation.ok) return NextResponse.json({ ok: false, error: validation.error }, { status: 400 });
+      }
+    }
     const lead = profile
       ? updateLeadProfile(body.id, profile)
       : updateLead(body.id, {

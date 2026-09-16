@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { circuitCategoryForBirthDate, crossCountryTerm } from "@/lib/circuit-categories";
 import { onzeFuturoTerm } from "@/lib/onze-futuro-policy";
 import { useRouter } from "next/navigation";
 import { Loader2, Send, ShieldCheck, Upload } from "lucide-react";
@@ -31,6 +32,7 @@ const baseFields: Field[] = [
 ];
 
 const requiredByProject: Record<FormProjectSlug, Set<string>> = {
+  "circuito-cross-country-ivcl-11run": new Set(["name", "email", "phone", "city", "state", "athlete_name", "birth_date", "gender", "term_acceptor_name", "term_acceptor_cpf"]),
   "app-11run": new Set(["name", "email", "phone"]),
   bolsas: new Set(["name", "email", "phone"]),
   "onze-futuro": new Set([
@@ -93,6 +95,7 @@ const requiredByProject: Record<FormProjectSlug, Set<string>> = {
 };
 
 const termsByProject: Partial<Record<FormProjectSlug, { title: string; clauses: string[] }>> = {
+  "circuito-cross-country-ivcl-11run": crossCountryTerm,
   "onze-futuro": {
     title: `${onzeFuturoTerm.title} · versão ${onzeFuturoTerm.version}`,
     clauses: [...onzeFuturoTerm.clauses]
@@ -101,9 +104,9 @@ const termsByProject: Partial<Record<FormProjectSlug, { title: string; clauses: 
     title: "Termo de autorização e regulamento do Circuito Futuro 11",
     clauses: [
       "O responsável legal autoriza a participação do atleta no Circuito Futuro 11, em provas de meio-fundo e fundo organizadas pela 11RUN.",
-      "As provas seguem referência técnica das regras oficiais do atletismo, com distâncias de 800 m, 1.000 m e 1.500 m adaptadas às categorias do projeto.",
+      "As provas seguem referência técnica das regras oficiais do atletismo, com distâncias de 800 m, 1.000 m, 1.500 m, 2.000 m e 3.000 m adaptadas às categorias do projeto.",
       "As faixas do circuito consideram sempre a idade que o atleta completa no ano da competição.",
-      "As provas de 2027 são: Sub 10 (9 anos) - 800 m; Sub 11 (10 anos) - 800 m; Sub 12 (11 anos) - 1.000 m; Sub 13 (12 anos) - 1.000 m; e Sub 14 (13 anos) - 1.500 m.",
+      "As provas de 2027 são: Sub 10 (9 anos) - 800 m; Sub 11 (10 anos) - 800 m; Sub 12 (11 anos) - 1.000 m; Sub 13 (12 anos) - 1.000 m; Sub 14 (13 anos) - 1.500 m; Sub 15 (14 anos) e Sub 16 (15 anos) - 2.000 m; Sub 17 (16 anos) e Sub 18 (17 anos) - 3.000 m.",
       "A temporada de 2027 terá etapas em fevereiro, abril, junho, agosto e a Finalíssima em outubro.",
       "Cada prova terá limite de 20 atletas por bateria/prova, podendo haver organização por ordem de inscrição, categoria ou critério técnico.",
       "Valores, lotes, condições de pagamento, locais e horários serão informados pela organização antes da abertura de cada etapa.",
@@ -125,6 +128,10 @@ const termsByProject: Partial<Record<FormProjectSlug, { title: string; clauses: 
 };
 
 const fieldGroups: Partial<Record<FormProjectSlug, { title: string; eyebrow: string; text: string; fields: string[] }[]>> = {
+  "circuito-cross-country-ivcl-11run": [
+    { eyebrow: "01 · responsável", title: "Contato do responsável legal", text: "Usaremos este contato para confirmar a inscrição e enviar as orientações do evento.", fields: ["name", "email", "phone", "city", "state"] },
+    { eyebrow: "02 · atleta", title: "Quem vai correr", text: "Primeira edição · 15/11/2026 · IVCL, Campinas. A categoria é definida automaticamente pelo ano de nascimento.", fields: ["athlete_name", "birth_date", "gender", "team", "message"] }
+  ],
   "onze-futuro": [
     {
       eyebrow: "dados do cadastrante",
@@ -227,11 +234,14 @@ function getBirthDateLimits(project: FormProjectSlug) {
     return { min: format(min), max: format(max), help: "Permitido apenas para atletas com idade entre 10 e 13 anos." };
   }
 
+  if (project === "circuito-cross-country-ivcl-11run") {
+    return { min: "2009-01-01", max: "2017-12-31", help: "Idade completada em 2026: de 9 a 17 anos (Sub 10 a Sub 18)." };
+  }
   if (project === "circuito-futuro-11") {
     return {
-      min: "2014-01-01",
+      min: "2010-01-01",
       max: "2018-12-31",
-      help: "Temporada 2027: Sub 10 a Sub 14, para nascidos de 2018 a 2014."
+      help: "Temporada 2027: Sub 10 a Sub 18, para nascidos de 2018 a 2010."
     };
   }
 
@@ -240,6 +250,9 @@ function getBirthDateLimits(project: FormProjectSlug) {
 
 export function LeadForm({ project }: { project: FormProjectSlug }) {
   const router = useRouter();
+  const isCross = project === "circuito-cross-country-ivcl-11run";
+  const [birthDate, setBirthDate] = useState("");
+  const crossCategory = circuitCategoryForBirthDate(birthDate, 2026);
   const config = formProjects[project];
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -261,7 +274,7 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
 
     return (
       <label key={field.name} className={full ? "full" : ""}>
-        <span>{field.label}</span>
+        <span>{isCross && field.name === "name" ? "Nome completo do responsável legal" : field.label}</span>
         {field.type === "select" ? (
           <select name={field.name} required={required}>
             <option value="">Selecione</option>
@@ -276,6 +289,7 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
         ) : (
           <input
             name={field.name}
+            onChange={isCross && field.name === "birth_date" ? (event) => setBirthDate(event.target.value) : undefined}
             type={field.type ?? "text"}
             placeholder={field.placeholder}
             required={required}
@@ -285,11 +299,16 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
           />
         )}
         {field.name === "birth_date" && birthDateLimits.help ? <small>{birthDateLimits.help}</small> : null}
+        {isCross && field.name === "birth_date" && birthDate ? <strong role="status">{crossCategory ? `${crossCategory.category} · ${crossCategory.distance}` : "Nascimento fora das categorias desta edição."}</strong> : null}
       </label>
     );
   }
 
   function validateFormData(formData: FormData) {
+    if (isCross) {
+      if (!circuitCategoryForBirthDate(String(formData.get("birth_date") ?? ""), 2026)) return "A primeira edição recebe atletas que completam de 9 a 17 anos em 2026.";
+      if (!isValidCpf(String(formData.get("term_acceptor_cpf") ?? ""))) return "Informe um CPF válido para o responsável que aceita o termo.";
+    }
     if (project === "onze-futuro") {
       const photos = formData.getAll("athlete_photos").filter((item) => item instanceof File && item.size > 0);
       if (photos.length !== 5) return "Envie exatamente 5 fotos do atleta.";
@@ -445,11 +464,11 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
         </span>
       </label>
 
-      {error ? <p className="form-error">{error}</p> : null}
+      {error ? <p className="form-error" role="alert">{error}</p> : null}
 
       <button className="button primary submit-button" type="submit" disabled={loading}>
         {loading ? <Loader2 className="spin" size={18} /> : <Send size={18} />}
-        {project === "circuito-futuro-11" ? "Enviar pré-inscrição" : "Enviar formulário"}
+        {isCross ? "Solicitar inscrição · 15 de novembro" : project === "circuito-futuro-11" ? "Enviar pré-inscrição" : "Enviar formulário"}
       </button>
     </form>
   );

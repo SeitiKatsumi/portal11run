@@ -7,6 +7,8 @@ const routes = [
   "/onze-futuro",
   "/11-master",
   "/circuito-futuro-11",
+  "/circuito-cross-country-ivcl-11run",
+  "/cadastro/circuito-cross-country-ivcl-11run",
   "/projetos/circuito-virtual-11run",
   "/bolsas",
   "/referencias/ranking-brasil",
