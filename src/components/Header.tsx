@@ -49,6 +49,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [desktopMenu, setDesktopMenu] = useState<string | null>(null);
   const [desktopSubmenu, setDesktopSubmenu] = useState<string | null>(null);
+  const [submenuOpensLeft, setSubmenuOpensLeft] = useState(false);
   const [memberLoggedIn, setMemberLoggedIn] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [homeHeader, setHomeHeader] = useState({ opacity: 74, blur: 18 });
@@ -112,6 +113,12 @@ export function Header() {
     setDesktopSubmenu(null);
   }, [pathname]);
 
+  function openSubmenu(element: HTMLElement, label: string) {
+    const menu = element.querySelector<HTMLElement>(".nav-nested-menu");
+    setSubmenuOpensLeft(element.getBoundingClientRect().right + 7 + (menu?.offsetWidth ?? 320) > window.innerWidth - 16);
+    setDesktopSubmenu(label);
+  }
+
   const isActiveHref = (href: string) =>
     pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
 
@@ -164,9 +171,10 @@ export function Header() {
                     if (child.children?.length) {
                       return (
                         <div
-                          className={`nav-submenu ${desktopSubmenu === child.label ? "is-open" : ""}`}
+                          className={`nav-submenu ${desktopSubmenu === child.label ? "is-open" : ""} ${submenuOpensLeft ? "open-left" : ""}`}
                           key={child.label}
-                          onMouseEnter={() => setDesktopSubmenu(child.label)}
+                          onMouseEnter={(event) => openSubmenu(event.currentTarget, child.label)}
+                          onFocus={(event) => openSubmenu(event.currentTarget, child.label)}
                           onMouseLeave={() => setDesktopSubmenu(null)}
                         >
                           <button

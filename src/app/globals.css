@@ -185,6 +185,11 @@ body:has(#links-page) main {
   color: rgb(255 255 255 / 0.9);
 }
 
+.home-site-header .desktop-nav > a:hover,
+.home-site-header .desktop-nav > a[aria-current="page"] {
+  color: #fff;
+}
+
 .home-site-header .menu-button {
   border-color: rgb(255 255 255 / 0.38);
   background: rgb(18 19 18 / 0.18);
@@ -257,7 +262,8 @@ body:has(#links-page) main {
   position: absolute;
   top: calc(100% + 18px);
   left: 50%;
-  min-width: 238px;
+  width: 320px;
+  max-width: calc(100vw - 32px);
   display: grid;
   gap: 4px;
   padding: 10px;
@@ -292,8 +298,10 @@ body:has(#links-page) main {
 
 .nav-dropdown-menu a {
   width: 100%;
-  min-height: 38px;
-  padding: 0 10px;
+  min-height: 44px;
+  padding: 10px;
+  white-space: normal;
+  line-height: 1.5;
   border-radius: 12px;
 }
 
@@ -334,9 +342,8 @@ body:has(#links-page) main {
   position: absolute;
   top: -10px;
   left: calc(100% + 7px);
-  width: max-content;
-  min-width: 320px;
-  max-width: min(420px, calc(100vw - 32px));
+  width: 320px;
+  max-width: calc(100vw - 32px);
   display: grid;
   gap: 4px;
   padding: 10px;
@@ -1070,8 +1077,23 @@ main > div:first-child > .feature-banner {
   margin-top: 58px;
 }
 
-.nav-nested-menu a {
-  white-space: nowrap;
+.nav-dropdown-menu a span,
+.nav-submenu-trigger span,
+.mobile-nav a span,
+.mobile-nav-subgroup summary span {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.nav-submenu.open-left .nav-nested-menu {
+  left: auto;
+  right: calc(100% + 7px);
+}
+
+.nav-submenu.open-left .nav-nested-menu::before {
+  right: auto;
+  left: 100%;
 }
 
 .feature-grid.compact {
