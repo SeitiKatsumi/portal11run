@@ -78,3 +78,7 @@
 .logo { display: block; width: 100%; height: auto; margin-top: 22px; }
 
 .page :global(.hero-visual img) { object-fit: cover; object-position: center center; }
+
+.coursePhoto { margin: 0; min-width: 0; }
+.coursePhoto img { display: block; width: 100%; height: auto; border-radius: 22px; }
+.coursePhoto figcaption { margin-top: 12px; color: var(--muted); font-size: .85rem; line-height: 1.6; }
