@@ -55,7 +55,7 @@ const faqStructuredData = {
 };
 
 const heroImage = "/assets/onze-futuro-hero.jpg";
-const launchImage = "/assets/onze-futuro-medalha.webp";
+const launchImage = "/assets/manu-bandeira.webp";
 const scenarioImage = "/assets/onze-futuro-cenario.jpg";
 const originImage = "/assets/athletes/turma-onze-futuro-seis.webp";
 const pilotImage = "/assets/athletes/piloto-aime.webp";
@@ -338,7 +338,7 @@ export default function Page() {
     <div className="futuro-landing">
       <FeatureBanner
         imageSrc={launchImage}
-        imageAlt="Jovem atleta 11RUN exibindo sua medalha"
+        imageAlt="Manu, atleta 11RUN, segurando a bandeira do Brasil"
         mediaOnly
       />
 
