@@ -55,7 +55,7 @@ function seedHome(db: DatabaseSync) {
       content_alignment, overlay_strength, header_opacity, header_blur, updated_at
     ) VALUES ('primary', 'image', ?, NULL, ?, ?, ?, 'center', 58, 74, 18, ?)`
   ).run(
-    "/assets/manu-bandeira.webp",
+    "/assets/cross-country-manu-bandeira.webp",
     "O futuro da corrida começa aqui.",
     "Escolha uma frente e entre no ecossistema 11RUN.",
     "Performance · formação · oportunidade",
@@ -111,9 +111,9 @@ function seedHome(db: DatabaseSync) {
      WHERE id = 'primary'
        AND (
          hero_video = '/assets/home/homevideo.mp4'
-         OR hero_image IN ('/assets/home/ayla-trofeus-hero.webp', '/assets/home/ayla-podcast-hero.webp', '/assets/home/home-medalha-hero.webp', '/assets/onze-futuro-medalha.webp')
+         OR hero_image IN ('/assets/home/ayla-trofeus-hero.webp', '/assets/home/ayla-podcast-hero.webp', '/assets/home/home-medalha-hero.webp', '/assets/onze-futuro-medalha.webp', '/assets/manu-bandeira.webp')
        )`
-  ).run("/assets/manu-bandeira.webp", timestamp);
+  ).run("/assets/cross-country-manu-bandeira.webp", timestamp);
 
   const projects = [
     ["onze-futuro", "11 Run Futuro", "Base, cultura esportiva e desenvolvimento.", "Medal", "/onze-futuro", 10],

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   title: "CIRCUITO DE CROSS COUNTRY IVCL 11RUN · Primeira edição",
   description: "15 de novembro de 2026, no IVCL em Campinas. CROSS COUNTRY para atletas de até 17 anos, com provas de 1 a 4 km, em período único das 8h às 10h. Programação e inscrições.",
   alternates: { canonical: "/circuito-cross-country-ivcl-11run" },
-  openGraph: { images: ["/assets/cross-country-capa.webp"] }
+  openGraph: { images: ["/assets/cross-country-capa-sem-km.webp"] }
 };
 
 const project = "circuito-cross-country-ivcl-11run";
@@ -26,7 +26,7 @@ export default function CrossCountryPage() {
     <HeroSection eyebrow="Primeira edição · 15 de novembro de 2026" title={<span className={styles.logo} role="img" aria-label="CIRCUITO DE CROSS COUNTRY IVCL 11RUN"><Image src="/assets/cross-country-ivcl-logo.webp" alt="" width={1200} height={625} className={styles.logoBase} priority unoptimized /><Image src="/assets/ivcl-original-color.webp" alt="" width={640} height={389} className={styles.ivclLogo} priority unoptimized /></span>}
       subtitle="Uma nova largada. Um novo terreno. A corrida de base encontra a natureza em um percurso preparado especialmente para o CROSS COUNTRY no IVCL, em Campinas. Inscrições gratuitas até 12 de novembro."
       primaryCtaSlot={<ProjectFormModal project={project} />} secondaryCta={{ label: "Ver programação", href: "#programacao" }}
-      imageSrc="/assets/cross-country-capa.webp" imageAlt="Percurso de grama do CIRCUITO DE CROSS COUNTRY IVCL 11RUN, com bandeiras de quilometragem e faixas de sinalização em Campinas"
+      imageSrc="/assets/cross-country-capa-sem-km.webp" imageAlt="Percurso de grama do CIRCUITO DE CROSS COUNTRY IVCL 11RUN, com bandeiras e faixas de sinalização em Campinas"
       metrics={[{ value: "15 NOV", label: "Primeira edição · 2026" }, { value: "Campinas", label: "IVCL · Circuito de grama e terra com chegada na pista de atletismo" }, { value: "Até 17", label: "Idade completada em 2026" }, { value: "1–4 km", label: "Distâncias por categoria" }]} />
 
     <section className={`section ${styles.panel}`} id="diferenciais">

@@ -9,7 +9,7 @@ import test from "node:test";
 test("usa Manu em instalações novas, migra a foto antiga e preserva imagens personalizadas", () => {
   const directory = mkdtempSync(path.join(tmpdir(), "11run-home-image-"));
   try {
-    for (const [index, previous] of [null, "/assets/home/home-medalha-hero.webp", "/assets/onze-futuro-medalha.webp", "/uploads/custom.webp"].entries()) {
+    for (const [index, previous] of [null, "/assets/home/home-medalha-hero.webp", "/assets/onze-futuro-medalha.webp", "/assets/manu-bandeira.webp", "/uploads/custom.webp"].entries()) {
       const dbPath = path.join(directory, `${index}.sqlite`);
       const db = new DatabaseSync(dbPath);
       db.exec(readFileSync("data/schema.sql", "utf8"));
@@ -24,7 +24,7 @@ test("usa Manu em instalações novas, migra a foto antiga e preserva imagens pe
         "import { getHomeConfig } from './src/lib/home.ts'; console.log(JSON.stringify(getHomeConfig().settings));"
       ], { env: { ...process.env, SQLITE_PATH: dbPath }, encoding: "utf8" }));
       const settings = readSettings();
-      assert.equal(settings.hero_image, previous === "/uploads/custom.webp" ? previous : "/assets/manu-bandeira.webp");
+      assert.equal(settings.hero_image, previous === "/uploads/custom.webp" ? previous : "/assets/cross-country-manu-bandeira.webp");
       assert.equal(settings.hero_media_type, "image");
       if (previous) {
         assert.equal(settings.hero_title, "Título personalizado");
