@@ -15,7 +15,9 @@
 
 `src/app/circuito-cross-country-ivcl-11run/` contém página e estilos. `src/lib/circuit-categories.ts` reúne as cinco faixas de largada do Cross e o termo de participação. A classificação individual Sub 10 a Sub 18 é mantida, com Sub 10 incluindo 9 anos ou menos. O Circuito Futuro 11 mantém suas categorias e distâncias de pista na temporada de 2027.
 
-As inscrições usam a tabela SQLite `leads`, com `project_type=circuito-cross-country-ivcl-11run`. Categoria e distância são calculadas no servidor pelo nascimento e pelo ano de 2026. Novas autorizações usam a versão `cross-2026-10-05.1`. Autorizações e dados históricos já armazenados são preservados; ao editar uma inscrição, categoria e distância são recalculadas pelas regras atuais. Não há migração destrutiva, alteração de marcas ou novos serviços.
+As inscrições usam a tabela SQLite `leads`, com `project_type=circuito-cross-country-ivcl-11run`. Categoria e distância são calculadas no servidor pelo nascimento e pelo ano de 2026. Novas autorizações usam a versão `cross-2026-10-05.2`. Autorizações e dados históricos já armazenados são preservados; ao editar uma inscrição, categoria e distância são recalculadas pelas regras atuais. Não há migração destrutiva, alteração de marcas ou novos serviços.
+
+O regulamento apresenta cada horário em um item separado, usando a mesma programação da página. A FAQ em `#faq` e no formulário compartilha o componente `CrossCountryFaq`, com orientações sobre horários, faixas etárias, inscrição, acompanhamento, premiação e cobertura do evento.
 
 `LeadForm.tsx`, `leads.ts` e `AdminPipeline.tsx` integram inscrição, validação e gestão. O painel permite busca, leitura, edição e mudança de status; as inscrições são apresentadas uma por linha. A edição compartilhada foi corrigida para enviar ao SQLite somente os parâmetros das colunas, mantendo os demais dados no JSON.
 

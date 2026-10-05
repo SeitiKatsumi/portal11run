@@ -352,7 +352,7 @@ export function saveLead(payload: LeadPayload, photos: string[] = [], requestMet
     payload.event_edition = "1ª edição · 15/11/2026";
     payload.guardian_name = String(payload.name);
     payload.term_snapshot = JSON.stringify(crossCountryTerm);
-    payload.term_version = "cross-2026-10-05.1";
+    payload.term_version = "cross-2026-10-05.2";
     payload.term_accepted_at = now;
   }
   if (payload.project_type === "onze-futuro" && payload.accepted_terms === true) {

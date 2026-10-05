@@ -1,0 +1,12 @@
+.faq { min-width: 0; }
+.faq h2 { margin: 0 0 12px; font-size: clamp(1.5rem, 3vw, 2.2rem); letter-spacing: -.035em; }
+.faq > p { margin: 0 0 24px; }
+.faq p { color: var(--muted); line-height: 1.7; white-space: pre-line; }
+.faq details { border-top: 1px solid var(--line); }
+.faq details:last-child { border-bottom: 1px solid var(--line); }
+.faq summary { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 20px 0; cursor: pointer; list-style: none; font-weight: 500; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary svg { flex-shrink: 0; transition: transform 150ms ease; }
+.faq details[open] summary svg { transform: rotate(180deg); }
+.faq details p { margin: 0 0 22px; }
+@media (prefers-reduced-motion: reduce) { .faq summary svg { transition: none; } }

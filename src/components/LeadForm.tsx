@@ -7,6 +7,7 @@ import { onzeFuturoTerm } from "@/lib/onze-futuro-policy";
 import { useRouter } from "next/navigation";
 import { Loader2, Send, ShieldCheck, Upload } from "lucide-react";
 import { formProjects, type FormProjectSlug } from "@/lib/content";
+import { CrossCountryFaq } from "./CrossCountryFaq";
 
 type Field = {
   name: string;
@@ -422,6 +423,8 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
           <span>{photoCount}/5 fotos selecionadas</span>
         </section>
       ) : null}
+
+      {isCross ? <section className="form-section"><CrossCountryFaq /></section> : null}
 
       {term ? (
         <section className="terms-box">

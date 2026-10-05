@@ -39,13 +39,30 @@ export function crossCountryCategoryForBirthDate(birthDate: string) {
   return race ? { category: `Sub ${Math.max(10, age + 1)}`, age, distance: race.distance } : undefined;
 }
 
+const crossCountryStartTimes = crossCountryRaces.map((race) => `${race.time} — ${race.label}: ${race.distance}, masculino e feminino.`);
+
+export const crossCountryFaq = [
+  { question: "Quando e onde acontece o evento?", answer: "A primeira edição será em 15 de novembro de 2026, no IVCL, em Campinas. Toda a programação acontece pela manhã, das 8h às 10h, no horário de São Paulo. Não haverá período da tarde." },
+  { question: "Quais são os horários e as distâncias?", answer: [...crossCountryStartTimes, "09:45 — Premiação geral.", "10:00 — Foto geral e encerramento."].join("\n") },
+  { question: "Quem pode participar e como a idade é calculada?", answer: "Atletas de até 17 anos, considerando a idade completada em 2026. A faixa de 9 anos ou menos também recebe crianças mais novas. A inscrição calcula a categoria e a distância pela data de nascimento." },
+  { question: "Masculino e feminino largam juntos?", answer: "Sim. Masculino e feminino largam no mesmo horário em cada faixa etária. A classificação, a pontuação e o pódio permanecem separados por categoria individual e gênero. A categoria Sub 10 reúne atletas de 9 anos ou menos." },
+  { question: "A inscrição é gratuita? Qual é o prazo?", answer: "Sim. As inscrições são gratuitas até 12 de novembro de 2026, às 23h59, no horário de São Paulo. O responsável deve preencher os dados do atleta e aceitar o regulamento e a autorização. O envio fica sujeito à conferência e confirmação da organização." },
+  { question: "O responsável precisa acompanhar o atleta?", answer: "Sim. O responsável legal deve acompanhar o atleta, seguir as orientações da organização e informar condições que possam afetar sua participação segura. As orientações de acesso serão enviadas aos responsáveis." },
+  { question: "Como funcionam a premiação e a pontuação?", answer: "A premiação geral acontece às 9h45. Os três primeiros de cada categoria e gênero recebem troféus e brindes 11Run. Do primeiro ao décimo lugar, a pontuação vai de 10 a 1 ponto. A classificação geral soma as edições, com pontuação dobrada na terceira edição, a final. As datas da segunda e da terceira edição serão confirmadas." },
+  { question: "Haverá transmissão, fotos e resultados?", answer: "Estão previstos transmissão ao vivo pelo YouTube, fotos profissionais gratuitas após o evento e atualização da pontuação do ranking em tempo real no site." }
+] as const;
+
 export const crossCountryTerm = {
-  title: "Autorização de participação · CROSS COUNTRY IVCL 11RUN",
+  title: "Regulamento e autorização de participação · CROSS COUNTRY IVCL 11RUN",
   clauses: [
     "Como responsável legal, autorizo a participação do atleta na primeira edição do CIRCUITO DE CROSS COUNTRY IVCL 11RUN, em 15 de novembro de 2026, no IVCL, em Campinas.",
-    "As categorias consideram a idade completada em 2026: 16 e 17 anos, 4 km; 14 e 15 anos, 3 km; 12 e 13 anos, 2 km; 10 e 11 anos, 1 km; 9 anos ou menos, 1 km. A categoria Sub 10 inclui os atletas de 9 anos ou menos. Há classificação feminina e masculina em cada categoria.",
+    "Podem participar atletas de até 17 anos, considerando a idade completada em 2026. A categoria Sub 10 inclui os atletas de 9 anos ou menos. As distâncias e os horários de cada faixa etária estão descritos abaixo.",
     "A corrida acontece em percurso de CROSS COUNTRY preparado para o evento, em terreno natural. O responsável deve acompanhar o atleta, observar as orientações da organização e informar condições que possam afetar sua participação segura.",
-    "As inscrições são gratuitas e encerram-se ao fim do dia 12 de novembro de 2026, no horário de São Paulo. A participação fica sujeita à conferência e confirmação da organização. Orientações de acesso, baterias e eventuais ajustes de horário serão comunicados aos responsáveis. O evento acontece em período único, das 8h às 10h, com largadas masculinas e femininas no mesmo horário em cada faixa etária: 16 e 17 anos às 8h; 14 e 15 anos às 8h40; 12 e 13 anos às 9h; 10 e 11 anos às 9h20; 9 anos ou menos às 9h35. Premiação geral às 9h45; foto geral e encerramento às 10h. Classificação e premiação permanecem separadas por categoria e gênero.",
+    "As inscrições são gratuitas até 12 de novembro de 2026, às 23h59, no horário de São Paulo. A participação fica sujeita à conferência e confirmação da organização. Orientações de acesso e eventuais ajustes de horário serão comunicados aos responsáveis.",
+    "A programação ocorre em período único, pela manhã, das 8h às 10h, no horário de São Paulo. Não haverá período da tarde. Masculino e feminino largam no mesmo horário em cada faixa etária, conforme a programação:",
+    ...crossCountryStartTimes,
+    "09:45 — Premiação geral. Classificação, pontuação e pódio permanecem separados por categoria individual e gênero.",
+    "10:00 — Foto geral e encerramento do evento.",
     "Os três primeiros de cada categoria e gênero subirão ao pódio e receberão troféus e brindes 11Run. Do primeiro ao décimo lugar, a pontuação é de 10 a 1 ponto. A classificação geral soma as edições, com pontuação dobrada na edição final. As datas da segunda e da terceira edição serão confirmadas.",
     "Os dados serão usados para organizar a inscrição, conferir a categoria e entrar em contato sobre o evento, conforme a Política de Privacidade do portal."
   ]

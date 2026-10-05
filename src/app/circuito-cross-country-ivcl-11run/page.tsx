@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Camera, Clock3, Flag, Youtube, MapPin, Medal, Route, Trees, Users } from "lucide-react";
 import { HeroSection } from "@/components/HeroSection";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
+import { CrossCountryFaq } from "@/components/CrossCountryFaq";
 import { crossCountryRaces, crossCountryTerm } from "@/lib/circuit-categories";
 import styles from "./page.module.css";
 
@@ -76,8 +77,10 @@ export default function CrossCountryPage() {
         <article><Flag aria-hidden="true" /><h3>Do 1º ao 10º</h3><p>10 pontos para o primeiro, 9 para o segundo e assim por diante, até 1 ponto para o décimo colocado.</p></article>
         <article><Route aria-hidden="true" /><h3>A soma da jornada</h3><p>A classificação geral soma os pontos das edições. A terceira edição, a final, vale o dobro.</p></article>
       </div>
-      <details className={styles.regulations}><summary>Participação e regulamento</summary><ol>{crossCountryTerm.clauses.map((clause) => <li key={clause}>{clause}</li>)}</ol><p>A operação prevista reúne sete profissionais: coordenação, largada, cronometragem, filmagem, premiação e secretaria, além de duas pessoas na apuração dos resultados.</p></details>
+      <details className={styles.regulations} id="regulamento"><summary>Participação e regulamento</summary><ol>{crossCountryTerm.clauses.map((clause) => <li key={clause}>{clause}</li>)}</ol><p>A operação prevista reúne sete profissionais: coordenação, largada, cronometragem, filmagem, premiação e secretaria, além de duas pessoas na apuração dos resultados.</p></details>
     </section>
+
+    <section className={`section ${styles.panel}`} id="faq"><CrossCountryFaq /></section>
 
     <section className={`section ${styles.registration}`} id="inscricao">
       <div><span className="eyebrow">O próximo passo é seu</span><h2>Inscrições gratuitas até 12 de novembro.</h2><p>Envie a inscrição do atleta com a autorização do responsável. A equipe fará a conferência e entrará em contato para confirmar a participação.</p><small>Encerramento em 12/11/2026, às 23h59, no horário de São Paulo. As orientações de acesso serão enviadas pela organização.</small></div>
