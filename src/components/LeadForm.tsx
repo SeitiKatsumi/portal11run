@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { circuitCategoryForBirthDate, crossCountryTerm, isCrossRegistrationOpen } from "@/lib/circuit-categories";
+import { crossCountryCategoryForBirthDate, crossCountryTerm, isCrossRegistrationOpen } from "@/lib/circuit-categories";
 import { onzeFuturoTerm } from "@/lib/onze-futuro-policy";
 import { useRouter } from "next/navigation";
 import { Loader2, Send, ShieldCheck, Upload } from "lucide-react";
@@ -235,7 +235,7 @@ function getBirthDateLimits(project: FormProjectSlug) {
   }
 
   if (project === "circuito-cross-country-ivcl-11run") {
-    return { min: "2009-01-01", max: "2017-12-31", help: "Idade completada em 2026: de 9 a 17 anos (Sub 10 a Sub 18)." };
+    return { min: "2009-01-01", max: format(now), help: "Idade completada em 2026: até 17 anos, incluindo a faixa de 9 anos ou menos." };
   }
   if (project === "circuito-futuro-11") {
     return {
@@ -252,7 +252,7 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
   const router = useRouter();
   const isCross = project === "circuito-cross-country-ivcl-11run";
   const [birthDate, setBirthDate] = useState("");
-  const crossCategory = circuitCategoryForBirthDate(birthDate, 2026);
+  const crossCategory = crossCountryCategoryForBirthDate(birthDate);
   const config = formProjects[project];
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -306,7 +306,7 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
 
   function validateFormData(formData: FormData) {
     if (isCross) {
-      if (!circuitCategoryForBirthDate(String(formData.get("birth_date") ?? ""), 2026)) return "A primeira edição recebe atletas que completam de 9 a 17 anos em 2026.";
+      if (!crossCountryCategoryForBirthDate(String(formData.get("birth_date") ?? ""))) return "Informe um nascimento válido. A primeira edição recebe atletas de até 17 anos em 2026, incluindo a faixa de 9 anos ou menos.";
       if (!isValidCpf(String(formData.get("term_acceptor_cpf") ?? ""))) return "Informe um CPF válido para o responsável que aceita o termo.";
     }
     if (project === "onze-futuro") {

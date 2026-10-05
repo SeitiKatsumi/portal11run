@@ -1,4 +1,4 @@
-import { circuitCategoryForBirthDate, circuitRaceOptions, crossCountryTerm, isCrossRegistrationOpen } from "./circuit-categories";
+import { crossCountryCategoryForBirthDate, circuitCategoryForBirthDate, circuitRaceOptions, crossCountryTerm, isCrossRegistrationOpen } from "./circuit-categories";
 import { mkdirSync, readFileSync } from "fs";
 import path from "path";
 import { createHash } from "node:crypto";
@@ -273,7 +273,7 @@ export function validateLead(payload: LeadPayload, options?: { photoCount?: numb
       if (typeof payload[field] !== "string" || !String(payload[field]).trim()) return { ok: false, error: `Preencha o campo obrigatório: ${field}.` };
     }
     if (!["Feminino", "Masculino"].includes(String(payload.gender))) return { ok: false, error: "Selecione a categoria feminina ou masculina." };
-    if (!circuitCategoryForBirthDate(String(payload.birth_date), 2026)) return { ok: false, error: "O atleta deve completar de 9 a 17 anos em 2026." };
+    if (!crossCountryCategoryForBirthDate(String(payload.birth_date))) return { ok: false, error: "Informe um nascimento válido para um atleta de até 17 anos em 2026." };
     if (!isValidCpf(String(payload.term_acceptor_cpf))) return { ok: false, error: "CPF do responsável que aceita o termo inválido." };
     if (payload.accepted_terms !== true || payload.accepted_contact !== true) return { ok: false, error: "Confirme a autorização de participação e o contato." };
   }
@@ -345,14 +345,14 @@ export function saveLead(payload: LeadPayload, photos: string[] = [], requestMet
   if (payload.project_type === "circuito-cross-country-ivcl-11run") {
     const validation = validateLead(payload);
     if (!validation.ok) throw new Error(validation.error);
-    const category = circuitCategoryForBirthDate(String(payload.birth_date), 2026)!;
+    const category = crossCountryCategoryForBirthDate(String(payload.birth_date))!;
     payload.category = category.category;
     payload.age = String(category.age);
     payload.race_event = category.distance;
     payload.event_edition = "1ª edição · 15/11/2026";
     payload.guardian_name = String(payload.name);
     payload.term_snapshot = JSON.stringify(crossCountryTerm);
-    payload.term_version = "cross-2026-09-16.2";
+    payload.term_version = "cross-2026-10-05.1";
     payload.term_accepted_at = now;
   }
   if (payload.project_type === "onze-futuro" && payload.accepted_terms === true) {
@@ -584,7 +584,7 @@ export function updateLeadProfile(id: string, updates: Partial<Record<EditableLe
   if (current.project_type === "circuito-cross-country-ivcl-11run") {
     const validation = validateLead(payload as LeadPayload, { existingRegistration: true });
     if (!validation.ok) throw new Error(validation.error);
-    const category = circuitCategoryForBirthDate(String(payload.birth_date), 2026)!;
+    const category = crossCountryCategoryForBirthDate(String(payload.birth_date))!;
     payload.category = category.category;
     payload.age = String(category.age);
     payload.race_event = category.distance;

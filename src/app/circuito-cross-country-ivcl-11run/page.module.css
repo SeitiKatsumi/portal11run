@@ -19,7 +19,7 @@
 .categories small { color: var(--muted); }
 .note { display: flex; align-items: flex-start; gap: 10px; line-height: 1.6; color: var(--muted); margin-bottom: 0; }
 .note svg, .aboutFacts svg { flex-shrink: 0; }
-.schedule { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.schedule { display: grid; grid-template-columns: minmax(0, 1fr); }
 .schedule article { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
 .schedule header { padding: 22px; background: #eff5f0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
 .schedule h3 { margin: 0; font-size: 1.3rem; }

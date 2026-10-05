@@ -13,12 +13,15 @@ mkdirSync('artifacts/cross-country',{recursive:true});
 try {
   assert.equal((await fetch(base+'/admin/cross-country')).status,401);
   await page.goto(base+'/'+slug,{waitUntil:'networkidle'});
-  assert.equal(await page.locator('#categorias article').count(),9);
-  assert.equal(await page.locator('#programacao ol li').count(),20);
-  assert.match(await page.locator('#programacao').innerText(),/Sub 14.*1.500 m/);
+  assert.equal(await page.locator('#categorias article').count(),5);
+  assert.equal(await page.locator('#programacao ol li').count(),7);
   const schedule=await page.locator('#programacao').innerText();
-  assert.ok(schedule.includes('Sub 14 (1.500 m) + Sub 15 (2.000 m)'));
-  assert.ok(schedule.includes('Sub 16 (2.000 m) + Sub 17 e Sub 18 (3.000 m)'));
+  assert.ok(schedule.includes('16 e 17 anos'));
+  assert.ok(schedule.includes('4.000 m · Masculino e Feminino'));
+  assert.ok(schedule.includes('Período único'));
+  assert.ok(schedule.includes('09:45'));
+  assert.ok(schedule.includes('10:00'));
+  assert.equal(schedule.includes('Tarde'),false);
   assert.equal(schedule.includes('Horário a confirmar'),false);
   assert.equal(await page.locator('#diferenciais article').count(),3);
   assert.match(await page.locator('#inscricao').innerText(),/Inscrições gratuitas até 12 de novembro/);
@@ -44,7 +47,7 @@ try {
   const fields={name:'Responsável QA Cross',email:'cross-qa@example.test',phone:'19999999999',city:'Campinas',state:'SP',athlete_name:'Atleta QA Cross '+Date.now(),birth_date:'2013-12-31',team:'Equipe QA',term_acceptor_name:'Responsável QA Cross',term_acceptor_cpf:'52998224725'};
   for(const [name,value] of Object.entries(fields)) await dialog.locator(`[name="${name}"]`).fill(value);
   await dialog.locator('[name="gender"]').selectOption('Feminino');
-  assert.match(await dialog.getByRole('status').innerText(),/Sub 14.*1.500 m/);
+  assert.match(await dialog.getByRole('status').innerText(),/Sub 14.*2.000 m/);
   await dialog.locator('[name="accepted_terms"]').check();await dialog.locator('[name="accepted_contact"]').check();
   const responsePromise=page.waitForResponse(r=>r.url().endsWith('/api/leads')&&r.request().method()==='POST');
   await dialog.getByRole('button',{name:'Solicitar inscrição · 15 de novembro'}).click();
@@ -52,12 +55,12 @@ try {
   await page.waitForURL('**/obrigado');
   const authData=await (await page.request.get(base+'/api/admin/leads')).json();
   const saved=authData.leads.find(l=>l.id===result.id);assert.ok(saved);assert.equal(saved.category,'Sub 14');assert.equal(saved.age,'13');
-  const payload=JSON.parse(saved.payload_json);assert.equal(payload.race_event,'1.500 m');assert.equal(payload.event_edition,'1ª edição · 15/11/2026');assert.ok(saved.term_snapshot);
+  const payload=JSON.parse(saved.payload_json);assert.equal(payload.race_event,'2.000 m');assert.equal(payload.event_edition,'1ª edição · 15/11/2026');assert.ok(saved.term_snapshot);
   const valid={...fields,gender:'Feminino',project_type:slug,accepted_terms:true,accepted_contact:true};
-  for(const bad of [{birth_date:'2018-01-01'},{birth_date:'2013-02-29'},{gender:'outro'},{accepted_terms:false},{term_acceptor_cpf:'11111111111'}]) {
+  for(const bad of [{birth_date:'2008-01-01'},{birth_date:'2013-02-29'},{gender:'outro'},{accepted_terms:false},{term_acceptor_cpf:'11111111111'}]) {
     const invalid=await page.request.post(base+'/api/leads',{data:{...valid,...bad}});assert.equal(invalid.status(),400,JSON.stringify(bad));
   }
-  const badEdit=await page.request.patch(base+'/api/admin/leads',{data:{id:result.id,profile:{birth_date:'2018-01-01'}}});assert.equal(badEdit.status(),400);
+  const badEdit=await page.request.patch(base+'/api/admin/leads',{data:{id:result.id,profile:{birth_date:'2008-01-01'}}});assert.equal(badEdit.status(),400);
   await page.goto(base+'/admin/cross-country',{waitUntil:'networkidle'});
   await page.getByLabel('Buscar atleta, responsável, cidade ou categoria').fill(fields.athlete_name);
   await page.getByRole('button',{name:'Ver dados completos',exact:true}).click();
@@ -68,7 +71,7 @@ try {
   await details.getByRole('button',{name:'Salvar alterações',exact:true}).click();
   await details.getByText('Perfil atualizado com sucesso.').waitFor();
   await details.getByRole('button',{name:'Fechar cadastro',exact:true}).click();
-  await page.getByText('Sub 18 · 3.000 m · Masculino',{exact:true}).waitFor();
+  await page.getByText('Sub 18 · 4.000 m · Masculino',{exact:true}).waitFor();
   await page.locator('.admin-status select').selectOption('Aceitas');
   await page.getByText('Nenhum cadastro nesta etapa.',{exact:true}).waitFor();
   await page.getByRole('tab',{name:/^Aceitas/}).click();

@@ -1,6 +1,20 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { circuitCategories, circuitCategoryForBirthDate, circuitRaceOptions, isCrossRegistrationOpen } from "../src/lib/circuit-categories.ts";
+import { circuitCategories, circuitCategoryForBirthDate, circuitRaceOptions, crossCountryCategoryForBirthDate, crossCountryRaces, isCrossRegistrationOpen } from "../src/lib/circuit-categories.ts";
+
+test("Cross Country usa cinco largadas e novas distâncias sem alterar o circuito de pista", () => {
+  assert.deepEqual(crossCountryRaces.map((race) => race.time), ["08:00", "08:40", "09:00", "09:20", "09:35"]);
+  for (let age = 0; age <= 17; age++) {
+    const expected = age >= 16 ? "4.000 m" : age >= 14 ? "3.000 m" : age >= 12 ? "2.000 m" : "1.000 m";
+    assert.deepEqual(crossCountryCategoryForBirthDate(`${2026 - age}-01-01`), {
+      category: `Sub ${Math.max(10, age + 1)}`, age, distance: expected
+    });
+  }
+  for (const invalid of ["", "2013-02-29", "2014-13-01", "2008-12-31", "2099-01-01"]) {
+    assert.equal(crossCountryCategoryForBirthDate(invalid), undefined);
+  }
+  assert.equal(circuitCategoryForBirthDate("2013-01-01", 2027)?.distance, "2.000 m");
+});
 
 test("categorias dos circuitos seguem idade no ano e distâncias do documento", () => {
   assert.equal(circuitCategories.length, 9);

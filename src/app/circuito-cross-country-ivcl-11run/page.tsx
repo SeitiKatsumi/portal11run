@@ -3,32 +3,21 @@ import type { Metadata } from "next";
 import { Camera, Clock3, Flag, Youtube, MapPin, Medal, Route, Trees, Users } from "lucide-react";
 import { HeroSection } from "@/components/HeroSection";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
-import { circuitCategories, crossCountryTerm } from "@/lib/circuit-categories";
+import { crossCountryRaces, crossCountryTerm } from "@/lib/circuit-categories";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
   title: "CIRCUITO DE CROSS COUNTRY IVCL 11RUN · Primeira edição",
-  description: "15 de novembro de 2026, no IVCL em Campinas. CROSS COUNTRY para atletas Sub 10 a Sub 18, com provas de 800 a 3.000 m. Programação e inscrições.",
+  description: "15 de novembro de 2026, no IVCL em Campinas. CROSS COUNTRY para atletas de até 17 anos, com provas de 1 a 4 km, em período único das 8h às 10h. Programação e inscrições.",
   alternates: { canonical: "/circuito-cross-country-ivcl-11run" },
   openGraph: { images: ["/assets/cross-country-atleta-trofeu.webp"] }
 };
 
 const project = "circuito-cross-country-ivcl-11run";
-const sessions = [
-  { title: "Manhã", range: "08h às 11h20", events: [
-    ["08:00", "2.000 m / 3.000 m", "Feminino", "Sub 16 (2.000 m) + Sub 17 e Sub 18 (3.000 m)"], ["08:30", "2.000 m / 3.000 m", "Masculino", "Sub 16 (2.000 m) + Sub 17 e Sub 18 (3.000 m)"],
-    ["09:00", "1.500 m / 2.000 m", "Feminino", "Sub 14 (1.500 m) + Sub 15 (2.000 m)"], ["09:20", "1.500 m / 2.000 m", "Masculino", "Sub 14 (1.500 m) + Sub 15 (2.000 m)"],
-    ["09:40", "1.000 m", "Feminino", "Sub 12 e Sub 13"], ["10:00", "1.000 m", "Masculino", "Sub 12 e Sub 13"],
-    ["10:20", "800 m", "Feminino", "Sub 10 e Sub 11"], ["10:40", "800 m", "Masculino", "Sub 10 e Sub 11"],
-    ["11:00", "Premiações", "", ""], ["11:20", "Foto geral e encerramento", "", ""]
-  ] },
-  { title: "Tarde", range: "17h às 20h20", events: [
-    ["17:00", "800 m", "Feminino", "Sub 10 e Sub 11"], ["17:20", "800 m", "Masculino", "Sub 10 e Sub 11"],
-    ["17:40", "1.000 m", "Feminino", "Sub 12 e Sub 13"], ["18:00", "1.000 m", "Masculino", "Sub 12 e Sub 13"],
-    ["18:20", "1.500 m / 2.000 m", "Feminino", "Sub 14 (1.500 m) + Sub 15 (2.000 m)"], ["18:40", "1.500 m / 2.000 m", "Masculino", "Sub 14 (1.500 m) + Sub 15 (2.000 m)"],
-    ["19:00", "2.000 m / 3.000 m", "Feminino", "Sub 16 (2.000 m) + Sub 17 e Sub 18 (3.000 m)"], ["19:30", "2.000 m / 3.000 m", "Masculino", "Sub 16 (2.000 m) + Sub 17 e Sub 18 (3.000 m)"],
-    ["20:00", "Premiações", "", ""], ["20:20", "Foto geral e encerramento", "", ""]
-  ] }
+const schedule = [
+  ...crossCountryRaces.map((race) => ({ time: race.time, title: race.label, detail: `${race.distance} · Masculino e Feminino` })),
+  { time: "09:45", title: "Premiação geral", detail: "" },
+  { time: "10:00", title: "Foto geral e encerramento", detail: "" }
 ];
 
 export default function CrossCountryPage() {
@@ -37,7 +26,7 @@ export default function CrossCountryPage() {
       subtitle="Uma nova largada. Um novo terreno. A corrida de base encontra a natureza em um percurso preparado especialmente para o CROSS COUNTRY no IVCL, em Campinas. Inscrições gratuitas até 12 de novembro."
       primaryCtaSlot={<ProjectFormModal project={project} />} secondaryCta={{ label: "Ver programação", href: "#programacao" }}
       imageSrc="/assets/cross-country-atleta-trofeu.webp" imageAlt="Atleta e troféu do CIRCUITO DE CROSS COUNTRY IVCL 11RUN em um percurso de grama sinalizado"
-      metrics={[{ value: "15 NOV", label: "Primeira edição · 2026" }, { value: "Campinas", label: "IVCL · Circuito de grama e terra com chegada na pista de atletismo" }, { value: "9 a 17", label: "Idade completada em 2026" }, { value: "800–3.000 m", label: "Distâncias por categoria" }]} />
+      metrics={[{ value: "15 NOV", label: "Primeira edição · 2026" }, { value: "Campinas", label: "IVCL · Circuito de grama e terra com chegada na pista de atletismo" }, { value: "Até 17", label: "Idade completada em 2026" }, { value: "1–4 km", label: "Distâncias por categoria" }]} />
 
     <section className={`section ${styles.panel}`} id="diferenciais">
       <div className={styles.heading}><span className="eyebrow">Diferenciais</span><h2>Uma experiência imersiva e interativa</h2></div>
@@ -59,19 +48,19 @@ export default function CrossCountryPage() {
     </section>
 
     <section className={`section ${styles.panel}`} id="categorias">
-      <div className={styles.heading}><span className="eyebrow">Uma distância para cada fase</span><h2>Nove categorias. A mesma vontade de correr.</h2><p>A categoria considera a idade que o atleta completa em 2026. Todas as provas têm classificação feminina e masculina.</p></div>
+      <div className={styles.heading}><span className="eyebrow">Uma distância para cada fase</span><h2>Cinco faixas etárias. A mesma vontade de correr.</h2><p>A categoria considera a idade que o atleta completa em 2026. Todas as provas têm classificação feminina e masculina.</p></div>
       <div className={styles.categories}>
-        {circuitCategories.map((item) => <article key={item.category}><span>{item.category}</span><strong>{item.distance}</strong><p>{item.age} anos em 2026</p><small>Nascidos em {2026 - item.age}</small></article>)}
+        {crossCountryRaces.map((item) => <article key={item.label}><span>{item.label}</span><strong>{item.distance}</strong><p>Masculino e Feminino</p><small>Largada às {item.time}</small></article>)}
       </div>
-      <p className={styles.note}><Users size={18} aria-hidden="true" />18 classificações por categoria e gênero. Largadas conjuntas: Sub 10 + Sub 11; Sub 12 + Sub 13; Sub 14 + Sub 15; Sub 16 + Sub 17 + Sub 18. Feminino e masculino largam separadamente.</p>
+      <p className={styles.note}><Users size={18} aria-hidden="true" />Masculino e feminino largam no mesmo horário em cada faixa etária. A categoria Sub 10 recebe atletas de 9 anos ou menos; as demais categorias individuais e as classificações por gênero são mantidas.</p>
     </section>
 
     <section className={`section ${styles.panel}`} id="programacao">
-      <div className={styles.heading}><span className="eyebrow">15 de novembro · programação prevista</span><h2>Do aquecimento à foto final.</h2><p>Confira os dois períodos previstos, organizados em quatro grupos de categorias, com largadas femininas e masculinas separadas. Cada atleta percorre a distância da sua categoria, mesmo largando junto com outra faixa etária.</p></div>
+      <div className={styles.heading}><span className="eyebrow">15 de novembro · programação prevista</span><h2>Uma manhã de Cross Country.</h2><p>Toda a programação acontece em um único período, das 8h às 10h. São cinco largadas, com masculino e feminino no mesmo horário em cada faixa etária.</p></div>
       <div className={styles.schedule}>
-        {sessions.map((session) => <article key={session.title}><header><h3>{session.title}</h3><span><Clock3 size={16} aria-hidden="true" />{session.range}</span></header>
-          <ol>{session.events.map(([time, distance, gender, categories]) => <li key={time}><time>{time}</time><div><strong>{distance}{gender ? ` · ${gender}` : ""}</strong>{categories ? <small>{categories}</small> : null}</div></li>)}</ol>
-        </article>)}
+        <article><header><h3>Período único · Manhã</h3><span><Clock3 size={16} aria-hidden="true" />08h às 10h</span></header>
+          <ol>{schedule.map((event) => <li key={event.time}><time dateTime={event.time}>{event.time}</time><div><strong>{event.title}</strong>{event.detail ? <small>{event.detail}</small> : null}</div></li>)}</ol>
+        </article>
       </div>
       <p className={styles.note}><Flag size={18} aria-hidden="true" />Largada conjunta, resultado individual: classificação, pontuação e pódio continuam separados por categoria e gênero.</p>
     </section>
