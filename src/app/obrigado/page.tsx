@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { FeatureBanner } from "@/components/FeatureBanner";
@@ -30,7 +31,15 @@ export default function ObrigadoPage() {
             </Link>
           </div>
         </div>
-        <img src="/assets/11run-reference.jpg" alt="Corredora em movimento 11RUN" />
+        <Image
+          src="/assets/cross-country-trofeu-natureza.webp"
+          alt="Troféu de primeiro lugar do CIRCUITO DE CROSS COUNTRY IVCL 11RUN ao ar livre, com terra e grama em seu interior"
+          width={640}
+          height={1137}
+          sizes="(max-width: 960px) 100vw, 720px"
+          style={{ height: "auto" }}
+          priority
+        />
       </section>
 
       <FeatureBanner
