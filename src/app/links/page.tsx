@@ -8,7 +8,8 @@ import {
   Mail,
   Medal,
   MessageCircle,
-  Orbit
+  Orbit,
+  Trees
 } from "lucide-react";
 import styles from "./links.module.css";
 
@@ -19,6 +20,13 @@ export const metadata: Metadata = {
 };
 
 const links = [
+  {
+    label: "Inscrição para o Cross aqui",
+    description: "Circuito de Cross Country · IVCL e 11RUN",
+    href: "/circuito-cross-country-ivcl-11run",
+    icon: Trees,
+    featured: true
+  },
   {
     label: "Projeto 11RUN Futuro",
     description: "Formação, oportunidades e futuro para jovens atletas.",
@@ -62,8 +70,8 @@ export default function LinksPage() {
         </header>
 
         <nav className={styles.links} aria-label="Links rápidos da 11RUN">
-          {links.map(({ label, description, href, icon: Icon }, index) => (
-            <Link href={href} className={styles.linkCard} key={href}>
+          {links.map(({ label, description, href, icon: Icon, featured }, index) => (
+            <Link href={href} className={`${styles.linkCard}${featured ? ` ${styles.crossCard}` : ""}`} key={href}>
               <span className={styles.number}>{String(index + 1).padStart(2, "0")}</span>
               <span className={styles.icon}><Icon size={21} strokeWidth={1.65} /></span>
               <span className={styles.copy}>

@@ -153,6 +153,37 @@
   transform: translate(2px, -2px);
 }
 
+.crossCard {
+  --accent: #285442;
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 10px 28px rgb(40 84 66 / 0.16);
+}
+
+.crossCard .copy strong,
+.crossCard .arrow,
+.crossCard:hover .arrow {
+  color: #fff;
+}
+
+.crossCard .number,
+.crossCard .copy small {
+  color: #e1ece5;
+}
+
+.crossCard .icon {
+  color: #fff;
+  background: rgb(255 255 255 / 0.1);
+  border-color: rgb(255 255 255 / 0.3);
+}
+
+.crossCard:hover,
+.crossCard:focus-visible {
+  background: #204636;
+  border-color: #204636;
+  box-shadow: 0 15px 34px rgb(40 84 66 / 0.22);
+}
+
 .contact {
   display: grid;
   justify-items: center;
