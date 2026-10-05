@@ -69,7 +69,7 @@ export default function CrossCountryPage() {
     <section className={`section ${styles.panel}`}>
       <div className={styles.heading}><span className="eyebrow">Uma conquista que continua viva</span><h2>Premiação e classificação.</h2></div>
       <div className={styles.livingTrophy}>
-        <Image src="/assets/cross-country-trofeu.webp" alt="Troféu vivo do CROSS COUNTRY: peça transparente com terra e grama em seu interior" width={1000} height={1500} sizes="(max-width: 600px) 80vw, 320px" />
+        <Image src="/assets/cross-country-trofeu-vivo.webp" alt="Troféu de primeiro lugar do CIRCUITO DE CROSS COUNTRY IVCL 11RUN: placa transparente com terra e grama em seu interior" width={960} height={960} sizes="(max-width: 600px) 260px, 320px" />
         <div><span className="eyebrow">Da natureza para o pódio</span><h3>Troféu vivo</h3><p>Uma lembrança que carrega a essência do CROSS COUNTRY: terra e grama viva dentro de uma peça transparente, unindo a conquista do atleta ao terreno onde tudo acontece.</p><p>Mais do que guardar uma colocação, o troféu celebra crescimento, cuidado e a conexão com a natureza.</p><strong>Para os três primeiros de cada categoria e gênero, junto com brindes 11Run.</strong></div>
       </div>
       <div className={styles.rules}>
