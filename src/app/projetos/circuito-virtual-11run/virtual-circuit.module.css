@@ -52,7 +52,7 @@
 .awardGrid .finalAward h3{max-width:270px}
 .modeGrid article{min-height:230px;display:flex;flex-direction:column}.modeGrid article>svg:last-child{margin-top:auto}
 .awards{background:var(--text);color:var(--surface)}
-.awards .eyebrow,.awards p{color:var(--muted)}
+.awards .eyebrow,.awards p,.awards .periodList small{color:#d5d5d2}
 .awards .awardGrid article{background:var(--dark-surface);border-color:var(--muted)}
 .cumulativeNotice{display:flex;align-items:flex-start;gap:9px;margin:20px 0 0!important;padding:14px 16px;border:1px solid color-mix(in srgb,var(--accent) 55%,transparent);border-radius:14px;background:color-mix(in srgb,var(--accent) 10%,transparent);color:var(--surface)!important;font-size:.82rem}.cumulativeNotice svg{flex:0 0 auto;color:var(--accent)}
 .futureCallout{display:flex;justify-content:space-between;align-items:center;gap:24px;border-top:1px solid var(--muted);margin-top:24px;padding-top:24px}

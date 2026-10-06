@@ -60,8 +60,28 @@ test('lote salva todas as linhas, vincula linhas entre si, repete sem duplicar e
  assert.throws(()=>circuit.createCircuitBatch([{...input,activityDate:'2026-02-31'}],randomUUID(),'test'),/Data inválida/);
 });
 test('limites de datas filtram classificação sem alterar histórico',()=>{
- const rows=['2026-07-31','2026-08-01','2026-11-14','2026-11-15'].map((activityDate,i)=>({...input,publicName:`Data Limite ${i}`,activityDate}));
+ const rows=['2026-07-31','2026-08-01','2026-11-13','2026-11-14'].map((activityDate,i)=>({...input,publicName:`Data Limite ${i}`,activityDate}));
  circuit.createCircuitBatch(rows,randomUUID(),'test');assert.equal(circuit.listCircuitRanking({name:'Data Limite'}).length,2);assert.equal(circuit.listCircuitRanking({name:'Data Limite',includeOutsideEdition:true}).length,4);
+});
+
+test('atualiza edição existente para vale-compras e 13/11 sem alterar marcas', async()=>{
+ const {execFileSync}=await import('node:child_process');
+ const db=circuit.getCircuitDatabase();
+ const before=db.prepare('SELECT * FROM virtual_circuit_official_results ORDER BY id').all();
+ db.prepare('UPDATE virtual_circuit_editions SET end_date=?,regulations_version=?,hero_image=?,settings_json=? WHERE id=?').run('2026-11-14','1.3-2026','/assets/circuito-virtual/desafio-virtual-1000m-participe-2026.webp',JSON.stringify({bimonthlyShoesPerCategory:1,finalPrizeCents:50000,elevationToleranceMeters:3}),circuit.CIRCUIT_EDITION_ID);
+ execFileSync(process.execPath,['--experimental-strip-types','--input-type=module','-e',"import {getCircuitDatabase} from './src/lib/virtual-circuit.ts';getCircuitDatabase().close();"],{env:process.env,stdio:'pipe'});
+ const edition=circuit.getCircuitEdition();
+ assert.equal(edition.end_date,'2026-11-13');
+ assert.equal(edition.regulations_version,'1.4-2026');
+ assert.equal(edition.settings.bimonthlyShoesPerCategory,0);
+ assert.equal(edition.settings.finalVoucherCents,50000);
+ assert.equal(edition.settings.finalVoucherStore,'Bahia Esportes');
+ assert.equal(edition.settings.finalPrizeCents,undefined);
+ assert.equal(edition.settings.elevationToleranceMeters,3);
+ assert.equal(edition.hero_image,circuit.CIRCUIT_HERO_IMAGE);
+ assert.match(JSON.stringify(edition.regulations),/Correios/);
+ assert.match(JSON.stringify(edition.faq),/Bahia Esportes/);
+ assert.deepEqual(db.prepare('SELECT * FROM virtual_circuit_official_results ORDER BY id').all(),before);
 });
 
 test('reiniciar aplicação não sobrescreve edições de marcas carregadas pelo seed', async()=>{

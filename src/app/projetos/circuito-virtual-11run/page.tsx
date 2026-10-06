@@ -12,6 +12,7 @@ import { CIRCUIT_CATEGORY_AGES, circuitCategoryBirthYear, circuitCategoryName } 
 import {
   CIRCUIT_ABSOLUTE,
   CIRCUIT_AWARD_COPY,
+  CIRCUIT_AWARD_DELIVERY,
   CIRCUIT_BIMONTHS,
   CIRCUIT_MONTHS,
   circuitPeriodStatus
@@ -91,21 +92,21 @@ export default function VirtualCircuitPage() {
               <a className={styles.secondaryButton} href="#ranking">Ver ranking nacional</a>
             </div>
             <div className={styles.quickFacts}>
-              <span><Clock3 size={17} /> 1 ago — 14 nov 2026</span>
+              <span><Clock3 size={17} /> 1 ago — 13 nov 2026</span>
               <span><ShieldCheck size={17} /> Participação gratuita</span>
               <span><Users size={17} /> Exclusivo para brasileiros</span>
             </div>
             <p className={styles.datePolicy}>
-              Atividades fora de 01/08 a 14/11 ficam apenas no histórico, com a data original.
+              Atividades fora de 01/08 a 13/11 ficam apenas no histórico, com a data original.
             </p>
           </div>
           <div className={styles.heroImage}>
             <a href="#inscricao" aria-label="Participar gratuitamente do Desafio Virtual 1.000 m">
               <img
                 src={edition.hero_image || CIRCUIT_HERO_IMAGE}
-                alt="Participe gratuitamente do Desafio Virtual 1.000 m 11Run para atletas de 9 a 13 anos"
-                width="1080"
-                height="1350"
+                alt="Atletas 11Run em provas de corrida"
+                width="1122"
+                height="1402"
               />
             </a>
           </div>
@@ -113,12 +114,12 @@ export default function VirtualCircuitPage() {
 
         <section className={styles.section} aria-labelledby="leaders-title">
           <span className={styles.eyebrow}>Classificações e premiações</span><h2 id="leaders-title">Os líderes de cada disputa.</h2>
-          <p>Primeiros por categoria e gênero. Classificação provisória até a homologação. Encerramento geral: 14 de novembro de 2026.</p>
+          <p>Primeiros por categoria e gênero. Classificação provisória até a homologação. Encerramento geral: 13 de novembro de 2026.</p>
           <div className={styles.awardGrid}>
             {leaders.map(block => <article key={block.title}>
               <h3>{block.title}</h3>
               <p>{block.period.shortLabel} · {circuitPeriodStatus(block.period)}</p>
-              {block.title!=='Primeiros do mês'&&<p><strong>{block.title==='Premiação absoluta'?'Premiação em dinheiro':'Premiação bimestral'} condicionada à comprovação em pista oficial com vídeo integral ou competição oficial.</strong></p>}
+              {block.title!=='Primeiros do mês'&&<p><strong>{block.title==='Premiação absoluta'?'Premiação em vale-compras':'Premiação bimestral'} condicionada à comprovação em pista oficial com vídeo integral ou competição oficial.</strong></p>}
               <div className={styles.leaderCategories}>
                 {CIRCUIT_CATEGORY_AGES.map(age => <section className={styles.leaderCategory} key={age} aria-label={`${block.title}: ${circuitCategoryName(age)}`}>
                   <h4>{circuitCategoryName(age)}</h4>
@@ -201,13 +202,15 @@ export default function VirtualCircuitPage() {
           <div>
             <span className={styles.eyebrow}>Muito mais que um ranking</span>
             <h2>Três disputas. Premiações que se acumulam.</h2>
-            <p>Mensal, bimestral e absoluta: cada classificação considera categoria e gênero, com datas próprias e marcas validadas.</p><p><strong>Comprovação obrigatória.</strong> {CIRCUIT_PRIZE_EVIDENCE_RULE}</p>
+            <p>Mensal, bimestral e absoluta: cada classificação considera categoria e gênero, com datas próprias e marcas validadas.</p>
+            <p className={styles.cumulativeNotice}>Tênis apenas para o campeão absoluto de cada categoria e gênero. O prêmio de R$ 500,00 é um vale-compras na Bahia Esportes, sem pagamento em dinheiro.</p>
+            <p><strong>Comprovação obrigatória.</strong> {CIRCUIT_PRIZE_EVIDENCE_RULE}</p>
           </div>
           <div className={styles.awardGrid}>
             <article>
               <CalendarDays />
               <span>Premiação mensal</span>
-              <h3>Mensal · novembro termina em 14/11</h3>
+              <h3>Mensal · novembro termina em 13/11</h3>
               <div className={styles.periodList}>{CIRCUIT_MONTHS.map((period) => <span key={period.id}><b>{period.label.replace(" de 2026", "")}</b><small>{period.shortLabel} · {circuitPeriodStatus(period)}</small></span>)}</div>
               <ul>{CIRCUIT_AWARD_COPY.monthly.map((prize) => <li key={prize}>{prize}</li>)}</ul>
             </article>
@@ -221,12 +224,13 @@ export default function VirtualCircuitPage() {
             <article className={styles.finalAward}>
               <Medal />
               <span>Ranking absoluto</span>
-              <h3>01/08 a 14/11 · {circuitPeriodStatus(CIRCUIT_ABSOLUTE)}</h3>
+              <h3>01/08 a 13/11 · {circuitPeriodStatus(CIRCUIT_ABSOLUTE)}</h3>
               <p>A melhor marca validada de cada atleta em toda a edição.</p>
-              <ul>{CIRCUIT_AWARD_COPY.absolute.map((prize) => <li key={prize}>{prize.startsWith("R$ 500") ? <strong>{prize}</strong> : prize}</li>)}</ul>
+              <ul>{CIRCUIT_AWARD_COPY.absolute.map((prize) => <li key={prize}>{prize.startsWith("Vale-compras") ? <strong>{prize}</strong> : prize}</li>)}</ul>
             </article>
           </div>
           <p className={styles.cumulativeNotice}><CheckCircle2 size={18} /> As premiações são cumulativas: o atleta recebe todos os itens correspondentes à posição conquistada em cada período.</p>
+          <p className={styles.cumulativeNotice}><CalendarDays size={18} /> {CIRCUIT_AWARD_DELIVERY}</p>
           <div className={styles.futureCallout}>
             <div><strong>Oportunidade 11Run Futuro</strong><p>Na premiação absoluta, atletas Sub 10, Sub 11 e Sub 12 poderão ser avaliados para uma oportunidade no projeto. A classificação não garante ingresso automático.</p></div>
             <Link href="/onze-futuro">Conheça o 11Run Futuro</Link>

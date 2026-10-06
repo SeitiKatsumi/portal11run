@@ -34,10 +34,12 @@ test("calcula a categoria pela idade no ano da edição", () => {
 });
 
 test("preserva datas anteriores ao início e encerra a edição em novembro", () => {
-  assert.equal(validateCircuitActivityDate("2026-07-01", "2026-08-01", "2026-11-14"), "2026-07-01");
-  assert.equal(validateCircuitActivityDate("2026-08-01", "2026-08-01", "2026-11-14"), "2026-08-01");
-  assert.equal(validateCircuitActivityDate("2026-09-10", "2026-08-01", "2026-11-14"), "2026-09-10");
-  assert.throws(() => validateCircuitActivityDate("2026-12-01", "2026-08-01", "2026-11-14"));
+  assert.equal(validateCircuitActivityDate("2026-07-01", "2026-08-01", "2026-11-13"), "2026-07-01");
+  assert.equal(validateCircuitActivityDate("2026-08-01", "2026-08-01", "2026-11-13"), "2026-08-01");
+  assert.equal(validateCircuitActivityDate("2026-09-10", "2026-08-01", "2026-11-13"), "2026-09-10");
+  assert.equal(validateCircuitActivityDate("2026-11-13", "2026-08-01", "2026-11-13"), "2026-11-13");
+  assert.throws(() => validateCircuitActivityDate("2026-11-14", "2026-08-01", "2026-11-13"));
+  assert.throws(() => validateCircuitActivityDate("2026-12-01", "2026-08-01", "2026-11-13"));
 });
 
 test("valida dígitos verificadores do CPF", () => {
@@ -68,25 +70,28 @@ test("decide altimetria com tolerância configurável", () => {
 });
 
 test("calcula períodos mensal, bimestral e absoluto", () => {
-  assert.deepEqual(periodBounds("month", "2026-09-12", "2026-08-01", "2026-11-14"), { start: "2026-09-01", end: "2026-09-30" });
-  assert.deepEqual(periodBounds("bimester", "2026-08-12", "2026-08-01", "2026-11-14"), { start: "2026-08-01", end: "2026-09-30" });
-  assert.deepEqual(periodBounds("bimester", "2026-10-12", "2026-08-01", "2026-11-14"), { start: "2026-10-01", end: "2026-11-14" });
-  assert.deepEqual(periodBounds("edition", "2026-09-12", "2026-08-01", "2026-11-14"), { start: "2026-08-01", end: "2026-11-14" });
+  assert.deepEqual(periodBounds("month", "2026-09-12", "2026-08-01", "2026-11-13"), { start: "2026-09-01", end: "2026-09-30" });
+  assert.deepEqual(periodBounds("bimester", "2026-08-12", "2026-08-01", "2026-11-13"), { start: "2026-08-01", end: "2026-09-30" });
+  assert.deepEqual(periodBounds("bimester", "2026-10-12", "2026-08-01", "2026-11-13"), { start: "2026-10-01", end: "2026-11-13" });
+  assert.deepEqual(periodBounds("edition", "2026-09-12", "2026-08-01", "2026-11-13"), { start: "2026-08-01", end: "2026-11-13" });
   assert.deepEqual(CIRCUIT_MONTHS.map(({ start, end }) => ({ start, end })), [
     { start: "2026-08-01", end: "2026-08-31" },
     { start: "2026-09-01", end: "2026-09-30" },
     { start: "2026-10-01", end: "2026-10-31" },
-    { start: "2026-11-01", end: "2026-11-14" }
+    { start: "2026-11-01", end: "2026-11-13" }
   ]);
   assert.equal(CIRCUIT_BIMONTHS.length, 2);
-  assert.deepEqual({ start: CIRCUIT_ABSOLUTE.start, end: CIRCUIT_ABSOLUTE.end }, { start: "2026-08-01", end: "2026-11-14" });
+  assert.deepEqual({ start: CIRCUIT_ABSOLUTE.start, end: CIRCUIT_ABSOLUTE.end }, { start: "2026-08-01", end: "2026-11-13" });
 });
 
 test("aplica premiações cumulativas por período e posição", () => {
   assert.deepEqual(circuitPrizesForPosition("monthly", 1, 9), ["shirt"]);
-  assert.deepEqual(circuitPrizesForPosition("bimonthly", 1, 9), ["shoes", "shirt"]);
+  assert.deepEqual(circuitPrizesForPosition("bimonthly", 1, 9), ["shirt"]);
   assert.deepEqual(circuitPrizesForPosition("bimonthly", 3, 9), ["shirt"]);
-  assert.deepEqual(circuitPrizesForPosition("absolute", 1, 9), ["cash", "shoes", "shirt", "trophy", "physical-certificate", "digital-certificate", "future-opportunity"]);
+  assert.deepEqual(circuitPrizesForPosition("bimonthly", 4, 9), []);
+  assert.equal(circuitPrizesForPosition("absolute", 2, 9).includes("shoes"), false);
+  assert.equal(circuitPrizesForPosition("absolute", 2, 9).includes("voucher"), false);
+  assert.deepEqual(circuitPrizesForPosition("absolute", 1, 9), ["voucher", "shoes", "shirt", "trophy", "physical-certificate", "digital-certificate", "future-opportunity"]);
   assert.deepEqual(circuitPrizesForPosition("absolute", 3, 12), ["shirt", "trophy", "physical-certificate", "digital-certificate"]);
   assert.deepEqual(circuitPrizesForPosition("absolute", 5, 10), ["shirt", "physical-certificate", "digital-certificate", "future-opportunity"]);
   assert.deepEqual(circuitPrizesForPosition("absolute", 10, 11), ["shirt", "digital-certificate", "future-opportunity"]);

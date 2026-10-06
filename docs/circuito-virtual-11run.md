@@ -47,7 +47,7 @@ Sem essas integrações, o registro `MANUAL_FALLBACK` mantém o fluxo operaciona
 
 ## Identidade e evolução — setembro de 2026
 
-A edição encerra em 14/11/2026 (São Paulo). Datas reais fora de 01/08–14/11 permanecem no histórico e não entram nas classificações. Não reconstruímos datas antigas sem backup ou auditoria com a data original.
+A edição encerra em 13/11/2026 (São Paulo). Datas reais fora de 01/08–13/11 permanecem no histórico e não entram nas classificações. Não reconstruímos datas antigas sem backup ou auditoria com a data original.
 
 A migração em `src/lib/virtual-circuit-identity.ts` acrescenta uma tabela de identidades numéricas e vínculos nas tabelas existentes. Cada cadastro público mantém seu UUID, CPF, responsável e documentos. Marcas manuais legadas recebem identidades separadas, pendentes de revisão; nomes nunca são unidos automaticamente. A migração é transacional e repetível. Antes das alterações, salva `before.sqlite` por VACUUM INTO e copia os uploads privados em `backups/circuit-*`, junto ao banco. Falha no backup impede a migração. Esses arquivos não vão ao GitHub.
 
@@ -74,7 +74,7 @@ Verificação: `pnpm test`, `pnpm lint`, `pnpm typecheck`, `pnpm build`. No circ
 
 A seleção de atleta existente preenche categoria e gênero no cadastro de marca e no lote. Na inclusão individual, esses campos ficam protegidos enquanto houver vínculo; a edição da identificação usa opções Feminino/Masculino. A validação do servidor permanece ativa.
 
-O regulamento 1.3 exige 1.000 m pelas marcações oficiais da pista de 400 m (duas voltas e meia na raia 1), sem aceitar GPS como medição em pista. Prêmios bimestrais e em dinheiro exigem teste em pista oficial com vídeo integral ou competição oficial com resultado verificável, sujeito a homologação. Resultados e aceites anteriores são preservados.
+O regulamento 1.3 exige 1.000 m pelas marcações oficiais da pista de 400 m (duas voltas e meia na raia 1), sem aceitar GPS como medição em pista. Prêmios bimestrais e em vale-compras exigem teste em pista oficial com vídeo integral ou competição oficial com resultado verificável, sujeito a homologação. Resultados e aceites anteriores são preservados.
 
 `CircuitTrackGuide.tsx` contém a ilustração vetorial com animação iniciada pelo usuário, pausa, reinício e controle de percurso. Não usa imagens pesadas nem dependências novas.
 
@@ -97,3 +97,11 @@ O gráfico destaca até vinte atletas com evolução positiva, com linhas de 1,5
 Ilustração corrigida: largada na referência dos 200 m da raia 1, chegada comum ao final da reta dos 100 m, extensão da reta de velocidade e oito raias numeradas. O percurso laranja e o marcador animado permanecem na raia 1. A figura é esquemática e não substitui as marcações oficiais do local.
 
 Referência: plano de marcações da pista padrão de 400 m da World Athletics, disponível em https://worldathletics.org/about-iaaf/documents/technical-information . A regressão de navegador verifica nove limites formando oito raias, posição inicial e chegada após 1.000 m. Nenhum registro do circuito é alterado.
+
+## Premiação e encerramento — 6 de outubro de 2026
+
+Regulamento 1.4: o tênis fica exclusivo do campeão absoluto de cada categoria e gênero. Os bimestres premiam os três primeiros com camisetas. O valor de R$ 500,00 é um vale-compras na Bahia Esportes para o campeão absoluto de cada categoria e gênero, sem pagamento em dinheiro.
+
+Mensal de novembro, segundo bimestre e ranking absoluto encerram em 13/11/2026. A premiação presencial ocorre nesse dia no IVCL, logo após a finalíssima. Quem não estiver presente receberá os prêmios posteriormente pelos Correios. Não foi informado um horário de corte; o sistema continua trabalhando com a data da atividade.
+
+O seed atualiza a edição existente, o regulamento, o FAQ e as configurações de premiação. Marcas, datas históricas e aceites anteriores são preservados. A foto dos atletas substitui a arte que anunciava prêmios em dinheiro. Os testes cobrem a data-limite, os itens por colocação e a atualização da edição sem alteração das marcas.

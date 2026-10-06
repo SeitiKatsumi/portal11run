@@ -29,7 +29,7 @@ export const CIRCUIT_SLUG = "desafio-virtual-1km-11run-futuro-2026";
 export const CIRCUIT_EDITION_ID = "virtual-circuit-2026";
 export const CIRCUIT_ACTIVITY_START = CIRCUIT_EDITION_START;
 export const CIRCUIT_ACTIVITY_END = CIRCUIT_EDITION_END;
-export const CIRCUIT_HERO_IMAGE = "/assets/circuito-virtual/desafio-virtual-1000m-participe-2026.webp";
+export const CIRCUIT_HERO_IMAGE = "/assets/circuito-virtual/hero-atletas-2026.webp";
 
 let database: DatabaseSync | undefined;
 
@@ -67,6 +67,7 @@ function safeJson<T>(value: string | null | undefined, fallback: T): T {
 function circuitEditionSettings(current: Record<string, string | number> = {}) {
   const settings = { ...current };
   delete settings.quarterlyShoesCount;
+  delete settings.finalPrizeCents;
   return {
     ...settings,
     minAge: 9,
@@ -74,9 +75,11 @@ function circuitEditionSettings(current: Record<string, string | number> = {}) {
     editionYear: 2026,
     elevationToleranceMeters: Number(settings.elevationToleranceMeters) || 2,
     monthlyShirtsPerCategory: 1,
-    bimonthlyShoesPerCategory: 1,
+    bimonthlyShoesPerCategory: 0,
     bimonthlyShirtsTop: 3,
-    finalPrizeCents: 50000,
+    finalShoesPerCategory: 1,
+    finalVoucherCents: 50000,
+    finalVoucherStore: "Bahia Esportes",
     finalShirtsTop: 10,
     finalTrophiesTop: 3,
     finalPhysicalCertificatesTop: 5,
@@ -103,6 +106,7 @@ function seedCircuitEdition(db: DatabaseSync) {
              hero_image = CASE
                WHEN hero_image IS NULL
                  OR hero_image = '/assets/circuito-virtual/hero-atletas-2026.webp'
+                 OR hero_image = '/assets/circuito-virtual/desafio-virtual-1000m-participe-2026.webp'
                  OR hero_image = '/assets/circuito-virtual/desafio-virtual-1000m-2026.webp'
                  OR hero_image = '/assets/circuito-virtual/desafio-virtual-premiacoes-2026.webp' THEN ?
                ELSE hero_image

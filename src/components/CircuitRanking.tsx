@@ -2,7 +2,7 @@
 import { CIRCUIT_PRIZE_EVIDENCE_RULE } from "@/lib/virtual-circuit-schedule";
 import { formatCircuitAthleteNumber } from '@/lib/virtual-circuit-display';
 
-import { Award, BadgeCheck, Banknote, Footprints, Search, Shirt, Sparkles, Trophy } from "lucide-react";
+import { Award, BadgeCheck, Ticket, Footprints, Search, Shirt, Sparkles, Trophy } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CIRCUIT_CATEGORY_AGES, circuitCategoryLabel, circuitCategoryName } from "@/lib/virtual-circuit-category";
 import {
@@ -20,8 +20,8 @@ import styles from "./CircuitUI.module.css";
 export type CircuitRankingItem = { id:string;athleteNumber:number;position:number;categoryPosition:number;publicName:string;categoryAge:number;gender:string;city:string;state:string;formattedTime:string;activityDate:string;badge:string };
 
 const prizeDetails: Record<CircuitPrize, { label: string; icon: React.ReactNode }> = {
-  cash: { label: "R$ 500,00 para o líder da categoria", icon: <Banknote size={16} /> },
-  shoes: { label: "Um par de tênis", icon: <Footprints size={16} /> },
+  voucher: { label: "Vale-compras de R$ 500,00 na Bahia Esportes para o campeão absoluto da categoria e gênero; não é dinheiro", icon: <Ticket size={16} /> },
+  shoes: { label: "Um par de tênis, exclusivo do campeão absoluto da categoria e gênero", icon: <Footprints size={16} /> },
   shirt: { label: "Camiseta 11Run", icon: <Shirt size={16} /> },
   trophy: { label: "Troféu 11Run", icon: <Trophy size={16} /> },
   "physical-certificate": { label: "Certificado físico", icon: <Award size={16} /> },

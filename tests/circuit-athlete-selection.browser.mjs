@@ -27,7 +27,7 @@ try{
  await page.getByRole('button',{name:'Reiniciar',exact:true}).click();await page.getByRole('button',{name:'Animar 2,5 voltas',exact:true}).click();await page.waitForTimeout(250);await page.getByRole('button',{name:'Pausar animação',exact:true}).click();const distance=await slider.inputValue();assert.ok(Number(distance)>0);await page.waitForTimeout(150);assert.equal(await slider.inputValue(),distance);
  assert.match(await page.locator('#regulamento').innerText(),/1.3-2026/);
  await page.getByText('8. Dos testes em pista',{exact:true}).click();assert.match(await page.locator('#regulamento').innerText(),/Não serão aceitas distâncias medidas por GPS/);
- await page.getByText('15.1. Da comprovação obrigatória para prêmios bimestrais e em dinheiro',{exact:true}).click();assert.match(await page.locator('#regulamento').innerText(),/vídeo na íntegra/);
+ await page.getByText('15.1. Da comprovação obrigatória para prêmios bimestrais e em vale-compras',{exact:true}).click();assert.match(await page.locator('#regulamento').innerText(),/vídeo na íntegra/);
  for(const width of [1440,768,390]){await page.setViewportSize({width,height:960});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth),width);}
  console.log('PASS: seleção, gênero, categoria, marca vinculada, edição, lote e responsividade');
 }finally{if(created)assert.ok((await page.request.delete(base+'/api/admin/circuito-virtual/official-results/'+created)).ok());await browser.close();}
