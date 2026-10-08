@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState, type FormEvent, type MouseEvent } from "react";
 import { CheckCircle2, Download, Eye, ImageIcon, KeyRound, PencilLine, RefreshCw, Save, X } from "lucide-react";
 import { createPortal } from "react-dom";
+import { CrossCountryDashboard } from "./CrossCountryDashboard";
 
 type AdminLead = {
   id: string;
@@ -15,6 +16,7 @@ type AdminLead = {
   project_type: string;
   athlete_name?: string | null;
   birth_date?: string | null;
+  category?: string | null;
   pipeline_status: string;
   photos_json?: string | null;
   receipts_json?: string | null;
@@ -286,10 +288,11 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts, project }: 
     return Array.from(new Set([...defaultStatuses, ...circuitoStatuses, ...leads.map((lead) => lead.pipeline_status)]));
   }, [leads, projectFilter]);
 
-  const selectedStatusLeads = useMemo(
-    () => filteredLeads.filter((lead) => lead.pipeline_status === selectedStatus && `${lead.athlete_name} ${lead.name} ${lead.city} ${lead.payload_json}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(query.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase())),
-    [filteredLeads, selectedStatus, query]
+  const matchingLeads = useMemo(
+    () => filteredLeads.filter((lead) => `${lead.athlete_name} ${lead.name} ${lead.city} ${lead.payload_json}`.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().includes(query.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase())),
+    [filteredLeads, query]
   );
+  const selectedStatusLeads = useMemo(() => matchingLeads.filter((lead) => lead.pipeline_status === selectedStatus), [matchingLeads, selectedStatus]);
 
   function changeProjectFilter(nextProject: string) {
     setProjectFilter(nextProject);
@@ -622,6 +625,8 @@ export function AdminPipeline({ initialLeads, initialMemberAccounts, project }: 
           );
         })}
       </div>
+
+      {project === "circuito-cross-country-ivcl-11run" ? <CrossCountryDashboard leads={matchingLeads} selectedStatus={selectedStatus} hasSearch={Boolean(query)} /> : null}
 
       <section className="pipeline-stage-panel" role="tabpanel" aria-label={selectedStatus}>
         <div className="pipeline-stage-head">
