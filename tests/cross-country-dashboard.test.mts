@@ -36,3 +36,15 @@ test("cross dashboard preserves totals for missing, malformed and legacy data", 
   assert.equal(empty.cityCount, 0);
   assert.equal(empty.categories.every((item) => item.count === 0), true);
 });
+
+test("cross dashboard treats state names and abbreviations as the same UF", () => {
+  const result = crossCountryDashboard([
+    registration("Campinas", "SP", "Sub 10", "Feminino"),
+    registration(" Campinas ", " São Paulo ", "Sub 10", "Feminino"),
+    registration("CAMPINAS", "SAO PAULO", "Sub 10", "Masculino"),
+    registration("Apucarana", "Paraná", "Sub 12", "Masculino"),
+    registration("Apucarana", "PR", "Sub 12", "Feminino")
+  ]);
+  assert.equal(result.cityCount, 2);
+  assert.deepEqual(result.cities, [{ label: "Campinas/SP", count: 3 }, { label: "Apucarana/PR", count: 2 }]);
+});

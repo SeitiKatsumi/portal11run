@@ -11,9 +11,17 @@ const missing = "Não informado";
 const states = new Set("AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" "));
 const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR");
 const clean = (value: unknown) => typeof value === "string" ? value.trim().replace(/\s+/g, " ") : "";
+const stateNames: Record<string, string> = {
+  acre: "AC", alagoas: "AL", amapa: "AP", amazonas: "AM", bahia: "BA", ceara: "CE",
+  "distrito federal": "DF", "espirito santo": "ES", goias: "GO", maranhao: "MA",
+  "mato grosso": "MT", "mato grosso do sul": "MS", "minas gerais": "MG", para: "PA",
+  paraiba: "PB", parana: "PR", pernambuco: "PE", piaui: "PI", "rio de janeiro": "RJ",
+  "rio grande do norte": "RN", "rio grande do sul": "RS", rondonia: "RO", roraima: "RR",
+  "santa catarina": "SC", "sao paulo": "SP", sergipe: "SE", tocantins: "TO"
+};
 
 function cityLabel(city: string, state: string) {
-  let region = state.toUpperCase();
+  let region = stateNames[normalize(state)] || state.toUpperCase();
   // Older registrations sometimes include the UF in both city and state.
   let suffix = city.match(/\s*[-/,]\s*([a-z]{2})$/i);
   while (suffix && states.has(suffix[1].toUpperCase())) {

@@ -6,7 +6,7 @@ Rota protegida: `/admin/cross-country`.
 - Por padrão acompanha a etapa selecionada. O seletor **Exibir no dashboard** permite considerar todas as etapas, incluindo declinados.
 - A busca existente também filtra o dashboard. Cada inscrição corresponde a um atleta; não há deduplicação por nome.
 - Mostra totais de atletas, inscrições aceitas e cidades informadas no recorte atual.
-- Agrupa cidades ignorando caixa, acentos e UF repetida no campo cidade. Municípios de estados diferentes permanecem separados. Dados ausentes continuam nos gráficos como **Não informado**.
+- Agrupa cidades ignorando caixa, acentos e UF repetida no campo cidade. Reconhece estados por sigla ou nome completo (SP/São Paulo). Municípios de estados diferentes permanecem separados. Dados ausentes continuam nos gráficos como **Não informado**.
 - Mudanças salvas no cadastro recalculam os gráficos a partir do estado existente do pipeline, sem nova API, banco ou dependência.
 
 ## Validação
