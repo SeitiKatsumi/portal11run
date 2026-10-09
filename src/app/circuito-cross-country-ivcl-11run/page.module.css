@@ -9,6 +9,16 @@
 .aboutFacts p { display: flex; align-items: center; gap: 10px; }
 .panel { padding: clamp(24px, 4vw, 54px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); margin-bottom: 30px; }
 .heading { max-width: 800px; margin-bottom: 30px; }
+.directions { display: flex; align-items: center; justify-content: space-between; gap: 28px; background: #eff5f0; }
+.directionsCopy { display: flex; align-items: flex-start; gap: 18px; min-width: 0; }
+.directionsCopy > svg { flex-shrink: 0; color: var(--cross-green); margin-top: 4px; }
+.directions h2 { margin: 0 0 12px; font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: -.035em; }
+.directions p { margin: 5px 0 0; line-height: 1.6; color: var(--soft); }
+.directionsButton { flex-shrink: 0; padding: 12px 20px; background: var(--cross-green); border: 1px solid var(--cross-green); color: #fff; }
+.directionsButton:hover { background: #1e4233; color: #fff; }
+.directionsButton:focus-visible { outline: 2px solid var(--cross-green); outline-offset: 4px; }
+@media (max-width: 900px) { .directions { align-items: flex-start; flex-direction: column; } }
+@media (max-width: 600px) { .directionsButton { width: 100%; } }
 .heading h2, .registration h2, .about h2 { font-size: clamp(2rem, 4vw, 3.6rem); line-height: 1.08; letter-spacing: -.045em; margin: 14px 0 18px; }
 .heading p, .registration p, .about p { color: var(--muted); line-height: 1.75; }
 .categories { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }

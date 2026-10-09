@@ -4,7 +4,7 @@ import { Camera, Clock3, Flag, Youtube, MapPin, Medal, Route, Trees, Users } fro
 import { HeroSection } from "@/components/HeroSection";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { CrossCountryFaq } from "@/components/CrossCountryFaq";
-import { crossCountryRaces, crossCountryTerm } from "@/lib/circuit-categories";
+import { crossCountryDirections, crossCountryRaces, crossCountryTerm } from "@/lib/circuit-categories";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -28,6 +28,11 @@ export default function CrossCountryPage() {
       primaryCtaSlot={<ProjectFormModal project={project} />} secondaryCta={{ label: "Ver programação", href: "#programacao" }}
       imageSrc="/assets/cross-country-capa-amanhecer.webp" imageAlt="Percurso de grama do CIRCUITO DE CROSS COUNTRY IVCL 11RUN ao amanhecer, com bandeiras e faixas de sinalização em Campinas"
       metrics={[{ value: "15 NOV", label: "Primeira edição · 2026" }, { value: "Campinas", label: "IVCL · Circuito de grama e terra com chegada na pista de atletismo" }, { value: "Até 17", label: "Idade completada em 2026" }, { value: "1–4 km", label: "Distâncias por categoria" }]} />
+
+    <section className={`section ${styles.panel} ${styles.directions}`} id="como-chegar" aria-labelledby="como-chegar-titulo">
+      <div className={styles.directionsCopy}><MapPin size={30} aria-hidden="true" /><div><h2 id="como-chegar-titulo">Como chegar</h2><p>IVCL · Campinas, São Paulo</p><p>Abra a localização e planeje sua chegada para o dia da corrida.</p></div></div>
+      <a className={`button ${styles.directionsButton}`} href={crossCountryDirections} target="_blank" rel="noopener noreferrer"><Route size={18} aria-hidden="true" />Abrir localização<span aria-hidden="true">↗</span></a>
+    </section>
 
     <section className={`section ${styles.panel}`} id="diferenciais">
       <div className={styles.heading}><span className="eyebrow">Diferenciais</span><h2>Uma experiência imersiva e interativa</h2></div>

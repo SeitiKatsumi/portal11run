@@ -9,4 +9,6 @@
 .faq summary svg { flex-shrink: 0; transition: transform 150ms ease; }
 .faq details[open] summary svg { transform: rotate(180deg); }
 .faq details p { margin: 0 0 22px; }
+.faq p a { display: inline-block; margin-top: 10px; padding-block: 8px; color: #285442; font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+.faq p a:focus-visible { outline: 2px solid #285442; outline-offset: 4px; border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) { .faq summary svg { transition: none; } }

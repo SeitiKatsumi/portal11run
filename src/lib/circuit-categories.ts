@@ -41,8 +41,11 @@ export function crossCountryCategoryForBirthDate(birthDate: string) {
 
 const crossCountryStartTimes = crossCountryRaces.map((race) => `${race.time} — ${race.label}: ${race.distance}, masculino e feminino.`);
 
+export const crossCountryDirections = "https://tinyurl.com/444zt8h5";
+
 export const crossCountryFaq = [
   { question: "Quando e onde acontece o evento?", answer: "A primeira edição será em 15 de novembro de 2026, no IVCL, em Campinas. Toda a programação acontece pela manhã, das 8h às 10h, no horário de São Paulo. Não haverá período da tarde." },
+  { question: "Como chegar ao IVCL?", answer: "O evento acontece no IVCL, em Campinas, São Paulo. Acesse o link abaixo para abrir a localização e planejar sua chegada.", link: crossCountryDirections },
   { question: "Quais são os horários e as distâncias?", answer: [...crossCountryStartTimes, "09:45 — Premiação geral.", "10:00 — Foto geral e encerramento."].join("\n") },
   { question: "Quem pode participar e como a idade é calculada?", answer: "Atletas de até 17 anos, considerando a idade completada em 2026. A faixa de 9 anos ou menos também recebe crianças mais novas. A inscrição calcula a categoria e a distância pela data de nascimento." },
   { question: "Masculino e feminino largam juntos?", answer: "Sim. Masculino e feminino largam no mesmo horário em cada faixa etária. A classificação, a pontuação e o pódio permanecem separados por categoria individual e gênero. A categoria Sub 10 reúne atletas de 9 anos ou menos." },
