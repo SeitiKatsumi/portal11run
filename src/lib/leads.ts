@@ -4,6 +4,7 @@ import path from "path";
 import { createHash } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
 import { ONZE_FUTURO_TERM_VERSION, onzeFuturoTermSnapshot } from "./onze-futuro-policy";
+import { isOnzeFuturoBirthDateEligible, onzeFuturoAgeHelp } from "./onze-futuro-registration";
 
 export type LeadPayload = Record<string, string | boolean | undefined>;
 
@@ -241,9 +242,8 @@ export function validateLead(payload: LeadPayload, options?: { photoCount?: numb
       return { ok: false, error: `Campos obrigatórios do Onze Futuro ausentes: ${missingProjectFields.join(", ")}` };
     }
 
-    const age = getAgeFromBirthDate(String(payload.birth_date));
-    if (age === null || age < 9 || age > 13) {
-      return { ok: false, error: "A data de nascimento deve corresponder a idade entre 9 e 13 anos." };
+    if (!isOnzeFuturoBirthDateEligible(String(payload.birth_date))) {
+      return { ok: false, error: onzeFuturoAgeHelp };
     }
 
     if (!isValidCpf(String(payload.athlete_cpf))) {

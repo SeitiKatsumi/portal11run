@@ -31,7 +31,7 @@ export const onzeFuturoFaqGroups: OnzeFuturoFaqGroup[] = [
         id: "publico",
         question: "Quem pode ser cadastrado?",
         answer: [
-          "O público principal desta fase são atletas de 10 a 13 anos interessados em corrida, especialmente provas de meio-fundo e fundo. O cadastro pode ser iniciado por pai, mãe, responsável legal, treinador, escola, projeto social ou outro profissional envolvido, mas a participação de menor de idade depende da ciência e da autorização do responsável legal.",
+          "O cadastro aceita atletas de 9 a 13 anos completos na data da inscrição, conforme a data de nascimento. O público principal do piloto é de 10 a 13 anos, mas atletas de 9 anos também podem se cadastrar para avaliação. O cadastro pode ser iniciado por pai, mãe, responsável legal, treinador, escola, projeto social ou outro profissional envolvido, mas a participação de menor de idade depende da ciência e da autorização do responsável legal.",
           "Estar na faixa etária e preencher o formulário não gera aceite automático. A equipe considera o contexto completo do atleta, a estrutura de acompanhamento disponível, a compatibilidade com a proposta e a capacidade operacional do projeto."
         ]
       },

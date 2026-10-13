@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { crossCountryBirthRule, crossCountryCategoryBirthRange, crossCountryCategoryForBirthDate, crossCountryTerm, isCrossRegistrationOpen } from "@/lib/circuit-categories";
 import { onzeFuturoTerm } from "@/lib/onze-futuro-policy";
+import { isOnzeFuturoBirthDateEligible, onzeFuturoBirthDateLimits, onzeFuturoAgeHelp } from "@/lib/onze-futuro-registration";
 import { useRouter } from "next/navigation";
 import { Loader2, Send, ShieldCheck, Upload } from "lucide-react";
 import { formProjects, type FormProjectSlug } from "@/lib/content";
@@ -230,9 +231,7 @@ function getBirthDateLimits(project: FormProjectSlug) {
   const format = (date: Date) => date.toISOString().slice(0, 10);
 
   if (project === "onze-futuro") {
-    const max = new Date(now.getFullYear() - 10, now.getMonth(), now.getDate());
-    const min = new Date(now.getFullYear() - 14, now.getMonth(), now.getDate() + 1);
-    return { min: format(min), max: format(max), help: "Permitido apenas para atletas com idade entre 10 e 13 anos." };
+    return onzeFuturoBirthDateLimits(now);
   }
 
   if (project === "circuito-cross-country-ivcl-11run") {
@@ -311,6 +310,7 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
       if (!isValidCpf(String(formData.get("term_acceptor_cpf") ?? ""))) return "Informe um CPF válido para o responsável que aceita o termo.";
     }
     if (project === "onze-futuro") {
+      if (!isOnzeFuturoBirthDateEligible(String(formData.get("birth_date") ?? ""))) return onzeFuturoAgeHelp;
       const photos = formData.getAll("athlete_photos").filter((item) => item instanceof File && item.size > 0);
       if (photos.length !== 5) return "Envie exatamente 5 fotos do atleta.";
       if (
