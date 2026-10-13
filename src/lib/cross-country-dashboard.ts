@@ -1,4 +1,6 @@
 type Registration = {
+  id?: string;
+  athlete_name?: string | null;
   category?: string | null;
   city?: string | null;
   state?: string | null;
@@ -7,6 +9,7 @@ type Registration = {
 };
 
 export type AthleteCount = { label: string; count: number };
+type DashboardAthlete = { id: string; name: string; category: string; gender: string; city: string };
 const missing = "Não informado";
 const states = new Set("AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" "));
 const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR");
@@ -35,6 +38,7 @@ function cityLabel(city: string, state: string) {
 }
 
 export function crossCountryDashboard(leads: readonly Registration[]) {
+  const athletes: DashboardAthlete[] = [];
   const categories = new Map<string, AthleteCount>(Array.from({ length: 9 }, (_, i) => [`sub ${i + 10}`, { label: `Sub ${i + 10}`, count: 0 }]));
   const genders = new Map<string, AthleteCount>([
     ["feminino", { label: "Feminino", count: 0 }],
@@ -53,13 +57,17 @@ export function crossCountryDashboard(leads: readonly Registration[]) {
       const parsed: unknown = JSON.parse(lead.payload_json);
       if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) payload = parsed as Record<string, unknown>;
     } catch { /* Incomplete legacy records remain visible in the totals. */ }
-    const category = clean(lead.category) || clean(payload.category);
-    increment(categories, category.replace(/^sub\s*(\d+)$/i, "Sub $1") || missing);
-    const gender = normalize(clean(payload.gender));
-    increment(genders, ["f", "feminino"].includes(gender) ? "Feminino" : ["m", "masculino"].includes(gender) ? "Masculino" : missing);
-    increment(cities, cityLabel(clean(lead.city) || clean(payload.city), clean(lead.state) || clean(payload.state)));
+    const category = (clean(lead.category) || clean(payload.category)).replace(/^sub\s*(\d+)$/i, "Sub $1") || missing;
+    const rawGender = normalize(clean(payload.gender));
+    const gender = ["f", "feminino"].includes(rawGender) ? "Feminino" : ["m", "masculino"].includes(rawGender) ? "Masculino" : missing;
+    const city = cityLabel(clean(lead.city) || clean(payload.city), clean(lead.state) || clean(payload.state));
+    increment(categories, category);
+    increment(genders, gender);
+    increment(cities, city);
+    athletes.push({ id: lead.id ?? String(athletes.length), name: clean(lead.athlete_name) || clean(payload.athlete_name) || "Nome não informado", category: categories.get(normalize(category))!.label, gender, city });
   }
   return {
+    athletes: athletes.sort((a, b) => a.name.localeCompare(b.name, "pt-BR")),
     total: leads.length,
     accepted: leads.filter((lead) => lead.pipeline_status === "Aceitas").length,
     cityCount: [...cities.values()].filter((city) => city.label !== missing).length,

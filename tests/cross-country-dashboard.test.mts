@@ -4,6 +4,24 @@ import { crossCountryDashboard } from "../src/lib/cross-country-dashboard.ts";
 
 const registration = (city: string, state: string, category: string, gender: string, status = "Aceitas") => ({ city, state, category, pipeline_status: status, payload_json: JSON.stringify({ gender }) });
 
+test("category rosters use the same normalization and totals as charts, preserving individual registrations", () => {
+  const result = crossCountryDashboard([
+    { ...registration("Campinas-SP", "SP", "sub10", " M "), id: "one", athlete_name: " Bruno " },
+    { ...registration("Campinas", "São Paulo", "Sub 10", "f"), id: "two", athlete_name: "Ana" },
+    { ...registration("Valinhos", "SP", "Sub 11", "Feminino"), id: "three", athlete_name: "Ana" },
+    { id: "legacy", pipeline_status: "Aceitas", payload_json: JSON.stringify({ category: "SUB10", athlete_name: "Ana", gender: "FEMININO" }) },
+    { id: "missing", category: "Sub 10", pipeline_status: "Aceitas", payload_json: "broken" }
+  ]);
+  const roster = result.athletes.filter((athlete) => athlete.category === "Sub 10");
+  assert.equal(roster.length, result.categories.find((item) => item.label === "Sub 10")?.count);
+  assert.deepEqual(roster.map((athlete) => athlete.name), ["Ana", "Ana", "Bruno", "Nome não informado"]);
+  assert.equal(roster.filter((athlete) => athlete.gender === "Feminino").length, 2);
+  assert.equal(roster.filter((athlete) => athlete.gender === "Masculino").length, 1);
+  assert.equal(roster.filter((athlete) => athlete.gender === "Não informado").length, 1);
+  assert.equal(roster.find((athlete) => athlete.id === "one")?.city, "Campinas/SP");
+  assert.equal(crossCountryDashboard([]).athletes.length, 0);
+});
+
 test("cross dashboard groups city spelling and UF variants without mixing states", () => {
   const result = crossCountryDashboard([
     registration(" Campinas ", "SP", "Sub 10", "Feminino"),
