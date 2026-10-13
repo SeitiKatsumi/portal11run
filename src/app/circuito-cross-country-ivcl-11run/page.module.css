@@ -27,6 +27,13 @@
 .categories strong { display: block; font-size: 1.65rem; margin: 9px 0; letter-spacing: -.04em; }
 .categories p { margin: 0 0 4px; }
 .categories small { color: var(--muted); }
+.categories .birthRange { margin-top: 10px; color: var(--cross-green); font-size: .9rem; line-height: 1.6; }
+.birthTable { margin-top: 28px; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.birthTable table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.birthTable caption { padding: 20px; text-align: left; font-weight: 600; background: #eff5f0; color: var(--cross-green); }
+.birthTable th, .birthTable td { padding: 14px 16px; text-align: left; border-top: 1px solid var(--line); line-height: 1.5; }
+.birthTable th { font-weight: 600; }
+@media (max-width: 600px) { .birthTable table { font-size: .78rem; } .birthTable th, .birthTable td { padding: 12px 8px; } .birthTable th:first-child { white-space: nowrap; } }
 .note { display: flex; align-items: flex-start; gap: 10px; line-height: 1.6; color: var(--muted); margin-bottom: 0; }
 .note svg, .aboutFacts svg { flex-shrink: 0; }
 .schedule { display: grid; grid-template-columns: minmax(0, 1fr); }

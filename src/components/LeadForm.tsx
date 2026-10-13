@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { crossCountryCategoryForBirthDate, crossCountryTerm, isCrossRegistrationOpen } from "@/lib/circuit-categories";
+import { crossCountryBirthRule, crossCountryCategoryBirthRange, crossCountryCategoryForBirthDate, crossCountryTerm, isCrossRegistrationOpen } from "@/lib/circuit-categories";
 import { onzeFuturoTerm } from "@/lib/onze-futuro-policy";
 import { useRouter } from "next/navigation";
 import { Loader2, Send, ShieldCheck, Upload } from "lucide-react";
@@ -236,7 +236,7 @@ function getBirthDateLimits(project: FormProjectSlug) {
   }
 
   if (project === "circuito-cross-country-ivcl-11run") {
-    return { min: "2009-01-01", max: format(now), help: "Idade completada em 2026: até 17 anos, incluindo a faixa de 9 anos ou menos." };
+    return { min: "2009-01-01", max: format(now), help: `Nascidos a partir de 01/01/2009. ${crossCountryBirthRule}` };
   }
   if (project === "circuito-futuro-11") {
     return {
@@ -300,7 +300,7 @@ export function LeadForm({ project }: { project: FormProjectSlug }) {
           />
         )}
         {field.name === "birth_date" && birthDateLimits.help ? <small>{birthDateLimits.help}</small> : null}
-        {isCross && field.name === "birth_date" && birthDate ? <strong role="status">{crossCategory ? `${crossCategory.category} · ${crossCategory.distance}` : "Nascimento fora das categorias desta edição."}</strong> : null}
+        {isCross && field.name === "birth_date" && birthDate ? <strong role="status">{crossCategory ? `${crossCategory.category} · ${crossCategory.distance} · Nascimento: ${crossCountryCategoryBirthRange(crossCategory.category)}` : "Nascimento fora das categorias desta edição."}</strong> : null}
       </label>
     );
   }

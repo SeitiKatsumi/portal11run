@@ -1,6 +1,24 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { circuitCategories, circuitCategoryForBirthDate, circuitRaceOptions, crossCountryCategoryForBirthDate, crossCountryRaces, isCrossRegistrationOpen } from "../src/lib/circuit-categories.ts";
+import { circuitCategories, circuitCategoryForBirthDate, circuitRaceOptions, crossCountryBirthRange, crossCountryCategories, crossCountryCategoryForBirthDate, crossCountryRaces, crossCountryTerm, crossCountryFaq, isCrossRegistrationOpen } from "../src/lib/circuit-categories.ts";
+
+test("períodos de nascimento publicados correspondem às categorias calculadas, inclusive nos limites do ano", () => {
+  for (let age = 10; age <= 17; age++) {
+    const year = 2026 - age;
+    const category = `Sub ${age + 1}`;
+    const published = crossCountryCategories.find((item) => item.category === category)!;
+    assert.equal(published.birthRange, `De 01/01/${year} a 31/12/${year}`);
+    for (const day of ["01-01", "12-31"]) assert.equal(crossCountryCategoryForBirthDate(`${year}-${day}`)?.category, category);
+    assert.ok(crossCountryTerm.clauses.some((clause) => clause.includes(`${category}: ${published.birthRange}`)));
+    assert.ok(crossCountryFaq.some((item) => item.answer.includes(`${category}: ${published.birthRange}`)));
+  }
+  assert.equal(crossCountryCategories[0].birthRange, "A partir de 01/01/2017");
+  for (const birth of ["2017-01-01", "2017-12-31", "2018-01-01"]) assert.equal(crossCountryCategoryForBirthDate(birth)?.category, "Sub 10");
+  assert.equal(crossCountryCategoryForBirthDate("2016-12-31")?.category, "Sub 11");
+  assert.equal(crossCountryCategoryForBirthDate("2008-12-31"), undefined);
+  assert.equal(crossCountryBirthRange(16, 17), "De 01/01/2009 a 31/12/2010");
+  assert.equal(crossCountryBirthRange(10, 11), "De 01/01/2015 a 31/12/2016");
+});
 
 test("Cross Country usa cinco largadas e novas distâncias sem alterar o circuito de pista", () => {
   assert.deepEqual(crossCountryRaces.map((race) => race.time), ["08:00", "08:40", "09:00", "09:20", "09:35"]);

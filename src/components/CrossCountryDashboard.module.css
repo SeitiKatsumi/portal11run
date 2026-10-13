@@ -24,6 +24,8 @@
 .empty{padding:24px;border:1px dashed var(--line);border-radius:14px;text-align:center;font-size:14px;color:var(--muted)}
 .categoryButton{display:block;width:100%;min-height:44px;padding:6px;border:0;border-radius:8px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:background .15s ease}
 .categoryButton:hover{background:#eff5f0}.categoryButton:focus-visible,.closeButton:focus-visible{outline:2px solid #28614b;outline-offset:3px}
+.birthRange{display:block;margin:0 0 9px;font-size:11px;line-height:1.5;color:#28614b}
+.birthRule{margin:0 0 20px;padding:14px 16px;border:1px solid #cddfd4;border-radius:12px;background:#eff5f0;color:#285442;font-size:13px;line-height:1.65}
 .categoryButton .barLabel>span:first-child{display:flex;align-items:center;gap:5px}.categoryButton svg{color:#28614b;flex-shrink:0}
 .modal{width:min(calc(100% - 48px),var(--max),920px);max-width:none;max-height:calc(100dvh - 48px);padding:0;margin:auto;border:1px solid var(--line);border-radius:20px;background:var(--surface);color:var(--text);box-shadow:0 24px 80px #0003;overscroll-behavior:contain}
 .modal::backdrop{background:#14231dcc}

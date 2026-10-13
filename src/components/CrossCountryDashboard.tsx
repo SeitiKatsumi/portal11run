@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { BarChart3, CheckCircle2, ChevronRight, MapPin, Users, X } from "lucide-react";
 import { crossCountryDashboard, type AthleteCount } from "@/lib/cross-country-dashboard";
+import { crossCountryBirthRule, crossCountryCategoryBirthRange } from "@/lib/circuit-categories";
 import styles from "./CrossCountryDashboard.module.css";
 
 type Props = {
@@ -20,6 +21,7 @@ function CountChart({ title, items, total, color, scroll, onSelect }: { title: s
       {items.map((item) => {
         const bar = <>
         <div className={styles.barLabel}><span>{item.label}{onSelect ? <ChevronRight size={14} aria-hidden="true" /> : null}</span><span><strong>{item.count}</strong><small>{total ? Math.round(item.count / total * 100) : 0}%</small></span></div>
+        {onSelect && crossCountryCategoryBirthRange(item.label) ? <span className={styles.birthRange}>Nascimento: {crossCountryCategoryBirthRange(item.label)}</span> : null}
         <div className={styles.track} aria-hidden="true"><div style={{ width: `${item.count / largest * 100}%`, backgroundColor: color }} /></div>
         </>;
         return <li key={item.label}>{onSelect ? <button type="button" className={styles.categoryButton} onClick={() => onSelect(item.label)} aria-haspopup="dialog" aria-label={`${item.label}: ${item.count} inscritos. Ver por gênero`}>{bar}</button> : bar}</li>;
@@ -48,6 +50,7 @@ export function CrossCountryDashboard({ leads, selectedStatus, hasSearch }: Prop
       <div><span className={styles.eyebrow}><BarChart3 size={16} aria-hidden="true" /> Visão das inscrições</span><h2>Atletas em números</h2><p>{scope === "all" ? "Todas as etapas, incluindo declinados" : `Etapa: ${selectedStatus}`}{hasSearch ? " · Busca aplicada" : ""}. Cada inscrição representa um atleta.</p></div>
       <label className={styles.scope}>Exibir no dashboard<select value={scope} onChange={(event) => setScope(event.target.value)}><option value="stage">Etapa selecionada · {selectedStatus}</option><option value="all">Todas as etapas</option></select></label>
     </div>
+    <p className={styles.birthRule}>{crossCountryBirthRule}</p>
     <div className={styles.metrics} aria-live="polite">
       <div><Users size={20} aria-hidden="true" /><span>Atletas no recorte<strong>{data.total}</strong></span></div>
       <div><CheckCircle2 size={20} aria-hidden="true" /><span>Inscrições aceitas<strong>{data.accepted}</strong></span></div>
@@ -64,6 +67,7 @@ export function CrossCountryDashboard({ leads, selectedStatus, hasSearch }: Prop
           <div><span className={styles.eyebrow}>Inscritos por categoria</span><h2 id="category-modal-title">{category}</h2><p id="category-modal-description">{athletes.length} inscritos · {scope === "all" ? "Todas as etapas, incluindo declinados" : `Etapa: ${selectedStatus}`}{hasSearch ? " · Busca aplicada" : ""}</p></div>
           <button type="button" className={styles.closeButton} onClick={() => setCategory(null)} aria-label="Fechar inscritos"><X size={22} aria-hidden="true" /></button>
         </header>
+        {category && crossCountryCategoryBirthRange(category) ? <p className={styles.birthRule}><strong>Nascimento: {crossCountryCategoryBirthRange(category)}.</strong> {crossCountryBirthRule}</p> : null}
         <div className={styles.genderGroups}>
           {genderGroups.map((gender) => {
             const group = athletes.filter((athlete) => athlete.gender === gender);

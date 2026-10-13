@@ -4,7 +4,7 @@ import { Camera, Clock3, Flag, Youtube, MapPin, Medal, Route, Trees, Users } fro
 import { HeroSection } from "@/components/HeroSection";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { CrossCountryFaq } from "@/components/CrossCountryFaq";
-import { crossCountryDirections, crossCountryRaces, crossCountryTerm } from "@/lib/circuit-categories";
+import { crossCountryBirthRange, crossCountryBirthRule, crossCountryCategories, crossCountryDirections, crossCountryRaces, crossCountryTerm } from "@/lib/circuit-categories";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -54,11 +54,15 @@ export default function CrossCountryPage() {
     </section>
 
     <section className={`section ${styles.panel}`} id="categorias">
-      <div className={styles.heading}><span className="eyebrow">Uma distância para cada fase</span><h2>Cinco faixas etárias. A mesma vontade de correr.</h2><p>A categoria considera a idade que o atleta completa em 2026. Todas as provas têm classificação feminina e masculina.</p></div>
+      <div className={styles.heading}><span className="eyebrow">Categorias por nascimento · 2026</span><h2>Confira sua categoria pela data de nascimento.</h2><p>{crossCountryBirthRule}</p><p>Todas as provas têm classificação feminina e masculina.</p></div>
       <div className={styles.categories}>
-        {crossCountryRaces.map((item) => <article key={item.label}><span>{item.label}</span><strong>{item.distance}</strong><p>Masculino e Feminino</p><small>Largada às {item.time}</small></article>)}
+        {crossCountryRaces.map((item) => <article key={item.label}><span>{item.label}</span><p className={styles.birthRange}>Nascimento: {crossCountryBirthRange(item.minAge, item.maxAge)}</p><strong>{item.distance}</strong><p>Masculino e Feminino</p><small>Largada às {item.time}</small></article>)}
       </div>
       <p className={styles.note}><Users size={18} aria-hidden="true" />Masculino e feminino largam no mesmo horário em cada faixa etária. A categoria Sub 10 recebe atletas de 9 anos ou menos; as demais categorias individuais e as classificações por gênero são mantidas.</p>
+      <div className={styles.birthTable}>
+        <table><caption>Categorias individuais por data de nascimento</caption><thead><tr><th scope="col">Categoria</th><th scope="col">Nascimento (datas incluídas)</th><th scope="col">Idade em 2026</th></tr></thead><tbody>{crossCountryCategories.map((item) => <tr key={item.category}><th scope="row">{item.category}</th><td>{item.birthRange}</td><td>{item.ageLabel}</td></tr>)}</tbody></table>
+      </div>
+      <p className={styles.note}>Exemplo: quem nasceu em 31/12/2013 disputa a Sub 14, mesmo que ainda tenha 12 anos na data da prova. A Sub 10 inclui nascidos em 2017 ou depois; não são aceitas datas futuras.</p>
     </section>
 
     <section className={`section ${styles.panel}`} id="programacao">
