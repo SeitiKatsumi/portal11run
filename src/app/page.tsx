@@ -19,8 +19,8 @@ export default function Home() {
 
   return (
     <section
-      className={`${styles.hero} ${settings.content_alignment === "left" ? styles.alignLeft : ""}`}
-      aria-labelledby="home-title"
+      className={styles.hero}
+      aria-label="11RUN"
     >
       <div className={styles.media} aria-hidden="true">
         {useVideo ? (
@@ -41,16 +41,6 @@ export default function Home() {
         style={{ backgroundColor: `rgb(12 13 13 / ${settings.overlay_strength / 100})` }}
       />
 
-      <div className={styles.content}>
-        <div className={styles.intro}>
-          {settings.hero_kicker ? <span>{settings.hero_kicker}</span> : null}
-          <h1 id="home-title">
-            {settings.hero_title || "Ecossistema de Inteligência aplicada ao fundismo no Brasil"}
-          </h1>
-          {settings.hero_subtitle ? <p>{settings.hero_subtitle}</p> : null}
-        </div>
-
-      </div>
     </section>
   );
 }
