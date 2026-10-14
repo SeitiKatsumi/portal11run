@@ -55,7 +55,7 @@ const faqStructuredData = {
 };
 
 const heroImage = "/assets/onze-futuro-hero.jpg";
-const launchImage = "/assets/cross-country-manu-bandeira.webp";
+const launchImage = "/assets/home/grupo-11run-pista.webp";
 const scenarioImage = "/assets/onze-futuro-cenario.jpg";
 const originImage = "/assets/athletes/turma-onze-futuro-seis.webp";
 const pilotImage = "/assets/athletes/piloto-aime.webp";
@@ -338,7 +338,7 @@ export default function Page() {
     <div className="futuro-landing">
       <FeatureBanner
         imageSrc={launchImage}
-        imageAlt="Manu, atleta 11RUN, segurando a bandeira do Brasil em uma área verde"
+        imageAlt="Atletas, familiares e equipe 11RUN reunidos na pista de atletismo"
         mediaOnly
       />
 
