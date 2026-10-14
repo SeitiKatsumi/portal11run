@@ -38,7 +38,7 @@ export default function Home() {
       </div>
       <div
         className={styles.overlay}
-        style={{ backgroundColor: `rgb(12 13 13 / ${settings.overlay_strength / 100})` }}
+        style={{ backgroundColor: `rgb(0 0 0 / ${settings.overlay_strength / 100})` }}
       />
 
     </section>
