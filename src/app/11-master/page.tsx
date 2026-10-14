@@ -34,7 +34,7 @@ const paulistaImage = "/assets/11-master/paulista-2026/40-titb-03805.webp";
 
 const heroMetrics = [
   { value: "11 e 12", label: "de julho de 2026" },
-  { value: "13", label: "atletas federados" },
+  { value: "7", label: "atletas federados" },
   { value: "12", label: "pódios na estreia" },
   { value: "Alex Lopes", label: "comando técnico" }
 ];
@@ -122,18 +122,12 @@ const goals = [
 
 const masterAthletes = [
   { name: "Seiti Katsumi", category: "M50" },
-  { name: "Edson Tibúrcio", category: "M45" },
   { name: "Silvano Lima Pinto", category: "M45" },
-  { name: "Leonardo Alves da Silva", category: "M40" },
-  { name: "Tiago Alves da Silva", category: "M40" },
   { name: "Vanderlei Alves Tibúrcio", category: "M40" },
   { name: "Leandro Cordeito Marcelino", category: "M40" },
   { name: "Edinaldo Machado dos Santos", category: "M35" },
   { name: "Josimar Aparecido Ribeiro", category: "M35" },
-  { name: "Vanessa Fernanda Padilha", category: "W40" },
-  { name: "Tatiele Carvalho", category: "W30" },
-  { name: "Robson Alvarenga", category: "M30" },
-  { name: "Ana Paula Pandolfi Soares", category: "W30" }
+  { name: "Tatiele Carvalho", category: "W30" }
 ];
 
 function CardGrid({
