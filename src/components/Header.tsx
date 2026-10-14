@@ -51,8 +51,6 @@ export function Header() {
   const [desktopSubmenu, setDesktopSubmenu] = useState<string | null>(null);
   const [submenuOpensLeft, setSubmenuOpensLeft] = useState(false);
   const [memberLoggedIn, setMemberLoggedIn] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const [homeHeader, setHomeHeader] = useState({ opacity: 74, blur: 18 });
   const accountHref = memberLoggedIn ? "/meu-painel" : "/login";
   const accountLabel = memberLoggedIn ? "Meu Painel" : "Login";
 
@@ -68,25 +66,6 @@ export function Header() {
       mounted = false;
     };
   }, []);
-
-  useEffect(() => {
-    if (!isHome) return;
-    const onScroll = () => setScrolled(window.scrollY > 18);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    fetch("/api/home")
-      .then((response) => response.json())
-      .then((result) => {
-        if (result.settings) {
-          setHomeHeader({
-            opacity: Number(result.settings.header_opacity) || 74,
-            blur: Number(result.settings.header_blur) || 18
-          });
-        }
-      })
-      .catch(() => undefined);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [isHome]);
 
   useEffect(() => {
     if (!open) return;
@@ -124,13 +103,7 @@ export function Header() {
 
   return (
     <header
-      className={`site-header ${isHome ? "home-site-header" : ""} ${scrolled ? "home-site-header-scrolled" : ""}`}
-      style={isHome ? {
-        backgroundColor: scrolled
-          ? `rgb(18 19 18 / ${Math.max(72, Math.min(88, homeHeader.opacity)) / 100})`
-          : "rgb(18 19 18 / 0.08)",
-        backdropFilter: `blur(${scrolled ? homeHeader.blur : Math.min(6, homeHeader.blur)}px)`
-      } : undefined}
+      className={`site-header ${isHome ? "home-site-header" : ""}`}
     >
       <Link href="/" className="brand" aria-label="11RUN Home">
         <img src="/assets/logos/onzerun-menu.png" alt="11RUN" />

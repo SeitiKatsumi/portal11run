@@ -35,7 +35,6 @@
 
 .content {
   display: grid;
-  gap: clamp(24px, 4vw, 46px);
   width: min(calc(100% - 48px), var(--max));
   padding: 124px 0 50px;
 }
@@ -69,109 +68,8 @@
   font-size: clamp(1rem, 1.5vw, 1.25rem);
 }
 
-.projectGrid,
-.referenceGrid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  width: min(100%, 1080px);
-  margin: 0 auto;
-}
-
-.gameCounter {
-  display: inline-grid;
-  grid-template-columns: auto auto minmax(0, 1fr) auto;
-  gap: 9px;
-  align-items: center;
-  margin-top: 22px;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: rgb(18 19 18 / 0.72);
-  box-shadow: 0 14px 38px rgb(0 0 0 / 0.18);
-  color: white;
-  backdrop-filter: blur(14px);
-  transition: transform 180ms ease, background 180ms ease;
-}
-
-.gameCounter:hover { background: rgb(18 19 18 / 0.9); transform: translateY(-2px); }
-.gameCounter > svg:first-child,.gameCounter strong { color: #ed6509; }
-.gameCounter strong { font-size: 1.15rem; }
-.gameCounter span { color: rgb(255 255 255 / 0.78); font-size: .76rem; }
-
-.referenceGrid {
-  margin-top: -34px;
-}
-
-.referenceCard {
-  min-height: 78px;
-  background: rgb(28 35 39 / 0.72);
-}
-
-.projectCard {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 13px;
-  align-items: center;
-  min-height: 92px;
-  padding: 17px;
-  border: 1px solid rgb(255 255 255 / 0.3);
-  border-radius: 18px;
-  background: rgb(18 19 18 / 0.58);
-  box-shadow: 0 16px 44px rgb(0 0 0 / 0.13);
-  backdrop-filter: blur(16px);
-  animation: home-enter 560ms ease both;
-  transition: transform 180ms ease, border-color 180ms ease, background-color 180ms ease;
-}
-
-.projectCard:hover,
-.projectCard:focus-visible {
-  border-color: rgb(255 255 255 / 0.7);
-  background: rgb(18 19 18 / 0.76);
-  transform: translateY(-4px);
-}
-
-.projectCard:focus-visible {
-  outline: 2px solid white;
-  outline-offset: 3px;
-}
-
-.projectIcon {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border: 1px solid rgb(255 255 255 / 0.3);
-  border-radius: 14px;
-  background: rgb(255 255 255 / 0.08);
-}
-
-.projectText {
-  display: grid;
-  gap: 4px;
-  min-width: 0;
-}
-
-.projectText strong {
-  font-size: 0.98rem;
-  font-weight: 450;
-}
-
-.projectText small {
-  overflow: hidden;
-  color: rgb(255 255 255 / 0.66);
-  font-size: 0.72rem;
-  line-height: 1.35;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.alignLeft .intro,
-.alignLeft .projectGrid,
-.alignLeft .referenceGrid {
-  margin-left: 0;
-}
-
 .alignLeft .intro {
+  margin-left: 0;
   text-align: left;
 }
 
@@ -186,16 +84,8 @@
   }
 }
 
-@media (max-width: 900px) {
-  .projectGrid,
-  .referenceGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 640px) {
   .content {
-    gap: 24px;
     width: min(calc(100% - 28px), var(--max));
     padding: 104px 0 28px;
   }
@@ -205,50 +95,10 @@
     font-size: clamp(1.33rem, 6.37vw, 2.17rem);
   }
 
-  .projectGrid {
-    gap: 8px;
-  }
-
-  .referenceGrid {
-    gap: 8px;
-    margin-top: -14px;
-  }
-
-  .projectCard {
-    grid-template-columns: auto minmax(0, 1fr);
-    min-height: 74px;
-    padding: 12px;
-  }
-
-  .projectCard > svg {
-    display: none;
-  }
-
-  .projectIcon {
-    width: 38px;
-    height: 38px;
-  }
-
-  .projectText small {
-    display: none;
-  }
-}
-
-@media (max-width: 380px) {
-  .projectGrid,
-  .referenceGrid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .intro,
-  .projectCard,
-  .referenceCard {
+  .intro {
     animation: none;
-  }
-
-  .projectCard {
-    transition: none;
   }
 }

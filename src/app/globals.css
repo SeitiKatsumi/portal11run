@@ -167,13 +167,10 @@ body:has(#links-page) main {
 }
 
 .home-site-header {
-  box-shadow: 0 12px 40px rgb(0 0 0 / 0.1);
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
   color: #fff;
-  transition: background-color 180ms ease, box-shadow 180ms ease, backdrop-filter 180ms ease;
-}
-
-.home-site-header-scrolled {
-  box-shadow: 0 14px 42px rgb(0 0 0 / 0.16);
 }
 
 .home-site-header .brand img {
