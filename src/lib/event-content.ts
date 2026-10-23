@@ -13,6 +13,7 @@ export type EventLandingContent = {
   format: string;
   bannerSrc: string;
   bannerAlt: string;
+  showBannerLabel?: boolean;
   directionsUrl: string;
   instagramUrl?: string;
   whatsapp: string;
@@ -83,8 +84,9 @@ export const vinhedoEvent: EventLandingContent = {
   address: "R. Joana Fabri Thomé, 500 · Jardim Três Irmãos · Vinhedo – SP · CEP 13280-000",
   ageLabel: "6 a 17 anos",
   format: "Corrida recreativa em pista",
-  bannerSrc: "/assets/eventos/inauguracao-vinhedo-banner-2026.webp",
+  bannerSrc: "/assets/eventos/inauguracao-vinhedo-banner-verde-2026.webp",
   bannerAlt: "Inauguração do Centro Olímpico de Vinhedo: atletas, famílias e equipe 11RUN reunidos na pista, com a marca da Prefeitura de Vinhedo",
+  showBannerLabel: false,
   directionsUrl: "https://www.google.com/maps/search/?api=1&query=R.%20Joana%20Fabri%20Thom%C3%A9%2C%20500%2C%20Vinhedo%20SP%2013280-000",
   whatsapp: "5511999385329",
   phoneLabel: "+55 11 99938-5329",
