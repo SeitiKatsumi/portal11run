@@ -1,10 +1,6 @@
 .page { --cross-green: #285442; }
-.page :global(.hero-section) { padding-bottom: 36px; gap: 36px; grid-template-columns: 1.05fr 1fr; }
-.page :global(.hero-copy h1) { font-size: clamp(2.7rem, 5.2vw, 5.4rem); line-height: 1.02; letter-spacing: -.055em; }
-.page :global(.hero-visual) { aspect-ratio: 2 / 3; }
-.page :global(.hero-metrics) { gap: 12px; }
-.page :global(.metric-card) { min-width: 0; }
-.page :global(.metric-card strong) { font-size: clamp(1.3rem, 2.1vw, 2rem); }
+.page .eventTop { margin-bottom: 30px; }
+.eventTop > dl { margin-bottom: 12px; }
 .page :global(.section) { scroll-margin-top: 110px; }
 .aboutFacts p { display: flex; align-items: center; gap: 10px; }
 .panel { padding: clamp(24px, 4vw, 54px); border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); margin-bottom: 30px; }
@@ -65,15 +61,10 @@
 .aboutFacts h3 { font-size: 1.7rem; font-weight: 500; letter-spacing: -.03em; }
 .aboutFacts p { font-size: .95rem; }
 @media (max-width: 900px) {
-  .page :global(.hero-section) { grid-template-columns: 1fr; }
-  .page :global(.hero-visual) { aspect-ratio: 2 / 3; }
   .registration { align-items: flex-start; flex-direction: column; }
   .about { grid-template-columns: 1fr; gap: 24px; }
 }
 @media (max-width: 600px) {
-  .page :global(.hero-section) { padding-top: 112px; gap: 24px; }
-  .page :global(.hero-metrics) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .page :global(.metric-card) { padding: 16px; }
   .schedule, .rules { grid-template-columns: 1fr; }
   .categories { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .categories article { padding: 20px 5px; }
@@ -84,24 +75,9 @@
   .rules { gap: 12px; }
 }
 
-.logo { position: relative; display: block; width: 100%; height: auto; margin-top: 22px; }
-
-.page :global(.hero-visual img) { object-fit: cover; object-position: center center; }
-
 .coursePhoto { margin: 0; min-width: 0; }
 .coursePhoto img { display: block; width: 100%; height: auto; border-radius: 22px; }
 .coursePhoto figcaption { margin-top: 12px; color: var(--muted); font-size: .85rem; line-height: 1.6; }
-
-@media (max-width: 600px) {
-  .page :global(.hero-copy) { display: contents; }
-  .page :global(.hero-copy > .eyebrow) { display: none; }
-  .page :global(.hero-copy > div:has(h1)) { order: 0; }
-  .page :global(.hero-section > div:has(> .hero-visual)) { order: 1; }
-  .page :global(.hero-copy > div:has(> p)) { order: 2; }
-  .page :global(.hero-copy > div:has(> .hero-actions)) { order: 3; }
-  .page :global(.hero-metrics) { order: 4; }
-  .logo { margin-top: 0; }
-}
 
 
 
@@ -124,9 +100,6 @@
 .rankingPreviewRow i { display: block; height: 3px; margin-top: 5px; border-radius: 2px; background: #a3bbae; }
 @media (max-width: 600px) { .benefits { gap: 26px; } }
 
-
-.logoBase { display: block; width: 100%; height: auto; clip-path: polygon(0 0, 55% 0, 55% 48%, 100% 48%, 100% 100%, 0 100%); }
-.ivclLogo { position: absolute; left: 59%; top: 8%; width: 32%; height: 37%; object-fit: contain; }
 
 .livingTrophy { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); align-items: center; gap: clamp(24px, 4vw, 52px); padding-bottom: 32px; margin-bottom: 30px; border-bottom: 1px solid var(--line); }
 .livingTrophy > img { display: block; width: 100%; max-width: 320px; height: auto; border-radius: 18px; justify-self: center; }

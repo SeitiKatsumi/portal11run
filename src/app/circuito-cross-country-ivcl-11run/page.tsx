@@ -1,11 +1,12 @@
 import Image from "next/image";
 import type { Metadata } from "next";
-import { Camera, Clock3, Flag, Youtube, MapPin, Medal, Route, Trees, Users } from "lucide-react";
-import { HeroSection } from "@/components/HeroSection";
+import { CalendarDays, Camera, Clock3, Flag, Youtube, MapPin, Medal, Route, Trees, Users } from "lucide-react";
+import { EventLandingHero } from "@/components/EventLandingHero";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { CrossCountryFaq } from "@/components/CrossCountryFaq";
 import { crossCountryBirthRange, crossCountryBirthRule, crossCountryCategories, crossCountryDirections, crossCountryRaces, crossCountryTerm } from "@/lib/circuit-categories";
 import styles from "./page.module.css";
+import eventStyles from "@/components/EventLanding.module.css";
 
 export const metadata: Metadata = {
   title: "CIRCUITO DE CROSS COUNTRY IVCL 11RUN · Primeira edição",
@@ -23,11 +24,27 @@ const schedule = [
 
 export default function CrossCountryPage() {
   return <div className={styles.page}>
-    <HeroSection eyebrow="Primeira edição · 15 de novembro de 2026" title={<span className={styles.logo} role="img" aria-label="CIRCUITO DE CROSS COUNTRY IVCL 11RUN"><Image src="/assets/cross-country-ivcl-logo.webp" alt="" width={1200} height={625} className={styles.logoBase} priority unoptimized /><Image src="/assets/ivcl-original-color.webp" alt="" width={640} height={389} className={styles.ivclLogo} priority unoptimized /></span>}
-      subtitle="Uma nova largada. Um novo terreno. A corrida de base encontra a natureza em um percurso preparado especialmente para o CROSS COUNTRY no IVCL, em Campinas. Inscrições gratuitas até 12 de novembro."
-      primaryCtaSlot={<ProjectFormModal project={project} />} secondaryCta={{ label: "Ver programação", href: "#programacao" }}
-      imageSrc="/assets/cross-country-capa-amanhecer.webp" imageAlt="Percurso de grama do CIRCUITO DE CROSS COUNTRY IVCL 11RUN ao amanhecer, com bandeiras e faixas de sinalização em Campinas"
-      metrics={[{ value: "15 NOV", label: "Primeira edição · 2026" }, { value: "Campinas", label: "IVCL · Circuito de grama e terra com chegada na pista de atletismo" }, { value: "Até 17", label: "Idade completada em 2026" }, { value: "1–4 km", label: "Distâncias por categoria" }]} />
+    <section className={`${eventStyles.page} ${styles.eventTop}`} aria-label="Apresentação do evento">
+      <EventLandingHero
+        title="Circuito de Cross Country IVCL 11RUN"
+        description="Uma nova largada. Um novo terreno. A corrida de base encontra a natureza em um percurso preparado especialmente para o Cross Country no IVCL, em Campinas."
+        dateLabel="15 de novembro de 2026" city="Campinas · SP"
+        bannerSrc="/assets/cross-country-capa-amanhecer.webp"
+        bannerAlt="Percurso de grama do Circuito de Cross Country IVCL 11RUN ao amanhecer, com bandeiras e faixas de sinalização em Campinas"
+        directionsUrl={crossCountryDirections} whatsapp="5511999385329" free
+        canonicalPath="/circuito-cross-country-ivcl-11run"
+        registrationUrl="#inscricao"
+        registrationNote="Inscreva-se até 12/11/2026, às 23h59, no horário de São Paulo."
+        primaryCta={<ProjectFormModal project={project} className={`button ${eventStyles.primaryButton}`} />}
+      />
+      <dl className={eventStyles.facts} aria-label="Resumo do Cross Country">
+        <div><CalendarDays aria-hidden="true" /><dt>Quando</dt><dd><time dateTime="2026-11-15T08:00:00-03:00">15 de novembro de 2026</time><small>Primeira edição · 8h às 10h</small></dd></div>
+        <div><MapPin aria-hidden="true" /><dt>Onde</dt><dd>Campinas · SP<small>IVCL · Circuito de grama e terra com chegada na pista de atletismo</small></dd></div>
+        <div><Users aria-hidden="true" /><dt>Para quem</dt><dd>Até 17 anos<small>Idade completada em 2026</small></dd></div>
+        <div><Route aria-hidden="true" /><dt>A experiência</dt><dd>1–4 km<small>Distâncias por categoria</small></dd></div>
+      </dl>
+      <a href="#programacao" className={eventStyles.textLink}>Ver programação<Clock3 size={17} aria-hidden="true" /></a>
+    </section>
 
     <section className={`section ${styles.panel} ${styles.directions}`} id="como-chegar" aria-labelledby="como-chegar-titulo">
       <div className={styles.directionsCopy}><MapPin size={30} aria-hidden="true" /><div><h2 id="como-chegar-titulo">Como chegar</h2><p>IVCL · Campinas, São Paulo</p><p>Abra a localização e planeje sua chegada para o dia da corrida.</p></div></div>
