@@ -3,6 +3,20 @@
   margin: 119px auto 60px;
 }
 
+.vinhedo {
+  --accent: #2b582e;
+  --accent-strong: #214a27;
+}
+
+.vinhedo .highlight > svg, .vinhedo .highlight > span { color: #9fcca0; }
+.vinhedo form button[type="submit"] { padding: 13px 20px; border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent); }
+.vinhedo form button[type="submit"]:hover { border-color: var(--accent-strong); background: var(--accent-strong); }
+.vinhedo :global(.button-secondary) { padding: 11px 17px; border: 1px solid var(--accent); background: var(--surface); color: var(--accent-strong); }
+.vinhedo :global(.button-secondary):hover { border-color: var(--accent-strong); background: #eef5ef; }
+.vinhedo form :is(input, select, textarea, button, summary):focus-visible { outline-color: var(--accent); }
+.vinhedo form input:is([type="checkbox"], [type="radio"]) { accent-color: var(--accent); }
+.vinhedo [id="inscricoes-escola"] label:has(input:checked) { border-color: var(--accent); background: #eef5ef; }
+
 .page p { color: var(--soft); line-height: 1.75; }
 .page h2 { margin: 12px 0 22px; font-size: clamp(1.9rem, 3.5vw, 3rem); line-height: 1.14; letter-spacing: -.045em; text-wrap: balance; }
 .page h3 { margin: 0; letter-spacing: -.025em; }

@@ -22,7 +22,7 @@ export function EventLanding({ event, bannerSrc = event.bannerSrc }: { event: Ev
   const isFinalissima = event.id === "finalissima-desafio-virtual-2026";
   const isPrincesinha = event.id === "princesinha-da-colina-2026";
 
-  return <article className={styles.page}>
+  return <article className={isVinhedo ? `${styles.page} ${styles.vinhedo}` : styles.page}>
     <EventLandingHero {...event} bannerSrc={bannerSrc} canonicalPath={`/eventos/${event.id}`} />
 
     <dl className={styles.facts}>
