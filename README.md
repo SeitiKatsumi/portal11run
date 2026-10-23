@@ -19,7 +19,7 @@ pnpm install
 pnpm dev
 ```
 
-Abra `http://localhost:3000`.
+Abra `http://localhost` (porta 80).
 
 ## Build
 
@@ -27,6 +27,21 @@ Abra `http://localhost:3000`.
 pnpm build
 pnpm start
 ```
+
+## Eventos de novembro de 2026
+
+- `/eventos/finalissima-desafio-virtual-2026`: 13/11, às 14h, no IVCL em Campinas. Inscrição individual gratuita.
+- `/eventos/inauguracao-centro-olimpico-vinhedo-2026`: 14/11, às 8h, com corrida das 9h às 10h. Inscrição individual ou escolar gratuita, com até 500 alunos por envio e importação por lista de planilha.
+- `/eventos/princesinha-da-colina-2026`: 14/11, às 14h, em Itatiba. Inscrição externa no TicketSports.
+- `/circuito-cross-country-ivcl-11run`: evento existente de 15/11, preservado.
+
+Os banners usam proporção **1920 × 700**, dentro do container central. Para substituir as fotos temáticas pelas artes oficiais, adicione arquivos otimizados em `public/assets/eventos/` e altere `bannerSrc` e `bannerAlt` do evento em `src/lib/event-content.ts`.
+
+As inscrições dos dois eventos gratuitos são recebidas por `POST /api/event-registrations` e persistidas nas tabelas `event_registrations` e `event_registration_participants`, no mesmo `SQLITE_PATH` do portal. Nenhum arquivo de banco deve ser versionado. O volume `/data` do CapRover preserva também essas inscrições; não há novas variáveis obrigatórias.
+
+O painel `/admin/eventos` reúne inscrições, busca por aluno/escola/responsável e a agenda existente. O acesso continua protegido por `ADMIN_USER` e `ADMIN_PASSWORD`. Não há lista pública dos alunos.
+
+Antes do deploy: `pnpm lint`, `pnpm typecheck`, `pnpm test` e `pnpm build`. Depois, `pnpm start` atende na porta 80; valide `/api/health` e as três páginas em desktop e celular. No Windows, execute build e servidor pelo mesmo caminho físico da pasta, se ela usar uma junção entre unidades.
 
 ## Banco de dados e leads
 

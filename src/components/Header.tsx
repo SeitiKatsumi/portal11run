@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Apple, BarChart3, ChevronDown, ChevronRight, Compass, Flag, Gift, Globe2, GraduationCap, HandHeart, HeartHandshake, Home, Medal, Menu, MessageSquareQuote, Orbit, Palette, Route, ShieldCheck, ShoppingBag, Trophy, UserRound, X } from "lucide-react";
+import { Apple, BarChart3, CalendarDays, ChevronDown, ChevronRight, Compass, Flag, Gift, Globe2, GraduationCap, HandHeart, HeartHandshake, Home, Medal, Menu, MessageSquareQuote, Orbit, Palette, Route, ShieldCheck, ShoppingBag, Trophy, UserRound, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { navItems } from "@/lib/content";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import styles from "./Header.module.css";
 
 const navIcons: Record<string, LucideIcon> = {
   "/": Home,
@@ -17,6 +18,9 @@ const navIcons: Record<string, LucideIcon> = {
   "/circuito-futuro-11": Flag,
   "/circuito-cross-country-ivcl-11run": Route,
   "/projetos/circuito-virtual-11run": Globe2,
+  "/eventos/finalissima-desafio-virtual-2026": Trophy,
+  "/eventos/inauguracao-centro-olimpico-vinhedo-2026": Flag,
+  "/eventos/princesinha-da-colina-2026": CalendarDays,
   "/bolsas": Globe2,
   "/referencias/ranking-brasil": Globe2,
   "/referencias/ranking-japao": Globe2,
@@ -103,13 +107,13 @@ export function Header() {
 
   return (
     <header
-      className={`site-header ${isHome ? "home-site-header" : ""}`}
+      className={`site-header ${styles.header} ${isHome ? "home-site-header" : ""}`}
     >
       <Link href="/" className="brand" aria-label="11RUN Home">
         <img src="/assets/logos/onzerun-menu.png" alt="11RUN" />
       </Link>
 
-      <nav className="desktop-nav" aria-label="Navegacao principal">
+      <nav className={`desktop-nav ${styles.navigation}`} aria-label="Navegação principal">
         {navItems.map((item) => {
           const Icon = navIcons[item.href];
           if ("children" in item && item.children?.length) {
@@ -139,7 +143,7 @@ export function Header() {
                   <span>{item.label}</span>
                   <ChevronDown size={14} strokeWidth={1.8} />
                 </button>
-                <div className="nav-dropdown-menu" role="menu" aria-label={item.label}>
+                <div className={`nav-dropdown-menu ${item.label === "Eventos" ? styles.eventsMenu : ""}`} role="menu" aria-label={item.label}>
                   {item.children.map((child) => {
                     if (child.children?.length) {
                       return (
@@ -207,7 +211,7 @@ export function Header() {
       </nav>
 
       <button
-        className="menu-button"
+        className={`menu-button ${styles.menuButton}`}
         type="button"
         onClick={() => setOpen((value) => !value)}
         aria-label={open ? "Fechar menu" : "Abrir menu"}
