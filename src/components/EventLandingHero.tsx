@@ -11,6 +11,7 @@ type EventLandingHeroProps = {
   city: string;
   bannerSrc: string;
   bannerAlt: string;
+  showBannerLabel?: boolean;
   directionsUrl?: string;
   instagramUrl?: string;
   whatsapp: string;
@@ -24,7 +25,7 @@ type EventLandingHeroProps = {
   canonicalPath: string;
 };
 
-export function EventLandingHero({ title, description, dateLabel, city, bannerSrc, bannerAlt, directionsUrl, instagramUrl, whatsapp, free, registrationUrl, registrationNote, schoolEnabled, primaryCta, secondaryCta, breadcrumbLabel = "Eventos", canonicalPath }: EventLandingHeroProps) {
+export function EventLandingHero({ title, description, dateLabel, city, bannerSrc, bannerAlt, showBannerLabel = true, directionsUrl, instagramUrl, whatsapp, free, registrationUrl, registrationNote, schoolEnabled, primaryCta, secondaryCta, breadcrumbLabel = "Eventos", canonicalPath }: EventLandingHeroProps) {
   const registrationHref = registrationUrl ?? "#inscricoes";
   const externalRegistration = /^https?:\/\//.test(registrationHref);
   const socialUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://11run.com.br${canonicalPath}`)}`;
@@ -34,7 +35,7 @@ export function EventLandingHero({ title, description, dateLabel, city, bannerSr
 
     <figure className={styles.banner} aria-label="Banner do evento, formato 1920 por 700">
       <Image src={bannerSrc} alt={bannerAlt} fill sizes="(max-width: 720px) calc(100vw - 28px), (max-width: 1328px) calc(100vw - 48px), 1280px" priority className={styles.bannerImage} />
-      <figcaption className={styles.bannerLabel}><Flag size={14} aria-hidden="true" />11RUN · Encontros que movem</figcaption>
+      {showBannerLabel ? <figcaption className={styles.bannerLabel}><Flag size={14} aria-hidden="true" />11RUN · Encontros que movem</figcaption> : null}
     </figure>
 
     <header className={styles.hero}>
