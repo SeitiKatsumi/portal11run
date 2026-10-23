@@ -2,6 +2,28 @@
   grid-template-columns: auto minmax(0, 1fr);
   gap: 18px;
   padding-inline: 20px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.header :global([role="menu"]),
+.header :global(.mobile-nav) {
+  background: var(--bg);
+  box-shadow: none;
+}
+
+.header :global(.nav-dropdown-menu a:hover),
+.header :global(.nav-submenu:hover .nav-submenu-trigger),
+.header :global(.nav-submenu:focus-within .nav-submenu-trigger),
+.header :global([role="menuitemradio"]:hover),
+.header :global([role="menuitemradio"][aria-checked="true"]) {
+  background: var(--bg-soft);
+}
+
+.header .menuButton {
+  background: transparent;
 }
 
 .header .navigation {

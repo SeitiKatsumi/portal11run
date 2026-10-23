@@ -4,10 +4,11 @@ import { formatCircuitAthleteNumber } from '@/lib/virtual-circuit-display';
 import { CircuitEvolution } from '@/components/CircuitEvolution';
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CalendarDays, CheckCircle2, Clock3, MapPin, Medal, Route, ShieldCheck, Trophy, Users } from "lucide-react";
+import { ArrowRight, ArrowUpRight, CalendarDays, CheckCircle2, Clock3, MapPin, Medal, Route, ShieldCheck, Trophy, Users } from "lucide-react";
 import { CircuitRegistration } from "@/components/CircuitRegistration";
 import { CircuitRanking } from "@/components/CircuitRanking";
-import { CIRCUIT_HERO_IMAGE, getCircuitEdition, listCircuitRanking, listLatestCircuitParticipants } from "@/lib/virtual-circuit";
+import { EventLandingHero } from "@/components/EventLandingHero";
+import { getCircuitEdition, listCircuitRanking, listLatestCircuitParticipants } from "@/lib/virtual-circuit";
 import { CIRCUIT_CATEGORY_AGES, circuitCategoryBirthYear, circuitCategoryName } from "@/lib/virtual-circuit-category";
 import {
   CIRCUIT_ABSOLUTE,
@@ -18,6 +19,9 @@ import {
   circuitPeriodStatus
 } from "@/lib/virtual-circuit-schedule";
 import styles from "./virtual-circuit.module.css";
+import landingStyles from "@/components/EventLanding.module.css";
+
+const CIRCUIT_LANDING_BANNER = "/assets/home/grupo-11run-pista.webp";
 
 export const metadata: Metadata = {
   title: "Circuito Virtual 11Run | Desafio Nacional de 1.000 Metros",
@@ -27,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Desafio Virtual 1km 11Run Futuro",
     description: "Primeira competição virtual para as categorias Sub 10 a Sub 14.",
-    images: [CIRCUIT_HERO_IMAGE]
+    images: [CIRCUIT_LANDING_BANNER]
   }
 };
 
@@ -61,55 +65,50 @@ export default function VirtualCircuitPage() {
   return (
     <>
       <div className={styles.page}>
-        <section className={styles.hero}>
-          <div className={styles.heroCopy}>
-            <aside className={styles.participationHighlight} aria-label="Participação no desafio virtual">
-              <div className={styles.participationTotal}>
-                <span className={styles.participationIcon} aria-hidden="true"><Users size={19} /></span>
-                <span>
-                  <strong>{participants.length}</strong>
-                  <small>atletas já participaram</small>
-                </span>
-              </div>
-              <div className={styles.latestParticipants}>
-                <span className={styles.latestLabel}><Clock3 size={13} /> Últimos participantes</span>
-                <ul>
-                  {latestParticipants.map((participant) => (
-                    <li key={participant.athleteNumber}>
-                      <strong>{participant.publicName}</strong>
-                      <small>{circuitCategoryName(participant.categoryAge)} · {participant.state}</small>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </aside>
-            <span className={styles.eyebrow}>Circuito Virtual 11Run</span>
-            <h1>Desafio Virtual 1km 11Run Futuro</h1>
-            <p className={styles.lead}>Para atletas brasileiros das categorias Sub 10 a Sub 14, residentes no Brasil ou no exterior.</p>
-            <p>Corra 1.000 metros, registre sua atividade e participe de um ranking nacional criado para incentivar e descobrir novos talentos.</p>
-            <div className={styles.heroActions}>
-              <a className={styles.primaryButton} href="#inscricao">Registrar atividade</a>
-              <a className={styles.secondaryButton} href="#ranking">Ver ranking nacional</a>
+        <section className={styles.introduction} aria-label="Apresentação do desafio virtual">
+          <EventLandingHero
+            title={<>Desafio Virtual 1km<br />11Run Futuro</>}
+            description="Para atletas brasileiros das categorias Sub 10 a Sub 14, residentes no Brasil ou no exterior. Corra 1.000 metros, registre sua atividade e participe de um ranking nacional criado para incentivar e descobrir novos talentos."
+            dateLabel="1 de agosto a 13 de novembro de 2026"
+            city="Brasil e exterior"
+            bannerSrc={CIRCUIT_LANDING_BANNER}
+            bannerAlt="Equipe e participantes 11RUN reunidos na pista de atletismo"
+            breadcrumbLabel="Desafios"
+            whatsapp="5511999385329"
+            free
+            registrationNote="Registre sua atividade de 01/08 a 13/11 de 2026."
+            primaryCta={<a href="#inscricao" className={landingStyles.primaryButton}>Registrar atividade<ArrowUpRight size={19} aria-hidden="true" /></a>}
+            secondaryCta={<a href="#ranking" className={styles.rankingButton}>Ver ranking nacional<ArrowRight size={16} aria-hidden="true" /></a>}
+            canonicalPath="/projetos/circuito-virtual-11run"
+          />
+          <aside className={styles.participationHighlight} aria-label="Participação no desafio virtual">
+            <div className={styles.participationTotal}>
+              <span className={styles.participationIcon} aria-hidden="true"><Users size={19} /></span>
+              <span>
+                <strong>{participants.length}</strong>
+                <small>atletas já participaram</small>
+              </span>
             </div>
-            <div className={styles.quickFacts}>
-              <span><Clock3 size={17} /> 1 ago — 13 nov 2026</span>
-              <span><ShieldCheck size={17} /> Participação gratuita</span>
-              <span><Users size={17} /> Exclusivo para brasileiros</span>
+            <div className={styles.latestParticipants}>
+              <span className={styles.latestLabel}><Clock3 size={13} /> Últimos participantes</span>
+              <ul>
+                {latestParticipants.map((participant) => (
+                  <li key={participant.athleteNumber}>
+                    <strong>{participant.publicName}</strong>
+                    <small>{circuitCategoryName(participant.categoryAge)} · {participant.state}</small>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <p className={styles.datePolicy}>
-              Atividades fora de 01/08 a 13/11 ficam apenas no histórico, com a data original.
-            </p>
+          </aside>
+          <div className={styles.quickFacts}>
+            <span><Clock3 size={17} /> 1 ago — 13 nov 2026</span>
+            <span><ShieldCheck size={17} /> Participação gratuita</span>
+            <span><Users size={17} /> Exclusivo para brasileiros</span>
           </div>
-          <div className={styles.heroImage}>
-            <a href="#inscricao" aria-label="Participar gratuitamente do Desafio Virtual 1.000 m">
-              <img
-                src={edition.hero_image || CIRCUIT_HERO_IMAGE}
-                alt="Atletas 11Run em provas de corrida"
-                width="1122"
-                height="1402"
-              />
-            </a>
-          </div>
+          <p className={styles.datePolicy}>
+            Atividades fora de 01/08 a 13/11 ficam apenas no histórico, com a data original.
+          </p>
         </section>
 
         <section className={styles.section} aria-labelledby="leaders-title">

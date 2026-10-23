@@ -26,7 +26,7 @@ try {
   assert.equal(await page.locator('#diferenciais article').count(),3);
   assert.match(await page.locator('#inscricao').innerText(),/Inscrições gratuitas até 12 de novembro/);
   assert.match(await page.locator('main').innerText(),/Troféus e brindes 11Run para os três primeiros/);
-  assert.ok((await page.locator('.hero-metrics').innerText()).includes('Circuito de grama e terra com chegada na pista de atletismo'));
+  assert.ok((await page.locator('dl[aria-label="Resumo do Cross Country"]').innerText()).includes('Circuito de grama e terra com chegada na pista de atletismo'));
   for(const width of [1440,768,390]) {
     await page.setViewportSize({width,height:1000});
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth),width,`public overflow ${width}`);
