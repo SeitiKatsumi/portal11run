@@ -46,7 +46,7 @@ export const adminNavigationGroups: AdminNavigationGroup[] = [
       { href: "/admin/desafios", label: "Desafios", description: "Valide entregas, benefícios e conquistas.", icon: Gamepad2 },
       { href: "/admin/circuito-virtual", label: "Circuito Virtual", description: "Gerencie ranking, inscrições e regulamento.", icon: Globe2 },
       { href: "/admin/cross-country", label: "CROSS COUNTRY", description: "Inscrições do Circuito IVCL 11Run.", icon: Trophy },
-      { href: "/admin/eventos", label: "Eventos", description: "Organize a agenda vinculada aos atletas.", icon: CalendarDays },
+      { href: "/admin/eventos", label: "Eventos e inscrições", description: "Acompanhe inscrições individuais, escolares e a agenda.", icon: CalendarDays },
       { href: "/admin/ranking", label: "Ranking", description: "Cadastre e revise marcas esportivas.", icon: Trophy }
     ]
   },

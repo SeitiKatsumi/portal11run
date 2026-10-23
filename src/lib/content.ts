@@ -61,17 +61,30 @@ export type ProjectPage = {
 };
 
 export const projectNavItems: NavItem[] = [
-  { label: "11 Run Futuro", href: "/onze-futuro" },
-  { label: "Desafio Virtual 11 2026", href: "/projetos/circuito-virtual-11run" },
-      { label: "CIRCUITO DE CROSS COUNTRY IVCL 11RUN", href: "/circuito-cross-country-ivcl-11run" },
-  { label: "Circuito 11 Run 2027", href: "/circuito-futuro-11" },
-  { label: "11 Run Master", href: "/11-master" },
-  { label: "Bolsas", href: "/bolsas" }
+  { label: "11 Run Futuro", href: "/onze-futuro" }
 ];
 
 export const navItems: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "Projetos", href: "#projetos", children: projectNavItems },
+  {
+    label: "Desafios",
+    href: "/projetos/circuito-virtual-11run",
+    children: [
+      { label: "Desafio Virtual 11 2026", href: "/projetos/circuito-virtual-11run" }
+    ]
+  },
+  {
+    label: "Eventos",
+    href: "/eventos/finalissima-desafio-virtual-2026",
+    children: [
+      { label: "13.11 às 14:00 · Grande Finalíssima do Desafio Virtual", href: "/eventos/finalissima-desafio-virtual-2026" },
+      { label: "14.11 às 8:00 · Inauguração do Centro Olímpico de Vinhedo", href: "/eventos/inauguracao-centro-olimpico-vinhedo-2026" },
+      { label: "14.11 às 14:00 · Princesinha da Colina", href: "/eventos/princesinha-da-colina-2026" },
+      { label: "15.11 · Circuito de Cross Country IVCL 11RUN", href: "/circuito-cross-country-ivcl-11run" }
+    ]
+  },
+  { label: "Circuito 11 Run 2027", href: "/circuito-futuro-11" },
   {
     label: "Institucional",
     href: "/institucional/missao-visao-valores",

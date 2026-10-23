@@ -133,6 +133,9 @@ function getFooterNavGroups(): FooterNavGroup[] {
 
   return [
     group("Projetos", byLabel("Projetos")),
+    group("Desafios", byLabel("Desafios")),
+    group("Eventos", byLabel("Eventos")),
+    group("Circuito 11 Run 2027", byLabel("Circuito 11 Run 2027")),
     group("Institucional", byLabel("Institucional")),
     group("Apoie o Projeto", byLabel("Apoie o Projeto")),
     group("Rankings", referenceGroup("Rankings")),

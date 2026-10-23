@@ -1,0 +1,30 @@
+.header:global(.site-header) {
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 18px;
+  padding-inline: 20px;
+}
+
+.header .navigation {
+  justify-content: flex-end;
+  gap: 12px;
+  letter-spacing: 0.035em;
+}
+
+.header .eventsMenu {
+  width: 380px;
+}
+
+@media (max-width: 1279px) {
+  .header:global(.site-header) {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .header .navigation {
+    display: none;
+  }
+
+  .header .menuButton {
+    display: inline-flex;
+    justify-self: end;
+  }
+}

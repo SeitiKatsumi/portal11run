@@ -26,8 +26,20 @@ async function checkPanel(panel){
 try{
  for(const route of ['/', '/circuito-cross-country-ivcl-11run']){
   await page.goto(base+route,{waitUntil:'networkidle'});
-  for(const width of [1061,1100,1280,1440,1920]){
+  for(const width of [1280,1366,1440,1920]){
    await page.setViewportSize({width,height:1000});
+   assert.deepEqual(await page.locator('.desktop-nav > a > span, .desktop-nav > .nav-dropdown > button > span').allTextContents(),[
+    'Home','Projetos','Desafios','Eventos','Circuito 11 Run 2027','Institucional','Referências','Apoie o Projeto','Meu Painel'
+   ]);
+   const headerOverflows=await page.locator('.site-header').evaluate(header=>{
+    const brand=header.querySelector('.brand').getBoundingClientRect(),box=header.getBoundingClientRect();
+    return [...header.querySelector('.desktop-nav').children].filter(child=>{
+     const rect=child.getBoundingClientRect();return rect.left<brand.right+7||rect.right>box.right-10;
+    }).map(child=>child.textContent);
+   });assert.deepEqual(headerOverflows,[]);
+   assert.deepEqual(await page.getByRole('menu',{name:'Eventos',exact:true}).locator(':scope > a').evaluateAll(links=>links.map(link=>link.getAttribute('href'))),[
+    '/eventos/finalissima-desafio-virtual-2026','/eventos/inauguracao-centro-olimpico-vinhedo-2026','/eventos/princesinha-da-colina-2026','/circuito-cross-country-ivcl-11run'
+   ]);
    const groups=page.locator('.desktop-nav > .nav-dropdown');
    for(let i=0;i<await groups.count();i++){
     const group=groups.nth(i);await group.locator(':scope > button').hover();await page.waitForTimeout(180);
@@ -39,7 +51,7 @@ try{
     if(i===0&&width===1440)await page.screenshot({path:`artifacts/navigation/${route==='/'?'home':'cross'}-desktop.jpg`,type:'jpeg',quality:70});
    }
   }
-  for(const width of [320,390,768,1060]){
+  for(const width of [320,390,768,1060,1279]){
    await page.setViewportSize({width,height:900});await page.getByRole('button',{name:'Abrir menu',exact:true}).click();
    const menu=page.locator('#mobile-navigation');
    for(const details of await menu.locator('details').all()){await details.locator('summary').click();}
@@ -48,5 +60,5 @@ try{
    await page.keyboard.press('Escape');await menu.waitFor({state:'hidden'});
   }
  }
- console.log('PASS: todos os menus e submenus abertos, textos dentro dos links, painéis dentro da tela, home/Cross, 9 larguras, menu mobile e Escape.');
+ console.log('PASS: nova ordem de navegação, eventos, menus e submenus abertos, textos dentro dos links, painéis dentro da tela, home/Cross, 9 larguras, menu mobile e Escape.');
 }finally{await browser.close();}
