@@ -7,7 +7,7 @@ import styles from "./event-registrations-admin.module.css";
 
 const eventLabels: Record<string, string> = {
   "finalissima-desafio-virtual-2026": "Finalíssima do Desafio Virtual · 13/11/2026",
-  "inauguracao-centro-olimpico-vinhedo-2026": "Centro Olímpico de Vinhedo · 14/11/2026"
+  "inauguracao-centro-olimpico-vinhedo-2026": "Centro de Excelência em Atletismo de Vinhedo · 14/11/2026"
 };
 function formatDate(value: string) {
   const [year, month, day] = value.slice(0, 10).split("-");
@@ -44,18 +44,18 @@ export function EventRegistrationsAdmin({ registrations }: { registrations: Even
         {visible.map((registration) => (
           <details key={registration.id} className={styles.registration}>
             <summary>
-              <span><small>{eventLabels[registration.event_id]}</small><strong>{registration.school_name || registration.participants[0]?.name}</strong><span>{registration.registration_type === "school" ? "Grupo escolar" : "Individual"} · {registration.participants.length} {registration.participants.length === 1 ? "participante" : "participantes"} · {registration.city}/{registration.state}</span></span>
+              <span><small>{eventLabels[registration.event_id]}</small><strong>{registration.school_name || registration.participants[0]?.name}</strong><span>{registration.registration_type === "school" ? "Grupo escolar" : "Individual"} · {registration.participants.length} {registration.participants.length === 1 ? "participante" : "participantes"}{registration.city || registration.state ? ` · ${[registration.city, registration.state].filter(Boolean).join("/")}` : ""}</span></span>
               <span className={styles.date}>Recebida em {formatDate(registration.created_at)}</span>
             </summary>
             <div className={styles.content}>
               <dl className={styles.contact}>
                 <div><dt>Responsável</dt><dd>{registration.name}</dd></div>
-                <div><dt>E-mail</dt><dd><a href={`mailto:${registration.email}`}>{registration.email}</a></dd></div>
+                {registration.email ? <div><dt>E-mail</dt><dd><a href={`mailto:${registration.email}`}>{registration.email}</a></dd></div> : null}
                 <div><dt>Telefone</dt><dd><a href={`tel:${registration.phone.replace(/[^+\d]/g, "")}`}>{registration.phone}</a></dd></div>
                 <div><dt>Protocolo</dt><dd>{registration.id}</dd></div>
               </dl>
               <div className={styles.tableScroll} role="region" aria-label={`Participantes da inscrição de ${registration.name}`} tabIndex={0}>
-                <table><thead><tr><th scope="col">Participante</th><th scope="col">Nascimento</th><th scope="col">Gênero</th></tr></thead><tbody>{registration.participants.map((participant, index) => <tr key={index}><td>{participant.name}</td><td>{formatDate(participant.birth_date)}</td><td>{participant.gender}</td></tr>)}</tbody></table>
+                <table><thead><tr><th scope="col">Participante</th><th scope="col">Nascimento</th><th scope="col">Gênero</th><th scope="col">Série</th></tr></thead><tbody>{registration.participants.map((participant, index) => <tr key={index}><td>{participant.name}</td><td>{formatDate(participant.birth_date)}</td><td>{participant.gender}</td><td>{participant.school_year ? `${participant.school_year}º Ano` : "—"}</td></tr>)}</tbody></table>
               </div>
               <details className={styles.authorization}><summary>Consentimento e autorização registrados</summary><p>{registration.consent_text}</p><p>{registration.guardian_authorization_text}</p><small>Aceites registrados em {new Date(registration.created_at).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}.</small></details>
             </div>

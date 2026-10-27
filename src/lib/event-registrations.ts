@@ -2,14 +2,17 @@ import { randomUUID } from "node:crypto";
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import type { EventParticipant } from "./event-participants.ts";
+import { isVinhedoRegistrationOpen } from "./vinhedo-registration.ts";
+
+export type { EventParticipant } from "./event-participants.ts";
 
 export const registrationEvents = {
   "finalissima-desafio-virtual-2026": { title: "Finalíssima do Desafio Virtual", date: "2026-11-13", minAge: 9, maxAge: 13, school: false },
-  "inauguracao-centro-olimpico-vinhedo-2026": { title: "Inauguração do Centro Olímpico de Vinhedo", date: "2026-11-14", minAge: 6, maxAge: 17, school: true }
+  "inauguracao-centro-olimpico-vinhedo-2026": { title: "Inauguração do Centro de Excelência em Atletismo de Vinhedo", date: "2026-11-14", minAge: 6, maxAge: 17, school: true }
 } as const;
 
 export type RegistrationEventId = keyof typeof registrationEvents;
-export type EventParticipant = { name: string; birth_date: string; gender: "Feminino" | "Masculino" | "Não informar" };
 export type EventRegistrationInput = {
   event_id: RegistrationEventId;
   registration_type: "individual" | "school";
@@ -65,11 +68,24 @@ function getDatabase() {
       registration_id TEXT NOT NULL REFERENCES event_registrations(id) ON DELETE CASCADE,
       name TEXT NOT NULL,
       birth_date TEXT NOT NULL,
-      gender TEXT NOT NULL CHECK (gender IN ('Feminino', 'Masculino', 'Não informar'))
+      gender TEXT NOT NULL CHECK (gender IN ('Feminino', 'Masculino', 'Não informar')),
+      school_year TEXT CHECK (school_year IN ('1', '2', '3', '4', '5'))
     );
     CREATE INDEX IF NOT EXISTS idx_event_registrations_event_created ON event_registrations(event_id, created_at);
     CREATE INDEX IF NOT EXISTS idx_event_registration_participants_registration ON event_registration_participants(registration_id);
   `);
+  connection.exec("BEGIN IMMEDIATE");
+  try {
+    const columns = connection.prepare("PRAGMA table_info(event_registration_participants)").all() as Array<{ name: string }>;
+    if (!columns.some((column) => column.name === "school_year")) {
+      connection.exec("ALTER TABLE event_registration_participants ADD COLUMN school_year TEXT CHECK (school_year IN ('1', '2', '3', '4', '5'))");
+    }
+    connection.exec("COMMIT");
+  } catch (error) {
+    connection.exec("ROLLBACK");
+    connection.close();
+    throw error;
+  }
   database = connection;
   return database;
 }
@@ -85,6 +101,11 @@ function text(value: unknown, label: string, min: number, max: number) {
   return cleaned;
 }
 
+function optionalText(value: unknown, label: string, min: number, max: number) {
+  if (value === undefined || value === null || (typeof value === "string" && !value.trim())) return "";
+  return text(value, label, min, max);
+}
+
 export function eventParticipantAge(birthDate: string, eventDate: string) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) return fail("Informe uma data de nascimento válida.");
   const date = new Date(`${birthDate}T00:00:00Z`);
@@ -92,59 +113,66 @@ export function eventParticipantAge(birthDate: string, eventDate: string) {
   return Number(eventDate.slice(0, 4)) - Number(birthDate.slice(0, 4)) - (eventDate.slice(5) < birthDate.slice(5) ? 1 : 0);
 }
 
-export function validateEventRegistration(input: unknown): EventRegistrationInput {
+export function validateEventRegistration(input: unknown, now: Date = new Date()): EventRegistrationInput {
   if (!input || typeof input !== "object" || Array.isArray(input)) return fail("Cadastro inválido.");
   const payload = input as Record<string, unknown>;
   if (payload.website !== undefined && payload.website !== "") return fail("Não foi possível enviar a inscrição.");
   if (typeof payload.event_id !== "string" || !Object.hasOwn(registrationEvents, payload.event_id)) return fail("Selecione um evento válido.");
   const eventId = payload.event_id as RegistrationEventId;
   const event = registrationEvents[eventId];
+  const isVinhedo = eventId === "inauguracao-centro-olimpico-vinhedo-2026";
+  if (isVinhedo && !isVinhedoRegistrationOpen(now)) return fail("As inscrições para Vinhedo se encerraram em 02/11/2026.");
   if (payload.registration_type !== "individual" && payload.registration_type !== "school") return fail("Selecione inscrição individual ou escolar.");
   if (payload.registration_type === "school" && !event.school) return fail("Este evento aceita apenas inscrições individuais.");
+  const fundamentalStudent = isVinhedo && payload.registration_type === "individual";
   if (payload.consent !== true) return fail("É necessário aceitar a Política de Privacidade para se inscrever.");
   if (payload.guardian_authorization !== true) return fail(payload.registration_type === "school" ? "Confirme as autorizações dos responsáveis por todos os alunos." : "O responsável legal precisa autorizar a participação.");
   const name = text(payload.name, "o nome do responsável", 2, 120);
-  const email = text(payload.email, "um e-mail", 5, 254).toLowerCase();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail("Informe um e-mail válido.");
+  const email = (fundamentalStudent ? optionalText(payload.email, "um e-mail", 5, 254) : text(payload.email, "um e-mail", 5, 254)).toLowerCase();
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail("Informe um e-mail válido.");
   const phone = text(payload.phone, "um telefone", 10, 30);
   const phoneDigits = phone.replace(/\D/g, "");
   if (!/^[+\d\s().-]+$/.test(phone) || phoneDigits.length < 10 || phoneDigits.length > 15 || /^(\d)\1+$/.test(phoneDigits)) return fail("Informe um telefone válido com DDD.");
-  const city = text(payload.city, "a cidade", 2, 100);
-  const state = text(payload.state, "a UF", 2, 2).toUpperCase();
-  if (!states.has(state)) return fail("Selecione uma UF válida.");
+  const city = fundamentalStudent ? optionalText(payload.city, "a cidade", 2, 100) : text(payload.city, "a cidade", 2, 100);
+  const state = (fundamentalStudent ? optionalText(payload.state, "a UF", 2, 2) : text(payload.state, "a UF", 2, 2)).toUpperCase();
+  if (state && !states.has(state)) return fail("Selecione uma UF válida.");
   const schoolName = payload.registration_type === "school" ? text(payload.school_name, "o nome da escola", 2, 160) : null;
   if (!Array.isArray(payload.participants) || payload.participants.length === 0 || payload.participants.length > 500) return fail("Informe de 1 a 500 participantes.");
   if (payload.registration_type === "individual" && payload.participants.length !== 1) return fail("A inscrição individual deve conter um participante.");
+  const birthDateLimit = fundamentalStudent ? now.toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" }) : event.date;
   const seen = new Set<string>();
   const participants = payload.participants.map((item: unknown, index: number): EventParticipant => {
     if (!item || typeof item !== "object" || Array.isArray(item)) return fail(`Revise os dados do participante ${index + 1}.`);
     const participant = item as Record<string, unknown>;
     const participantName = text(participant.name, `o nome do participante ${index + 1}`, 2, 120);
     if (typeof participant.birth_date !== "string") return fail(`Informe o nascimento do participante ${index + 1}.`);
-    const age = eventParticipantAge(participant.birth_date, event.date);
-    if (age < event.minAge || age > event.maxAge) return fail(`${participantName}: a idade deve ser de ${event.minAge} a ${event.maxAge} anos no dia do evento.`);
+    const age = eventParticipantAge(participant.birth_date, birthDateLimit);
+    if (fundamentalStudent) {
+      if (age > 120) return fail("Informe uma data de nascimento válida.");
+      if (typeof participant.school_year !== "string" || !/^[1-5]$/.test(participant.school_year)) return fail("Selecione a série do aluno, do 1º ao 5º ano.");
+    } else if (age < event.minAge || age > event.maxAge) return fail(`${participantName}: a idade deve ser de ${event.minAge} a ${event.maxAge} anos no dia do evento.`);
     if (participant.gender !== "Feminino" && participant.gender !== "Masculino" && participant.gender !== "Não informar") return fail(`Selecione o gênero do participante ${index + 1}.`);
     const fingerprint = `${participantName.toLocaleLowerCase("pt-BR")}|${participant.birth_date}`;
     if (seen.has(fingerprint)) return fail(`${participantName} está repetido na lista de participantes.`);
     seen.add(fingerprint);
-    return { name: participantName, birth_date: participant.birth_date, gender: participant.gender };
+    return { name: participantName, birth_date: participant.birth_date, gender: participant.gender, ...(fundamentalStudent ? { school_year: participant.school_year as EventParticipant["school_year"] } : {}) };
   });
   return { event_id: eventId, registration_type: payload.registration_type, name, email, phone, city, state, school_name: schoolName, participants, consent: true, guardian_authorization: true };
 }
 
-export function createEventRegistration(input: unknown) {
-  const clean = validateEventRegistration(input);
+export function createEventRegistration(input: unknown, now: Date = new Date()) {
+  const clean = validateEventRegistration(input, now);
   const db = getDatabase();
   const id = randomUUID();
-  const createdAt = new Date().toISOString();
+  const createdAt = now.toISOString();
   db.exec("BEGIN IMMEDIATE");
   try {
     db.prepare(`INSERT INTO event_registrations
       (id, event_id, registration_type, name, email, phone, city, state, school_name, consent, guardian_authorization, consent_text, guardian_authorization_text, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, ?, ?, ?)`)
       .run(id, clean.event_id, clean.registration_type, clean.name, clean.email, clean.phone, clean.city, clean.state, clean.school_name, consentText, guardianTexts[clean.registration_type], createdAt);
-    const statement = db.prepare("INSERT INTO event_registration_participants (registration_id, name, birth_date, gender) VALUES (?, ?, ?, ?)");
-    for (const participant of clean.participants) statement.run(id, participant.name, participant.birth_date, participant.gender);
+    const statement = db.prepare("INSERT INTO event_registration_participants (registration_id, name, birth_date, gender, school_year) VALUES (?, ?, ?, ?, ?)");
+    for (const participant of clean.participants) statement.run(id, participant.name, participant.birth_date, participant.gender, participant.school_year ?? null);
     db.exec("COMMIT");
   } catch (error) {
     db.exec("ROLLBACK");
@@ -156,7 +184,7 @@ export function createEventRegistration(input: unknown) {
 export function listEventRegistrations(): EventRegistration[] {
   const db = getDatabase();
   const registrations = db.prepare("SELECT * FROM event_registrations ORDER BY created_at DESC, id").all() as Array<Omit<EventRegistration, "participants" | "consent" | "guardian_authorization"> & { consent: number; guardian_authorization: number }>;
-  const participants = db.prepare("SELECT registration_id, name, birth_date, gender FROM event_registration_participants ORDER BY id").all() as Array<EventParticipant & { registration_id: string }>;
+  const participants = db.prepare("SELECT registration_id, name, birth_date, gender, school_year FROM event_registration_participants ORDER BY id").all() as Array<EventParticipant & { registration_id: string }>;
   const byRegistration = new Map<string, EventParticipant[]>();
   for (const { registration_id, ...participant } of participants) {
     const group = byRegistration.get(registration_id) ?? [];

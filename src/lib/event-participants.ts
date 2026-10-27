@@ -2,6 +2,7 @@ export type EventParticipant = {
   name: string;
   birth_date: string;
   gender: "Feminino" | "Masculino" | "Não informar";
+  school_year?: "1" | "2" | "3" | "4" | "5" | null;
 };
 
 export function parseParticipantList(text: string): EventParticipant[] {

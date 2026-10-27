@@ -73,48 +73,34 @@ export const finalissimaEvent: EventLandingContent = {
 
 export const vinhedoEvent: EventLandingContent = {
   id: "inauguracao-centro-olimpico-vinhedo-2026",
-  title: "Inauguração do Centro Olímpico de Vinhedo",
-  shortTitle: "Centro Olímpico · Vinhedo",
-  description: "Uma nova pista. Um novo horizonte para o esporte. Venha celebrar essa conquista de Vinhedo com uma corrida inclusiva, recreativa e cheia de diversão.",
-  dateLabel: "14 de novembro de 2026",
-  dateTime: "2026-11-14T08:00:00-03:00",
-  timeLabel: "8h · corrida das 9h às 10h",
+  title: "Inauguração do Centro de Excelência em Atletismo de Vinhedo",
+  shortTitle: "Centro de Excelência em Atletismo · Vinhedo",
+  description: "A Prefeitura de Vinhedo convida os alunos do Ensino Fundamental I da Rede Municipal de Ensino e suas famílias para celebrar a inauguração do novo Centro de Excelência em Atletismo!",
+  dateLabel: "14 de novembro de 2026 (sábado)",
+  dateTime: "2026-11-14T07:30:00-03:00",
+  timeLabel: "A partir das 7h30 – Chegada dos alunos",
   city: "Vinhedo · SP",
-  venue: "Centro Olímpico de Vinhedo",
-  address: "R. Joana Fabri Thomé, 500 · Jardim Três Irmãos · Vinhedo – SP · CEP 13280-000",
-  ageLabel: "6 a 17 anos",
-  format: "Corrida recreativa em pista",
+  venue: "Centro de Excelência em Atletismo de Vinhedo",
+  address: "Rua Joana Fabri Thomé – Jardim São Matheus, Vinhedo/SP",
+  ageLabel: "Alunos do Ensino Fundamental I da Rede Municipal de Ensino e suas famílias",
+  format: "Corrida recreativa e inclusiva",
   bannerSrc: "/assets/eventos/inauguracao-vinhedo-banner-verde-2026.webp",
-  bannerAlt: "Inauguração do Centro Olímpico de Vinhedo: atletas, famílias e equipe 11RUN reunidos na pista, com a marca da Prefeitura de Vinhedo",
+  bannerAlt: "Banner da Prefeitura de Vinhedo com atletas, famílias e equipe 11RUN reunidos na pista",
   showBannerLabel: false,
-  directionsUrl: "https://www.google.com/maps/search/?api=1&query=R.%20Joana%20Fabri%20Thom%C3%A9%2C%20500%2C%20Vinhedo%20SP%2013280-000",
+  directionsUrl: "https://www.google.com/maps/search/?api=1&query=Rua%20Joana%20Fabri%20Thom%C3%A9%2C%20Jardim%20S%C3%A3o%20Matheus%2C%20Vinhedo%20SP",
   whatsapp: "5511999385329",
   phoneLabel: "+55 11 99938-5329",
   free: true,
-  schoolEnabled: true,
-  introTitle: "Um marco para a cidade. Uma largada para todos.",
+  schoolEnabled: false,
+  introTitle: "Participe dessa conquista para o esporte de Vinhedo!",
   paragraphs: [
-    "Vinhedo entrega à cidade e à região uma pista de atletismo de padrões internacionais. A inauguração do Centro Olímpico abre um novo espaço para a formação esportiva, os encontros da comunidade e os sonhos de quem está começando.",
-    "As solenidades e comemorações começam às 8h. Das 9h às 10h, a pista recebe uma corrida comemorativa e inclusiva, com a participação conjunta dos atletas da 11RUN, do IVCL e de crianças e adolescentes das escolas de Vinhedo.",
-    "A proposta é recreativa: correr, brincar e compartilhar um momento marcante para a cidade. Crianças e adolescentes de 6 a 17 anos são convidados a participar gratuitamente, com distribuição de prêmios pela 11RUN e pelo IVCL."
+    "Venha participar de uma corrida recreativa, inclusiva e cheia de diversão, preparada especialmente para as crianças, em um momento de integração, esporte, alegria e premiação!"
   ],
-  highlight: { value: "9h–10h", label: "Uma hora para celebrar correndo", text: "Diversão, inclusão e encontro entre escolas, famílias e atletas, com distribuição de prêmios 11RUN e IVCL." },
-  benefits: [
-    { title: "Esporte que inclui", text: "Uma corrida recreativa para crianças e adolescentes de 6 a 17 anos, com espaço para participar e se divertir." },
-    { title: "Prêmios para celebrar", text: "A 11RUN e o IVCL farão a distribuição de prêmios durante esse encontro especial." },
-    { title: "Sua escola na pista", text: "Inscrição individual ou de grupos escolares em um único cadastro, de forma simples e gratuita." }
-  ],
-  schedule: [
-    { time: "8h", title: "Inauguração do Centro Olímpico", detail: "Início das solenidades e comemorações dessa nova conquista de Vinhedo." },
-    { time: "9h–10h", title: "Corrida comemorativa e inclusiva", detail: "Participação de atletas da 11RUN, IVCL e estudantes das escolas, com diversão e distribuição de prêmios." }
-  ],
-  registrationText: "Escolha a inscrição individual ou cadastre sua escola e os alunos em grupo. A participação é gratuita e também haverá inscrição no local.",
-  faq: [
-    { question: "A corrida é competitiva?", answer: "A proposta é comemorativa, inclusiva e recreativa. O objetivo é se divertir e celebrar a inauguração junto com outros estudantes e com as equipes da 11RUN e do IVCL." },
-    { question: "Como inscrever uma escola?", answer: "No formulário, escolha a inscrição em grupo escolar. Informe a escola e o responsável e adicione os alunos no mesmo cadastro, sem precisar preencher um formulário separado para cada participante." },
-    { question: "Qual é o horário da corrida?", answer: "As solenidades começam às 8h do dia 14 de novembro de 2026. A corrida recreativa acontece das 9h às 10h." },
-    { question: "A participação tem custo?", answer: "Não. A inscrição e a participação são gratuitas, pelo site ou no local. A atividade é para crianças e adolescentes de 6 a 17 anos." }
-  ]
+  highlight: { value: "1º ao 5º ano", label: "Ensino Fundamental I", text: "Um convite aos alunos da Rede Municipal de Ensino e suas famílias." },
+  benefits: [],
+  schedule: [],
+  registrationText: "Preencha os dados do responsável legal e do aluno para confirmar a participação gratuita.",
+  faq: []
 };
 
 export const princesinhaEvent: EventLandingContent = {

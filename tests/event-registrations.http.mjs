@@ -3,6 +3,7 @@
 // This test creates synthetic registrations in that local database.
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
+import { isVinhedoRegistrationOpen } from "../src/lib/vinhedo-registration.ts";
 
 const base = new URL(process.env.TEST_BASE_URL || "http://127.0.0.1");
 assert.ok(base.protocol === "http:" && ["127.0.0.1", "localhost", "[::1]"].includes(base.hostname), "TEST_BASE_URL must be an HTTP loopback address.");
@@ -56,10 +57,21 @@ const school = {
     { name: `Aluno QA Grupo ${token}`, birth_date: "2008-11-15", gender: "Masculino" }
   ]
 };
+const vinhedo = {
+  event_id: "inauguracao-centro-olimpico-vinhedo-2026",
+  registration_type: "individual",
+  name: `Responsavel Fundamental QA ${token}`,
+  phone: "(19) 90000-4321",
+  participants: [{ name: `Aluno Fundamental QA ${token}`, birth_date: "2018-03-12", gender: "Não informar", school_year: "3" }],
+  consent: true,
+  guardian_authorization: true,
+  website: ""
+};
+const vinhedoOpen = isVinhedoRegistrationOpen();
 
 for (const [route, text] of [
   ["/eventos/finalissima-desafio-virtual-2026", "Grande Finalíssima do Desafio Virtual"],
-  ["/eventos/inauguracao-centro-olimpico-vinhedo-2026", "Centro Olímpico de Vinhedo"],
+  ["/eventos/inauguracao-centro-olimpico-vinhedo-2026", "Centro de Excelência em Atletismo de Vinhedo"],
   ["/eventos/princesinha-da-colina-2026", "Princesinha da Colina"]
 ]) {
   const response = await request(route);
@@ -91,24 +103,65 @@ assert.equal(individualResult.participantCount, 1);
 assert.match(individualResult.registrationId, /^[a-f0-9-]{36}$/);
 assert.match(individualResponse.headers.get("cache-control") || "", /no-store/);
 checks += 1;
-const schoolResponse = await post(school, 3);
-assert.equal(schoolResponse.status, 201);
-const schoolResult = await schoolResponse.json();
-assert.equal(schoolResult.ok, true);
-assert.equal(schoolResult.participantCount, 2);
-assert.match(schoolResult.registrationId, /^[a-f0-9-]{36}$/);
-assert.notEqual(schoolResult.registrationId, individualResult.registrationId);
-checks += 1;
+let schoolResult;
+let vinhedoResult;
+if (vinhedoOpen) {
+  const schoolResponse = await post(school, 3);
+  assert.equal(schoolResponse.status, 201);
+  schoolResult = await schoolResponse.json();
+  assert.equal(schoolResult.ok, true);
+  assert.equal(schoolResult.participantCount, 2);
+  assert.match(schoolResult.registrationId, /^[a-f0-9-]{36}$/);
+  assert.notEqual(schoolResult.registrationId, individualResult.registrationId);
+  checks += 1;
+
+  await expectFailure(await post({ ...vinhedo, participants: [{ ...vinhedo.participants[0], school_year: undefined }] }, 5), 400);
+  await expectFailure(await post({ ...vinhedo, participants: [{ ...vinhedo.participants[0], school_year: "6" }] }, 5), 400);
+  await expectFailure(await post({ ...vinhedo, consent: false }, 5), 400);
+  await expectFailure(await post({ ...vinhedo, guardian_authorization: false }, 5), 400);
+  const vinhedoResponse = await post(vinhedo, 5);
+  assert.equal(vinhedoResponse.status, 201);
+  vinhedoResult = await vinhedoResponse.json();
+  assert.equal(vinhedoResult.ok, true);
+  assert.equal(vinhedoResult.participantCount, 1);
+  assert.match(vinhedoResult.registrationId, /^[a-f0-9-]{36}$/);
+  assert.match(vinhedoResponse.headers.get("cache-control") || "", /no-store/);
+  checks += 1;
+} else {
+  // Após 02/11, o endpoint deve permanecer fechado; os limites exatos usam relógio fixo nos testes unitários.
+  for (const payload of [vinhedo, school]) {
+    const response = await post(payload, 5);
+    assert.equal(response.status, 400);
+    const result = await response.json();
+    assert.equal(result.ok, false);
+    assert.match(result.error, /encerraram em 02\/11\/2026/);
+    assert.equal(result.registrationId, undefined);
+    checks += 1;
+  }
+}
 
 const unauthorized = await request("/admin/eventos");
 assert.equal(unauthorized.status, 401);
 assert.match(unauthorized.headers.get("www-authenticate") || "", /Basic/);
-assert.equal((await unauthorized.text()).includes(individual.participants[0].name), false);
+const unauthorizedHtml = await unauthorized.text();
+for (const name of [individual.participants[0].name, vinhedo.participants[0].name]) assert.equal(unauthorizedHtml.includes(name), false);
 checks += 1;
 const admin = await request("/admin/eventos", { headers: { Authorization: authorization } });
 assert.equal(admin.status, 200);
 const adminHtml = await admin.text();
-for (const value of [individualResult.registrationId, schoolResult.registrationId, individual.participants[0].name, school.school_name, ...school.participants.map((participant) => participant.name)]) assert.ok(adminHtml.includes(value), "Authenticated admin page must include the synthetic registrations and participants.");
+const expectedAdminValues = [individualResult.registrationId, individual.participants[0].name];
+if (schoolResult) expectedAdminValues.push(schoolResult.registrationId, school.school_name, ...school.participants.map((participant) => participant.name));
+if (vinhedoResult) expectedAdminValues.push(vinhedoResult.registrationId, vinhedo.name, vinhedo.participants[0].name, "<td>3º Ano</td>");
+for (const value of expectedAdminValues) assert.ok(adminHtml.includes(value), `Authenticated admin page must include ${value}.`);
+checks += 1;
+const vinhedoPublic = await request("/eventos/inauguracao-centro-olimpico-vinhedo-2026");
+assert.equal(vinhedoPublic.status, 200);
+const vinhedoHtml = await vinhedoPublic.text();
+for (const privateValue of [vinhedo.name, vinhedo.phone, vinhedo.participants[0].name, school.school_name]) assert.equal(vinhedoHtml.includes(privateValue), false, "Public landing must not disclose registration data.");
+if (vinhedoOpen) {
+  for (const name of ["name", "phone", "student_name", "birth_date", "gender", "school_year"]) assert.ok(vinhedoHtml.includes(`name="${name}"`), `Missing simplified field ${name}.`);
+  for (const name of ["email", "city", "state", "school_name"]) assert.equal(vinhedoHtml.includes(`name="${name}"`), false, `Unexpected field ${name} on the simplified Vinhedo form.`);
+}
 checks += 1;
 const publicRead = await request("/api/event-registrations");
 assert.equal(publicRead.status, 405);
@@ -119,4 +172,4 @@ checks += 1;
 for (let attempt = 0; attempt < 8; attempt += 1) await expectFailure(await post({ ...individual, consent: false }, 4), 400);
 await expectFailure(await post({ ...individual, consent: false }, 4), 429);
 
-console.log(`PASS: ${checks} HTTP checks; landings, health, validation, individual/school persistence, private admin and rate limit. Synthetic test data remains in the disposable local database.`);
+console.log(`PASS: ${checks} HTTP checks; landings, health, validation, ${vinhedoOpen ? "minimal Vinhedo/legacy school persistence and school year" : "closed Vinhedo deadline"}, Finalíssima, private admin and rate limit. Synthetic test data remains in the disposable local database.`);
