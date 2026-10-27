@@ -18,18 +18,17 @@ export function createEventMetadata(event: EventLandingContent): Metadata {
 
 export function EventLanding({ event, bannerSrc = event.bannerSrc }: { event: EventLandingContent; bannerSrc?: string }) {
   const benefitsIcons = [Medal, Users, Flag];
-  const isVinhedo = event.id === "inauguracao-centro-olimpico-vinhedo-2026";
   const isFinalissima = event.id === "finalissima-desafio-virtual-2026";
   const isPrincesinha = event.id === "princesinha-da-colina-2026";
 
-  return <article className={isVinhedo ? `${styles.page} ${styles.vinhedo}` : styles.page}>
+  return <article className={styles.page}>
     <EventLandingHero {...event} bannerSrc={bannerSrc} canonicalPath={`/eventos/${event.id}`} />
 
     <dl className={styles.facts}>
       <div><CalendarDays aria-hidden="true" /><dt>Quando</dt><dd><time dateTime={event.dateTime}>{event.dateLabel}</time><small>{event.timeLabel}</small></dd></div>
-      <div><MapPin aria-hidden="true" /><dt>Onde</dt><dd>{event.city}<small>{isVinhedo ? "Centro Olímpico" : isFinalissima ? "IVCL" : "Parque da Juventude"}</small></dd></div>
-      <div><Users aria-hidden="true" /><dt>Para quem</dt><dd>{event.ageLabel}<small>{isVinhedo ? "Individual e grupos escolares" : "Com o responsável"}</small></dd></div>
-      <div><Route aria-hidden="true" /><dt>A experiência</dt><dd>{event.format}<small>{isVinhedo ? "Inclusão e diversão" : "Premiação e encontro"}</small></dd></div>
+      <div><MapPin aria-hidden="true" /><dt>Onde</dt><dd>{event.city}<small>{isFinalissima ? "IVCL" : "Parque da Juventude"}</small></dd></div>
+      <div><Users aria-hidden="true" /><dt>Para quem</dt><dd>{event.ageLabel}<small>Com o responsável</small></dd></div>
+      <div><Route aria-hidden="true" /><dt>A experiência</dt><dd>{event.format}<small>Premiação e encontro</small></dd></div>
     </dl>
 
     <section className={styles.intro} aria-labelledby="sobre-evento">
@@ -51,10 +50,8 @@ export function EventLanding({ event, bannerSrc = event.bannerSrc }: { event: Ev
 
     <section className={styles.location} aria-labelledby="local-titulo"><div className={styles.locationIcon}><MapPin size={29} strokeWidth={1.5} aria-hidden="true" /></div><div><span className={styles.eyebrow}>Nos encontramos aqui</span><h2 id="local-titulo">{event.venue}</h2><p>{event.address}</p></div><a href={event.directionsUrl} className={styles.outlineButton} target="_blank" rel="noopener noreferrer">Abrir localização<ArrowUpRight size={17} aria-hidden="true" /></a></section>
 
-    {isVinhedo ? <section className={styles.partners} aria-label="Realização e apoio do evento"><div><span>Realização</span><div className={styles.partnerLogo}><Image src="/assets/logos/onzerun-menu.png" alt="11RUN" width={190} height={72} className={styles.runLogo} /></div></div><div><span>Apoio</span><div className={styles.partnerLogo}><Image src="/assets/eventos/prefeitura-vinhedo.webp" alt="Prefeitura de Vinhedo" width={1000} height={367} /></div></div><div><span>Apoio</span><div className={styles.partnerLogo}><Image src="/assets/ivcl-original-color.webp" alt="Instituto Vanderlei Cordeiro de Lima — IVCL" width={640} height={389} /></div></div></section> : null}
-
     <section className={styles.registration} id="inscricoes" aria-labelledby="inscricoes-titulo"><div className={styles.registrationHeading}><span className={styles.eyebrow}>{event.free ? "Gratuito. Simples. Para participar." : "Sua próxima largada"}</span><h2 id="inscricoes-titulo">{event.free ? "Vamos para essa largada?" : "Garanta sua participação."}</h2><p>{event.registrationText}</p></div>
-      {isFinalissima ? <EventRegistrationForm eventId="finalissima-desafio-virtual-2026" /> : isVinhedo ? <EventRegistrationForm eventId="inauguracao-centro-olimpico-vinhedo-2026" schoolEnabled /> : <a className={styles.primaryButton} href={event.registrationUrl} target="_blank" rel="noopener noreferrer">Ir para inscrição no TicketSports<ArrowUpRight size={19} aria-hidden="true" /></a>}
+      {isFinalissima ? <EventRegistrationForm eventId="finalissima-desafio-virtual-2026" /> : <a className={styles.primaryButton} href={event.registrationUrl} target="_blank" rel="noopener noreferrer">Ir para inscrição no TicketSports<ArrowUpRight size={19} aria-hidden="true" /></a>}
     </section>
 
     <section className={styles.faq} aria-labelledby="duvidas-titulo"><div><span className={styles.eyebrow}>Antes da largada</span><h2 id="duvidas-titulo">Dúvidas frequentes.</h2><a href={`tel:+${event.whatsapp}`} className={styles.contact}><Phone size={17} aria-hidden="true" /><span>Organização<strong>{event.phoneLabel}</strong></span></a></div><div className={styles.questions}>{event.faq.map((item) => <details key={item.question}><summary>{item.question}<span aria-hidden="true">+</span></summary><p>{item.answer}</p></details>)}</div></section>

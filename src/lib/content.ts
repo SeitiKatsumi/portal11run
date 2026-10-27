@@ -79,7 +79,7 @@ export const navItems: NavItem[] = [
     href: "/eventos/finalissima-desafio-virtual-2026",
     children: [
       { label: "13.11 às 14:00 · Grande Finalíssima do Desafio Virtual", href: "/eventos/finalissima-desafio-virtual-2026" },
-      { label: "14.11 às 8:00 · Inauguração do Centro Olímpico de Vinhedo", href: "/eventos/inauguracao-centro-olimpico-vinhedo-2026" },
+      { label: "14.11 às 7:30 · Inauguração do Centro de Excelência em Atletismo de Vinhedo", href: "/eventos/inauguracao-centro-olimpico-vinhedo-2026" },
       { label: "14.11 às 14:00 · Princesinha da Colina", href: "/eventos/princesinha-da-colina-2026" },
       { label: "15.11 · Circuito de Cross Country IVCL 11RUN", href: "/circuito-cross-country-ivcl-11run" }
     ]
