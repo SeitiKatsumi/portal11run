@@ -61,6 +61,49 @@ No actionable P0, P1 or P2 mismatch remains for the requested scope.
 No P3 item is required before release.
 
 final result: passed
+
+---
+
+# Design QA — agrupamento “Propósito e participação”
+
+## Evidências
+
+- Fonte visual: `artifacts/design-qa/virtual-circuit-purpose-source.png` (1431 × 732 px).
+- Implementação desktop aberta: `artifacts/design-qa/virtual-circuit-purpose-open-desktop.png` (1415 × 811 px; viewport CSS solicitado de 1430 × 820, densidade 1).
+- Implementação desktop fechada: `artifacts/design-qa/virtual-circuit-purpose-closed-desktop-v2.png` (1415 × 811 px; viewport CSS solicitado de 1430 × 820, densidade 1).
+- Implementação mobile aberta: `artifacts/design-qa/virtual-circuit-purpose-open-mobile.png` (375 × 812 px; viewport CSS solicitado de 390 × 844, densidade 1).
+- Comparação completa: `artifacts/design-qa/virtual-circuit-purpose-source-vs-open.png`.
+- Comparação do estado compacto: `artifacts/design-qa/virtual-circuit-purpose-source-vs-closed.png`.
+
+## Estados e interações verificados
+
+- O novo painel inicia fechado e contém os dois blocos solicitados.
+- Ao abrir, a missão aparece antes dos quatro passos e ambos preservam todo o conteúdo original.
+- O painel participa do comportamento exclusivo global; somente um `data-circuit-disclosure` permanece aberto.
+- Mobile sem overflow horizontal: `scrollWidth` e `clientWidth` medidos em 375 px.
+- Console do navegador sem erros.
+
+## Superfícies de fidelidade
+
+- Tipografia: família, pesos e escala do portal preservados; o título interno mantém a hierarquia da referência quando o painel está aberto.
+- Espaçamento: os dois blocos agora compartilham um corpo e são separados por uma linha fina e um intervalo responsivo.
+- Cores e tokens: superfícies, bordas, texto e destaque laranja existentes foram reutilizados; nenhum degradê foi adicionado.
+- Imagens e ícones: a referência não contém imagens de conteúdo; o resumo usa um ícone Lucide coerente com a central já implementada.
+- Conteúdo: missão, justificativa, quatro etapas e seus textos permanecem integralmente disponíveis.
+
+## Histórico de comparação
+
+1. A referência apresentava dois cards altos e independentes, aumentando a rolagem vertical.
+2. Os cards foram reunidos em um disclosure único, fechado por padrão, com resumo “Por que existe e como participar”.
+3. A comparação pós-implementação confirmou a redução de densidade no estado fechado e a preservação da leitura no estado aberto.
+
+## Achados
+
+- P0: nenhum.
+- P1: nenhum.
+- P2: nenhum.
+
+final result: passed
 ---
 
 # Design QA — navegação Referências / Rankings

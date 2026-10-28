@@ -199,31 +199,44 @@ export default function VirtualCircuitPage() {
           </div>
         </section>
 
-        <section className={styles.section}>
-          <span className={styles.eyebrow}>Uma iniciativa nacional</span>
-          <div className={styles.splitHeading}>
-            <h2>Talentos mais perto de novas oportunidades.</h2>
-            <div>
-              <p>O Brasil possui milhares de crianças apaixonadas pela corrida, mas muitas vivem longe de pistas, competições e projetos de desenvolvimento.</p>
-              <p>O Circuito Virtual 11Run nasceu para diminuir essa distância, incentivar cada evolução e revelar atletas que talvez ainda não tenham sido vistos.</p>
+        <div className={styles.disclosureList}>
+          <CircuitSectionDisclosure
+            id="iniciativa-participacao"
+            index="04"
+            icon="initiative"
+            eyebrow="Propósito e participação"
+            title="Por que existe e como participar"
+            description="Conheça a missão nacional do desafio e os quatro passos para entrar no ranking."
+            meta="4 passos"
+          >
+            <div className={styles.groupedStory}>
+              <section className={styles.groupedStoryIntro}>
+                <span className={styles.eyebrow}>Uma iniciativa nacional</span>
+                <div className={styles.splitHeading}>
+                  <h2>Talentos mais perto de novas oportunidades.</h2>
+                  <div>
+                    <p>O Brasil possui milhares de crianças apaixonadas pela corrida, mas muitas vivem longe de pistas, competições e projetos de desenvolvimento.</p>
+                    <p>O Circuito Virtual 11Run nasceu para diminuir essa distância, incentivar cada evolução e revelar atletas que talvez ainda não tenham sido vistos.</p>
+                  </div>
+                </div>
+              </section>
+              <section className={styles.groupedStorySteps}>
+                <span className={styles.eyebrow}>Como participar</span>
+                <h2>Quatro passos. Uma marca que pode abrir caminhos.</h2>
+                <div className={styles.steps}>
+                  {[
+                    ["01", "Faça seu teste", "Corra 1.000 metros em competição, pista ou percurso aberto."],
+                    ["02", "Aceite o termo", "O responsável declara as condições de saúde e assume os cuidados antes, durante e depois do teste."],
+                    ["03", "Aguarde a validação", "A comissão 11Run confere a marca e pode solicitar correções."],
+                    ["04", "Entre no ranking", "A melhor marca aprovada aparece na categoria correspondente."]
+                  ].map(([number, title, text]) => (
+                    <article key={number}><span>{number}</span><h3>{title}</h3><p>{text}</p></article>
+                  ))}
+                </div>
+              </section>
             </div>
-          </div>
-        </section>
-
-        <section className={styles.section}>
-          <span className={styles.eyebrow}>Como participar</span>
-          <h2>Quatro passos. Uma marca que pode abrir caminhos.</h2>
-          <div className={styles.steps}>
-            {[
-              ["01", "Faça seu teste", "Corra 1.000 metros em competição, pista ou percurso aberto."],
-              ["02", "Aceite o termo", "O responsável declara as condições de saúde e assume os cuidados antes, durante e depois do teste."],
-              ["03", "Aguarde a validação", "A comissão 11Run confere a marca e pode solicitar correções."],
-              ["04", "Entre no ranking", "A melhor marca aprovada aparece na categoria correspondente."]
-            ].map(([number, title, text]) => (
-              <article key={number}><span>{number}</span><h3>{title}</h3><p>{text}</p></article>
-            ))}
-          </div>
-        </section>
+          </CircuitSectionDisclosure>
+        </div>
 
         <section className={styles.section}>
           <span className={styles.eyebrow}>Modalidades de comprovação</span>
@@ -239,7 +252,7 @@ export default function VirtualCircuitPage() {
         <div className={styles.disclosureList}>
           <CircuitSectionDisclosure
             id="premiacoes"
-            index="04"
+            index="05"
             icon="awards"
             eyebrow="Muito mais que um ranking"
             title="Entenda as premiações"
@@ -287,7 +300,7 @@ export default function VirtualCircuitPage() {
         <div className={styles.disclosureList}>
           <CircuitSectionDisclosure
             id="inscricao"
-            index="05"
+            index="06"
             icon="registration"
             eyebrow="Inscrição segura"
             title="Registrar uma atividade"
@@ -310,7 +323,7 @@ export default function VirtualCircuitPage() {
         <div className={styles.disclosureList}>
           <CircuitSectionDisclosure
             id="regulamento"
-            index="06"
+            index="07"
             icon="rules"
             eyebrow={`Regulamento oficial · versão ${edition.regulations_version}`}
             title="Regras para uma disputa justa"
@@ -328,7 +341,7 @@ export default function VirtualCircuitPage() {
         <div className={styles.disclosureList}>
           <CircuitSectionDisclosure
             id="faq"
-            index="07"
+            index="08"
             icon="faq"
             eyebrow="Perguntas frequentes"
             title="O que sua família precisa saber"
