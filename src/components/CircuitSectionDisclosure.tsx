@@ -54,7 +54,10 @@ export function CircuitSectionDisclosure({
     if (!details) return;
 
     const openFromHash = () => {
-      if (window.location.hash !== `#${id}`) return;
+      if (window.location.hash !== `#${id}`) {
+        details.open = false;
+        return;
+      }
       document.querySelectorAll<HTMLDetailsElement>(disclosureSelector).forEach((item) => {
         item.open = item === details;
       });
