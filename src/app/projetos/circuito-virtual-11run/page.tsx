@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, CalendarDays, CheckCircle2, Clock3, MapPin, Medal, Route, ShieldCheck, Trophy, Users } from "lucide-react";
 import { CircuitRegistration } from "@/components/CircuitRegistration";
 import { CircuitRanking } from "@/components/CircuitRanking";
+import { CircuitSectionDisclosure } from "@/components/CircuitSectionDisclosure";
 import { EventLandingHero } from "@/components/EventLandingHero";
 import { getCircuitEdition, listCircuitRanking, listLatestCircuitParticipants } from "@/lib/virtual-circuit";
 import { CIRCUIT_CATEGORY_AGES, circuitCategoryBirthYear, circuitCategoryName } from "@/lib/virtual-circuit-category";
@@ -111,34 +112,72 @@ export default function VirtualCircuitPage() {
           </p>
         </section>
 
-        <section className={styles.section} aria-labelledby="leaders-title">
-          <span className={styles.eyebrow}>Classificações e premiações</span><h2 id="leaders-title">Os líderes de cada disputa.</h2>
-          <p>Primeiros por categoria e gênero. Classificação provisória até a homologação. Encerramento geral: 13 de novembro de 2026.</p>
-          <div className={styles.awardGrid}>
-            {leaders.map(block => <article key={block.title}>
-              <h3>{block.title}</h3>
-              <p>{block.period.shortLabel} · {circuitPeriodStatus(block.period)}</p>
-              {block.title!=='Primeiros do mês'&&<p><strong>{block.title==='Premiação absoluta'?'Premiação em vale-compras':'Premiação bimestral'} condicionada à comprovação em pista oficial com vídeo integral ou competição oficial.</strong></p>}
-              <div className={styles.leaderCategories}>
-                {CIRCUIT_CATEGORY_AGES.map(age => <section className={styles.leaderCategory} key={age} aria-label={`${block.title}: ${circuitCategoryName(age)}`}>
-                  <h4>{circuitCategoryName(age)}</h4>
-                  {(['FEMALE', 'MALE'] as const).map(gender => {
-                    const leader = block.rows.find(r => r.categoryAge === age && r.gender === gender);
-                    return <div className={styles.leaderEntry} key={gender}>
-                      <span>{gender === 'FEMALE' ? '1ª Feminino' : '1º Masculino'}</span>
-                      {leader ? <><strong>{leader.publicName}</strong><div><small>{formatCircuitAthleteNumber(leader.athleteNumber)}</small><b>{leader.formattedTime}</b></div></> : <p>Aguardando marca validada</p>}
-                    </div>;
-                  })}
-                </section>)}
+        <section className={styles.challengeHub} aria-labelledby="challenge-hub-title">
+          <header className={styles.challengeHubHeader}>
+            <span className={styles.eyebrow}>Central do desafio</span>
+            <div>
+              <h2 id="challenge-hub-title">Escolha o que quer consultar.</h2>
+              <p>As áreas começam fechadas para deixar a página leve. Ao abrir uma, a anterior fecha automaticamente.</p>
+            </div>
+          </header>
+          <div className={styles.disclosureList}>
+            <CircuitSectionDisclosure
+              id="premiacoes-atuais"
+              index="01"
+              icon="leaders"
+              eyebrow="Classificações e premiações"
+              title="Líderes de cada disputa"
+              description="Veja os primeiros colocados do mês, do bimestre e do ranking absoluto."
+              meta="3 classificações"
+            >
+              <div className={styles.disclosureContent}>
+                <p className={styles.disclosureLead}>Primeiros por categoria e gênero. Classificação provisória até a homologação. Encerramento geral: 13 de novembro de 2026.</p>
+                <div className={styles.awardGrid}>
+                  {leaders.map(block => <article key={block.title}>
+                    <h3>{block.title}</h3>
+                    <p>{block.period.shortLabel} · {circuitPeriodStatus(block.period)}</p>
+                    {block.title!=='Primeiros do mês'&&<p><strong>{block.title==='Premiação absoluta'?'Premiação em vale-compras':'Premiação bimestral'} condicionada à comprovação em pista oficial com vídeo integral ou competição oficial.</strong></p>}
+                    <div className={styles.leaderCategories}>
+                      {CIRCUIT_CATEGORY_AGES.map(age => <section className={styles.leaderCategory} key={age} aria-label={`${block.title}: ${circuitCategoryName(age)}`}>
+                        <h4>{circuitCategoryName(age)}</h4>
+                        {(['FEMALE', 'MALE'] as const).map(gender => {
+                          const leader = block.rows.find(r => r.categoryAge === age && r.gender === gender);
+                          return <div className={styles.leaderEntry} key={gender}>
+                            <span>{gender === 'FEMALE' ? '1ª Feminino' : '1º Masculino'}</span>
+                            {leader ? <><strong>{leader.publicName}</strong><div><small>{formatCircuitAthleteNumber(leader.athleteNumber)}</small><b>{leader.formattedTime}</b></div></> : <p>Aguardando marca validada</p>}
+                          </div>;
+                        })}
+                      </section>)}
+                    </div>
+                    <details><summary>Ver premiação</summary>{block.prizes.map(prize => <p key={prize}>{prize}</p>)}</details>
+                  </article>)}
+                </div>
               </div>
-              <details><summary>Ver premiação</summary>{block.prizes.map(prize => <p key={prize}>{prize}</p>)}</details>
-            </article>)}
+            </CircuitSectionDisclosure>
+            <CircuitSectionDisclosure
+              id="ranking"
+              index="02"
+              icon="ranking"
+              eyebrow="Ranking nacional"
+              title="As melhores marcas do Brasil"
+              description="Filtre por período, categoria, gênero, estado ou nome do atleta."
+              meta="Mensal, bimestral e absoluto"
+            >
+              <CircuitRanking initialRanking={ranking} compact />
+            </CircuitSectionDisclosure>
+            <CircuitSectionDisclosure
+              id="evolucao"
+              index="03"
+              icon="evolution"
+              eyebrow="Progresso individual"
+              title="Ranking de melhor evolução"
+              description="Compare a primeira marca com as melhores marcas posteriores de cada atleta."
+              meta="Até 20 destaques"
+            >
+              <div className={styles.compactEvolution}><CircuitEvolution /></div>
+            </CircuitSectionDisclosure>
           </div>
         </section>
-        <section className={styles.section} id="ranking">
-          <CircuitRanking initialRanking={ranking} />
-        </section>
-        <CircuitEvolution />
 
         <section className={styles.categoryGuide} aria-labelledby="categorias-2026">
           <div>
@@ -197,11 +236,18 @@ export default function VirtualCircuitPage() {
           <CircuitTrackGuide />
         </section>
 
-        <section className={`${styles.section} ${styles.awards}`}>
+        <div className={styles.disclosureList}>
+          <CircuitSectionDisclosure
+            id="premiacoes"
+            index="04"
+            icon="awards"
+            eyebrow="Muito mais que um ranking"
+            title="Entenda as premiações"
+            description="Mensal, bimestral e absoluta: três disputas que podem se acumular."
+            meta="Regras e prêmios"
+          >
+          <section className={`${styles.section} ${styles.awards}`}>
           <div>
-            <span className={styles.eyebrow}>Muito mais que um ranking</span>
-            <h2>Três disputas. Premiações que se acumulam.</h2>
-            <p>Mensal, bimestral e absoluta: cada classificação considera categoria e gênero, com datas próprias e marcas validadas.</p>
             <p className={styles.cumulativeNotice}>Tênis apenas para o campeão absoluto de cada categoria e gênero. O prêmio de R$ 500,00 é um vale-compras na Bahia Esportes, sem pagamento em dinheiro.</p>
             <p><strong>Comprovação obrigatória.</strong> {CIRCUIT_PRIZE_EVIDENCE_RULE}</p>
           </div>
@@ -234,9 +280,21 @@ export default function VirtualCircuitPage() {
             <div><strong>Oportunidade 11Run Futuro</strong><p>Na premiação absoluta, atletas Sub 10, Sub 11 e Sub 12 poderão ser avaliados para uma oportunidade no projeto. A classificação não garante ingresso automático.</p></div>
             <Link href="/onze-futuro">Conheça o 11Run Futuro</Link>
           </div>
-        </section>
+          </section>
+          </CircuitSectionDisclosure>
+        </div>
 
-        <section className={styles.section} id="inscricao">
+        <div className={styles.disclosureList}>
+          <CircuitSectionDisclosure
+            id="inscricao"
+            index="05"
+            icon="registration"
+            eyebrow="Inscrição segura"
+            title="Registrar uma atividade"
+            description="Envie a marca em seis etapas, com dados privados e validação da comissão."
+            meta="Formulário em 6 etapas"
+          >
+        <section className={styles.section}>
           <div className={styles.medicalNotice}>
             <ShieldCheck size={24} />
             <div>
@@ -244,24 +302,46 @@ export default function VirtualCircuitPage() {
               <p>Não exigimos atestado médico. O pai, a mãe, o tutor ou o responsável legal deve confirmar o CPF, declarar que a criança está em boas condições gerais de saúde e assumir integral responsabilidade pela preparação, supervisão e por ocorrências antes, durante e depois do teste.</p>
             </div>
           </div>
-          <CircuitRegistration startDate={edition.start_date} endDate={edition.end_date} />
+          <CircuitRegistration startDate={edition.start_date} endDate={edition.end_date} compact />
         </section>
+          </CircuitSectionDisclosure>
+        </div>
 
-        <section className={styles.section} id="regulamento">
-          <span className={styles.eyebrow}>Regulamento oficial · versão {edition.regulations_version}</span>
-          <h2>Regras claras para uma disputa justa.</h2>
+        <div className={styles.disclosureList}>
+          <CircuitSectionDisclosure
+            id="regulamento"
+            index="06"
+            icon="rules"
+            eyebrow={`Regulamento oficial · versão ${edition.regulations_version}`}
+            title="Regras para uma disputa justa"
+            description="Consulte categorias, comprovações, validação, premiação e responsabilidades."
+            meta={`${edition.regulations.length} tópicos`}
+          >
+        <section className={styles.section}>
           <div className={styles.accordion}>
             {edition.regulations.map(([title, text]) => <details key={title}><summary>{title}</summary><p>{text}</p></details>)}
           </div>
         </section>
+          </CircuitSectionDisclosure>
+        </div>
 
+        <div className={styles.disclosureList}>
+          <CircuitSectionDisclosure
+            id="faq"
+            index="07"
+            icon="faq"
+            eyebrow="Perguntas frequentes"
+            title="O que sua família precisa saber"
+            description="Respostas rápidas sobre participação, saúde, provas, ranking e premiações."
+            meta={`${edition.faq.length} respostas`}
+          >
         <section className={styles.section}>
-          <span className={styles.eyebrow}>Perguntas frequentes</span>
-          <h2>O que sua família precisa saber.</h2>
           <div className={styles.accordion}>
             {edition.faq.map(([question, answer]) => <details key={question}><summary>{question}</summary><p>{answer}</p></details>)}
           </div>
         </section>
+          </CircuitSectionDisclosure>
+        </div>
 
         <section className={styles.finalCta}>
           <div><span className={styles.eyebrow}>Seu 1 km começa aqui</span><h2>Registre uma marca. Acompanhe uma evolução.</h2></div>

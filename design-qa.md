@@ -61,7 +61,6 @@ No actionable P0, P1 or P2 mismatch remains for the requested scope.
 No P3 item is required before release.
 
 final result: passed
-
 ---
 
 # Design QA — navegação Referências / Rankings
@@ -556,5 +555,51 @@ final result: passed
 ## Follow-up polish
 
 - Nenhum ajuste P3 necessário para esta entrega.
+
+final result: passed
+
+---
+
+# Design QA — Desafio Virtual 11RUN
+
+## Visual truth and evidence
+
+- Source visual truth: `artifacts/design-qa/virtual-circuit-source-ranking.png` (1492 × 861).
+- Desktop implementation, collapsed state: `artifacts/design-qa/virtual-circuit-accordion-desktop.png` (1541 × 821; CSS viewport requested at 1556 × 829).
+- Desktop implementation, ranking open: `artifacts/design-qa/virtual-circuit-ranking-open-desktop.png` (1541 × 821; CSS viewport requested at 1556 × 829).
+- Mobile implementation: `artifacts/design-qa/virtual-circuit-accordion-mobile.png` (375 × 812; CSS viewport requested at 390 × 844).
+- Full-view comparisons: `artifacts/design-qa/virtual-circuit-source-vs-accordion.png` and `artifacts/design-qa/virtual-circuit-source-vs-ranking-open.png`.
+
+## States verified
+
+- Initial page load with all seven disclosures closed.
+- Exclusive interaction: opening another disclosure closes the previously open one.
+- Ranking disclosure open with its filters and table preserved.
+- Hash-based entry points, including `#ranking` and `#inscricao`.
+- Desktop and mobile layouts, including keyboard-native `<details>` interaction.
+- Browser console: no errors.
+- Horizontal overflow on mobile: none (`scrollWidth` equals `clientWidth`, 375 px).
+
+## Fidelity review
+
+- Typography: existing portal type scale and weights preserved; oversized repeated headings were replaced by concise summaries only in the collapsed state.
+- Spacing and container: central portal container, borders, radii, and spacing tokens remain aligned with the existing page.
+- Colors and component language: existing neutral palette and orange accent retained; no gradients introduced.
+- Content: original ranking, evolution, awards, registration, rules, and FAQ content remains available without truncation when opened.
+- Responsive behavior: summary metadata is progressively reduced on mobile while the icon, eyebrow, title, and disclosure affordance remain visible.
+- Image quality: no source images were changed or recompressed by this implementation.
+
+## QA history
+
+1. Initial comparison identified excessive vertical density caused by several large sections appearing simultaneously.
+2. Replaced the seven marked sections with a shared exclusive disclosure pattern and a compact “Central do desafio” overview.
+3. Removed duplicated internal headings in compact ranking, evolution, and registration states.
+4. Verified the post-fix desktop closed state, ranking-open state, mobile state, hashes, console, and horizontal overflow.
+
+## Remaining findings
+
+- P0: none.
+- P1: none.
+- P2: none.
 
 final result: passed

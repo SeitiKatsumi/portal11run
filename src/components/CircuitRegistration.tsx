@@ -32,7 +32,7 @@ function category(birthDate: string) {
   return age >= 9 && age <= 13 ? circuitCategoryLabel(age) : "Fora das categorias Sub 10 a Sub 14 desta edição";
 }
 
-export function CircuitRegistration({ startDate, endDate }: { startDate: string; endDate: string }) {
+export function CircuitRegistration({ startDate, endDate, compact = false }: { startDate: string; endDate: string; compact?: boolean }) {
   const [step, setStep] = useState(1);
   const [data, setData] = useState<FormState>(initial);
   const [fileId, setFileId] = useState("");
@@ -148,12 +148,12 @@ export function CircuitRegistration({ startDate, endDate }: { startDate: string;
   }
 
   return (
-    <div className={styles.registration}>
-      <div className={styles.formIntro}>
+    <div className={`${styles.registration} ${compact ? styles.registrationCompact : ""}`}>
+      {!compact && <div className={styles.formIntro}>
         <span className={styles.eyebrow}>Inscrição segura</span>
         <h2>Registre uma atividade.</h2>
         <p>As informações sensíveis e o documento ficam privados. Apenas os dados autorizados aparecem no ranking.</p>
-      </div>
+      </div>}
       <div className={styles.formCard}>
         <div className={styles.progress} aria-label={`Etapa ${step} de 6`}>
           {[1,2,3,4,5,6].map((item) => <span key={item} className={item <= step ? styles.active : ""}>{item < step ? <Check size={13} /> : item}</span>)}

@@ -59,7 +59,7 @@ function CurrentPrizes({ period, position, categoryAge }: { period: CircuitRanki
   return <div className={styles.prizeIcons} aria-label="Premiação provisória cumulativa">{prizes.map((prize) => <PrizeIcon key={prize} prize={prize} />)}</div>;
 }
 
-export function CircuitRanking({ initialRanking = [] }: { initialRanking?: CircuitRankingItem[] }) {
+export function CircuitRanking({ initialRanking = [], compact = false }: { initialRanking?: CircuitRankingItem[]; compact?: boolean }) {
   const [filters,setFilters]=useState({age:"",gender:"",state:"",name:""});
   const [period,setPeriod]=useState<CircuitRankingPeriod>("absolute");
   const [periodSelection,setPeriodSelection]=useState(CIRCUIT_MONTHS[0].id);
@@ -88,8 +88,8 @@ export function CircuitRanking({ initialRanking = [] }: { initialRanking?: Circu
 
   const periodOptions = period === "monthly" ? CIRCUIT_MONTHS : CIRCUIT_BIMONTHS;
 
-  return <div className={styles.ranking}>
-    <div className={styles.rankingHeader}><div><span className={styles.eyebrow}>Ranking nacional</span><h2>As melhores marcas do Brasil.</h2><p>Somente a melhor marca validada de cada atleta entra na classificação da categoria e do gênero correspondentes.</p></div><Trophy size={42}/></div>
+  return <div className={`${styles.ranking} ${compact ? styles.rankingCompact : ""}`}>
+    {!compact && <div className={styles.rankingHeader}><div><span className={styles.eyebrow}>Ranking nacional</span><h2>As melhores marcas do Brasil.</h2><p>Somente a melhor marca validada de cada atleta entra na classificação da categoria e do gênero correspondentes.</p></div><Trophy size={42}/></div>}
     <div className={styles.periodBar}>
       <div className={styles.periodTabs} aria-label="Período do ranking">
         <button type="button" className={period==="monthly"?styles.selectedPeriod:""} onClick={()=>selectPeriod("monthly")}>Mensal</button>
