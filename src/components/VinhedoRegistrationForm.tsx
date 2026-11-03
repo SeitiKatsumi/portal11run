@@ -82,7 +82,7 @@ export function VinhedoRegistrationForm({ initialOpen }: { initialOpen: boolean 
 
   if (!registrationOpen) return <div className={styles.closed} role="status">
     <h3>Inscrições encerradas</h3>
-    <p>O prazo de inscrição foi até 02 de novembro de 2026.</p>
+    <p>O prazo de inscrição foi até 06 de novembro de 2026.</p>
   </div>;
 
   return <form className={formStyles.form} onSubmit={submit} aria-busy={pending}>
@@ -116,6 +116,6 @@ export function VinhedoRegistrationForm({ initialOpen }: { initialOpen: boolean 
     <div className={formStyles.trap} aria-hidden="true"><label>Deixe este campo em branco<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
     {error ? <p ref={errorPanel} tabIndex={-1} className={formStyles.error} role="alert">{error}</p> : null}
     <button type="submit" className={`button ${formStyles.submit}`} disabled={pending}>{pending ? <Loader2 size={18} className={formStyles.spinner} aria-hidden="true" /> : <Send size={18} aria-hidden="true" />}{pending ? "Enviando inscrição…" : "Inscrever meu filho gratuitamente"}</button>
-    <p className={formStyles.footnote}>Inscrições gratuitas até 02/11/2026.</p>
+    <p className={formStyles.footnote}>Inscrições gratuitas até 06/11/2026.</p>
   </form>;
 }

@@ -121,7 +121,7 @@ export function validateEventRegistration(input: unknown, now: Date = new Date()
   const eventId = payload.event_id as RegistrationEventId;
   const event = registrationEvents[eventId];
   const isVinhedo = eventId === "inauguracao-centro-olimpico-vinhedo-2026";
-  if (isVinhedo && !isVinhedoRegistrationOpen(now)) return fail("As inscrições para Vinhedo se encerraram em 02/11/2026.");
+  if (isVinhedo && !isVinhedoRegistrationOpen(now)) return fail("As inscrições para Vinhedo se encerraram em 06/11/2026.");
   if (payload.registration_type !== "individual" && payload.registration_type !== "school") return fail("Selecione inscrição individual ou escolar.");
   if (payload.registration_type === "school" && !event.school) return fail("Este evento aceita apenas inscrições individuais.");
   const fundamentalStudent = isVinhedo && payload.registration_type === "individual";
