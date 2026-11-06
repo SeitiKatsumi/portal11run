@@ -193,3 +193,13 @@ export function listEventRegistrations(): EventRegistration[] {
   }
   return registrations.map((registration) => ({ ...registration, consent: true, guardian_authorization: true, participants: byRegistration.get(registration.id) ?? [] }));
 }
+
+export function listPublicEventEntrants(eventId: RegistrationEventId) {
+  return getDatabase().prepare(`
+    SELECT p.name, CASE WHEN p.school_year IS NOT NULL THEN p.school_year || 'º Ano' ELSE 'Grupo escolar' END AS category
+    FROM event_registration_participants p
+    JOIN event_registrations r ON r.id = p.registration_id
+    WHERE r.event_id = ?
+    ORDER BY CAST(COALESCE(p.school_year, '99') AS INTEGER), p.name COLLATE NOCASE
+  `).all(eventId) as Array<{ name: string; category: string }>;
+}

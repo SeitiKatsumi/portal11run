@@ -4,10 +4,13 @@ import { ArrowLeft, ArrowUpRight, CalendarDays, Clock3, MapPin } from "lucide-re
 import type { EventLandingContent } from "@/lib/event-content";
 import { isVinhedoRegistrationOpen } from "@/lib/vinhedo-registration";
 import { VinhedoRegistrationForm } from "@/components/VinhedoRegistrationForm";
+import { EntrantsModal } from "@/components/EntrantsModal";
+import { listPublicEventEntrants } from "@/lib/event-registrations";
 import styles from "./EventLanding.module.css";
 
 export function VinhedoLanding({ event }: { event: EventLandingContent }) {
   const registrationOpen = isVinhedoRegistrationOpen();
+  const entrants = listPublicEventEntrants("inauguracao-centro-olimpico-vinhedo-2026");
 
   return <article className={`${styles.page} ${styles.vinhedo}`}>
     <Link href="/" className={styles.back}><ArrowLeft size={16} aria-hidden="true" />Portal 11RUN<span>/ Eventos</span></Link>
@@ -31,7 +34,7 @@ export function VinhedoLanding({ event }: { event: EventLandingContent }) {
 
     <div className={styles.vinhedoInvite}>
       <p>{event.introTitle}</p>
-      {registrationOpen ? <a className={styles.primaryButton} href="#inscricoes">INSCREVA SEU FILHO GRATUITAMENTE ATÉ O DIA 06/11.<ArrowUpRight size={19} aria-hidden="true" /></a> : <p className={styles.availability}>Inscrições encerradas em 06/11/2026.</p>}
+      <div className={styles.vinhedoActions}>{registrationOpen ? <a className={styles.primaryButton} href="#inscricoes">INSCREVA SEU FILHO GRATUITAMENTE ATÉ O DIA 06/11.<ArrowUpRight size={19} aria-hidden="true" /></a> : <p className={styles.availability}>Inscrições encerradas em 06/11/2026.</p>}<EntrantsModal entrants={entrants} title="Inscritos em Vinhedo" /></div>
     </div>
 
     <section className={styles.registration} id="inscricoes" aria-labelledby="inscricoes-titulo">

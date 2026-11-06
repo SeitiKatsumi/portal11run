@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ClipboardList, Search, School, Users } from "lucide-react";
+import { ClipboardList, Download, Search, School, Users } from "lucide-react";
 import type { EventRegistration } from "@/lib/event-registrations";
 import styles from "./event-registrations-admin.module.css";
 
@@ -38,6 +38,7 @@ export function EventRegistrationsAdmin({ registrations }: { registrations: Even
       <div className={styles.filters}>
         <label><span>Evento</span><select value={event} onChange={(change) => setEvent(change.target.value)}><option value="">Todos os eventos</option>{Object.entries(eventLabels).map(([id, label]) => <option key={id} value={id}>{label}</option>)}</select></label>
         <label><span><Search size={14} aria-hidden="true" /> Buscar inscrição</span><input type="search" value={query} onChange={(change) => setQuery(change.target.value)} placeholder="Responsável, escola, aluno ou e-mail" /></label>
+        <a className={styles.export} href={`/api/admin/events/export${event ? `?event_id=${encodeURIComponent(event)}` : ""}`}><Download size={17} aria-hidden="true" />{event ? "Baixar CSV deste evento" : "Baixar CSV de todos"}</a>
       </div>
       <div className={styles.list}>
         {visible.length === 0 ? <p className={styles.empty}>Nenhuma inscrição encontrada.</p> : null}

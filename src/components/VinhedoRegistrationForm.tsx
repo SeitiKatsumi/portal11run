@@ -111,7 +111,7 @@ export function VinhedoRegistrationForm({ initialOpen }: { initialOpen: boolean 
       <legend><ShieldCheck size={19} aria-hidden="true" />Autorização e privacidade</legend>
       <label><input name="guardian_authorization" type="checkbox" required /><span>Sou o responsável legal e autorizo a participação da criança ou adolescente neste evento, com acompanhamento de um adulto responsável.</span></label>
       <label><input name="consent" type="checkbox" required /><span>Concordo com o uso dos dados informados para organizar esta inscrição e receber orientações sobre o evento, conforme a <Link href="/politica-de-privacidade" target="_blank" rel="noopener noreferrer">Política de Privacidade</Link>.</span></label>
-      <p>Os dados dos participantes são acessíveis à equipe autorizada. Não publicamos a lista de alunos.</p>
+      <p>Na lista pública aparecem somente o nome e a categoria do participante. Contatos, documentos e demais dados permanecem privados e acessíveis apenas à equipe autorizada.</p>
     </fieldset>
     <div className={formStyles.trap} aria-hidden="true"><label>Deixe este campo em branco<input name="website" tabIndex={-1} autoComplete="off" /></label></div>
     {error ? <p ref={errorPanel} tabIndex={-1} className={formStyles.error} role="alert">{error}</p> : null}

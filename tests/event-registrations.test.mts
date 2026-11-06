@@ -141,7 +141,7 @@ test("SQLite persiste inscritos, preserva aceites e reverte completamente falhas
     const result = spawnSync(process.execPath, ["--experimental-strip-types", "--input-type=module", "-e", `
       import assert from 'node:assert/strict';
       import { DatabaseSync } from 'node:sqlite';
-      import { createEventRegistration, listEventRegistrations } from ${JSON.stringify(pathToFileURL(path.resolve("src/lib/event-registrations.ts")).href)};
+      import { createEventRegistration, listEventRegistrations, listPublicEventEntrants } from ${JSON.stringify(pathToFileURL(path.resolve("src/lib/event-registrations.ts")).href)};
       const individual = ${JSON.stringify(individual)};
       const school = ${JSON.stringify(school)};
       const registrationTime = new Date(${JSON.stringify(registrationTime.toISOString())});
@@ -160,6 +160,10 @@ test("SQLite persiste inscritos, preserva aceites e reverte completamente falhas
       assert.match(listed.find((entry) => entry.id === saved.registrationId).guardian_authorization_text, /acompanhamento de um adulto responsável/);
       assert.match(listed[0].consent_text, /receber orientações sobre o evento/);
       assert.match(listed.find((entry) => entry.id === group.registrationId).guardian_authorization_text, /todos os alunos/);
+      const publicEntrants = listPublicEventEntrants('inauguracao-centro-olimpico-vinhedo-2026');
+      assert.equal(publicEntrants.length, 500);
+      assert.equal(publicEntrants[0].name, 'Aluno 0');
+      assert.equal(publicEntrants[0].category, 'Grupo escolar');
       assert.ok(listed[0].created_at);
       connection.exec("CREATE TRIGGER force_failure BEFORE INSERT ON event_registration_participants WHEN NEW.name = 'Falha deliberada' BEGIN SELECT RAISE(ABORT, 'forced failure'); END");
       assert.throws(() => createEventRegistration({...school, participants: [individual.participants[0], {...individual.participants[0], name: 'Falha deliberada'}]}, registrationTime), /forced failure/);

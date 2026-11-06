@@ -1,10 +1,10 @@
-import { crossCountryCategoryForBirthDate, circuitCategoryForBirthDate, circuitRaceOptions, crossCountryTerm, isCrossRegistrationOpen } from "./circuit-categories";
+import { crossCountryCategoryForBirthDate, circuitCategoryForBirthDate, circuitRaceOptions, crossCountryTerm, isCrossRegistrationOpen } from "./circuit-categories.ts";
 import { mkdirSync, readFileSync } from "fs";
 import path from "path";
 import { createHash } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
-import { ONZE_FUTURO_TERM_VERSION, onzeFuturoTermSnapshot } from "./onze-futuro-policy";
-import { isOnzeFuturoBirthDateEligible, onzeFuturoAgeHelp } from "./onze-futuro-registration";
+import { ONZE_FUTURO_TERM_VERSION, onzeFuturoTermSnapshot } from "./onze-futuro-policy.ts";
+import { isOnzeFuturoBirthDateEligible, onzeFuturoAgeHelp } from "./onze-futuro-registration.ts";
 
 export type LeadPayload = Record<string, string | boolean | undefined>;
 
@@ -498,6 +498,18 @@ export function listLeads() {
   return getDatabase()
     .prepare("SELECT * FROM leads ORDER BY datetime(created_at) DESC")
     .all() as LeadRecord[];
+}
+
+export function listPublicCrossCountryEntrants() {
+  return getDatabase().prepare(`
+    SELECT DISTINCT athlete_name AS name, category
+    FROM leads
+    WHERE project_type = 'circuito-cross-country-ivcl-11run'
+      AND pipeline_status NOT IN ('Declinados', 'Outros')
+      AND trim(COALESCE(athlete_name, '')) <> ''
+      AND trim(COALESCE(category, '')) <> ''
+    ORDER BY CAST(replace(category, 'Sub ', '') AS INTEGER), athlete_name COLLATE NOCASE
+  `).all() as Array<{ name: string; category: string }>;
 }
 
 export function getPublicAthleteProfileByFirstName(firstName: string) {

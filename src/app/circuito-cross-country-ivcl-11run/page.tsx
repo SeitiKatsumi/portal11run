@@ -4,7 +4,9 @@ import { CalendarDays, Camera, Clock3, Flag, Youtube, MapPin, Medal, Route, Tree
 import { EventLandingHero } from "@/components/EventLandingHero";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { CrossCountryFaq } from "@/components/CrossCountryFaq";
+import { EntrantsModal } from "@/components/EntrantsModal";
 import { crossCountryBirthRange, crossCountryBirthRule, crossCountryCategories, crossCountryDirections, crossCountryRaces, crossCountryTerm } from "@/lib/circuit-categories";
+import { listPublicCrossCountryEntrants } from "@/lib/leads";
 import styles from "./page.module.css";
 import eventStyles from "@/components/EventLanding.module.css";
 
@@ -14,6 +16,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/circuito-cross-country-ivcl-11run" },
   openGraph: { images: ["/assets/cross-country-capa-amanhecer.webp"] }
 };
+export const dynamic = "force-dynamic";
 
 const project = "circuito-cross-country-ivcl-11run";
 const schedule = [
@@ -23,6 +26,7 @@ const schedule = [
 ];
 
 export default function CrossCountryPage() {
+  const entrants = listPublicCrossCountryEntrants();
   return <div className={styles.page}>
     <section className={`${eventStyles.page} ${styles.eventTop}`} aria-label="Apresentação do evento">
       <EventLandingHero
@@ -36,6 +40,7 @@ export default function CrossCountryPage() {
         registrationUrl="#inscricao"
         registrationNote="Inscreva-se até 12/11/2026, às 23h59, no horário de São Paulo."
         primaryCta={<ProjectFormModal project={project} className={`button ${eventStyles.primaryButton}`} />}
+        secondaryCta={<EntrantsModal entrants={entrants} className={eventStyles.outlineButton} title="Inscritos no Cross Country" />}
       />
       <dl className={eventStyles.facts} aria-label="Resumo do Cross Country">
         <div><CalendarDays aria-hidden="true" /><dt>Quando</dt><dd><time dateTime="2026-11-15T08:00:00-03:00">15 de novembro de 2026</time><small>Primeira edição · 8h às 10h</small></dd></div>
