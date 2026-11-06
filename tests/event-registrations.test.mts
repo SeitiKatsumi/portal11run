@@ -164,6 +164,7 @@ test("SQLite persiste inscritos, preserva aceites e reverte completamente falhas
       assert.equal(publicEntrants.length, 500);
       assert.equal(publicEntrants[0].name, 'Aluno 0');
       assert.equal(publicEntrants[0].category, 'Grupo escolar');
+      assert.equal(Object.getPrototypeOf(publicEntrants[0]), Object.prototype);
       assert.ok(listed[0].created_at);
       connection.exec("CREATE TRIGGER force_failure BEFORE INSERT ON event_registration_participants WHEN NEW.name = 'Falha deliberada' BEGIN SELECT RAISE(ABORT, 'forced failure'); END");
       assert.throws(() => createEventRegistration({...school, participants: [individual.participants[0], {...individual.participants[0], name: 'Falha deliberada'}]}, registrationTime), /forced failure/);

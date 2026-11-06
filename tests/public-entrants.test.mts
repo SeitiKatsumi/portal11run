@@ -17,6 +17,7 @@ test("lista pública do Cross Country expõe apenas nome e categoria de inscriç
       assert.equal(publicEntrants.length, 1);
       assert.equal(publicEntrants[0].name, 'Ana Corredora');
       assert.equal(publicEntrants[0].category, 'Sub 14');
+      assert.equal(Object.getPrototypeOf(publicEntrants[0]), Object.prototype);
       updateLead(lead.id, {pipeline_status:'Declinados'});
       assert.deepEqual(listPublicCrossCountryEntrants(), []);
     `], { encoding: "utf8", env: { ...process.env, SQLITE_PATH: path.join(directory, "cross.sqlite") } });

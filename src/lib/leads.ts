@@ -501,7 +501,7 @@ export function listLeads() {
 }
 
 export function listPublicCrossCountryEntrants() {
-  return getDatabase().prepare(`
+  const rows = getDatabase().prepare(`
     SELECT DISTINCT athlete_name AS name, category
     FROM leads
     WHERE project_type = 'circuito-cross-country-ivcl-11run'
@@ -510,6 +510,7 @@ export function listPublicCrossCountryEntrants() {
       AND trim(COALESCE(category, '')) <> ''
     ORDER BY CAST(replace(category, 'Sub ', '') AS INTEGER), athlete_name COLLATE NOCASE
   `).all() as Array<{ name: string; category: string }>;
+  return rows.map(({ name, category }) => ({ name, category }));
 }
 
 export function getPublicAthleteProfileByFirstName(firstName: string) {
