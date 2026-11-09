@@ -69,7 +69,7 @@ function getDatabase() {
       name TEXT NOT NULL,
       birth_date TEXT NOT NULL,
       gender TEXT NOT NULL CHECK (gender IN ('Feminino', 'Masculino', 'Não informar')),
-      school_year TEXT CHECK (school_year IN ('1', '2', '3', '4', '5'))
+      school_year TEXT CHECK (school_year IN ('1', '2', '3', '4', '5', '6', '7', '8', '9'))
     );
     CREATE INDEX IF NOT EXISTS idx_event_registrations_event_created ON event_registrations(event_id, created_at);
     CREATE INDEX IF NOT EXISTS idx_event_registration_participants_registration ON event_registration_participants(registration_id);
@@ -78,7 +78,23 @@ function getDatabase() {
   try {
     const columns = connection.prepare("PRAGMA table_info(event_registration_participants)").all() as Array<{ name: string }>;
     if (!columns.some((column) => column.name === "school_year")) {
-      connection.exec("ALTER TABLE event_registration_participants ADD COLUMN school_year TEXT CHECK (school_year IN ('1', '2', '3', '4', '5'))");
+      connection.exec("ALTER TABLE event_registration_participants ADD COLUMN school_year TEXT CHECK (school_year IN ('1', '2', '3', '4', '5', '6', '7', '8', '9'))");
+    } else {
+      const table = connection.prepare("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'event_registration_participants'").get() as { sql: string };
+      if (!table.sql.includes("'9'")) connection.exec(`
+        CREATE TABLE event_registration_participants_v2 (
+          id INTEGER PRIMARY KEY,
+          registration_id TEXT NOT NULL REFERENCES event_registrations(id) ON DELETE CASCADE,
+          name TEXT NOT NULL,
+          birth_date TEXT NOT NULL,
+          gender TEXT NOT NULL CHECK (gender IN ('Feminino', 'Masculino', 'Não informar')),
+          school_year TEXT CHECK (school_year IN ('1', '2', '3', '4', '5', '6', '7', '8', '9'))
+        );
+        INSERT INTO event_registration_participants_v2 SELECT * FROM event_registration_participants;
+        DROP TABLE event_registration_participants;
+        ALTER TABLE event_registration_participants_v2 RENAME TO event_registration_participants;
+        CREATE INDEX idx_event_registration_participants_registration ON event_registration_participants(registration_id);
+      `);
     }
     connection.exec("COMMIT");
   } catch (error) {
@@ -149,7 +165,7 @@ export function validateEventRegistration(input: unknown, now: Date = new Date()
     const age = eventParticipantAge(participant.birth_date, birthDateLimit);
     if (fundamentalStudent) {
       if (age > 120) return fail("Informe uma data de nascimento válida.");
-      if (typeof participant.school_year !== "string" || !/^[1-5]$/.test(participant.school_year)) return fail("Selecione a série do aluno, do 1º ao 5º ano.");
+      if (typeof participant.school_year !== "string" || !/^[1-9]$/.test(participant.school_year)) return fail("Selecione a série do aluno, do 1º ao 9º ano.");
     } else if (age < event.minAge || age > event.maxAge) return fail(`${participantName}: a idade deve ser de ${event.minAge} a ${event.maxAge} anos no dia do evento.`);
     if (participant.gender !== "Feminino" && participant.gender !== "Masculino" && participant.gender !== "Não informar") return fail(`Selecione o gênero do participante ${index + 1}.`);
     const fingerprint = `${participantName.toLocaleLowerCase("pt-BR")}|${participant.birth_date}`;

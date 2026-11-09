@@ -102,7 +102,7 @@ export function VinhedoRegistrationForm({ initialOpen }: { initialOpen: boolean 
         <label>Gênero<select name="gender" defaultValue="Não informar"><option>Não informar</option><option>Feminino</option><option>Masculino</option></select></label>
         <fieldset className={`${formStyles.full} ${styles.years}`}>
           <legend>Série</legend>
-          <div className={styles.yearOptions}>{[1, 2, 3, 4, 5].map((year) => <label className={styles.yearOption} key={year}><input name="school_year" type="radio" value={year} required /><span>{year}º Ano</span></label>)}</div>
+          <div className={styles.yearOptions}>{[1, 2, 3, 4, 5, 6, 7, 8, 9].map((year) => <label className={styles.yearOption} key={year}><input name="school_year" type="radio" value={year} required /><span>{year}º Ano</span></label>)}</div>
         </fieldset>
       </div>
     </fieldset>

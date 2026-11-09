@@ -116,7 +116,7 @@ if (vinhedoOpen) {
   checks += 1;
 
   await expectFailure(await post({ ...vinhedo, participants: [{ ...vinhedo.participants[0], school_year: undefined }] }, 5), 400);
-  await expectFailure(await post({ ...vinhedo, participants: [{ ...vinhedo.participants[0], school_year: "6" }] }, 5), 400);
+  await expectFailure(await post({ ...vinhedo, participants: [{ ...vinhedo.participants[0], school_year: "10" }] }, 5), 400);
   await expectFailure(await post({ ...vinhedo, consent: false }, 5), 400);
   await expectFailure(await post({ ...vinhedo, guardian_authorization: false }, 5), 400);
   const vinhedoResponse = await post(vinhedo, 5);

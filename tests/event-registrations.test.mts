@@ -42,8 +42,8 @@ test("Vinhedo aceita os dados mínimos do responsável e exige a série do aluno
   assert.equal(result.email, "");
   assert.equal(result.city, "");
   assert.equal(result.state, "");
-  for (const school_year of ["1", "2", "3", "4", "5"]) assert.equal(validateEventRegistration({ ...vinhedo, participants: [{ ...vinhedo.participants[0], school_year }] }).participants[0].school_year, school_year);
-  for (const school_year of [undefined, null, "", "0", "6", 1, "1º Ano", "3 ", {}]) assert.throws(() => validateEventRegistration({ ...vinhedo, participants: [{ ...vinhedo.participants[0], school_year }] }), /série/);
+  for (const school_year of ["1", "2", "3", "4", "5", "6", "7", "8", "9"]) assert.equal(validateEventRegistration({ ...vinhedo, participants: [{ ...vinhedo.participants[0], school_year }] }).participants[0].school_year, school_year);
+  for (const school_year of [undefined, null, "", "0", "10", 1, "1º Ano", "3 ", {}]) assert.throws(() => validateEventRegistration({ ...vinhedo, participants: [{ ...vinhedo.participants[0], school_year }] }), /série/);
   for (const field of ["name", "phone"]) assert.throws(() => validateEventRegistration({ ...vinhedo, [field]: undefined }));
   for (const field of ["email", "city", "state"]) assert.throws(() => validateEventRegistration({ ...individual, [field]: undefined }));
   assert.throws(() => validateEventRegistration({ ...vinhedo, email: "email-inválido" }), /e-mail/);
@@ -180,7 +180,7 @@ test("SQLite persiste inscritos, preserva aceites e reverte completamente falhas
   }
 });
 
-test("migração adiciona série sem perder inscrições antigas e persiste o cadastro mínimo", () => {
+test("migração amplia a série até o 9º ano sem perder inscrições antigas", () => {
   const directory = mkdtempSync(path.join(os.tmpdir(), "11run-vinhedo-migration-"));
   const databasePath = path.join(directory, "events.sqlite");
   const moduleUrl = pathToFileURL(path.resolve("src/lib/event-registrations.ts")).href;
@@ -200,34 +200,35 @@ test("migração adiciona série sem perder inscrições antigas e persiste o ca
         );
         CREATE TABLE event_registration_participants (
           id INTEGER PRIMARY KEY, registration_id TEXT NOT NULL REFERENCES event_registrations(id),
-          name TEXT NOT NULL, birth_date TEXT NOT NULL, gender TEXT NOT NULL
+          name TEXT NOT NULL, birth_date TEXT NOT NULL, gender TEXT NOT NULL,
+          school_year TEXT CHECK (school_year IN ('1', '2', '3', '4', '5'))
         );
         INSERT INTO event_registrations VALUES (
           'legacy-school', 'inauguracao-centro-olimpico-vinhedo-2026', 'school', 'Responsável antigo',
           'antigo@example.org', '19999991234', 'Vinhedo', 'SP', 'Escola antiga', 1, 1,
           'Consentimento original', 'Autorização original', '2026-10-23T12:00:00.000Z'
         );
-        INSERT INTO event_registration_participants (registration_id, name, birth_date, gender)
-        VALUES ('legacy-school', 'Aluno antigo', '2016-03-12', 'Masculino');
+        INSERT INTO event_registration_participants (registration_id, name, birth_date, gender, school_year)
+        VALUES ('legacy-school', 'Aluno antigo', '2016-03-12', 'Masculino', '5');
       \`);
       legacy.close();
       const old = listEventRegistrations();
       assert.equal(old.length, 1);
       assert.equal(old[0].school_name, 'Escola antiga');
       assert.equal(old[0].participants[0].name, 'Aluno antigo');
-      assert.equal(old[0].participants[0].school_year, null);
+      assert.equal(old[0].participants[0].school_year, '5');
       assert.equal(old[0].guardian_authorization_text, 'Autorização original');
-      const saved = createEventRegistration(${JSON.stringify(vinhedo)}, new Date(${JSON.stringify(registrationTime.toISOString())}));
+      const saved = createEventRegistration(${JSON.stringify({ ...vinhedo, participants: [{ ...vinhedo.participants[0], school_year: "9" }] })}, new Date(${JSON.stringify(registrationTime.toISOString())}));
       const listed = listEventRegistrations();
       assert.equal(listed.length, 2);
       const minimal = listed.find((entry) => entry.id === saved.registrationId);
-      assert.equal(minimal.participants[0].school_year, '4');
+      assert.equal(minimal.participants[0].school_year, '9');
       assert.equal(minimal.email, '');
       assert.equal(minimal.city, '');
       assert.equal(minimal.state, '');
       assert.equal(minimal.created_at, ${JSON.stringify(registrationTime.toISOString())});
       const connection = new DatabaseSync(process.env.SQLITE_PATH);
-      assert.equal(connection.prepare('SELECT school_year FROM event_registration_participants WHERE registration_id = ?').get(saved.registrationId).school_year, '4');
+      assert.equal(connection.prepare('SELECT school_year FROM event_registration_participants WHERE registration_id = ?').get(saved.registrationId).school_year, '9');
       assert.equal(connection.prepare('PRAGMA integrity_check').get().integrity_check, 'ok');
       connection.close();
     `);
@@ -237,8 +238,8 @@ test("migração adiciona série sem perder inscrições antigas e persiste o ca
       import { listEventRegistrations } from ${JSON.stringify(moduleUrl)};
       const listed = listEventRegistrations();
       assert.equal(listed.length, 2);
-      assert.equal(listed.find((entry) => entry.id === 'legacy-school').participants[0].school_year, null);
-      assert.equal(listed.find((entry) => entry.id !== 'legacy-school').participants[0].school_year, '4');
+      assert.equal(listed.find((entry) => entry.id === 'legacy-school').participants[0].school_year, '5');
+      assert.equal(listed.find((entry) => entry.id !== 'legacy-school').participants[0].school_year, '9');
     `);
     assert.equal(reopened.status, 0, reopened.stderr || reopened.stdout);
   } finally {
