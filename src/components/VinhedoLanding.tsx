@@ -34,7 +34,7 @@ export function VinhedoLanding({ event }: { event: EventLandingContent }) {
 
     <div className={styles.vinhedoInvite}>
       <p>{event.introTitle}</p>
-      <div className={styles.vinhedoActions}>{registrationOpen ? <a className={styles.primaryButton} href="#inscricoes">INSCREVA SEU FILHO GRATUITAMENTE ATÉ O DIA 06/11.<ArrowUpRight size={19} aria-hidden="true" /></a> : <p className={styles.availability}>Inscrições encerradas em 06/11/2026.</p>}<EntrantsModal entrants={entrants} title="Inscritos em Vinhedo" /></div>
+      <div className={styles.vinhedoActions}>{registrationOpen ? <a className={styles.primaryButton} href="#inscricoes">INSCREVA SEU FILHO GRATUITAMENTE ATÉ O DIA 12/11.<ArrowUpRight size={19} aria-hidden="true" /></a> : <p className={styles.availability}>Inscrições encerradas em 12/11/2026.</p>}<EntrantsModal entrants={entrants} title="Inscritos em Vinhedo" /></div>
     </div>
 
     <section className={styles.registration} id="inscricoes" aria-labelledby="inscricoes-titulo">

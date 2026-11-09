@@ -128,13 +128,13 @@ if (vinhedoOpen) {
   assert.match(vinhedoResponse.headers.get("cache-control") || "", /no-store/);
   checks += 1;
 } else {
-  // Após 06/11, o endpoint deve permanecer fechado; os limites exatos usam relógio fixo nos testes unitários.
+  // Após 12/11, o endpoint deve permanecer fechado; os limites exatos usam relógio fixo nos testes unitários.
   for (const payload of [vinhedo, school]) {
     const response = await post(payload, 5);
     assert.equal(response.status, 400);
     const result = await response.json();
     assert.equal(result.ok, false);
-    assert.match(result.error, /encerraram em 06\/11\/2026/);
+    assert.match(result.error, /encerraram em 12\/11\/2026/);
     assert.equal(result.registrationId, undefined);
     checks += 1;
   }

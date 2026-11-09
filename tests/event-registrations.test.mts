@@ -68,14 +68,14 @@ test("Vinhedo exige WhatsApp válido, autorização e privacidade sem coerção"
   assert.throws(() => validateEventRegistration({ ...vinhedo, website: "spam" }));
 });
 
-test("prazo de Vinhedo inclui 06/11 em São Paulo e não fecha a Finalíssima", () => {
-  const lastInstant = new Date("2026-11-07T02:59:59.999Z");
-  const firstClosed = new Date("2026-11-07T03:00:00.000Z");
+test("prazo de Vinhedo inclui 12/11 em São Paulo e não fecha a Finalíssima", () => {
+  const lastInstant = new Date("2026-11-13T02:59:59.999Z");
+  const firstClosed = new Date("2026-11-13T03:00:00.000Z");
   assert.equal(isVinhedoRegistrationOpen(lastInstant), true);
   assert.equal(isVinhedoRegistrationOpen(firstClosed), false);
   assert.equal(isVinhedoRegistrationOpen(new Date("invalid")), false);
   assert.doesNotThrow(() => validateEventRegistration(vinhedo, lastInstant));
-  assert.throws(() => validateEventRegistration(vinhedo, firstClosed), /encerraram em 06\/11\/2026/);
+  assert.throws(() => validateEventRegistration(vinhedo, firstClosed), /encerraram em 12\/11\/2026/);
   assert.throws(() => validateEventRegistration(school, firstClosed), /encerraram/);
   assert.doesNotThrow(() => validateEventRegistration(individual, firstClosed));
 });
