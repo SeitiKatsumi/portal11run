@@ -39,7 +39,7 @@ async function readPayload(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    try { assertRateLimit(request, "event-registrations", 8, 15 * 60_000); }
+    try { assertRateLimit(request, "event-registrations", 100, 15 * 60_000); }
     catch { throw new RequestError("Muitas tentativas. Aguarde alguns minutos e tente novamente.", 429); }
     const result = createEventRegistration(await readPayload(request));
     return NextResponse.json({ ok: true, ...result, message: "Inscrição recebida com sucesso. A participação é gratuita." }, { status: 201, headers: { "Cache-Control": "no-store" } });

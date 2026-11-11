@@ -5,6 +5,7 @@ import { EventLandingHero } from "@/components/EventLandingHero";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { CrossCountryFaq } from "@/components/CrossCountryFaq";
 import { EntrantsModal } from "@/components/EntrantsModal";
+import { CompetitionResultsModal } from "@/components/CompetitionResultsModal";
 import { crossCountryBirthRange, crossCountryBirthRule, crossCountryCategories, crossCountryDirections, crossCountryRaces, crossCountryTerm } from "@/lib/circuit-categories";
 import { listPublicCrossCountryEntrants } from "@/lib/leads";
 import styles from "./page.module.css";
@@ -40,7 +41,7 @@ export default function CrossCountryPage() {
         registrationUrl="#inscricao"
         registrationNote="Inscreva-se até 12/11/2026, às 23h59, no horário de São Paulo."
         primaryCta={<ProjectFormModal project={project} className={`button ${eventStyles.primaryButton}`} />}
-        secondaryCta={<EntrantsModal entrants={entrants} className={eventStyles.outlineButton} title="Inscritos no Cross Country" />}
+        secondaryCta={<><EntrantsModal entrants={entrants} className={eventStyles.outlineButton} title="Inscritos no Cross Country" /><CompetitionResultsModal slug={project} className={eventStyles.outlineButton} /></>}
       />
       <dl className={eventStyles.facts} aria-label="Resumo do Cross Country">
         <div><CalendarDays aria-hidden="true" /><dt>Quando</dt><dd><time dateTime="2026-11-15T08:00:00-03:00">15 de novembro de 2026</time><small>Primeira edição · 8h às 10h</small></dd></div>

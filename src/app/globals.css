@@ -143,6 +143,16 @@ body:has(#links-page) .run-assistant {
   display: none;
 }
 
+body:has(#timing-app) .site-header,
+body:has(#timing-app) .site-footer,
+body:has(#timing-app) .run-assistant {
+  display: none;
+}
+
+body:has(#timing-app) main {
+  overflow: visible;
+}
+
 body:has(#links-page) main {
   overflow: visible;
 }
