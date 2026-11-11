@@ -148,7 +148,7 @@ body:has(#links-page) main {
 }
 
 .site-header {
-  position: fixed;
+  position: absolute;
   top: 18px;
   left: 0;
   right: 0;
