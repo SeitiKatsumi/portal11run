@@ -21,8 +21,10 @@ export type CompetitionRace = {
   sort_order: number;
   session_id: string | null;
   status: RaceStatus;
+  session_status: RaceStatus | null;
   started_at: string | null;
   started_device_epoch_ms: number | null;
+  paused_elapsed_ms: number;
   device_id: string | null;
 };
 
@@ -153,6 +155,10 @@ function db() {
       created_at TEXT NOT NULL
     );
   `);
+  const sessionColumns = database.prepare("PRAGMA table_info(competition_sessions)").all() as Array<{ name: string }>;
+  if (!sessionColumns.some((column) => column.name === "paused_elapsed_ms")) {
+    database.exec("ALTER TABLE competition_sessions ADD COLUMN paused_elapsed_ms INTEGER NOT NULL DEFAULT 0");
+  }
   seedCrossCountry(database);
   return database;
 }
@@ -207,8 +213,10 @@ export function formatCompetitionTime(value: number | null) {
 
 export function listCompetitionRaces(competitionId = CROSS_COUNTRY_COMPETITION_ID): CompetitionRace[] {
   const rows = db().prepare(`
-    SELECT r.*, s.id AS session_id, COALESCE(s.status, 'READY') AS status, s.started_at,
-      s.started_device_epoch_ms, s.device_id
+    SELECT r.*, s.id AS session_id,
+      CASE WHEN s.status IS NULL OR s.status = 'CANCELLED' THEN 'READY' ELSE s.status END AS status,
+      s.status AS session_status, s.started_at, s.started_device_epoch_ms,
+      COALESCE(s.paused_elapsed_ms, 0) AS paused_elapsed_ms, s.device_id
     FROM competition_races r
     LEFT JOIN competition_sessions s ON s.id = (
       SELECT id FROM competition_sessions WHERE race_id = r.id ORDER BY created_at DESC LIMIT 1
@@ -326,15 +334,50 @@ export function armRace(raceId: string, deviceId: string, actor = "admin") {
 
 export function startRace(raceId: string, deviceId: string, deviceEpochMs: number, actor = "admin") {
   const connection = db();
-  const session = connection.prepare("SELECT * FROM competition_sessions WHERE race_id=? ORDER BY created_at DESC LIMIT 1").get(raceId) as { id: string; competition_id: string; status: RaceStatus; device_id: string } | undefined;
+  const session = connection.prepare("SELECT * FROM competition_sessions WHERE race_id=? ORDER BY created_at DESC LIMIT 1").get(raceId) as { id: string; competition_id: string; status: RaceStatus; device_id: string; paused_elapsed_ms: number } | undefined;
   if (!session || session.status !== "ARMED") throw new Error("Arme a largada antes de iniciar.");
   if (session.device_id !== deviceId) throw new Error("Esta largada foi armada em outro dispositivo.");
   if (!Number.isFinite(deviceEpochMs) || deviceEpochMs <= 0) throw new Error("Horário do dispositivo inválido.");
   const now = new Date().toISOString();
-  connection.prepare("UPDATE competition_sessions SET status='RUNNING', started_at=?, started_device_epoch_ms=? WHERE id=?").run(now, Math.round(deviceEpochMs), session.id);
+  const effectiveEpoch = Math.round(deviceEpochMs - Math.max(0, session.paused_elapsed_ms));
+  connection.prepare("UPDATE competition_sessions SET status='RUNNING', started_at=COALESCE(started_at, ?), started_device_epoch_ms=?, paused_elapsed_ms=0 WHERE id=?").run(now, effectiveEpoch, session.id);
   connection.prepare("UPDATE competitions SET status='LIVE', updated_at=? WHERE id=?").run(now, session.competition_id);
-  audit(connection, session.competition_id, "session", session.id, "START", actor, session, { ...session, status: "RUNNING", started_at: now, started_device_epoch_ms: deviceEpochMs });
+  audit(connection, session.competition_id, "session", session.id, session.paused_elapsed_ms ? "RESUME" : "START", actor, session, { ...session, status: "RUNNING", started_at: now, started_device_epoch_ms: effectiveEpoch, paused_elapsed_ms: 0 });
   return connection.prepare("SELECT * FROM competition_sessions WHERE id=?").get(session.id);
+}
+
+export function pauseRace(raceId: string, deviceId: string, deviceEpochMs: number, actor = "timer") {
+  const connection = db();
+  const session = connection.prepare("SELECT * FROM competition_sessions WHERE race_id=? ORDER BY created_at DESC LIMIT 1").get(raceId) as { id: string; competition_id: string; status: RaceStatus; device_id: string; started_device_epoch_ms: number | null } | undefined;
+  if (!session || session.status !== "RUNNING" || !session.started_device_epoch_ms) throw new Error("A largada não está em andamento.");
+  if (session.device_id !== deviceId) throw new Error("Esta largada pertence a outro dispositivo.");
+  if (!Number.isFinite(deviceEpochMs) || deviceEpochMs <= session.started_device_epoch_ms) throw new Error("Horário do dispositivo inválido.");
+  const elapsed = Math.round(deviceEpochMs - session.started_device_epoch_ms);
+  connection.prepare("UPDATE competition_sessions SET status='ARMED', started_device_epoch_ms=NULL, paused_elapsed_ms=? WHERE id=?").run(elapsed, session.id);
+  audit(connection, session.competition_id, "session", session.id, "PAUSE", actor, session, { ...session, status: "ARMED", started_device_epoch_ms: null, paused_elapsed_ms: elapsed });
+  return connection.prepare("SELECT * FROM competition_sessions WHERE id=?").get(session.id);
+}
+
+export function resetRace(raceId: string, actor = "admin", reason = "") {
+  if (!reason.trim()) throw new Error("Informe a confirmação do reset.");
+  const connection = db();
+  const session = connection.prepare("SELECT * FROM competition_sessions WHERE race_id=? ORDER BY created_at DESC LIMIT 1").get(raceId) as { id: string; competition_id: string; status: RaceStatus } | undefined;
+  if (!session) return null;
+  const now = new Date().toISOString();
+  connection.exec("BEGIN IMMEDIATE");
+  try {
+    connection.prepare("UPDATE competition_finishes SET status='VOID', updated_at=? WHERE session_id=? AND status<>'VOID'").run(now, session.id);
+    connection.prepare("UPDATE competition_entries SET result_status='ACTIVE', updated_at=? WHERE race_id=?").run(now, raceId);
+    connection.prepare("UPDATE competition_sessions SET status='CANCELLED', started_device_epoch_ms=NULL, paused_elapsed_ms=0 WHERE id=?").run(session.id);
+    const active = connection.prepare("SELECT 1 FROM competition_sessions WHERE competition_id=? AND status IN ('RUNNING','HOMOLOGATED') LIMIT 1").get(session.competition_id);
+    if (!active) connection.prepare("UPDATE competitions SET status='DRAFT', updated_at=? WHERE id=?").run(now, session.competition_id);
+    audit(connection, session.competition_id, "session", session.id, "RESET", actor, session, { ...session, status: "CANCELLED" }, reason);
+    connection.exec("COMMIT");
+  } catch (error) {
+    connection.exec("ROLLBACK");
+    throw error;
+  }
+  return { raceId, reset: true };
 }
 
 type FinishInput = { clientEventId: string; bibNumber: number; elapsedMs: number; capturedAt: string; deviceId: string };

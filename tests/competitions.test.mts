@@ -45,7 +45,14 @@ test("numera, cronometra, reordena, bloqueia duplicata e homologa", () => {
   const raceId = entries[0].race_id;
   const deviceId = "test-device";
   competition.armRace(raceId, deviceId);
-  competition.startRace(raceId, deviceId, Date.now());
+  const startedAt = Date.now();
+  competition.startRace(raceId, deviceId, startedAt);
+  const paused = competition.pauseRace(raceId, deviceId, startedAt + 5_000) as { status: string; paused_elapsed_ms: number };
+  assert.equal(paused.status, "ARMED");
+  assert.equal(paused.paused_elapsed_ms, 5_000);
+  const resumed = competition.startRace(raceId, deviceId, startedAt + 10_000) as { status: string; started_device_epoch_ms: number };
+  assert.equal(resumed.status, "RUNNING");
+  assert.equal(resumed.started_device_epoch_ms, startedAt + 5_000);
 
   const first = competition.syncRaceFinishes(raceId, [{ clientEventId: "scan-1", bibNumber: entries[0].bib_number!, elapsedMs: 240_000, capturedAt: new Date().toISOString(), deviceId }]);
   assert.equal(first.accepted.length, 1);
@@ -63,6 +70,11 @@ test("numera, cronometra, reordena, bloqueia duplicata e homologa", () => {
   const final = competition.homologateRace(raceId);
   assert.ok(final.every((item) => !item.provisional));
   assert.throws(() => competition.updateFinish(final[0].id, { elapsedMs: 200_000 }), /Reabra a bateria/);
+  competition.resetRace(raceId, "test", "nova simulação");
+  const resetRace = competition.listCompetitionRaces().find((race) => race.id === raceId);
+  assert.equal(resetRace?.status, "READY");
+  assert.equal(resetRace?.session_status, "CANCELLED");
+  assert.equal(competition.buildResults().length, 0);
 });
 
 test("rejeita numeração acima de 9999", () => {

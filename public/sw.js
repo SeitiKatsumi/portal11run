@@ -1,4 +1,4 @@
-const CACHE = "11run-timing-v1";
+const CACHE = "11run-timing-v2";
 const SHELL = ["/manifest.webmanifest", "/assets/logos/onzerun-menu.png"];
 
 self.addEventListener("install", (event) => {
