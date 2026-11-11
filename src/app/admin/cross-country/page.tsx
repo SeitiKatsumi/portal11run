@@ -11,5 +11,5 @@ export const metadata: Metadata = { title: "CROSS COUNTRY | Admin 11RUN", robots
 export default function CrossCountryAdmin() {
   const project = "circuito-cross-country-ivcl-11run";
   const leads = safeAdminData("inscrições do CROSS COUNTRY", () => listLeads().filter((lead) => lead.project_type === project), []);
-  return <><AdminDataNotice errors={collectAdminErrors(leads)} /><AdminPipeline project={project} initialLeads={JSON.parse(JSON.stringify(leads.data))} initialMemberAccounts={[]} /><CompetitionAdmin /></>;
+  return <><AdminDataNotice errors={collectAdminErrors(leads)} /><CompetitionAdmin /><AdminPipeline project={project} initialLeads={JSON.parse(JSON.stringify(leads.data))} initialMemberAccounts={[]} /></>;
 }
