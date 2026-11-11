@@ -1,16 +1,9 @@
-﻿import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { RunAssistant } from "@/components/RunAssistant";
 import { PRIMARY_EMAIL } from "@/lib/site-contact";
-
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  weight: ["300", "400", "500", "600", "700"]
-});
 
 export const dynamic = "force-dynamic";
 
@@ -34,7 +27,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   };
   return (
     <html lang="pt-BR">
-      <body className={geist.variable}>
+      <body>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
         <Header />
         <main>{children}</main>
