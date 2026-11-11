@@ -533,8 +533,8 @@ export function addManualFinish(raceId: string, entryId: string, elapsedMs: numb
 
 export function homologateRace(raceId: string, actor = "admin") {
   const connection = db();
-  const session = connection.prepare("SELECT * FROM competition_sessions WHERE race_id=? ORDER BY created_at DESC LIMIT 1").get(raceId) as { id: string; competition_id: string; status: RaceStatus } | undefined;
-  if (!session || session.status !== "RUNNING") throw new Error("Somente uma largada em andamento pode ser homologada.");
+  const session = connection.prepare("SELECT * FROM competition_sessions WHERE race_id=? ORDER BY created_at DESC LIMIT 1").get(raceId) as { id: string; competition_id: string; status: RaceStatus; paused_elapsed_ms: number } | undefined;
+  if (!session || (session.status !== "RUNNING" && !(session.status === "ARMED" && session.paused_elapsed_ms > 0))) throw new Error("Inicie a largada antes de homologar.");
   const now = new Date().toISOString();
   connection.exec("BEGIN IMMEDIATE");
   try {

@@ -67,6 +67,7 @@ test("numera, cronometra, reordena, bloqueia duplicata e homologa", () => {
   assert.equal(corrected[0].bibNumber, entries[0].bib_number);
   assert.equal(corrected[0].position, 1);
 
+  competition.pauseRace(raceId, deviceId, startedAt + 20_000);
   const final = competition.homologateRace(raceId);
   assert.ok(final.every((item) => !item.provisional));
   assert.throws(() => competition.updateFinish(final[0].id, { elapsedMs: 200_000 }), /Reabra a bateria/);

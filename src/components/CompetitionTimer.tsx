@@ -256,7 +256,7 @@ export function CompetitionTimer({ raceId }: { raceId: string }) {
     finally { setBusy(""); }
   }
 
-  async function postAction(action: "arm" | "start" | "pause" | "reset", payload: Record<string, unknown> = {}) {
+  async function postAction(action: "arm" | "start" | "pause" | "reset" | "homologate", payload: Record<string, unknown> = {}) {
     const response = await fetch("/api/admin/competitions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, raceId, deviceId, ...payload }) });
     const json = await response.json();
     if (!response.ok) throw new Error(json.error || "Não foi possível atualizar a largada.");
@@ -316,6 +316,20 @@ export function CompetitionTimer({ raceId }: { raceId: string }) {
     finally { setBusy(""); }
   }
 
+  async function finalize() {
+    if (pending) { setTone("error"); setMessage(`Sincronize as ${pending} chegada(s) pendente(s) antes de finalizar.`); return; }
+    if (!window.confirm("Finalizar e homologar esta bateria? Os resultados passarão a ser definitivos.")) return;
+    setBusy("finalize");
+    try {
+      await sync();
+      await postAction("homologate");
+      stopCamera(); setStatus("HOMOLOGATED");
+      await saveSnapshot("HOMOLOGATED", null, pausedElapsed);
+      setTone("success"); setMessage("Bateria finalizada e resultados homologados.");
+    } catch (error) { setTone("error"); setMessage(error instanceof Error ? error.message : "Não foi possível finalizar."); }
+    finally { setBusy(""); }
+  }
+
   async function capture(raw: string) {
     const digits = raw.trim().match(/\b(\d{1,4})\b/)?.[1];
     if (!digits) { setTone("error"); setMessage("Digite somente o número da pulseira, de 1 a 4 dígitos."); return; }
@@ -343,7 +357,9 @@ export function CompetitionTimer({ raceId }: { raceId: string }) {
     try {
       const { BrowserQRCodeReader } = await import("@zxing/browser");
       const reader = new BrowserQRCodeReader(undefined, { delayBetweenScanAttempts: 80, delayBetweenScanSuccess: 600 });
-      if (!videoRef.current) return;
+      if (!videoRef.current) throw new Error("Visualização da câmera não encontrada.");
+      setCameraOn(true);
+      await new Promise<void>((resolve) => window.requestAnimationFrame(() => resolve()));
       scanControls.current = await reader.decodeFromConstraints({ video: { facingMode: { ideal: "environment" } } }, videoRef.current, (result) => {
         if (!result) return;
         const value = result.getText();
@@ -352,8 +368,8 @@ export function CompetitionTimer({ raceId }: { raceId: string }) {
         lastScan.current = { value, at: moment };
         capture(value);
       });
-      setCameraOn(true); setTone("neutral"); setMessage("Câmera ativa. Enquadre um QR por vez dentro da marcação.");
-    } catch (error) { setTone("error"); setMessage(error instanceof Error ? `Câmera indisponível: ${error.message}` : "Não foi possível abrir a câmera."); }
+      setTone("neutral"); setMessage("Câmera traseira ativa. Enquadre um QR por vez dentro da marcação.");
+    } catch (error) { setCameraOn(false); setTone("error"); setMessage(error instanceof Error ? `Câmera indisponível: ${error.message}` : "Não foi possível abrir a câmera."); }
     finally { setBusy(""); }
   }
 
@@ -379,6 +395,7 @@ export function CompetitionTimer({ raceId }: { raceId: string }) {
         {status === "READY" ? <button className={`${styles.button} ${styles.buttonPrimary}`} type="button" disabled={Boolean(busy) || !prepared} onClick={arm}>{busy === "arm" ? <Loader2 className="spin" size={18} /> : <ShieldCheck size={18} />}Armar largada</button> : null}
         {status === "ARMED" ? <button className={`${styles.button} ${styles.buttonLive}`} type="button" disabled={Boolean(busy)} onClick={start}>{busy === "start" ? <Loader2 className="spin" size={18} /> : <Play size={18} />}{pausedElapsed ? "Retomar" : "Iniciar agora"}</button> : null}
         {status === "RUNNING" ? <button className={styles.button} type="button" disabled={Boolean(busy)} onClick={pause}>{busy === "pause" ? <Loader2 className="spin" size={18} /> : <Pause size={18} />}Pausar</button> : null}
+        {status === "ARMED" && pausedElapsed ? <button className={`${styles.button} ${styles.buttonPrimary}`} type="button" disabled={Boolean(busy) || pending > 0} onClick={finalize}>{busy === "finalize" ? <Loader2 className="spin" size={18} /> : <ShieldCheck size={18} />}Finalizar e homologar</button> : null}
         {status === "RUNNING" && !cameraOn ? <button className={`${styles.button} ${styles.buttonPrimary}`} type="button" disabled={Boolean(busy)} onClick={startCamera}>{busy === "camera" ? <Loader2 className="spin" size={18} /> : <Camera size={18} />}Ativar câmera</button> : null}
         {cameraOn ? <button className={styles.button} type="button" onClick={stopCamera}><CameraOff size={18} />Desligar câmera</button> : null}
         {status !== "READY" ? <button className={`${styles.button} ${styles.buttonDanger}`} type="button" disabled={Boolean(busy)} onClick={reset}>{busy === "reset" ? <Loader2 className="spin" size={18} /> : <RotateCcw size={18} />}Resetar bateria</button> : null}
