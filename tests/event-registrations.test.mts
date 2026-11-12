@@ -185,7 +185,7 @@ test("importação administrativa preserva categoria especial e não duplica o l
   try {
     const result = spawnSync(process.execPath, ["--experimental-strip-types", "--input-type=module", "-e", `
       import assert from 'node:assert/strict';
-      import { createManagedEventRegistration, listEventRegistrations, listPublicEventEntrants } from ${JSON.stringify(pathToFileURL(path.resolve("src/lib/event-registrations.ts")).href)};
+      import { createManagedEventRegistration, listEventRegistrations, listPublicEventEntrants, replaceManagedEventRegistration } from ${JSON.stringify(pathToFileURL(path.resolve("src/lib/event-registrations.ts")).href)};
       const input = {
         event_id: 'inauguracao-centro-olimpico-vinhedo-2026',
         responsible_name: 'Responsável do CCI',
@@ -205,6 +205,12 @@ test("importação administrativa preserva categoria especial e não duplica o l
       assert.deepEqual(listPublicEventEntrants(input.event_id), [
         { name: 'Ana Exemplo', category: '3ª idade' },
         { name: 'Bento Exemplo', category: '3ª idade' }
+      ]);
+      const repaired = replaceManagedEventRegistration({ ...input, registration_id: first.registrationId, participants: ['Heloá Machado', 'Édson Fernandes'] });
+      assert.equal(repaired.participantCount, 2);
+      assert.deepEqual(listPublicEventEntrants(input.event_id), [
+        { name: 'Heloá Machado', category: '3ª idade' },
+        { name: 'Édson Fernandes', category: '3ª idade' }
       ]);
     `], { encoding: "utf8", env: { ...process.env, SQLITE_PATH: path.join(directory, "events.sqlite") } });
     assert.equal(result.status, 0, result.stderr || result.stdout);

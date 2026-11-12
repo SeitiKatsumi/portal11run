@@ -202,7 +202,9 @@ export function createEventRegistration(input: unknown, now: Date = new Date()) 
   return { registrationId: id, participantCount: clean.participants.length };
 }
 
-export function createManagedEventRegistration(input: { event_id: string; responsible_name: string; group_name: string; category: string; participants: string[] }, now: Date = new Date()) {
+type ManagedEventRegistrationInput = { event_id: string; responsible_name: string; group_name: string; category: string; participants: string[] };
+
+function cleanManagedEventRegistration(input: ManagedEventRegistrationInput) {
   if (!input || typeof input !== "object" || Array.isArray(input)) return fail("Importação inválida.");
   if (!Object.hasOwn(registrationEvents, input.event_id)) return fail("Selecione um evento válido.");
   const responsibleName = text(input.responsible_name, "o nome do responsável", 2, 120);
@@ -212,6 +214,11 @@ export function createManagedEventRegistration(input: { event_id: string; respon
   const names = input.participants.map((name, index) => text(name, `o nome do participante ${index + 1}`, 2, 120));
   const normalizedNames = names.map((name) => name.toLocaleLowerCase("pt-BR"));
   if (new Set(normalizedNames).size !== names.length) return fail("A lista contém participantes repetidos.");
+  return { responsibleName, groupName, category, names, normalizedNames };
+}
+
+export function createManagedEventRegistration(input: ManagedEventRegistrationInput, now: Date = new Date()) {
+  const { responsibleName, groupName, category, names, normalizedNames } = cleanManagedEventRegistration(input);
   const id = `managed-${createHash("sha256").update([input.event_id, groupName, category, ...normalizedNames].join("\n")).digest("hex").slice(0, 28)}`;
   const db = getDatabase();
   if (db.prepare("SELECT 1 FROM event_registrations WHERE id = ?").get(id)) return { registrationId: id, participantCount: names.length, created: false };
@@ -229,6 +236,27 @@ export function createManagedEventRegistration(input: { event_id: string; respon
     throw error;
   }
   return { registrationId: id, participantCount: names.length, created: true };
+}
+
+export function replaceManagedEventRegistration(input: ManagedEventRegistrationInput & { registration_id: string }) {
+  const registrationId = text(input.registration_id, "o protocolo da importação", 8, 80);
+  if (!registrationId.startsWith("managed-")) return fail("Somente lotes administrativos podem ser substituídos.");
+  const { responsibleName, groupName, category, names } = cleanManagedEventRegistration(input);
+  const db = getDatabase();
+  const registration = db.prepare("SELECT event_id, registration_type FROM event_registrations WHERE id = ?").get(registrationId) as { event_id: string; registration_type: string } | undefined;
+  if (!registration || registration.registration_type !== "school" || registration.event_id !== input.event_id) return fail("Lote administrativo não encontrado.");
+  db.exec("BEGIN IMMEDIATE");
+  try {
+    db.prepare("UPDATE event_registrations SET name = ?, school_name = ? WHERE id = ?").run(responsibleName, groupName, registrationId);
+    db.prepare("DELETE FROM event_registration_participants WHERE registration_id = ?").run(registrationId);
+    const statement = db.prepare("INSERT INTO event_registration_participants (registration_id, name, birth_date, gender, school_year, category) VALUES (?, ?, '', 'Não informar', NULL, ?)");
+    for (const name of names) statement.run(registrationId, name, category);
+    db.exec("COMMIT");
+  } catch (error) {
+    db.exec("ROLLBACK");
+    throw error;
+  }
+  return { registrationId, participantCount: names.length };
 }
 
 export function listEventRegistrations(): EventRegistration[] {
