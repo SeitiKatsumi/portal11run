@@ -56,7 +56,7 @@ export function EventRegistrationsAdmin({ registrations }: { registrations: Even
                 <div><dt>Protocolo</dt><dd>{registration.id}</dd></div>
               </dl>
               <div className={styles.tableScroll} role="region" aria-label={`Participantes da inscrição de ${registration.name}`} tabIndex={0}>
-                <table><thead><tr><th scope="col">Participante</th><th scope="col">Nascimento</th><th scope="col">Gênero</th><th scope="col">Série</th></tr></thead><tbody>{registration.participants.map((participant, index) => <tr key={index}><td>{participant.name}</td><td>{formatDate(participant.birth_date)}</td><td>{participant.gender}</td><td>{participant.school_year ? `${participant.school_year}º Ano` : "—"}</td></tr>)}</tbody></table>
+                <table><thead><tr><th scope="col">Participante</th><th scope="col">Nascimento</th><th scope="col">Gênero</th><th scope="col">Categoria</th></tr></thead><tbody>{registration.participants.map((participant, index) => <tr key={index}><td>{participant.name}</td><td>{participant.birth_date ? formatDate(participant.birth_date) : "—"}</td><td>{participant.gender}</td><td>{participant.category || (participant.school_year ? `${participant.school_year}º Ano` : "Grupo escolar")}</td></tr>)}</tbody></table>
               </div>
               <details className={styles.authorization}><summary>Consentimento e autorização registrados</summary><p>{registration.consent_text}</p><p>{registration.guardian_authorization_text}</p><small>Aceites registrados em {new Date(registration.created_at).toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })}.</small></details>
             </div>

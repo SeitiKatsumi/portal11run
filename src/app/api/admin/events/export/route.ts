@@ -24,7 +24,7 @@ export async function GET(request: Request) {
       participant.name,
       participant.birth_date,
       participant.gender,
-      participant.school_year ? `${participant.school_year}º Ano` : "Grupo escolar",
+      participant.category || (participant.school_year ? `${participant.school_year}º Ano` : "Grupo escolar"),
       registration.id,
       registration.created_at
     ]))

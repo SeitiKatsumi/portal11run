@@ -180,6 +180,39 @@ test("SQLite persiste inscritos, preserva aceites e reverte completamente falhas
   }
 });
 
+test("importação administrativa preserva categoria especial e não duplica o lote", () => {
+  const directory = mkdtempSync(path.join(os.tmpdir(), "11run-managed-event-registration-"));
+  try {
+    const result = spawnSync(process.execPath, ["--experimental-strip-types", "--input-type=module", "-e", `
+      import assert from 'node:assert/strict';
+      import { createManagedEventRegistration, listEventRegistrations, listPublicEventEntrants } from ${JSON.stringify(pathToFileURL(path.resolve("src/lib/event-registrations.ts")).href)};
+      const input = {
+        event_id: 'inauguracao-centro-olimpico-vinhedo-2026',
+        responsible_name: 'Responsável do CCI',
+        group_name: 'Centro de Convivência do Idoso',
+        category: '3ª idade',
+        participants: ['Ana Exemplo', 'Bento Exemplo']
+      };
+      const first = createManagedEventRegistration(input, new Date('2026-11-12T19:00:00.000Z'));
+      const repeated = createManagedEventRegistration(input, new Date('2026-11-12T19:01:00.000Z'));
+      assert.equal(first.created, true);
+      assert.equal(repeated.created, false);
+      assert.equal(first.registrationId, repeated.registrationId);
+      const registration = listEventRegistrations()[0];
+      assert.equal(registration.participants.length, 2);
+      assert.equal(registration.participants[0].birth_date, '');
+      assert.equal(registration.participants[0].category, '3ª idade');
+      assert.deepEqual(listPublicEventEntrants(input.event_id), [
+        { name: 'Ana Exemplo', category: '3ª idade' },
+        { name: 'Bento Exemplo', category: '3ª idade' }
+      ]);
+    `], { encoding: "utf8", env: { ...process.env, SQLITE_PATH: path.join(directory, "events.sqlite") } });
+    assert.equal(result.status, 0, result.stderr || result.stdout);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 test("migração amplia a série até o 9º ano sem perder inscrições antigas", () => {
   const directory = mkdtempSync(path.join(os.tmpdir(), "11run-vinhedo-migration-"));
   const databasePath = path.join(directory, "events.sqlite");

@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -69,7 +69,8 @@ function getDatabase() {
       name TEXT NOT NULL,
       birth_date TEXT NOT NULL,
       gender TEXT NOT NULL CHECK (gender IN ('Feminino', 'Masculino', 'Não informar')),
-      school_year TEXT CHECK (school_year IN ('1', '2', '3', '4', '5', '6', '7', '8', '9'))
+      school_year TEXT CHECK (school_year IN ('1', '2', '3', '4', '5', '6', '7', '8', '9')),
+      category TEXT
     );
     CREATE INDEX IF NOT EXISTS idx_event_registrations_event_created ON event_registrations(event_id, created_at);
     CREATE INDEX IF NOT EXISTS idx_event_registration_participants_registration ON event_registration_participants(registration_id);
@@ -88,14 +89,18 @@ function getDatabase() {
           name TEXT NOT NULL,
           birth_date TEXT NOT NULL,
           gender TEXT NOT NULL CHECK (gender IN ('Feminino', 'Masculino', 'Não informar')),
-          school_year TEXT CHECK (school_year IN ('1', '2', '3', '4', '5', '6', '7', '8', '9'))
+          school_year TEXT CHECK (school_year IN ('1', '2', '3', '4', '5', '6', '7', '8', '9')),
+          category TEXT
         );
-        INSERT INTO event_registration_participants_v2 SELECT * FROM event_registration_participants;
+        INSERT INTO event_registration_participants_v2 (id, registration_id, name, birth_date, gender, school_year)
+          SELECT id, registration_id, name, birth_date, gender, school_year FROM event_registration_participants;
         DROP TABLE event_registration_participants;
         ALTER TABLE event_registration_participants_v2 RENAME TO event_registration_participants;
         CREATE INDEX idx_event_registration_participants_registration ON event_registration_participants(registration_id);
       `);
     }
+    const migratedColumns = connection.prepare("PRAGMA table_info(event_registration_participants)").all() as Array<{ name: string }>;
+    if (!migratedColumns.some((column) => column.name === "category")) connection.exec("ALTER TABLE event_registration_participants ADD COLUMN category TEXT");
     connection.exec("COMMIT");
   } catch (error) {
     connection.exec("ROLLBACK");
@@ -187,8 +192,8 @@ export function createEventRegistration(input: unknown, now: Date = new Date()) 
       (id, event_id, registration_type, name, email, phone, city, state, school_name, consent, guardian_authorization, consent_text, guardian_authorization_text, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1, ?, ?, ?)`)
       .run(id, clean.event_id, clean.registration_type, clean.name, clean.email, clean.phone, clean.city, clean.state, clean.school_name, consentText, guardianTexts[clean.registration_type], createdAt);
-    const statement = db.prepare("INSERT INTO event_registration_participants (registration_id, name, birth_date, gender, school_year) VALUES (?, ?, ?, ?, ?)");
-    for (const participant of clean.participants) statement.run(id, participant.name, participant.birth_date, participant.gender, participant.school_year ?? null);
+    const statement = db.prepare("INSERT INTO event_registration_participants (registration_id, name, birth_date, gender, school_year, category) VALUES (?, ?, ?, ?, ?, ?)");
+    for (const participant of clean.participants) statement.run(id, participant.name, participant.birth_date, participant.gender, participant.school_year ?? null, participant.category ?? null);
     db.exec("COMMIT");
   } catch (error) {
     db.exec("ROLLBACK");
@@ -197,10 +202,39 @@ export function createEventRegistration(input: unknown, now: Date = new Date()) 
   return { registrationId: id, participantCount: clean.participants.length };
 }
 
+export function createManagedEventRegistration(input: { event_id: string; responsible_name: string; group_name: string; category: string; participants: string[] }, now: Date = new Date()) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return fail("Importação inválida.");
+  if (!Object.hasOwn(registrationEvents, input.event_id)) return fail("Selecione um evento válido.");
+  const responsibleName = text(input.responsible_name, "o nome do responsável", 2, 120);
+  const groupName = text(input.group_name, "o nome do grupo", 2, 160);
+  const category = text(input.category, "a categoria", 2, 60);
+  if (!Array.isArray(input.participants) || input.participants.length === 0 || input.participants.length > 500) return fail("Informe de 1 a 500 participantes.");
+  const names = input.participants.map((name, index) => text(name, `o nome do participante ${index + 1}`, 2, 120));
+  const normalizedNames = names.map((name) => name.toLocaleLowerCase("pt-BR"));
+  if (new Set(normalizedNames).size !== names.length) return fail("A lista contém participantes repetidos.");
+  const id = `managed-${createHash("sha256").update([input.event_id, groupName, category, ...normalizedNames].join("\n")).digest("hex").slice(0, 28)}`;
+  const db = getDatabase();
+  if (db.prepare("SELECT 1 FROM event_registrations WHERE id = ?").get(id)) return { registrationId: id, participantCount: names.length, created: false };
+  db.exec("BEGIN IMMEDIATE");
+  try {
+    db.prepare(`INSERT INTO event_registrations
+      (id, event_id, registration_type, name, email, phone, city, state, school_name, consent, guardian_authorization, consent_text, guardian_authorization_text, created_at)
+      VALUES (?, ?, 'school', ?, '', '', '', '', ?, 1, 1, ?, ?, ?)`)
+      .run(id, input.event_id, responsibleName, groupName, "Importação administrativa autorizada pela organização do evento.", "Lista de participantes fornecida pelo responsável do grupo.", now.toISOString());
+    const statement = db.prepare("INSERT INTO event_registration_participants (registration_id, name, birth_date, gender, school_year, category) VALUES (?, ?, '', 'Não informar', NULL, ?)");
+    for (const name of names) statement.run(id, name, category);
+    db.exec("COMMIT");
+  } catch (error) {
+    db.exec("ROLLBACK");
+    throw error;
+  }
+  return { registrationId: id, participantCount: names.length, created: true };
+}
+
 export function listEventRegistrations(): EventRegistration[] {
   const db = getDatabase();
   const registrations = db.prepare("SELECT * FROM event_registrations ORDER BY created_at DESC, id").all() as Array<Omit<EventRegistration, "participants" | "consent" | "guardian_authorization"> & { consent: number; guardian_authorization: number }>;
-  const participants = db.prepare("SELECT registration_id, name, birth_date, gender, school_year FROM event_registration_participants ORDER BY id").all() as Array<EventParticipant & { registration_id: string }>;
+  const participants = db.prepare("SELECT registration_id, name, birth_date, gender, school_year, category FROM event_registration_participants ORDER BY id").all() as Array<EventParticipant & { registration_id: string }>;
   const byRegistration = new Map<string, EventParticipant[]>();
   for (const { registration_id, ...participant } of participants) {
     const group = byRegistration.get(registration_id) ?? [];
@@ -212,11 +246,11 @@ export function listEventRegistrations(): EventRegistration[] {
 
 export function listPublicEventEntrants(eventId: RegistrationEventId) {
   const rows = getDatabase().prepare(`
-    SELECT p.name, CASE WHEN p.school_year IS NOT NULL THEN p.school_year || 'º Ano' ELSE 'Grupo escolar' END AS category
+    SELECT p.name, COALESCE(NULLIF(p.category, ''), CASE WHEN p.school_year IS NOT NULL THEN p.school_year || 'º Ano' ELSE 'Grupo escolar' END) AS category
     FROM event_registration_participants p
     JOIN event_registrations r ON r.id = p.registration_id
     WHERE r.event_id = ?
-    ORDER BY CAST(COALESCE(p.school_year, '99') AS INTEGER), p.name COLLATE NOCASE
+    ORDER BY CASE WHEN p.category IS NULL THEN CAST(COALESCE(p.school_year, '99') AS INTEGER) ELSE 98 END, p.name COLLATE NOCASE
   `).all(eventId) as Array<{ name: string; category: string }>;
   return rows.map(({ name, category }) => ({ name, category }));
 }
