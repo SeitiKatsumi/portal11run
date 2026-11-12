@@ -4,6 +4,7 @@ import {
   CalendarDays,
   ClipboardList,
   Footprints,
+  Gift,
   Gamepad2,
   Globe2,
   Handshake,
@@ -47,6 +48,7 @@ export const adminNavigationGroups: AdminNavigationGroup[] = [
       { href: "/admin/circuito-virtual", label: "Circuito Virtual", description: "Gerencie ranking, inscrições e regulamento.", icon: Globe2 },
       { href: "/admin/cross-country", label: "CROSS COUNTRY", description: "Inscrições do Circuito IVCL 11Run.", icon: Trophy },
       { href: "/admin/eventos", label: "Eventos e inscrições", description: "Acompanhe inscrições individuais, escolares e a agenda.", icon: CalendarDays },
+      { href: "/admin/sorteio", label: "Sorteio", description: "Cadastre prêmios e acompanhe a roleta surpresa.", icon: Gift },
       { href: "/admin/ranking", label: "Ranking", description: "Cadastre e revise marcas esportivas.", icon: Trophy }
     ]
   },

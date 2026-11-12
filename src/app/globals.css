@@ -8024,3 +8024,5 @@ body:has(.admin-shell-page) .run-assistant {
 .cross-admin-search input { width: 100%; min-height: 44px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
 
 .cross-registration-admin .pipeline-card-grid { grid-template-columns: minmax(0, 1fr); }
+
+body:has(#raffle-page) { overflow-x: clip; }

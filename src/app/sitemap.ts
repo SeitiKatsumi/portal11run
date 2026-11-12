@@ -36,7 +36,8 @@ const routes = [
   "/apoie/patrocine",
   "/apoie/doacao",
   "/apoie/voluntariado",
-  "/politica-de-privacidade"
+  "/politica-de-privacidade",
+  "/sorteio"
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

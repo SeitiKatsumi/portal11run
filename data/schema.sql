@@ -1177,3 +1177,21 @@ CREATE INDEX IF NOT EXISTS idx_member_challenge_notifications_account
   ON member_challenge_notifications (account_id, read_at, created_at);
 CREATE INDEX IF NOT EXISTS idx_member_challenge_audit_entity
   ON member_challenge_audit_logs (entity_type, entity_id, created_at);
+
+CREATE TABLE IF NOT EXISTS raffle_prizes (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  description TEXT NOT NULL DEFAULT '',
+  winning_number INTEGER NOT NULL UNIQUE CHECK (winning_number BETWEEN 1 AND 1000),
+  claimed_at TEXT,
+  created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS raffle_plays (
+  number INTEGER PRIMARY KEY CHECK (number BETWEEN 1 AND 1000),
+  prize_id TEXT,
+  played_at TEXT NOT NULL,
+  FOREIGN KEY (prize_id) REFERENCES raffle_prizes(id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_raffle_plays_prize ON raffle_plays(prize_id);
