@@ -5,7 +5,7 @@ import { createRequire } from 'node:module';
 import { mkdirSync } from 'node:fs';
 const { chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const browser = await chromium.launch({headless:true, executablePath:process.env.PLAYWRIGHT_BROWSER_PATH});
-const base = 'http://127.0.0.1';
+const base = process.env.BASE_URL || 'http://127.0.0.1';
 const slug = 'circuito-cross-country-ivcl-11run';
 const page = await browser.newPage({viewport:{width:1440,height:1000},httpCredentials:{username:process.env.ADMIN_USER,password:process.env.ADMIN_PASSWORD}});
 const errors=[];page.on('pageerror',error=>errors.push(error.message));
@@ -83,6 +83,15 @@ try {
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth),width,`admin overflow ${width}`);
     await page.screenshot({path:`artifacts/cross-country/admin-${width}.jpg`,type:'jpeg',quality:65,fullPage:true});
   }
+  await page.goto(base+'/admin/cross-country/competicao',{waitUntil:'networkidle'});
+  await page.getByRole('heading',{name:'Operação da prova.'}).waitFor();
+  await page.getByRole('button',{name:'Limpar testes'}).waitFor();
+  await page.goto(base+'/'+slug,{waitUntil:'networkidle'});
+  await page.getByRole('button',{name:/Ver lista de inscritos/}).first().click();
+  const entrantsDialog=page.getByRole('dialog',{name:'Inscritos no Cross Country'});
+  await entrantsDialog.getByLabel('Buscar inscrito por nome').fill(fields.athlete_name);
+  assert.equal(await entrantsDialog.locator('tbody tr').count(),1);
+  await entrantsDialog.getByRole('button',{name:'Fechar lista de inscritos'}).click();await entrantsDialog.waitFor({state:'hidden'});
   await page.goto(base+'/circuito-futuro-11',{waitUntil:'networkidle'});
   assert.match(await page.locator('main').innerText(),/Sub 18/);assert.match(await page.locator('main').innerText(),/3.000 m/);
   await page.goto(base+'/cadastro/circuito-futuro-11',{waitUntil:'networkidle'});

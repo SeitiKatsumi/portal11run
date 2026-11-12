@@ -10,9 +10,12 @@ import styles from "./AdminNav.module.css";
 export function AdminNav() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const activeHref = useMemo(() => adminNavigationItems
+    .filter((item) => pathname === item.href || (item.href !== "/admin" && pathname.startsWith(`${item.href}/`)))
+    .sort((a, b) => b.href.length - a.href.length)[0]?.href, [pathname]);
   const activeItem = useMemo(
-    () => adminNavigationItems.find((item) => pathname === item.href || (item.href !== "/admin" && pathname.startsWith(`${item.href}/`))),
-    [pathname]
+    () => adminNavigationItems.find((item) => item.href === activeHref),
+    [activeHref]
   );
 
   useEffect(() => setOpen(false), [pathname]);
@@ -56,7 +59,7 @@ export function AdminNav() {
               <span className={styles.groupLabel}>{group.label}</span>
               {group.items.map((item) => {
                 const Icon = item.icon;
-                const active = pathname === item.href || (item.href !== "/admin" && pathname.startsWith(`${item.href}/`));
+                const active = item.href === activeHref;
                 return (
                   <Link className={`${styles.link} ${active ? styles.linkActive : ""}`} href={item.href} key={item.href} aria-current={active ? "page" : undefined} title={item.description}>
                     <span className={styles.linkIcon}><Icon size={17} strokeWidth={1.75} /></span>

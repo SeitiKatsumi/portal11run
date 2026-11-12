@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ArrowUpRight, Flag, Import, Medal, RefreshCw, Save, Smartphone, Trophy } from "lucide-react";
+import { ArrowUpRight, Flag, Import, Medal, RefreshCw, Save, Smartphone, Trash2, Trophy } from "lucide-react";
 import styles from "./CompetitionAdmin.module.css";
 
 type Race = { id: string; title: string; categories: string[]; distance_m: number; scheduled_time: string; status: string; started_at: string | null; paused_elapsed_ms: number };
@@ -49,7 +49,7 @@ export function CompetitionAdmin() {
       const json = await response.json();
       if (!response.ok) throw new Error(json.error || "Não foi possível concluir a ação.");
       setData(json);
-      setSuccess(name === "import" ? `${json.result.imported} atletas aceitos sincronizados.` : "Operação concluída.");
+      setSuccess(name === "import" ? `${json.result.imported} atletas aceitos sincronizados.` : name === "reset_competition" ? "Testes limpos. Inscrições e numeração foram preservadas." : "Operação concluída.");
     } catch (caught) { setError(caught instanceof Error ? caught.message : "Não foi possível concluir a ação."); }
     finally { setBusy(""); }
   }
@@ -117,6 +117,11 @@ export function CompetitionAdmin() {
     finally { setBusy(""); }
   }
 
+  function clearTests() {
+    const confirmation = window.prompt("Esta ação zera cronômetros e invalida todas as chegadas e resultados. Inscrições e números serão preservados. Digite LIMPAR para confirmar:");
+    if (confirmation === "LIMPAR") action("reset_competition", { reason: "Limpeza geral de testes confirmada no painel administrativo" });
+  }
+
   const previewEnd = Number(bibStart) + data.entries.length - 1;
   const visibleEntries = useMemo(() => {
     const search = query.trim().toLocaleLowerCase("pt-BR");
@@ -131,6 +136,7 @@ export function CompetitionAdmin() {
     {error ? <p className={styles.error} role="alert">{error}</p> : null}{success ? <p className={styles.success} role="status">{success}</p> : null}
     <div className={styles.numbering}><label>Número inicial<input type="number" min="1" max="9999" value={bibStart} onChange={(event) => setBibStart(event.target.value)} /><small>Ordem: categoria, gênero e nome.</small></label><button type="button" disabled={Boolean(busy) || !data.entries.length} onClick={() => { const text = `Confirmar ${data.entries.length} números, de ${String(Number(bibStart)).padStart(4, "0")} a ${String(previewEnd).padStart(4, "0")}?`; if (window.confirm(text)) action("assign_bibs", { start: Number(bibStart) }); }}><Medal size={17} />Confirmar numeração</button><p className={styles.preview}>{data.entries.length ? `Prévia: ${String(Number(bibStart)).padStart(4, "0")} a ${String(previewEnd).padStart(4, "0")} · ${data.entries.length} atletas` : "Sincronize os atletas aceitos para começar."}</p></div>
     <div className={styles.races}>{data.races.map((race) => <article className={styles.raceCard} key={race.id}><header><div><h3>{race.title}</h3><p>{race.categories.join(" · ")} · {race.distance_m.toLocaleString("pt-BR")} m · {race.scheduled_time}</p></div><span className={styles.status}>{race.status === "ARMED" && race.paused_elapsed_ms ? "Pausada" : statusLabels[race.status] ?? race.status}</span></header><div className={styles.raceActions}><a className={styles.start} href={`/cronometro/${race.id}`} target="_blank" rel="noreferrer"><Flag size={16} />Largada</a>{["ARMED", "RUNNING"].includes(race.status) ? <button type="button" onClick={() => addManual(race)}>Inserir chegada</button> : null}{race.status === "RUNNING" || (race.status === "ARMED" && race.paused_elapsed_ms > 0) ? <button type="button" onClick={() => action("homologate", { raceId: race.id })}><Trophy size={16} />Finalizar e homologar</button> : null}{race.status === "HOMOLOGATED" ? <button type="button" onClick={() => { const reason = window.prompt("Justificativa para reabrir a bateria:"); if (reason) action("reopen", { raceId: race.id, reason }); }}>Reabrir</button> : null}{race.status !== "READY" ? <button type="button" onClick={() => { if (window.confirm(`Resetar ${race.title}? O cronômetro será zerado e as chegadas desta bateria serão invalidadas.`)) action("reset", { raceId: race.id, reason: "Reset confirmado no painel administrativo" }); }}>Resetar</button> : null}<a href={`/cronometro/${race.id}`} target="_blank" rel="noreferrer"><Smartphone size={16} />Preparar celular</a></div></article>)}</div>
+    <aside className={styles.testZone} aria-labelledby="test-zone-title"><div><span className="eyebrow">ambiente de testes</span><h3 id="test-zone-title">Limpar simulações</h3><p>Zera cronômetros e retira todas as chegadas e resultados atuais. Atletas inscritos e números de pulseira permanecem intactos.</p></div><button type="button" disabled={Boolean(busy)} onClick={clearTests}><Trash2 size={17} />Limpar testes</button></aside>
     <div className={styles.filters}><label>Buscar número ou atleta<input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="0001, nome, categoria ou cidade" /></label><label>Ordenar<select value={sort} onChange={(event) => setSort(event.target.value)}><option value="number">Ordem numérica</option><option value="category">Categoria</option><option value="name">Nome</option></select></label></div>
     <div className={styles.tableWrap} role="region" aria-label="Atletas numerados" tabIndex={0}><table className={styles.table}><thead><tr><th>Nº</th><th>Atleta</th><th>Categoria</th><th>Gênero</th><th>Cidade</th><th>Bateria</th></tr></thead><tbody>{visibleEntries.map((entry) => <tr key={entry.id}><td className={styles.bib} data-label="Número"><input aria-label={`Número de ${entry.name}`} defaultValue={entry.bib_number ? String(entry.bib_number).padStart(4, "0") : ""} placeholder="0000" inputMode="numeric" onBlur={(event) => { if (event.target.value && Number(event.target.value) !== entry.bib_number) assignBib(entry, event.target.value); }} /></td><td data-label="Atleta"><strong>{entry.name}</strong></td><td data-label="Categoria">{entry.category}</td><td data-label="Gênero">{entry.gender}</td><td data-label="Cidade">{entry.city}</td><td data-label="Bateria">{data.races.find((race) => race.id === entry.race_id)?.title}</td></tr>)}</tbody></table>{!visibleEntries.length ? <p className={styles.empty}>Nenhum atleta neste recorte.</p> : null}</div>
     <div><span className="eyebrow">resultados provisórios e finais</span><h3>Chegadas registradas</h3></div>

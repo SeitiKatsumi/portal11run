@@ -383,7 +383,7 @@ export function CompetitionTimer({ raceId }: { raceId: string }) {
   if (loading) return <div id="timing-app" className={styles.page}><div className={styles.shell}><section className={styles.panel}><Loader2 className="spin" /> Carregando operação…</section></div></div>;
 
   return <div id="timing-app" className={styles.page}><div className={styles.shell}>
-    <header className={styles.topbar}><Image src="/assets/logos/onzerun-menu.png" alt="11RUN" width={120} height={50} priority /><Link href="/admin/cross-country">Voltar ao painel</Link></header>
+    <header className={styles.topbar}><Image src="/assets/logos/onzerun-menu.png" alt="11RUN" width={120} height={50} priority /><Link href="/admin/cross-country/competicao">Voltar à competição</Link></header>
     <section className={`${styles.panel} ${styles.hero}`}>
       <span className="eyebrow">operação da prova · celular oficial</span><h1>{race?.title ?? "Largada"}</h1><p>{race?.categories.join(" · ")} · {race?.distance_m.toLocaleString("pt-BR")} m · {entries.length} atletas numerados</p>
       <div className={styles.statusRow}><span className={styles.pill} data-online={online}><span>{online ? <Wifi size={13} /> : <WifiOff size={13} />}</span>{online ? "Online" : "Offline"}</span><span className={styles.pill}><Radio size={13} />{status === "RUNNING" ? "Ao vivo" : status === "ARMED" && pausedElapsed ? "Pausada" : status === "ARMED" ? "Armada" : status === "HOMOLOGATED" ? "Homologada" : "Preparação"}</span><span className={styles.pill}><RefreshCw size={13} />{pending} pendente(s)</span></div>

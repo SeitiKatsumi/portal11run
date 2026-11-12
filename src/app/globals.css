@@ -352,7 +352,7 @@ body:has(#links-page) main {
   left: calc(100% + 7px);
   width: 320px;
   max-width: calc(100vw - 32px);
-  display: grid;
+  display: none;
   gap: 4px;
   padding: 10px;
   border: 1px solid var(--line);
@@ -377,6 +377,7 @@ body:has(#links-page) main {
 .nav-submenu:hover .nav-nested-menu,
 .nav-submenu:focus-within .nav-nested-menu,
 .nav-submenu.is-open .nav-nested-menu {
+  display: grid;
   opacity: 1;
   pointer-events: auto;
   transform: translateX(0);

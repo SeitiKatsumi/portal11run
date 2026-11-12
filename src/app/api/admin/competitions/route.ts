@@ -12,6 +12,7 @@ import {
   listCompetitionRaces,
   pauseRace,
   previewBibAssignment,
+  resetCompetition,
   resetRace,
   reopenRace,
   startRace,
@@ -53,6 +54,7 @@ export async function POST(request: Request) {
     else if (action === "start") result = startRace(String(body.raceId ?? ""), String(body.deviceId ?? ""), Number(body.deviceEpochMs), "timer");
     else if (action === "pause") result = pauseRace(String(body.raceId ?? ""), String(body.deviceId ?? ""), Number(body.deviceEpochMs), "timer");
     else if (action === "reset") result = resetRace(String(body.raceId ?? ""), "admin", String(body.reason ?? ""));
+    else if (action === "reset_competition") result = resetCompetition(CROSS_COUNTRY_COMPETITION_ID, "admin", String(body.reason ?? ""));
     else if (action === "sync") result = syncRaceFinishes(String(body.raceId ?? ""), Array.isArray(body.items) ? body.items as Parameters<typeof syncRaceFinishes>[1] : [], "timer");
     else if (action === "manual_finish") result = addManualFinish(String(body.raceId ?? ""), String(body.entryId ?? ""), Number(body.elapsedMs), "admin", String(body.reason ?? "Inclusão manual"));
     else if (action === "homologate") result = homologateRace(String(body.raceId ?? ""));

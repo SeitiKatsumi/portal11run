@@ -380,6 +380,30 @@ export function resetRace(raceId: string, actor = "admin", reason = "") {
   return { raceId, reset: true };
 }
 
+export function resetCompetition(competitionId = CROSS_COUNTRY_COMPETITION_ID, actor = "admin", reason = "") {
+  if (!reason.trim()) throw new Error("Confirme a limpeza dos testes.");
+  const connection = db();
+  const running = connection.prepare("SELECT 1 FROM competition_sessions WHERE competition_id=? AND status='RUNNING' LIMIT 1").get(competitionId);
+  if (running) throw new Error("Pause todas as baterias antes de limpar os testes.");
+  const now = new Date().toISOString();
+  connection.exec("BEGIN IMMEDIATE");
+  try {
+    const finishes = connection.prepare(`UPDATE competition_finishes SET status='VOID', updated_at=?
+      WHERE session_id IN (SELECT id FROM competition_sessions WHERE competition_id=?) AND status<>'VOID'`).run(now, competitionId);
+    connection.prepare("UPDATE competition_entries SET result_status='ACTIVE', updated_at=? WHERE competition_id=?").run(now, competitionId);
+    const sessions = connection.prepare(`UPDATE competition_sessions SET status='CANCELLED', started_at=NULL,
+      started_device_epoch_ms=NULL, paused_elapsed_ms=0, homologated_at=NULL WHERE competition_id=? AND status<>'CANCELLED'`).run(competitionId);
+    connection.prepare("UPDATE competitions SET status='DRAFT', updated_at=? WHERE id=?").run(now, competitionId);
+    const summary = { finishes: Number(finishes.changes), sessions: Number(sessions.changes) };
+    audit(connection, competitionId, "competition", competitionId, "RESET_TESTS", actor, undefined, summary, reason);
+    connection.exec("COMMIT");
+    return summary;
+  } catch (error) {
+    connection.exec("ROLLBACK");
+    throw error;
+  }
+}
+
 type FinishInput = { clientEventId: string; bibNumber: number; elapsedMs: number; capturedAt: string; deviceId: string };
 
 export function syncRaceFinishes(raceId: string, items: FinishInput[], actor = "timer") {

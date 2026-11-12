@@ -76,6 +76,16 @@ test("numera, cronometra, reordena, bloqueia duplicata e homologa", () => {
   assert.equal(resetRace?.status, "READY");
   assert.equal(resetRace?.session_status, "CANCELLED");
   assert.equal(competition.buildResults().length, 0);
+
+  competition.armRace(raceId, deviceId);
+  competition.startRace(raceId, deviceId, startedAt + 30_000);
+  competition.syncRaceFinishes(raceId, [{ clientEventId: "scan-after-reset", bibNumber: entries[0].bib_number!, elapsedMs: 10_000, capturedAt: new Date().toISOString(), deviceId }]);
+  competition.pauseRace(raceId, deviceId, startedAt + 41_000);
+  const cleared = competition.resetCompetition(undefined, "test", "limpeza geral QA");
+  assert.equal(cleared.finishes, 1);
+  assert.equal(competition.buildResults().length, 0);
+  assert.deepEqual(competition.listCompetitionEntries().map((entry) => entry.bib_number), entries.map((entry) => entry.bib_number));
+  assert.ok(competition.listCompetitionRaces().every((race) => race.status === "READY"));
 });
 
 test("rejeita numeração acima de 9999", () => {
