@@ -16,6 +16,7 @@ test("cadastra prêmios em números únicos e aceita apenas uma participação",
   const cap = raffle.createRafflePrize({ name: "Boné" });
   assert.notEqual(shirt.winning_number, cap.winning_number);
   assert.ok(shirt.winning_number >= 1 && shirt.winning_number <= 1000);
+  assert.equal(Object.getPrototypeOf(raffle.listRafflePrizes()[0]), Object.prototype);
 
   const winner = raffle.playRaffle(raffle.formatRaffleNumber(shirt.winning_number));
   assert.equal(winner.won, true);

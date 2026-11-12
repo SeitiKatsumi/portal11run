@@ -64,7 +64,8 @@ export function parseRaffleNumber(value: unknown) {
 }
 
 export function listRafflePrizes() {
-  return getDatabase().prepare("SELECT * FROM raffle_prizes ORDER BY datetime(created_at) DESC").all() as RafflePrize[];
+  return (getDatabase().prepare("SELECT * FROM raffle_prizes ORDER BY datetime(created_at) DESC").all() as RafflePrize[])
+    .map((prize) => ({ ...prize }));
 }
 
 export function getRaffleStats(): RaffleStats {
