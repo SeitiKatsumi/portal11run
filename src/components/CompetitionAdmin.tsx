@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ArrowUpRight, Flag, Import, Medal, RefreshCw, Save, Smartphone, Trash2, Trophy } from "lucide-react";
 import styles from "./CompetitionAdmin.module.css";
 
@@ -22,7 +22,7 @@ function timeToMs(value: string) {
   return ((hours * 60 + minutes) * 60 + seconds) * 1000 + centiseconds * 10;
 }
 
-export function CompetitionAdmin() {
+export function CompetitionAdmin({ competitionId, mode = "cross" }: { competitionId?: string; mode?: "cross" | "virtual" }) {
   const [data, setData] = useState<State>({ races: [], entries: [], results: [] });
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState("");
@@ -32,20 +32,21 @@ export function CompetitionAdmin() {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState("number");
   const [draftTimes, setDraftTimes] = useState<Record<string, string>>({});
+  const endpoint = competitionId ? `/api/admin/competitions?competition_id=${encodeURIComponent(competitionId)}` : "/api/admin/competitions";
 
-  async function load() {
-    const response = await fetch("/api/admin/competitions", { cache: "no-store" });
+  const load = useCallback(async () => {
+    const response = await fetch(endpoint, { cache: "no-store" });
     const json = await response.json();
     if (!response.ok) throw new Error(json.error || "Não foi possível carregar a competição.");
     setData(json);
-  }
+  }, [endpoint]);
 
-  useEffect(() => { load().catch((caught) => setError(caught.message)).finally(() => setLoading(false)); }, []);
+  useEffect(() => { load().catch((caught) => setError(caught.message)).finally(() => setLoading(false)); }, [load]);
 
   async function action(name: string, payload: Record<string, unknown> = {}) {
     setBusy(name); setError(""); setSuccess("");
     try {
-      const response = await fetch("/api/admin/competitions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: name, ...payload }) });
+      const response = await fetch("/api/admin/competitions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: name, competitionId, ...payload }) });
       const json = await response.json();
       if (!response.ok) throw new Error(json.error || "Não foi possível concluir a ação.");
       setData(json);
@@ -59,7 +60,7 @@ export function CompetitionAdmin() {
     if (elapsedMs === null) { setError("Use o formato HH:MM:SS.cc ou MM:SS.cc."); return; }
     setBusy(result.id); setError("");
     try {
-      const response = await fetch("/api/admin/competitions", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ finishId: result.id, elapsedMs, reason: "Correção manual no painel" }) });
+      const response = await fetch("/api/admin/competitions", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ finishId: result.id, competitionId, elapsedMs, reason: "Correção manual no painel" }) });
       const json = await response.json();
       if (!response.ok) throw new Error(json.error || "Não foi possível corrigir o tempo.");
       setData(json); setSuccess("Tempo corrigido e classificação recalculada.");
@@ -70,7 +71,7 @@ export function CompetitionAdmin() {
   async function changeStatus(result: Result, resultStatus: string) {
     setBusy(result.id); setError("");
     try {
-      const response = await fetch("/api/admin/competitions", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ finishId: result.id, resultStatus, reason: `Status alterado para ${resultStatus}` }) });
+      const response = await fetch("/api/admin/competitions", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ finishId: result.id, competitionId, resultStatus, reason: `Status alterado para ${resultStatus}` }) });
       const json = await response.json();
       if (!response.ok) throw new Error(json.error || "Não foi possível alterar o status.");
       setData(json);
@@ -109,7 +110,7 @@ export function CompetitionAdmin() {
     if (!reason) return;
     setBusy(result.id); setError("");
     try {
-      const response = await fetch("/api/admin/competitions", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ finishId: result.id, entryId: entry.id, adjustmentMs: Number(adjustmentRaw), manualRank: rankRaw ? Number(rankRaw) : null, reason }) });
+      const response = await fetch("/api/admin/competitions", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ finishId: result.id, competitionId, entryId: entry.id, adjustmentMs: Number(adjustmentRaw), manualRank: rankRaw ? Number(rankRaw) : null, reason }) });
       const json = await response.json();
       if (!response.ok) throw new Error(json.error || "Não foi possível editar o resultado.");
       setData(json); setSuccess("Resultado corrigido, auditado e reclassificado.");
@@ -132,15 +133,15 @@ export function CompetitionAdmin() {
   if (loading) return <section className={styles.panel}><p><RefreshCw className="spin" size={18} /> Carregando operação da prova…</p></section>;
 
   return <section className={styles.panel} aria-labelledby="competition-admin-title">
-    <header className={styles.header}><div><span className="eyebrow">competição e cronometragem</span><h2 id="competition-admin-title">Operação da prova.</h2><p>Importe os atletas aceitos, distribua as pulseiras e abra cada largada no celular oficial.</p></div><div className={styles.actions}><button type="button" disabled={Boolean(busy)} onClick={() => action("import")}><Import size={17} />Sincronizar aceitos</button><a href="/circuito-cross-country-ivcl-11run" target="_blank" rel="noreferrer">Página pública<ArrowUpRight size={16} /></a></div></header>
+    <header className={styles.header}><div><span className="eyebrow">competição e cronometragem</span><h2 id="competition-admin-title">Operação da prova.</h2><p>{mode === "virtual" ? "Abra a largada no celular, registre as chegadas e acompanhe a classificação por categoria e gênero." : "Importe os atletas aceitos, distribua as pulseiras e abra cada largada no celular oficial."}</p></div>{mode === "cross" ? <div className={styles.actions}><button type="button" disabled={Boolean(busy)} onClick={() => action("import")}><Import size={17} />Sincronizar aceitos</button><a href="/circuito-cross-country-ivcl-11run" target="_blank" rel="noreferrer">Página pública<ArrowUpRight size={16} /></a></div> : null}</header>
     {error ? <p className={styles.error} role="alert">{error}</p> : null}{success ? <p className={styles.success} role="status">{success}</p> : null}
-    <div className={styles.numbering}><label>Número inicial<input type="number" min="1" max="9999" value={bibStart} onChange={(event) => setBibStart(event.target.value)} /><small>Ordem: categoria, gênero e nome.</small></label><button type="button" disabled={Boolean(busy) || !data.entries.length} onClick={() => { const text = `Confirmar ${data.entries.length} números, de ${String(Number(bibStart)).padStart(4, "0")} a ${String(previewEnd).padStart(4, "0")}?`; if (window.confirm(text)) action("assign_bibs", { start: Number(bibStart) }); }}><Medal size={17} />Confirmar numeração</button><p className={styles.preview}>{data.entries.length ? `Prévia: ${String(Number(bibStart)).padStart(4, "0")} a ${String(previewEnd).padStart(4, "0")} · ${data.entries.length} atletas` : "Sincronize os atletas aceitos para começar."}</p></div>
+    {mode === "cross" ? <div className={styles.numbering}><label>Número inicial<input type="number" min="1" max="9999" value={bibStart} onChange={(event) => setBibStart(event.target.value)} /><small>Ordem: categoria, gênero e nome.</small></label><button type="button" disabled={Boolean(busy) || !data.entries.length} onClick={() => { const text = `Confirmar ${data.entries.length} números, de ${String(Number(bibStart)).padStart(4, "0")} a ${String(previewEnd).padStart(4, "0")}?`; if (window.confirm(text)) action("assign_bibs", { start: Number(bibStart) }); }}><Medal size={17} />Confirmar numeração</button><p className={styles.preview}>{data.entries.length ? `Prévia: ${String(Number(bibStart)).padStart(4, "0")} a ${String(previewEnd).padStart(4, "0")} · ${data.entries.length} atletas` : "Sincronize os atletas aceitos para começar."}</p></div> : null}
     <div className={styles.races}>{data.races.map((race) => <article className={styles.raceCard} key={race.id}><header><div><h3>{race.title}</h3><p>{race.categories.join(" · ")} · {race.distance_m.toLocaleString("pt-BR")} m · {race.scheduled_time}</p></div><span className={styles.status}>{race.status === "ARMED" && race.paused_elapsed_ms ? "Pausada" : statusLabels[race.status] ?? race.status}</span></header><div className={styles.raceActions}><a className={styles.start} href={`/cronometro/${race.id}`} target="_blank" rel="noreferrer"><Flag size={16} />Largada</a>{["ARMED", "RUNNING"].includes(race.status) ? <button type="button" onClick={() => addManual(race)}>Inserir chegada</button> : null}{race.status === "RUNNING" || (race.status === "ARMED" && race.paused_elapsed_ms > 0) ? <button type="button" onClick={() => action("homologate", { raceId: race.id })}><Trophy size={16} />Finalizar e homologar</button> : null}{race.status === "HOMOLOGATED" ? <button type="button" onClick={() => { const reason = window.prompt("Justificativa para reabrir a bateria:"); if (reason) action("reopen", { raceId: race.id, reason }); }}>Reabrir</button> : null}{race.status !== "READY" ? <button type="button" onClick={() => { if (window.confirm(`Resetar ${race.title}? O cronômetro será zerado e as chegadas desta bateria serão invalidadas.`)) action("reset", { raceId: race.id, reason: "Reset confirmado no painel administrativo" }); }}>Resetar</button> : null}<a href={`/cronometro/${race.id}`} target="_blank" rel="noreferrer"><Smartphone size={16} />Preparar celular</a></div></article>)}</div>
     <aside className={styles.testZone} aria-labelledby="test-zone-title"><div><span className="eyebrow">ambiente de testes</span><h3 id="test-zone-title">Limpar simulações</h3><p>Zera cronômetros e retira todas as chegadas e resultados atuais. Atletas inscritos e números de pulseira permanecem intactos.</p></div><button type="button" disabled={Boolean(busy)} onClick={clearTests}><Trash2 size={17} />Limpar testes</button></aside>
     <div className={styles.filters}><label>Buscar número ou atleta<input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="0001, nome, categoria ou cidade" /></label><label>Ordenar<select value={sort} onChange={(event) => setSort(event.target.value)}><option value="number">Ordem numérica</option><option value="category">Categoria</option><option value="name">Nome</option></select></label></div>
     <div className={styles.tableWrap} role="region" aria-label="Atletas numerados" tabIndex={0}><table className={styles.table}><thead><tr><th>Nº</th><th>Atleta</th><th>Categoria</th><th>Gênero</th><th>Cidade</th><th>Bateria</th></tr></thead><tbody>{visibleEntries.map((entry) => <tr key={entry.id}><td className={styles.bib} data-label="Número"><input aria-label={`Número de ${entry.name}`} defaultValue={entry.bib_number ? String(entry.bib_number).padStart(4, "0") : ""} placeholder="0000" inputMode="numeric" onBlur={(event) => { if (event.target.value && Number(event.target.value) !== entry.bib_number) assignBib(entry, event.target.value); }} /></td><td data-label="Atleta"><strong>{entry.name}</strong></td><td data-label="Categoria">{entry.category}</td><td data-label="Gênero">{entry.gender}</td><td data-label="Cidade">{entry.city}</td><td data-label="Bateria">{data.races.find((race) => race.id === entry.race_id)?.title}</td></tr>)}</tbody></table>{!visibleEntries.length ? <p className={styles.empty}>Nenhum atleta neste recorte.</p> : null}</div>
     <div><span className="eyebrow">resultados provisórios e finais</span><h3>Chegadas registradas</h3></div>
-    <div className={styles.tableWrap} role="region" aria-label="Resultados da competição" tabIndex={0}><table className={styles.table}><thead><tr><th>Pos.</th><th>Nº</th><th>Atleta</th><th>Categoria</th><th>Tempo</th><th>Status</th><th>Ação</th></tr></thead><tbody>{data.results.map((result) => <tr key={result.id}><td data-label="Posição">{result.position ?? "—"}</td><td className={styles.bib} data-label="Número">{result.bib}</td><td data-label="Atleta"><strong>{result.name}</strong><br /><small>{result.gender}</small></td><td data-label="Categoria">{result.category}</td><td data-label="Tempo"><input aria-label={`Tempo de ${result.name}`} value={draftTimes[result.id] ?? result.formattedTime} onChange={(event) => setDraftTimes((current) => ({ ...current, [result.id]: event.target.value }))} /></td><td data-label="Status"><select aria-label={`Status de ${result.name}`} value={["DNS", "DNF", "DSQ"].includes(result.status) ? result.status : "ACTIVE"} onChange={(event) => changeStatus(result, event.target.value)}><option value="ACTIVE">{result.provisional ? "Provisório" : "Final"}</option><option value="DNS">DNS</option><option value="DNF">DNF</option><option value="DSQ">DSQ</option></select></td><td className={styles.rowActions} data-label="Ação"><button type="button" disabled={busy === result.id || !result.provisional} onClick={() => saveResult(result)}><Save size={15} />Salvar</button><button type="button" disabled={busy === result.id || !result.provisional} onClick={() => advancedEdit(result)}>Editar</button><button type="button" disabled={busy === result.id || !result.provisional} onClick={() => { const reason = window.prompt("Justificativa para invalidar esta leitura:"); if (reason) fetch("/api/admin/competitions", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ finishId: result.id, status: "VOID", reason }) }).then((response) => response.json()).then((json) => { if (!json.ok) throw new Error(json.error); setData(json); setSuccess("Leitura invalidada e classificação recalculada."); }).catch((caught) => setError(caught.message)); }}>Invalidar</button></td></tr>)}</tbody></table>{!data.results.length ? <p className={styles.empty}>Os resultados aparecerão aqui assim que a primeira pulseira for lida.</p> : null}</div>
+    <div className={styles.tableWrap} role="region" aria-label="Resultados da competição" tabIndex={0}><table className={styles.table}><thead><tr><th>Pos.</th><th>Nº</th><th>Atleta</th><th>Categoria</th><th>Tempo</th><th>Status</th><th>Ação</th></tr></thead><tbody>{data.results.map((result) => <tr key={result.id}><td data-label="Posição">{result.position ?? "—"}</td><td className={styles.bib} data-label="Número">{result.bib}</td><td data-label="Atleta"><strong>{result.name}</strong><br /><small>{result.gender}</small></td><td data-label="Categoria">{result.category}</td><td data-label="Tempo"><input aria-label={`Tempo de ${result.name}`} value={draftTimes[result.id] ?? result.formattedTime} onChange={(event) => setDraftTimes((current) => ({ ...current, [result.id]: event.target.value }))} /></td><td data-label="Status"><select aria-label={`Status de ${result.name}`} value={["DNS", "DNF", "DSQ"].includes(result.status) ? result.status : "ACTIVE"} onChange={(event) => changeStatus(result, event.target.value)}><option value="ACTIVE">{result.provisional ? "Provisório" : "Final"}</option><option value="DNS">DNS</option><option value="DNF">DNF</option><option value="DSQ">DSQ</option></select></td><td className={styles.rowActions} data-label="Ação"><button type="button" disabled={busy === result.id || !result.provisional} onClick={() => saveResult(result)}><Save size={15} />Salvar</button><button type="button" disabled={busy === result.id || !result.provisional} onClick={() => advancedEdit(result)}>Editar</button><button type="button" disabled={busy === result.id || !result.provisional} onClick={() => { const reason = window.prompt("Justificativa para invalidar esta leitura:"); if (reason) fetch("/api/admin/competitions", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ finishId: result.id, competitionId, status: "VOID", reason }) }).then((response) => response.json()).then((json) => { if (!json.ok) throw new Error(json.error); setData(json); setSuccess("Leitura invalidada e classificação recalculada."); }).catch((caught) => setError(caught.message)); }}>Invalidar</button></td></tr>)}</tbody></table>{!data.results.length ? <p className={styles.empty}>Os resultados aparecerão aqui assim que a primeira pulseira for lida.</p> : null}</div>
   </section>;
 }
 

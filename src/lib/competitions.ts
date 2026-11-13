@@ -6,6 +6,7 @@ import { listLeads } from "./leads.ts";
 
 export const CROSS_COUNTRY_COMPETITION_ID = "cross-country-ivcl-2026";
 export const CROSS_COUNTRY_PUBLIC_SLUG = "circuito-cross-country-ivcl-11run";
+export const VIRTUAL_CHALLENGE_KIND = "virtual-challenge";
 
 export type RaceStatus = "READY" | "ARMED" | "RUNNING" | "HOMOLOGATED" | "CANCELLED";
 export type AthleteResultStatus = "ACTIVE" | "DNS" | "DNF" | "DSQ";
@@ -40,6 +41,18 @@ export type CompetitionEntry = {
   bib_number: number | null;
   result_status: AthleteResultStatus;
   active: number;
+};
+
+export type CompetitionEdition = {
+  id: string;
+  public_slug: string;
+  title: string;
+  event_date: string;
+  location: string;
+  kind: string;
+  status: "DRAFT" | "LIVE" | "FINISHED";
+  created_at: string;
+  updated_at: string;
 };
 
 export type CompetitionResult = {
@@ -83,6 +96,8 @@ function db() {
       public_slug TEXT NOT NULL UNIQUE,
       title TEXT NOT NULL,
       event_date TEXT NOT NULL,
+      location TEXT NOT NULL DEFAULT '',
+      kind TEXT NOT NULL DEFAULT 'cross-country',
       status TEXT NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT','LIVE','FINISHED')),
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
@@ -159,6 +174,9 @@ function db() {
   if (!sessionColumns.some((column) => column.name === "paused_elapsed_ms")) {
     database.exec("ALTER TABLE competition_sessions ADD COLUMN paused_elapsed_ms INTEGER NOT NULL DEFAULT 0");
   }
+  const competitionColumns = database.prepare("PRAGMA table_info(competitions)").all() as Array<{ name: string }>;
+  if (!competitionColumns.some((column) => column.name === "location")) database.exec("ALTER TABLE competitions ADD COLUMN location TEXT NOT NULL DEFAULT ''");
+  if (!competitionColumns.some((column) => column.name === "kind")) database.exec("ALTER TABLE competitions ADD COLUMN kind TEXT NOT NULL DEFAULT 'cross-country'");
   seedCrossCountry(database);
   return database;
 }
@@ -186,6 +204,12 @@ function normalizeGender(value: unknown) {
 
 function raceForCategory(category: string) {
   return raceSeed.find((race) => (race.categories as readonly string[]).includes(category));
+}
+
+function requireVirtualCompetition(competitionId: string) {
+  const competition = db().prepare("SELECT * FROM competitions WHERE id=? AND kind=?").get(competitionId, VIRTUAL_CHALLENGE_KIND) as CompetitionEdition | undefined;
+  if (!competition) throw new Error("Edição do Desafio Virtual não encontrada.");
+  return competition;
 }
 
 function audit(connection: DatabaseSync, competitionId: string, entityType: string, entityId: string, action: string, actor: string, before: unknown, after: unknown, reason = "") {
@@ -230,6 +254,79 @@ export function listCompetitionEntries(competitionId = CROSS_COUNTRY_COMPETITION
   return db().prepare(`SELECT * FROM competition_entries WHERE competition_id = ? AND active = 1
     ORDER BY bib_number IS NULL, bib_number, CAST(replace(category, 'Sub ', '') AS INTEGER), gender, name COLLATE NOCASE`)
     .all(competitionId) as CompetitionEntry[];
+}
+
+export function listVirtualChallengeEditions() {
+  return db().prepare("SELECT * FROM competitions WHERE kind=? ORDER BY event_date DESC, created_at DESC").all(VIRTUAL_CHALLENGE_KIND) as CompetitionEdition[];
+}
+
+export function createVirtualChallengeEdition(input: { title: string; location: string; eventDate: string }, actor = "admin") {
+  const title = clean(input.title);
+  const location = clean(input.location);
+  const eventDate = clean(input.eventDate);
+  if (title.length < 3 || title.length > 120) throw new Error("Informe um nome de edição com 3 a 120 caracteres.");
+  if (location.length < 2 || location.length > 160) throw new Error("Informe o local da edição.");
+  const date = new Date(`${eventDate}T12:00:00Z`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(eventDate) || Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== eventDate) throw new Error("Informe uma data válida.");
+  const connection = db();
+  const id = `virtual-${eventDate}-${randomUUID().slice(0, 8)}`;
+  const slug = `desafio-virtual-${eventDate}-${randomUUID().slice(0, 6)}`;
+  const raceId = `${id}-1000m`;
+  const now = new Date().toISOString();
+  connection.exec("BEGIN IMMEDIATE");
+  try {
+    connection.prepare(`INSERT INTO competitions (id, public_slug, title, event_date, location, kind, status, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, 'DRAFT', ?, ?)`).run(id, slug, title, eventDate, location, VIRTUAL_CHALLENGE_KIND, now, now);
+    connection.prepare(`INSERT INTO competition_races
+      (id, competition_id, title, categories_json, distance_m, scheduled_time, sort_order) VALUES (?, ?, ?, ?, 1000, 'Largada única', 0)`)
+      .run(raceId, id, "9 a 13 anos", JSON.stringify(["Sub 10", "Sub 11", "Sub 12", "Sub 13", "Sub 14"]));
+    audit(connection, id, "competition", id, "CREATE_VIRTUAL_EDITION", actor, undefined, { title, location, eventDate });
+    connection.exec("COMMIT");
+  } catch (error) {
+    connection.exec("ROLLBACK");
+    throw error;
+  }
+  return requireVirtualCompetition(id);
+}
+
+export function registerVirtualChallengeAthlete(input: { competitionId: string; name: string; age: number; gender: string; city?: string }, actor = "admin") {
+  const competition = requireVirtualCompetition(clean(input.competitionId));
+  const name = clean(input.name);
+  const age = Number(input.age);
+  const gender = normalizeGender(input.gender);
+  const city = clean(input.city) || competition.location;
+  if (name.length < 3 || name.length > 120) throw new Error("Informe o nome completo do atleta.");
+  if (!Number.isInteger(age) || age < 9 || age > 13) throw new Error("A idade deve estar entre 9 e 13 anos.");
+  if (!gender) throw new Error("Selecione o gênero esportivo.");
+  const category = `Sub ${age + 1}`;
+  const connection = db();
+  const race = connection.prepare("SELECT id FROM competition_races WHERE competition_id=? AND categories_json LIKE ? LIMIT 1").get(competition.id, `%\"${category}\"%`) as { id: string } | undefined;
+  if (!race) throw new Error("Categoria não configurada nesta edição.");
+  const used = new Set((connection.prepare("SELECT bib_number FROM competition_entries WHERE competition_id=? AND bib_number IS NOT NULL").all(competition.id) as Array<{ bib_number: number }>).map((row) => row.bib_number));
+  let bibNumber = 1;
+  while (used.has(bibNumber)) bibNumber++;
+  if (bibNumber > 9999) throw new Error("Não há mais números disponíveis nesta edição.");
+  const id = randomUUID();
+  const now = new Date().toISOString();
+  connection.prepare(`INSERT INTO competition_entries
+    (id, competition_id, race_id, source_id, name, category, gender, city, bib_number, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+    .run(id, competition.id, race.id, `on-site:${id}`, name, category, gender, city, bibNumber, now, now);
+  const entry = connection.prepare("SELECT * FROM competition_entries WHERE id=?").get(id) as CompetitionEntry;
+  audit(connection, competition.id, "entry", id, "REGISTER_ON_SITE", actor, undefined, entry);
+  return { ...entry, bib: formatBib(bibNumber), age };
+}
+
+export function competitionIdForRace(raceId: string) {
+  const row = db().prepare("SELECT competition_id FROM competition_races WHERE id=?").get(raceId) as { competition_id: string } | undefined;
+  if (!row) throw new Error("Largada não encontrada.");
+  return row.competition_id;
+}
+
+export function competitionIdForFinish(finishId: string) {
+  const row = db().prepare(`SELECT e.competition_id FROM competition_finishes f JOIN competition_entries e ON e.id=f.entry_id WHERE f.id=?`).get(finishId) as { competition_id: string } | undefined;
+  if (!row) throw new Error("Resultado não encontrado.");
+  return row.competition_id;
 }
 
 export function importAcceptedCrossCountryEntries(actor = "admin") {

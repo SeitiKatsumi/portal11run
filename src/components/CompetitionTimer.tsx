@@ -158,7 +158,7 @@ export function CompetitionTimer({ raceId }: { raceId: string }) {
 
   const load = useCallback(async () => {
     try {
-      const response = await fetch("/api/admin/competitions", { cache: "no-store" });
+      const response = await fetch(`/api/admin/competitions?race_id=${encodeURIComponent(raceId)}`, { cache: "no-store" });
       const json = await response.json();
       if (!response.ok) throw new Error(json.error || "Não foi possível carregar a largada.");
       setData(json);
@@ -186,7 +186,7 @@ export function CompetitionTimer({ raceId }: { raceId: string }) {
     if (!navigator.onLine || !deviceId) return;
     const stored = await idbGet<StoredRace>("meta", `race:${raceId}`);
     try {
-      const stateResponse = await fetch("/api/admin/competitions", { cache: "no-store" });
+      const stateResponse = await fetch(`/api/admin/competitions?race_id=${encodeURIComponent(raceId)}`, { cache: "no-store" });
       const serverState = await stateResponse.json() as State;
       const serverRace = serverState.races.find((item) => item.id === raceId);
       if (serverRace?.session_status === "CANCELLED" && stored && stored.status !== "READY") {

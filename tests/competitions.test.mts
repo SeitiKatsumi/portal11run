@@ -91,3 +91,25 @@ test("numera, cronometra, reordena, bloqueia duplicata e homologa", () => {
 test("rejeita numeração acima de 9999", () => {
   assert.throws(() => competition.previewBibAssignment(9999), /ultrapassa/);
 });
+
+test("cria edição virtual, cadastra na hora e classifica por categoria", () => {
+  assert.throws(() => competition.createVirtualChallengeEdition({ title: "Data inválida", location: "Campinas", eventDate: "2026-02-31" }), /data válida/);
+  const edition = competition.createVirtualChallengeEdition({ title: "Etapa QA Campinas", location: "Campinas/SP", eventDate: "2026-11-13" });
+  const ana = competition.registerVirtualChallengeAthlete({ competitionId: edition.id, name: "Ana Virtual", age: 9, gender: "Feminino" });
+  const bia = competition.registerVirtualChallengeAthlete({ competitionId: edition.id, name: "Bia Virtual", age: 9, gender: "Feminino", city: "Valinhos/SP" });
+  const leo = competition.registerVirtualChallengeAthlete({ competitionId: edition.id, name: "Leo Virtual", age: 13, gender: "Masculino" });
+  assert.deepEqual([ana.bib, bia.bib, leo.bib], ["0001", "0002", "0003"]);
+  assert.deepEqual([ana.category, leo.category], ["Sub 10", "Sub 14"]);
+  const race = competition.listCompetitionRaces(edition.id)[0];
+  competition.armRace(race.id, "virtual-device");
+  const startedAt = Date.now();
+  competition.startRace(race.id, "virtual-device", startedAt);
+  competition.syncRaceFinishes(race.id, [
+    { clientEventId: "virtual-ana", bibNumber: ana.bib_number!, elapsedMs: 250_000, capturedAt: new Date().toISOString(), deviceId: "virtual-device" },
+    { clientEventId: "virtual-bia", bibNumber: bia.bib_number!, elapsedMs: 240_000, capturedAt: new Date().toISOString(), deviceId: "virtual-device" },
+    { clientEventId: "virtual-leo", bibNumber: leo.bib_number!, elapsedMs: 230_000, capturedAt: new Date().toISOString(), deviceId: "virtual-device" }
+  ]);
+  const results = competition.buildResults(edition.id);
+  assert.deepEqual(results.filter((item) => item.category === "Sub 10").map((item) => [item.name, item.position]), [["Bia Virtual", 1], ["Ana Virtual", 2]]);
+  assert.equal(results.find((item) => item.category === "Sub 14")?.position, 1);
+});
