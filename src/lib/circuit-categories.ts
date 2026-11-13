@@ -68,7 +68,7 @@ export const crossCountryFaq = [
   { question: "Quem pode participar e como a idade é calculada?", answer: `Atletas nascidos a partir de 01/01/2009, até 17 anos em 2026. ${crossCountryBirthRule} Por exemplo: quem nasceu em 31/12/2013 disputa a Sub 14, pois completa 13 anos em 2026. A inscrição calcula automaticamente a categoria e a distância pela data de nascimento.` },
   { question: "Quais são as datas de nascimento de cada categoria?", answer: [...crossCountryBirthCategories, "As datas inicial e final estão incluídas. A Sub 10 também recebe crianças nascidas após 2017; a data de nascimento deve ser válida e não pode ser futura."].join("\n") },
   { question: "Masculino e feminino largam juntos?", answer: "Sim. Masculino e feminino largam no mesmo horário em cada faixa etária. A classificação, a pontuação e o pódio permanecem separados por categoria individual e gênero. A categoria Sub 10 reúne atletas de 9 anos ou menos." },
-  { question: "A inscrição é gratuita? Qual é o prazo?", answer: "Sim. As inscrições são gratuitas até 12 de novembro de 2026, às 23h59, no horário de São Paulo. O responsável deve preencher os dados do atleta e aceitar o regulamento e a autorização. O envio fica sujeito à conferência e confirmação da organização." },
+  { question: "A inscrição é gratuita? Qual é o prazo?", answer: "Sim. As inscrições são gratuitas até 15 de novembro de 2026, às 23h59, no horário de São Paulo. O responsável deve preencher os dados do atleta e aceitar o regulamento e a autorização. O envio fica sujeito à conferência e confirmação da organização." },
   { question: "O responsável precisa acompanhar o atleta?", answer: "Sim. O responsável legal deve acompanhar o atleta, seguir as orientações da organização e informar condições que possam afetar sua participação segura. As orientações de acesso serão enviadas aos responsáveis." },
   { question: "Como funcionam a premiação e a pontuação?", answer: "A premiação geral acontece às 9h45. Os três primeiros de cada categoria e gênero recebem troféus e brindes 11Run. Do primeiro ao décimo lugar, a pontuação vai de 10 a 1 ponto. A classificação geral soma as edições, com pontuação dobrada na terceira edição, a final. As datas da segunda e da terceira edição serão confirmadas." },
   { question: "Haverá transmissão, fotos e resultados?", answer: "Estão previstos transmissão ao vivo pelo YouTube, fotos profissionais gratuitas após o evento e atualização da pontuação do ranking em tempo real no site." }
@@ -83,7 +83,7 @@ export const crossCountryTerm = {
     ...crossCountryBirthCategories,
     "A Sub 10 reúne atletas nascidos em 2017 ou depois, com 9 anos ou menos em 2026. A data de nascimento informada deve ser válida e não pode ser futura. Exemplo: um atleta nascido em 31/12/2013 compete na Sub 14, ainda que tenha 12 anos no dia da prova, pois completa 13 anos até 31/12/2026.",
     "A corrida acontece em percurso de CROSS COUNTRY preparado para o evento, em terreno natural. O responsável deve acompanhar o atleta, observar as orientações da organização e informar condições que possam afetar sua participação segura.",
-    "As inscrições são gratuitas até 12 de novembro de 2026, às 23h59, no horário de São Paulo. A participação fica sujeita à conferência e confirmação da organização. Orientações de acesso e eventuais ajustes de horário serão comunicados aos responsáveis.",
+    "As inscrições são gratuitas até 15 de novembro de 2026, às 23h59, no horário de São Paulo. A participação fica sujeita à conferência e confirmação da organização. Orientações de acesso e eventuais ajustes de horário serão comunicados aos responsáveis.",
     "A programação ocorre em período único, pela manhã, das 8h às 10h, no horário de São Paulo. Não haverá período da tarde. Masculino e feminino largam no mesmo horário em cada faixa etária, conforme a programação:",
     ...crossCountryStartTimes,
     "09:45 — Premiação geral. Classificação, pontuação e pódio permanecem separados por categoria individual e gênero.",
@@ -93,7 +93,7 @@ export const crossCountryTerm = {
   ]
 };
 
-// 12/11/2026 às 23h59 em São Paulo; limite exclusivo em UTC.
+// 15/11/2026 às 23h59 em São Paulo; limite exclusivo em UTC.
 export function isCrossRegistrationOpen(now = Date.now()) {
-  return now < Date.parse("2026-11-13T03:00:00.000Z");
+  return now < Date.parse("2026-11-16T03:00:00.000Z");
 }

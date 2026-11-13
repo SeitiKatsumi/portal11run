@@ -39,7 +39,7 @@ export default function CrossCountryPage() {
         directionsUrl={crossCountryDirections} whatsapp="5511999385329" free
         canonicalPath="/circuito-cross-country-ivcl-11run"
         registrationUrl="#inscricao"
-        registrationNote="Inscreva-se até 12/11/2026, às 23h59, no horário de São Paulo."
+        registrationNote="Inscreva-se até 15/11/2026, às 23h59, no horário de São Paulo."
         primaryCta={<ProjectFormModal project={project} className={`button ${eventStyles.primaryButton}`} />}
         secondaryCta={<><EntrantsModal entrants={entrants} className={eventStyles.outlineButton} title="Inscritos no Cross Country" /><CompetitionResultsModal slug={project} className={eventStyles.outlineButton} /></>}
       />
@@ -115,7 +115,7 @@ export default function CrossCountryPage() {
     <section className={`section ${styles.panel}`} id="faq"><CrossCountryFaq /></section>
 
     <section className={`section ${styles.registration}`} id="inscricao">
-      <div><span className="eyebrow">O próximo passo é seu</span><h2>Inscrições gratuitas até 12 de novembro.</h2><p>Envie a inscrição do atleta com a autorização do responsável. A equipe fará a conferência e entrará em contato para confirmar a participação.</p><small>Encerramento em 12/11/2026, às 23h59, no horário de São Paulo. As orientações de acesso serão enviadas pela organização.</small></div>
+      <div><span className="eyebrow">O próximo passo é seu</span><h2>Inscrições gratuitas até 15 de novembro.</h2><p>Envie a inscrição do atleta com a autorização do responsável. A equipe fará a conferência e entrará em contato para confirmar a participação.</p><small>Encerramento em 15/11/2026, às 23h59, no horário de São Paulo. As orientações de acesso serão enviadas pela organização.</small></div>
       <ProjectFormModal project={project} />
     </section>
 

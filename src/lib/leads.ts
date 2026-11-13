@@ -268,7 +268,7 @@ export function validateLead(payload: LeadPayload, options?: { photoCount?: numb
   }
 
   if (payload.project_type === "circuito-cross-country-ivcl-11run") {
-    if (!options?.existingRegistration && !isCrossRegistrationOpen()) return { ok: false, error: "As inscrições gratuitas encerraram em 12 de novembro de 2026, no horário de São Paulo." };
+    if (!options?.existingRegistration && !isCrossRegistrationOpen()) return { ok: false, error: "As inscrições gratuitas encerraram em 15 de novembro de 2026, no horário de São Paulo." };
     for (const field of ["name", "phone", "city", "state", "athlete_name", "birth_date", "gender", "term_acceptor_name", "term_acceptor_cpf"]) {
       if (typeof payload[field] !== "string" || !String(payload[field]).trim()) return { ok: false, error: `Preencha o campo obrigatório: ${field}.` };
     }
