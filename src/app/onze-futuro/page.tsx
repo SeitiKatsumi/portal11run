@@ -30,7 +30,6 @@ import { FutureJourneySection } from "@/components/FutureJourney/FutureJourneySe
 import { OnzeFuturoFaq } from "@/components/OnzeFuturoFaq";
 import { ProjectFormModal } from "@/components/ProjectFormModal";
 import { Reveal } from "@/components/Reveal";
-import { getPublicAthleteProfileByFirstName } from "@/lib/leads";
 import { onzeFuturoFaqItems } from "@/lib/onze-futuro-faq";
 
 export const dynamic = "force-dynamic";
@@ -222,84 +221,126 @@ const benefits = [
 
 const athleteProfiles = [
   {
+    slug: "aime",
     name: "Aimê Giaretta Katsumi",
     birthDate: "21/03/2017",
-    image: "/assets/athletes/perfil-aime.webp",
+    mark: "3'36\"",
+    image: "/assets/onze-futuro/time-2027/aime.webp",
     alt: "Perfil visual de Aimê Giaretta Katsumi",
-    intro: "A caçulinha do grupo, com energia doce, leve e cheia de sonhos grandes.",
-    bio: [
-      "Aimê começou a correr bem pertinho do papai, seu parceiro de todos os momentos, e o que parecia apenas uma brincadeira virou uma linda surpresa: ela mostrou resistência, coragem e um amor enorme pela pista.",
-      "Além da corrida, também pratica ginástica artística, atividade que ajuda no desenvolvimento da coordenação, equilíbrio, força e consciência corporal. Fora dos treinos, ama brincar, estar com a família e cuidar dos seus dois goldens, Darry e Happy.",
-      "Mesmo tão nova, Aimê já demonstra uma relação muito especial com o esporte. Quando subiu ao pódio pela primeira vez, resumiu tudo com uma frase inesquecível: “É mais legal que Natal e aniversário.” Seu grande sonho é ser medalhista olímpica."
-    ]
   },
   {
-    name: "Maria Eloiza Nascimento da Silva",
-    birthDate: "15/10/2016",
-    image: "/assets/athletes/perfil-maria-eloiza.webp",
-    alt: "Perfil visual de Maria Eloiza Nascimento da Silva",
-    intro: "Uma atleta alegre, intensa e cheia de futuro.",
-    bio: [
-      "Maria Eloiza descobriu o atletismo vendo o papai correr. A curiosidade virou vontade, a vontade virou pedido, e depois de ganhar seu primeiro tênis de corrida, ela nunca mais parou.",
-      "Cheia de energia, é daquelas crianças que parecem ligadas no 220. Ama correr, pedalar, brincar, dançar e estar sempre em movimento. Sua alegria aparece em tudo o que faz, principalmente quando está competindo ou vivendo novas experiências no esporte.",
-      "Em pouco tempo, já participou de provas oficiais e mostrou que determinação também pode vir acompanhada de muita doçura, espontaneidade e um sorriso que ilumina tudo ao redor."
-    ]
-  },
-  {
-    name: "Emanuelly Helena Alves Marcelino",
-    birthDate: "23/02/2016",
-    image: "/assets/athletes/perfil-manu.webp",
-    alt: "Perfil visual de Emanuelly Helena Alves Marcelino",
-    intro: "Manu une concentração, sensibilidade e vontade de evoluir.",
-    bio: [
-      "Emanuelly, carinhosamente chamada de Manu, começou na corrida por incentivo do pai e logo descobriu que aquele também era o seu lugar. Desde pequena, já chamava atenção nas corridas infantis pela força, disciplina e disposição para competir.",
-      "Manu é uma menina inteligente, carinhosa, estudiosa e muito ligada à família. Fora das pistas, ama desenhar, ler, nadar, pedalar, brincar no parquinho e começar o dia com seu querido pão com ovo.",
-      "Na corrida, encanta pela entrega. Em casa, encanta pela alegria. É daquelas atletas que fazem tudo com brilho nos olhos: forte, doce e determinada."
-    ]
-  },
-  {
-    name: "Sophia Gabrielly de Aragão Maciel",
-    birthDate: "28/07/2016",
-    image: "/assets/athletes/perfil-soso.webp",
-    alt: "Perfil visual de Sophia Gabrielly de Aragão Maciel",
-    intro: "Soso representa a atleta que nasce da paixão.",
-    bio: [
-      "Sophia, nossa Soso, encontrou na corrida o seu grande amor. Antes de chegar ao atletismo, passou pela ginástica rítmica, onde desenvolveu coordenação, expressão corporal e disciplina. Hoje, além de correr, também pratica natação e já sonha com novos desafios, quem sabe até no triathlon.",
-      "Carinhosa, comunicativa, determinada e dona de uma personalidade forte, Soso sabe muito bem o que quer. Quando coloca algo na cabeça e no coração, vai atrás com energia, foco e coragem.",
-      "Ela ama passear, competir e viver experiências que a façam se movimentar. Na pista, leva toda essa intensidade linda: corre com vontade, com alegria e com aquela força de quem não desiste fácil."
-    ]
-  },
-  {
+    slug: "nathan",
     name: "Nathan Augusto Almeida Gerin",
     birthDate: "14/01/2016",
-    image: "/assets/athletes/perfil-nathan.webp",
+    mark: "3'14\"",
+    image: "/assets/onze-futuro/time-2027/nathan.webp",
     alt: "Perfil visual de Nathan Augusto Almeida Gerin",
-    intro: "Velocidade, resistência e muita vontade de construir uma trajetória completa no atletismo.",
-    bio: [
-      "Representante de Apucarana, no Paraná, Nathan já reúne conquistas importantes e mostra versatilidade em diferentes distâncias. É recordista paranaense nos 60 e 600 metros e segue ampliando seu repertório esportivo.",
-      "No teste de 1.000 metros em pista de 400 metros, registrou 3min26s70. A marca reforça a combinação entre velocidade e resistência que chama atenção em sua formação.",
-      "Nathan sonha em ser atleta olímpico e quebrar recordes mundiais. No Onze Futuro, encontra um ambiente para continuar aprendendo, evoluindo e transformando esse sonho em uma jornada responsável."
-    ]
-  }
+  },
+  {
+    slug: "manu",
+    name: "Emanuelly Helena Alves Marcelino",
+    birthDate: "23/02/2016",
+    mark: "3'40\"",
+    image: "/assets/onze-futuro/time-2027/manu.webp",
+    alt: "Perfil visual de Emanuelly Helena Alves Marcelino",
+  },
+  {
+    slug: "alice",
+    name: "Alice",
+    birthDate: "23/02/2016",
+    mark: "3'49\"",
+    image: "/assets/onze-futuro/time-2027/alice.webp",
+    alt: "Perfil visual de Alice",
+  },
+  {
+    slug: "maria-eloisa",
+    name: "Maria Eloisa",
+    birthDate: "15/10/2016",
+    mark: "3'54\"",
+    image: "/assets/onze-futuro/time-2027/maria-eloisa.webp",
+    alt: "Perfil visual de Maria Eloisa",
+  },
+  {
+    slug: "soso",
+    name: "Sophia Gabrielly de Aragão Maciel",
+    birthDate: "28/07/2016",
+    mark: "3'58\"",
+    image: "/assets/onze-futuro/time-2027/soso.webp",
+    alt: "Perfil visual de Sophia Gabrielly de Aragão Maciel",
+  },
+  {
+    slug: "thales",
+    name: "Thales Miguel Silva Ramos",
+    birthDate: "03/02/2015",
+    mark: "3'22\"",
+    image: "/assets/onze-futuro/time-2027/thales.webp",
+    alt: "Perfil visual de Thales Miguel Silva Ramos",
+  },
+  {
+    slug: "luma",
+    name: "Luma",
+    birthDate: "01/06/2015",
+    mark: "3'38\"",
+    image: "/assets/onze-futuro/time-2027/luma.webp",
+    alt: "Perfil visual de Luma",
+  },
+  {
+    slug: "helena",
+    name: "Helena",
+    birthDate: "2013",
+    mark: "3'28\"",
+    image: "/assets/onze-futuro/time-2027/helena.webp",
+    alt: "Perfil visual de Helena",
+  },
+  {
+    slug: "ananda",
+    name: "Ananda",
+    birthDate: "21/12/2017",
+    mark: "4'25\"",
+    image: "/assets/onze-futuro/time-2027/ananda.webp",
+    alt: "Perfil visual de Ananda",
+  },
+  {
+    slug: "bia",
+    name: "Bia",
+    birthDate: "08/01/2014",
+    mark: "3'53\"",
+    image: "/assets/onze-futuro/time-2027/bia.webp",
+    alt: "Perfil visual de Bia",
+  },
+  {
+    slug: "theo",
+    name: "Theo",
+    birthDate: "2014",
+    mark: "3'22\"",
+    image: "/assets/onze-futuro/time-2027/theo.webp",
+    alt: "Perfil visual de Theo",
+  },
+  {
+    slug: "pedro-benazi",
+    name: "Pedro Benazi Rosa",
+    birthDate: "2013",
+    mark: "2'49\"",
+    image: "/assets/onze-futuro/time-2027/pedro-benazi.webp",
+    alt: "Perfil visual de Pedro Benazi Rosa",
+  },
+  {
+    slug: "renan",
+    name: "Renan",
+    birthDate: "12/07/2016",
+    mark: "3'35\"",
+    image: "/assets/onze-futuro/time-2027/renan.webp",
+    alt: "Perfil visual de Renan",
+  },
+  {
+    slug: "gabi",
+    name: "Gabi Luz",
+    birthDate: "05/03/2017",
+    mark: "3'49\"",
+    image: "/assets/onze-futuro/time-2027/gabi.webp",
+    alt: "Perfil visual de Gabi Luz",
+  },
 ];
-
-const thalesProfile = {
-  image: "/assets/athletes/perfil-thales.webp",
-  alt: "Perfil visual de Thales",
-  intro: "Um convite do pai virou paixão, disciplina e o sonho de construir uma grande história no esporte.",
-  bio: [
-    "A trajetória do Thales na corrida começou aos 9 anos, em novembro de 2024, de uma forma muito simples. O esporte sempre esteve presente em sua infância, mas foi quando seu pai o convidou para um treino de 5 quilômetros que ele descobriu sua verdadeira paixão. Naquele primeiro treino, completou os 5 km em 26 minutos e nunca mais parou de correr.",
-    "Com dedicação, disciplina e amor pelo esporte, sua evolução aconteceu de forma consistente. Em poucos meses, baixou seu tempo para 23 minutos. Mesmo depois de enfrentar a dengue e precisar retomar os treinos, voltou ainda mais forte e alcançou a marca de 22 minutos.",
-    "Os resultados continuaram aparecendo: em julho de 2025, conquistou seu primeiro sub-20 nos 5 quilômetros; em dezembro, chegou ao sub-19; e, em junho de 2026, aos 11 anos, completou a distância em 17min45s, tornando-se um atleta sub-18.",
-    "Thales também iniciou sua trajetória no atletismo de pista, estreando nos 1.500 metros com 5min06s e mostrando potencial nas provas de meio-fundo. Hoje, segue treinando em busca da alta performance sem perder a essência daquele primeiro momento entre pai e filho: um convite simples que se transformou em paixão, estilo de vida e sonho."
-  ]
-};
-
-function formatBirthDate(value: string | null | undefined) {
-  if (!value) return "Nascimento informado no cadastro";
-  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  return match ? `${match[3]}/${match[2]}/${match[1]}` : value;
-}
 
 function IconCard({ icon: Icon, title, text }: { icon: LucideIcon; title: string; text?: string }) {
   return (
@@ -324,16 +365,6 @@ function SectionHeader({ eyebrow, title, text }: { eyebrow: string; title: strin
 }
 
 export default function Page() {
-  const thalesRegistration = getPublicAthleteProfileByFirstName("Thales");
-  const profiles = [
-    ...athleteProfiles,
-    {
-      ...thalesProfile,
-      name: thalesRegistration?.athlete_name || "Thales",
-      birthDate: formatBirthDate(thalesRegistration?.birth_date)
-    }
-  ];
-
   return (
     <div className="futuro-landing">
       <FeatureBanner
@@ -381,27 +412,41 @@ export default function Page() {
 
       <section className="futuro-section futuro-athletes">
         <SectionHeader
-          eyebrow="primeira turma"
-          title="Seis atletas, seis histórias e um mesmo amor pela corrida."
-          text="O projeto piloto do Onze Futuro começa com atletas que já carregam no corpo e no coração a alegria de correr, aprender, competir e sonhar grande."
+          eyebrow="Time 2027"
+          title="Quinze atletas. Quinze histórias. Uma próxima geração."
+          text="Conheça os atletas que representarão o Onze Futuro na temporada 2027 e as marcas de 1.000 metros que acompanham o início deste novo ciclo."
         />
-        <div className="futuro-athlete-grid">
-          {profiles.map((athlete, index) => (
-            <Reveal key={athlete.name} delay={index * 0.04}>
-              <article className="futuro-athlete-profile">
-                <div className="futuro-athlete-photo">
-                  <img src={athlete.image} alt={athlete.alt} loading="lazy" />
-                </div>
-                <div className="futuro-athlete-copy">
-                  <span>{athlete.birthDate}</span>
-                  <h3>{athlete.name}</h3>
-                  <strong>{athlete.intro}</strong>
-                  {athlete.bio.map((paragraph) => (
-                    <p key={paragraph}>{paragraph}</p>
-                  ))}
-                </div>
-              </article>
-            </Reveal>
+        <div className="futuro-team-cover">
+          <img
+            src="/assets/onze-futuro/time-2027/capa.webp"
+            alt="Field 2027, a próxima geração do Onze Futuro"
+            loading="lazy"
+          />
+          <div>
+            <span>Field 2027</span>
+            <h3>Próxima geração</h3>
+            <p>Selecione um atleta para ir direto ao perfil completo. Os cartões mantêm nascimento e melhor marca sempre visíveis.</p>
+          </div>
+        </div>
+        <nav className="futuro-athlete-roster" aria-label="Atletas do time 2027">
+          {athleteProfiles.map((athlete) => (
+            <a key={athlete.slug} href={`#perfil-${athlete.slug}`}>
+              <small>{athlete.birthDate}</small>
+              <strong>{athlete.name}</strong>
+              <span>1.000 m · {athlete.mark}</span>
+            </a>
+          ))}
+        </nav>
+        <div className="futuro-profile-strip" aria-label="Perfis completos dos atletas do time 2027">
+          {athleteProfiles.map((athlete) => (
+            <article className="futuro-athlete-profile" id={`perfil-${athlete.slug}`} key={athlete.slug}>
+              <img src={athlete.image} alt={athlete.alt} loading="lazy" />
+              <footer>
+                <span>{athlete.birthDate}</span>
+                <strong>{athlete.name}</strong>
+                <b>Melhor marca 1.000 m · {athlete.mark}</b>
+              </footer>
+            </article>
           ))}
         </div>
       </section>

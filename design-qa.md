@@ -646,3 +646,41 @@ final result: passed
 - P2: none.
 
 final result: passed
+
+---
+
+# Design QA — time 2027 e novas fotos
+
+## Escopo e fontes
+
+- Página: `/onze-futuro`
+- Fontes dos perfis: `D:/active projects/11run 2026/1453 Apresentação Equipe 2027 - 11run/TIME/`
+- Fonte da home: `D:/active projects/11run 2026/1453 Apresentação Equipe 2027 - 11run/IMG-20261119-WA0034.jpg`
+- Fonte do circuito: `D:/active projects/11run 2026/1453 Apresentação Equipe 2027 - 11run/MVIMG_20261113_161800.jpg`
+
+## Evidências de implementação
+
+- Desktop: `cua://iab/tab-3/onze-futuro-desktop`, viewport 1280 px, DPR 1, página carregada com o card do time e a faixa de perfis.
+- Mobile: `cua://iab/tab-3/onze-futuro-mobile-gabi`, viewport 390 × 844 px, DPR 1, estado `#perfil-gabi`.
+- Home: `cua://iab/tab-3/home-desktop` e `cua://iab/tab-3/home-mobile`, viewports 1280 px e 390 × 844 px.
+- Circuito: `cua://iab/tab-3/circuito-desktop` e `cua://iab/tab-3/circuito-mobile`, viewports 1280 px e 390 × 844 px.
+- Comparação: as artes originais foram exibidas sem recorte dentro de cada perfil e comparadas lado a lado com os arquivos-fonte; as fotos de home e circuito foram comparadas com o enquadramento solicitado nos dois viewports.
+
+## Histórico de iterações
+
+### Iteração 1
+
+- **P2 — navegação mobile:** o carrossel horizontal preservava a posição da faixa e tornava pouco previsível a abertura do perfil escolhido.
+- Correção: no mobile, os perfis passaram para uma pilha vertical; o card continua sendo um link nativo e o destino recebe o foco visual correto.
+
+### Iteração 2
+
+- Link de Gabi validado após navegação a partir de outro card: `hash #perfil-gabi`, alvo a 103 px do topo.
+- Sem overflow horizontal: `scrollWidth === clientWidth` em 375 px nas três páginas.
+- Home: jovens centralizados verticalmente no recorte desktop e mobile.
+- Circuito: grupo inteiro visível, texto legível e container central preservado.
+- Console do navegador: nenhum erro.
+
+## Resultado final
+
+passed

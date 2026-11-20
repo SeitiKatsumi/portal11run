@@ -6,10 +6,10 @@ import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import test from "node:test";
 
-test("usa o grupo 11RUN em instalações novas, migra as fotos antigas e preserva imagens personalizadas", () => {
+test("usa o time 2027 em instalações novas, migra as fotos antigas e preserva imagens personalizadas", () => {
   const directory = mkdtempSync(path.join(tmpdir(), "11run-home-image-"));
   try {
-    for (const [index, previous] of [null, "/assets/home/home-medalha-hero.webp", "/assets/onze-futuro-medalha.webp", "/assets/manu-bandeira.webp", "/assets/cross-country-manu-bandeira.webp", "/uploads/custom.webp"].entries()) {
+    for (const [index, previous] of [null, "/assets/home/home-medalha-hero.webp", "/assets/onze-futuro-medalha.webp", "/assets/manu-bandeira.webp", "/assets/cross-country-manu-bandeira.webp", "/assets/home/grupo-11run-pista.webp", "/uploads/custom.webp"].entries()) {
       const dbPath = path.join(directory, `${index}.sqlite`);
       const db = new DatabaseSync(dbPath);
       db.exec(readFileSync("data/schema.sql", "utf8"));
@@ -24,11 +24,11 @@ test("usa o grupo 11RUN em instalações novas, migra as fotos antigas e preserv
         "import { getHomeConfig } from './src/lib/home.ts'; console.log(JSON.stringify(getHomeConfig().settings));"
       ], { env: { ...process.env, SQLITE_PATH: dbPath }, encoding: "utf8" }));
       const settings = readSettings();
-      assert.equal(settings.hero_image, previous === "/uploads/custom.webp" ? previous : "/assets/home/grupo-11run-pista.webp");
+      assert.equal(settings.hero_image, previous === "/uploads/custom.webp" ? previous : "/assets/home/time-2027.webp");
       assert.equal(settings.hero_media_type, "image");
       if (previous) {
         assert.equal(settings.hero_title, "Título personalizado");
-        assert.equal(settings.overlay_strength, 65);
+        assert.equal(settings.overlay_strength, previous === "/uploads/custom.webp" ? 65 : 0);
       }
       assert.deepEqual(readSettings(), settings);
     }

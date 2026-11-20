@@ -53,9 +53,9 @@ function seedHome(db: DatabaseSync) {
     `INSERT OR IGNORE INTO home_settings (
       id, hero_media_type, hero_image, hero_video, hero_title, hero_subtitle, hero_kicker,
       content_alignment, overlay_strength, header_opacity, header_blur, updated_at
-    ) VALUES ('primary', 'image', ?, NULL, ?, ?, ?, 'center', 58, 74, 18, ?)`
+    ) VALUES ('primary', 'image', ?, NULL, ?, ?, ?, 'center', 0, 74, 18, ?)`
   ).run(
-    "/assets/home/grupo-11run-pista.webp",
+    "/assets/home/time-2027.webp",
     "O futuro da corrida começa aqui.",
     "Escolha uma frente e entre no ecossistema 11RUN.",
     "Performance · formação · oportunidade",
@@ -107,13 +107,14 @@ function seedHome(db: DatabaseSync) {
      SET hero_media_type = 'image',
          hero_image = ?,
          hero_video = NULL,
+         overlay_strength = 0,
          updated_at = ?
      WHERE id = 'primary'
        AND (
          hero_video = '/assets/home/homevideo.mp4'
-         OR hero_image IN ('/assets/home/ayla-trofeus-hero.webp', '/assets/home/ayla-podcast-hero.webp', '/assets/home/home-medalha-hero.webp', '/assets/onze-futuro-medalha.webp', '/assets/manu-bandeira.webp', '/assets/cross-country-manu-bandeira.webp')
+         OR hero_image IN ('/assets/home/ayla-trofeus-hero.webp', '/assets/home/ayla-podcast-hero.webp', '/assets/home/home-medalha-hero.webp', '/assets/onze-futuro-medalha.webp', '/assets/manu-bandeira.webp', '/assets/cross-country-manu-bandeira.webp', '/assets/home/grupo-11run-pista.webp')
        )`
-  ).run("/assets/home/grupo-11run-pista.webp", timestamp);
+  ).run("/assets/home/time-2027.webp", timestamp);
 
   const projects = [
     ["onze-futuro", "11 Run Futuro", "Base, cultura esportiva e desenvolvimento.", "Medal", "/onze-futuro", 10],

@@ -303,8 +303,8 @@ export const projects: ProjectPage[] = [
     eyebrow: "circuito infantil",
     title: "Circuito Futuro 11",
     subtitle: "Estreia em 2027. Da primeira volta na pista ao sonho de chegar mais longe.",
-    imageSrc: "/assets/circuito-futuro-11-hero.webp",
-    imageAlt: "Atleta 11RUN sentada em uma pista de atletismo",
+    imageSrc: "/assets/circuito-futuro-11-time.webp",
+    imageAlt: "Atletas, familiares e equipe reunidos na pista do Circuito Futuro 11",
     body: [
       "O futuro do meio-fundo e fundo começa na pista.",
       "Vem aí o Circuito Futuro 11, o circuito de desenvolvimento competitivo em pista para atletas das categorias Sub 10 a Sub 18."

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "11RUN — Ecossistema de Inteligência aplicada ao fundismo no Brasil",
     description: "Projetos que transformam talento em oportunidade.",
-    images: ["/assets/home/grupo-11run-pista.webp"]
+    images: ["/assets/home/time-2027.webp"]
   }
 };
 
