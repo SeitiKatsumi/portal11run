@@ -1,7 +1,7 @@
 /*
 Theme Name: Onze Portal 11RUN
 Description: Estrutura editorial do piloto WordPress da 11RUN.
-Version: 1.0.2
+Version: 1.0.4
 */
 
 :root {
@@ -45,8 +45,8 @@ header.elementor-location-header { position: relative; z-index: 10; }
 .onze-registration button { min-height: 44px; padding: 8px 18px; background: var(--pilot-ink); color: #fff; border: 0; border-radius: 24px; font: inherit; cursor: pointer; }
 .onze-full-footer.e-con { width: min(calc(100% - 48px), var(--max)); margin-inline: auto; padding: 0 0 24px; gap: 0; }
 .onze-full-footer .e-con { padding: 0; gap: 20px; min-width: 0; }
-.onze-full-footer .onze-footer-partners { display: flex; flex-flow: row wrap; padding: 24px 0; border-block: 1px solid var(--pilot-line); }
-.onze-footer-partners > .elementor-widget { width: auto; max-width: 100%; }
+.onze-full-footer .onze-footer-partners.e-con { display: flex; flex-flow: row wrap; padding: 24px 0; border-block: 1px solid var(--pilot-line); }
+.onze-full-footer .onze-footer-partners > .elementor-widget { flex: 0 1 auto; width: auto; max-width: 100%; }
 .onze-full-footer .footer-sponsor-group h3 { margin: 0 0 10px; color: #525252; font-size: .8rem; font-weight: 650; letter-spacing: .05em; text-transform: uppercase; }
 .onze-full-footer .footer-sponsors-grid { display: flex; flex-wrap: wrap; gap: 8px; }
 .onze-full-footer .footer-sponsor-card { display: grid; place-items: center; width: 122px; min-height: 72px; margin: 0; padding: 12px; background: #fff; border: 1px solid var(--pilot-line); border-radius: 12px; }
