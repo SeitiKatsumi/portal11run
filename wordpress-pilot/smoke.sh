@@ -60,10 +60,10 @@ grep -qi '^x-robots-tag: noindex' <<< "$headers"
 grep -qi '^cache-control: private, no-store' <<< "$headers"
 
 stage=editorial-import
-wp --user=pilot eval 'echo wp_json_encode(onze_migration_batch(0));' | grep -q '"created":2'
-wp --user=pilot eval 'echo wp_json_encode(onze_migration_batch(0));' | grep -q '"created":0'
+wp --user=pilot eval 'echo wp_json_encode(onze_migration_batch(0));' | grep -q '"footer":"completed"'
+wp --user=pilot eval 'echo wp_json_encode(onze_migration_batch(0));' | grep -q '"footer":"preserved"'
 editorial="$(curl -fsS "${auth[@]}" "$site/institucional/missao/")"
-[[ "$editorial" == *"Valores 11RUN"* && "$editorial" == *onze-primary-links* && "$editorial" == *onze-footer-links* ]]
+[[ "$editorial" == *"Valores 11RUN"* && "$editorial" == *onze-primary-links* && "$editorial" == *onze-full-footer* && "$editorial" == *"Parceiros 11RUN"* ]]
 registration="$(curl -fsS "${auth[@]}" "$site/cadastros/")"
 [[ "$registration" == *data-onze-registration* && "$registration" == *portal.js* ]]
 stage=registration-privacy

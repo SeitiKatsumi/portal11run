@@ -1,7 +1,7 @@
 /*
 Theme Name: Onze Portal 11RUN
 Description: Estrutura editorial do piloto WordPress da 11RUN.
-Version: 1.0.1
+Version: 1.0.2
 */
 
 :root {
@@ -43,6 +43,29 @@ header.elementor-location-header { position: relative; z-index: 10; }
 .onze-registration label { display: grid; gap: 6px; }
 .onze-registration input, .onze-registration select { min-height: 44px; padding: 8px 12px; font: inherit; border: 1px solid var(--pilot-line); border-radius: 10px; }
 .onze-registration button { min-height: 44px; padding: 8px 18px; background: var(--pilot-ink); color: #fff; border: 0; border-radius: 24px; font: inherit; cursor: pointer; }
+.onze-full-footer.e-con { width: min(calc(100% - 48px), var(--max)); margin-inline: auto; padding: 0 0 24px; gap: 0; }
+.onze-full-footer .e-con { padding: 0; gap: 20px; min-width: 0; }
+.onze-full-footer .onze-footer-partners { display: flex; flex-flow: row wrap; padding: 24px 0; border-block: 1px solid var(--pilot-line); }
+.onze-footer-partners > .elementor-widget { width: auto; max-width: 100%; }
+.onze-full-footer .footer-sponsor-group h3 { margin: 0 0 10px; color: #525252; font-size: .8rem; font-weight: 650; letter-spacing: .05em; text-transform: uppercase; }
+.onze-full-footer .footer-sponsors-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.onze-full-footer .footer-sponsor-card { display: grid; place-items: center; width: 122px; min-height: 72px; margin: 0; padding: 12px; background: #fff; border: 1px solid var(--pilot-line); border-radius: 12px; }
+.onze-full-footer .footer-sponsor-card img { display: block; max-width: 100%; width: auto; max-height: 48px; object-fit: contain; }
+.onze-full-footer .onze-footer-info { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(0, 3fr); padding: 26px 0; }
+.onze-full-footer .onze-footer-links { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px 18px; }
+.onze-full-footer .footer-logo { display: block; width: 112px; height: auto; margin-bottom: 12px; }
+.onze-full-footer .footer-brand-block p { margin: 0 0 14px; max-width: 29ch; }
+.onze-full-footer .footer-brand-block, .onze-full-footer .footer-nav-column, .onze-full-footer .footer-elevenmind { color: #525252; font-size: .875rem; }
+.onze-full-footer .footer-brand-block > span, .onze-full-footer .footer-brand-block > a, .onze-full-footer .footer-nav-column > a { display: block; overflow-wrap: anywhere; }
+.onze-full-footer .footer-nav-column strong { display: block; margin-bottom: 5px; color: var(--pilot-ink); }
+.onze-full-footer .footer-nav-column a { padding: 4px 0; }
+.onze-full-footer .footer-elevenmind { border-top: 1px solid var(--pilot-line); padding-top: 15px; }
+.onze-full-footer a { text-decoration: none; }
+.onze-full-footer a:hover, .onze-full-footer a:focus-visible { text-decoration: underline; text-underline-offset: 4px; }
+
+@media (max-width: 1024px) {
+    .onze-full-footer .onze-footer-links { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 
 @media (max-width: 960px) {
     .pilot-nav-desktop { display: none; }
@@ -56,6 +79,9 @@ header.elementor-location-header { position: relative; z-index: 10; }
 @media (max-width: 767px) {
     .pilot-shell { width: min(calc(100% - 28px), var(--max)); }
     .pilot-header.e-con, .pilot-footer.e-con { width: min(calc(100% - 28px), var(--max)); }
+    .onze-full-footer.e-con { width: min(calc(100% - 28px), var(--max)); }
+    .onze-full-footer .onze-footer-info { grid-template-columns: minmax(0, 1fr); }
+    .onze-full-footer .onze-footer-links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .pilot-header { min-height: 72px; }
     .pilot-header img { width: 90px; }
     .pilot-hero { border-radius: 16px; }

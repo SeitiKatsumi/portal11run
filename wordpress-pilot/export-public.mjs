@@ -105,7 +105,36 @@ const css = (await Promise.all([...cssUrls].map(async (url) => {
     .replace(/url\((["']?)(\/[^"')]+)\1\)/g, (_, quote, path) => "url(" + quote + new URL(path, origin).href + quote + ")");
 }))).join("\n");
 
+const $footer = load(await read(origin + "/"));
+const sourceFooter = $footer("body > footer.site-footer");
+if (sourceFooter.length !== 1) throw new Error("Rodapé oficial não encontrado.");
+sourceFooter.find("script,style,iframe,form,object,embed").remove();
+sourceFooter.find("a[href]").each((_, element) => {
+  const anchor = $footer(element);
+  const href = linkTarget(anchor.attr("href"), origin);
+  if (href) anchor.attr("href", href);
+  else anchor.removeAttr("href");
+});
+sourceFooter.find("img").each((_, element) => {
+  const img = $footer(element);
+  const url = absolute(img.attr("src") || "", origin);
+  if (!url || url.protocol !== "https:") return img.remove();
+  img.attr({ src: url.href, loading: "lazy", decoding: "async" });
+});
+sourceFooter.find("*").each((_, element) => {
+  for (const attribute of Object.keys(element.attribs || {})) {
+    if (/^on/i.test(attribute) || ["srcset", "srcdoc"].includes(attribute)) $footer(element).removeAttr(attribute);
+  }
+});
+const footer = {
+  sponsors: sourceFooter.find(".footer-sponsor-group").toArray().map((el) => $footer.html(el)),
+  brand: $footer.html(sourceFooter.find(".footer-brand-block").first()),
+  columns: sourceFooter.find(".footer-nav-column").toArray().map((el) => $footer.html(el)),
+  credit: $footer.html(sourceFooter.find(".footer-elevenmind").first()),
+};
+if (!footer.sponsors.length || !footer.brand || !footer.columns.length || !footer.credit) throw new Error("Rodapé oficial incompleto.");
+
 await mkdir(out, { recursive: true });
-await writeFile(resolve(out, "content.json"), JSON.stringify(pages));
+await writeFile(resolve(out, "content.json"), JSON.stringify({ pages, footer }));
 await writeFile(resolve(out, "legacy.css"), "@scope (.onze-import) {\n" + css + "\n}\n");
-console.log(JSON.stringify({ copied: pages.filter((page) => page.blocks).length, linked: pages.filter((page) => page.external).length, stylesheets: cssUrls.size }));
+console.log(JSON.stringify({ copied: pages.filter((page) => page.blocks).length, linked: pages.filter((page) => page.external).length, stylesheets: cssUrls.size, footer: { sponsors: footer.sponsors.length, columns: footer.columns.length } }));

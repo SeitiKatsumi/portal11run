@@ -2,7 +2,7 @@
 /**
  * Plugin Name: 11RUN · Migração do portal
  * Description: Importa conteúdo editorial e organiza os módulos do WordPress em /global.
- * Version: 1.0.2
+ * Version: 1.0.3
  */
 
 defined('ABSPATH') || exit;
@@ -16,15 +16,62 @@ function onze_container(array $widgets, array $settings = []): array {
     return ['id' => wp_generate_password(7, false), 'elType' => 'container', 'isInner' => false, 'settings' => $settings + ['content_width' => 'full'], 'elements' => $widgets];
 }
 
-function onze_save_elementor(int $id, array $elements): void {
+function onze_save_elementor(int $id, array $elements, bool $preserve_settings = false): void {
     $doc = \Elementor\Plugin::$instance->documents->get($id, false);
     if (!$doc) {
         throw new RuntimeException("Documento Elementor indisponível: $id.");
     }
     $doc->set_is_built_with_elementor(true);
-    if (!$doc->save(['elements' => $elements, 'settings' => ['hide_title' => 'yes']])) {
+    $payload = ['elements' => $elements];
+    if (!$preserve_settings) {
+        $payload['settings'] = ['hide_title' => 'yes'];
+    }
+    if (!$doc->save($payload)) {
         throw new RuntimeException("O Elementor não salvou o documento $id.");
     }
+}
+
+function onze_complete_footer(int $id, array $footer): string {
+    if (get_post_meta($id, '_onze_full_footer', true)) {
+        return 'preserved';
+    }
+    $data = json_decode((string) get_post_meta($id, '_elementor_data', true), true);
+    if (!is_array($data)) {
+        return 'custom';
+    }
+    $root = $data[0] ?? [];
+    $children = $root['elements'] ?? [];
+    $initial = count($data) === 1 && count($children) === 2
+        && ($root['settings']['css_classes'] ?? '') === 'pilot-shell pilot-footer'
+        && ($children[0]['widgetType'] ?? '') === 'heading'
+        && ($children[0]['settings']['title'] ?? '') === '11RUN Brazil'
+        && ($children[1]['widgetType'] ?? '') === 'shortcode'
+        && ($children[1]['settings']['shortcode'] ?? '') === '[onze_menu area="footer"]';
+    foreach ([
+        [$root, ['css_classes', 'content_width', 'flex_direction', 'flex_justify_content', 'flex_align_items']],
+        [$children[0] ?? [], ['title', 'header_size']],
+        [$children[1] ?? [], ['shortcode']],
+    ] as [$element, $keys]) {
+        $initial = $initial && !array_diff(array_keys($element['settings'] ?? []), $keys);
+    }
+    if (!$initial) {
+        return 'custom';
+    }
+
+    $html = static fn(string $value): array => onze_widget('html', ['html' => $value]);
+    $grid = static function (array $items, string $class): array {
+        $container = onze_container($items, ['css_classes' => $class, 'html_tag' => $class === 'onze-footer-links' ? 'nav' : 'div']);
+        $container['isInner'] = true;
+        return $container;
+    };
+    $rows = [
+        $grid(array_map($html, $footer['sponsors']), 'onze-footer-partners'),
+        $grid([$html($footer['brand']), $grid(array_map($html, $footer['columns']), 'onze-footer-links')], 'onze-footer-info'),
+        $grid([$html($footer['credit'])], 'onze-footer-credit'),
+    ];
+    onze_save_elementor($id, [onze_container($rows, ['css_classes' => 'onze-full-footer'])], true);
+    update_post_meta($id, '_onze_full_footer', true);
+    return 'completed';
 }
 
 function onze_shared_template(string $part, int $logo): int {
@@ -115,11 +162,13 @@ function onze_migration_batch(int $offset): array {
         throw new RuntimeException('Ative o Elementor antes de importar.');
     }
     $bundle = __DIR__ . '/generated/content.json';
-    $pages = is_readable($bundle) ? json_decode(file_get_contents($bundle), true) : null;
+    $payload = is_readable($bundle) ? json_decode(file_get_contents($bundle), true) : null;
+    $pages = $payload['pages'] ?? $payload;
     if (!is_array($pages)) {
         throw new RuntimeException('Pacote de conteúdo ausente ou inválido.');
     }
     $editorial = array_values(array_filter($pages, static fn(array $page): bool => isset($page['blocks'])));
+    $footer_status = 'unchanged';
     if ($offset === 0) {
         if (get_option('show_on_front') !== 'page' || !get_option('page_on_front')) {
             onze_pilot_setup();
@@ -133,7 +182,10 @@ function onze_migration_batch(int $offset): array {
         }
         $logo = onze_pilot_media('onzerun-menu.png', 'Marca 11RUN', '11RUN');
         onze_shared_template('header', $logo);
-        onze_shared_template('footer', $logo);
+        $footer_id = onze_shared_template('footer', $logo);
+        if (!empty($payload['footer'])) {
+            $footer_status = onze_complete_footer($footer_id, $payload['footer']);
+        }
         onze_page('/cadastros', 'Cadastros 11RUN', [onze_container([
             onze_widget('heading', ['title' => 'Cadastros 11RUN', 'header_size' => 'h1']),
             onze_widget('shortcode', ['shortcode' => '[onze_cadastro]']),
@@ -181,7 +233,7 @@ function onze_migration_batch(int $offset): array {
             update_option('_onze_migration_menu_done', true);
         }
     }
-    return ['created' => $created, 'next' => $next, 'total' => count($editorial), 'external' => count($pages) - count($editorial)];
+    return ['created' => $created, 'next' => $next, 'total' => count($editorial), 'external' => count($pages) - count($editorial), 'footer' => $footer_status];
 }
 
 add_action('admin_menu', static function () {
