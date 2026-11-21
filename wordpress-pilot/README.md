@@ -32,3 +32,5 @@ Para reverter a exposição, remova apenas as duas locations adicionadas ao Ngin
 - **Cadastros 11RUN** mostra somente envios de teste de `/global/cadastros/`. O painel oficial e os dados existentes permanecem no portal atual.
 - **Biblioteca JavaScript** guarda snippets administráveis. Um snippet publicado por usuário com as permissões de administrador e HTML não filtrado é carregado apenas nas páginas públicas do WordPress, depois de `portal.js`. Não replique scripts dentro dos widgets HTML.
 - Rankings, calculadoras, cronômetro, inscrições oficiais, pagamentos, sorteio e área de membros continuam no portal, sem copiar cadastros ou habilitar escrita dupla. Imagens do conteúdo importado ainda apontam para os assets públicos do portal; mantenha essas URLs quando fizer a troca da home.
+
+Para publicar por dentro do WordPress, gere o pacote com `node wordpress-pilot/export-public.mjs` e rode `pwsh -File wordpress-pilot/deploy-editorial.ps1` com as variáveis temporárias `PILOT_ACCESS_PASSWORD` e `PILOT_WP_PASSWORD`. O script só aceita `https://11run.com.br/global` e não altera o proxy nem a home pública.

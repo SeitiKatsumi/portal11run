@@ -113,7 +113,7 @@ add_filter('user_can_richedit', static function (bool $allowed): bool {
 
 add_action('wp_enqueue_scripts', static function () {
     $assets = plugin_dir_url(__FILE__);
-    wp_enqueue_script('onze-portal', $assets . 'portal.js', [], '1.0.0', true);
+    wp_enqueue_script('onze-portal', $assets . 'portal.js', [], '1.0.2', true);
     if (is_singular('page')) {
         if (get_post_meta(get_queried_object_id(), '_onze_migrated', true)) {
             wp_enqueue_style('onze-editorial-import', $assets . 'legacy.css', [], '1.0.0');
@@ -130,8 +130,10 @@ add_action('wp_enqueue_scripts', static function () {
 
 add_shortcode('onze_menu', static function ($input): string {
     $area = ($input['area'] ?? '') === 'footer' ? 'footer' : 'primary';
-    $menu = static fn(string $id): string => (string) wp_nav_menu([
-        'theme_location' => $area, 'menu_id' => $id, 'container' => false, 'fallback_cb' => false, 'echo' => false,
+    $named = wp_get_nav_menu_object($area === 'footer' ? 'Rodapé 11RUN' : 'Menu 11RUN');
+    $target = has_nav_menu($area) ? ['theme_location' => $area] : ['menu' => $named ? (int) $named->term_id : 0];
+    $menu = static fn(string $id): string => (string) wp_nav_menu($target + [
+        'menu_id' => $id, 'container' => false, 'fallback_cb' => false, 'echo' => false,
     ]);
     if ($area === 'footer') {
         return '<nav aria-label="Links institucionais">' . $menu('onze-footer-links') . '</nav>';

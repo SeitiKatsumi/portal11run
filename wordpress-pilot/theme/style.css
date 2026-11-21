@@ -1,7 +1,7 @@
 /*
 Theme Name: Onze Portal 11RUN
 Description: Estrutura editorial do piloto WordPress da 11RUN.
-Version: 1.0.0
+Version: 1.0.1
 */
 
 :root {
@@ -35,6 +35,7 @@ a:focus-visible, summary:focus-visible { outline: 2px solid #ac4200; outline-off
 .pilot-footer { padding: 20px 0 28px; color: #525252; border-top: 1px solid var(--pilot-line); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .pilot-footer ul { display: flex; flex-wrap: wrap; gap: 8px 20px; }
 .pilot-header.e-con, .pilot-footer.e-con { width: min(calc(100% - 48px), var(--max)); margin-inline: auto; }
+header.elementor-location-header { position: relative; z-index: 10; }
 .onze-import.e-con { padding: 0; }
 .onze-import.futuro-landing { padding-top: 0; }
 .onze-import > .onze-row.e-con { padding: 0; gap: 0; }
@@ -46,6 +47,7 @@ a:focus-visible, summary:focus-visible { outline: 2px solid #ac4200; outline-off
 @media (max-width: 960px) {
     .pilot-nav-desktop { display: none; }
     .pilot-nav-mobile { display: block; }
+    .pilot-header .elementor-widget-shortcode { position: static; }
     .pilot-nav-mobile summary { cursor: pointer; border: 1px solid var(--pilot-line); border-radius: 32px; padding: 8px 16px; }
     .pilot-nav-mobile nav { position: absolute; inset-inline: 0; top: 100%; max-height: 65vh; overflow-y: auto; padding: 12px 20px; border: 1px solid var(--pilot-line); border-radius: 16px; background: #fff; }
     .pilot-nav-mobile .sub-menu { padding-left: 16px; }

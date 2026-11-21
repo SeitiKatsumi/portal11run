@@ -2,7 +2,7 @@
 /**
  * Plugin Name: 11RUN · Migração do portal
  * Description: Importa conteúdo editorial e organiza os módulos do WordPress em /global.
- * Version: 1.0.0
+ * Version: 1.0.2
  */
 
 defined('ABSPATH') || exit;
@@ -61,7 +61,7 @@ function onze_shared_template(string $part, int $logo): int {
     if ($template_type === $part) {
         $manager = \ElementorPro\Modules\ThemeBuilder\Module::instance()->get_conditions_manager();
         if (is_callable([$manager, 'save_conditions'])) {
-            $manager->save_conditions($id, ['include/general']);
+            $manager->save_conditions($id, [['type' => 'include', 'name' => 'general']]);
         }
     }
     update_option($key, $id);
@@ -160,6 +160,12 @@ function onze_migration_batch(int $offset): array {
     $next = min(count($editorial), $offset + count($batch));
     if ($next >= count($editorial)) {
         $menus = get_nav_menu_locations();
+        foreach (['primary' => 'Menu 11RUN', 'footer' => 'Rodapé 11RUN'] as $area => $name) {
+            if (empty($menus[$area]) && ($saved = wp_get_nav_menu_object($name))) {
+                $menus[$area] = (int) $saved->term_id;
+            }
+        }
+        set_theme_mod('nav_menu_locations', $menus);
         if (!empty($menus['primary']) && !get_option('_onze_migration_menu_done')) {
             $local = array_fill_keys(array_column($editorial, 'path'), true);
             foreach (['primary', 'footer'] as $area) {
