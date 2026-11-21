@@ -2,10 +2,11 @@
 /**
  * Plugin Name: 11RUN · Migração do portal
  * Description: Importa conteúdo editorial e organiza os módulos do WordPress em /global.
+ * Version: 1.0.0
  */
 
 defined('ABSPATH') || exit;
-require_once __DIR__ . '/11run-migration/modules.php';
+require_once __DIR__ . '/modules.php';
 
 function onze_widget(string $type, array $settings): array {
     return ['id' => wp_generate_password(7, false), 'elType' => 'widget', 'widgetType' => $type, 'isInner' => false, 'settings' => $settings, 'elements' => []];
@@ -113,7 +114,7 @@ function onze_migration_batch(int $offset): array {
     if (!did_action('elementor/loaded')) {
         throw new RuntimeException('Ative o Elementor antes de importar.');
     }
-    $bundle = '/opt/11run-pilot/generated/content.json';
+    $bundle = __DIR__ . '/generated/content.json';
     $pages = is_readable($bundle) ? json_decode(file_get_contents($bundle), true) : null;
     if (!is_array($pages)) {
         throw new RuntimeException('Pacote de conteúdo ausente ou inválido.');
@@ -122,6 +123,13 @@ function onze_migration_batch(int $offset): array {
     if ($offset === 0) {
         if (get_option('show_on_front') !== 'page' || !get_option('page_on_front')) {
             onze_pilot_setup();
+        }
+        if (get_stylesheet() === 'onze-piloto' && wp_get_theme('onze-portal')->exists()) {
+            $menu_locations = get_nav_menu_locations();
+            $custom_logo = (int) get_theme_mod('custom_logo');
+            switch_theme('onze-portal');
+            set_theme_mod('nav_menu_locations', $menu_locations);
+            set_theme_mod('custom_logo', $custom_logo);
         }
         $logo = onze_pilot_media('onzerun-menu.png', 'Marca 11RUN', '11RUN');
         onze_shared_template('header', $logo);

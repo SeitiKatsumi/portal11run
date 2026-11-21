@@ -29,6 +29,7 @@ stage=wordpress-installation
 wp core install --url="$site" --title=11RUN --admin_user=pilot \
     --admin_password="$(openssl rand -hex 20)" --admin_email=pilot@example.test --skip-email
 wp plugin install elementor --version=4.4.1 --activate
+wp plugin activate 11run-migration
 wp --user=pilot 11run-pilot seed
 wp --user=pilot 11run-pilot seed
 wp plugin is-active elementor
@@ -67,8 +68,15 @@ registration="$(curl -fsS "${auth[@]}" "$site/cadastros/")"
 [[ "$registration" == *data-onze-registration* && "$registration" == *portal.js* ]]
 stage=registration-privacy
 rest_status="$(status -L "${auth[@]}" "$site/wp-json/wp/v2/onze_cadastro")"
-invalid_status="$(status "${auth[@]}" -d 'action=onze_register' "$site/wp-admin/admin-post.php")"
+invalid_status="$(status "${auth[@]}" -d 'project=onze-futuro' "$site/wp-json/onze/v1/cadastros")"
 printf 'Cadastros: REST=%s, envio inválido=%s\n' "$rest_status" "$invalid_status"
 [[ "$rest_status" == 404 ]]
 [[ "$invalid_status" == 403 ]]
+form_nonce="$(sed -nE 's/.*name="_onze_nonce" value="([^"]+)".*/\1/p' <<< "$registration" | head -1)"
+[[ -n "$form_nonce" ]]
+valid_status="$(status "${auth[@]}" --data-urlencode "_onze_nonce=$form_nonce" \
+    --data-urlencode 'person=Teste isolado' --data-urlencode 'email=test@example.test' \
+    -d 'project=onze-futuro' "$site/wp-json/onze/v1/cadastros")"
+[[ "$valid_status" == 303 ]]
+[[ "$(wp post list --post_type=onze_cadastro --post_status=private --format=count)" == 1 ]]
 printf 'WordPress, Elementor, home, mídia, autenticação e rota /global validados.\n'

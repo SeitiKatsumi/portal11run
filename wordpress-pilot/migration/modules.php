@@ -48,9 +48,9 @@ add_shortcode('onze_cadastro', static function (): string {
         <?php if ($feedback) : ?>
             <p role="status"><?php echo $feedback === 'ok' ? 'Cadastro de teste recebido.' : 'Não foi possível registrar. Confira os campos e tente novamente.'; ?></p>
         <?php endif; ?>
-        <form action="<?php echo esc_url(admin_url('admin-post.php')); ?>" method="post" data-onze-registration>
-            <input type="hidden" name="action" value="onze_register">
-            <?php wp_nonce_field('onze_register'); ?>
+        <form action="<?php echo esc_url(rest_url('onze/v1/cadastros')); ?>" method="post" data-onze-registration>
+            <?php wp_nonce_field('wp_rest', '_wpnonce', false); ?>
+            <?php wp_nonce_field('onze_register', '_onze_nonce', false); ?>
             <p><label>Nome de teste <input name="person" type="text" maxlength="120" required autocomplete="name"></label></p>
             <p><label>E-mail de teste <input name="email" type="email" maxlength="160" required autocomplete="email"></label></p>
             <p><label>Projeto <select name="project" required>
@@ -67,9 +67,9 @@ add_shortcode('onze_cadastro', static function (): string {
     return (string) ob_get_clean();
 });
 
-function onze_save_registration(): void {
-    if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST' || !wp_verify_nonce(sanitize_text_field(onze_post_value('_wpnonce')), 'onze_register')) {
-        wp_die('Não foi possível validar o envio.', '', ['response' => 403]);
+function onze_save_registration(): WP_REST_Response|WP_Error {
+    if (!wp_verify_nonce(sanitize_text_field(onze_post_value('_onze_nonce')), 'onze_register')) {
+        return new WP_Error('onze_invalid_submission', 'Não foi possível validar o envio.', ['status' => 403]);
     }
     $name = sanitize_text_field(onze_post_value('person'));
     $email = sanitize_email(onze_post_value('email'));
@@ -83,11 +83,17 @@ function onze_save_registration(): void {
         ], true);
         $ok = !is_wp_error($id) && $id > 0;
     }
-    wp_safe_redirect(add_query_arg('cadastro', $ok ? 'ok' : 'erro', home_url('/cadastros/')), 303);
-    exit;
+    return new WP_REST_Response(null, 303, [
+        'Location' => add_query_arg('cadastro', $ok ? 'ok' : 'erro', home_url('/cadastros/')),
+    ]);
 }
-add_action('admin_post_onze_register', 'onze_save_registration');
-add_action('admin_post_nopriv_onze_register', 'onze_save_registration');
+add_action('rest_api_init', static function (): void {
+    register_rest_route('onze/v1', '/cadastros', [
+        'methods' => WP_REST_Server::CREATABLE,
+        'permission_callback' => '__return_true',
+        'callback' => 'onze_save_registration',
+    ]);
+});
 
 add_filter('manage_onze_cadastro_posts_columns', static function (array $columns): array {
     return array_slice($columns, 0, 2, true) + ['onze_email' => 'E-mail', 'onze_project' => 'Projeto'] + $columns;
@@ -106,7 +112,7 @@ add_filter('user_can_richedit', static function (bool $allowed): bool {
 });
 
 add_action('wp_enqueue_scripts', static function () {
-    $assets = WPMU_PLUGIN_URL . '/11run-migration/';
+    $assets = plugin_dir_url(__FILE__);
     wp_enqueue_script('onze-portal', $assets . 'portal.js', [], '1.0.0', true);
     if (is_singular('page')) {
         if (get_post_meta(get_queried_object_id(), '_onze_migrated', true)) {
