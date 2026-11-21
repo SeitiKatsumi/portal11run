@@ -139,6 +139,14 @@ function onze_migration_batch(int $offset): array {
         $widgets = array_map(static fn(string $html): array => onze_container(
             [onze_widget('html', ['html' => $html])], ['css_classes' => 'onze-import']
         ), $page['blocks']);
+        if (isset($page['wrapper'])) {
+            $rows = array_map(static function (array $row): array {
+                $row['isInner'] = true;
+                $row['settings']['css_classes'] = 'onze-row';
+                return $row;
+            }, $widgets);
+            $widgets = [onze_container($rows, ['css_classes' => 'onze-import ' . $page['wrapper']])];
+        }
         $created += (int) onze_page($page['path'], $page['title'], $widgets);
     }
     $next = min(count($editorial), $offset + count($batch));

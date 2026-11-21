@@ -16,6 +16,7 @@ const routes = (await readdir(app, { recursive: true }))
   .sort();
 
 const localPages = new Set(["/", ...routes.filter((path) => !linked.test(path))]);
+const rows = new Set(["/onze-futuro", "/institucional/missao-visao-valores", "/politica-de-privacidade", "/termos-de-uso"]);
 const cssUrls = new Set();
 const pages = [];
 function absolute(value, base) {
@@ -88,11 +89,11 @@ for (let i = 0; i < routes.length; i += 5) {
     });
     main.find("img:not([loading])").attr("loading", "lazy");
     const children = main.children();
-    const blocks = children.length > 1 && children.toArray().every((el) => el.name === "section")
-      ? children.toArray().map((el) => $.html(el))
-      : [main.html()];
+    const outer = children.length === 1 && rows.has(path) ? children.first() : null;
+    const split = outer?.children("section").length >= 2;
+    const blocks = split ? outer.children().toArray().map((el) => $.html(el)) : [main.html()];
     if (!title || !blocks.some((block) => block?.trim())) throw new Error("Página sem título ou conteúdo: " + path);
-    return { path, title, blocks };
+    return { path, title, blocks, ...(split ? { wrapper: outer.attr("class") || "" } : {}) };
   }));
   pages.push(...batch);
 }
