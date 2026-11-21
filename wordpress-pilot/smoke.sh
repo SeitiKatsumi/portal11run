@@ -66,6 +66,9 @@ editorial="$(curl -fsS "${auth[@]}" "$site/institucional/missao/")"
 registration="$(curl -fsS "${auth[@]}" "$site/cadastros/")"
 [[ "$registration" == *data-onze-registration* && "$registration" == *portal.js* ]]
 stage=registration-privacy
-[[ "$(status "${auth[@]}" "$site/wp-json/wp/v2/onze_cadastro")" == 404 ]]
-[[ "$(status "${auth[@]}" -d 'action=onze_register' "$site/wp-admin/admin-post.php")" == 403 ]]
+rest_status="$(status -L "${auth[@]}" "$site/wp-json/wp/v2/onze_cadastro")"
+invalid_status="$(status "${auth[@]}" -d 'action=onze_register' "$site/wp-admin/admin-post.php")"
+printf 'Cadastros: REST=%s, envio inválido=%s\n' "$rest_status" "$invalid_status"
+[[ "$rest_status" == 404 ]]
+[[ "$invalid_status" == 403 ]]
 printf 'WordPress, Elementor, home, mídia, autenticação e rota /global validados.\n'
