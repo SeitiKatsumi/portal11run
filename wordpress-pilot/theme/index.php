@@ -8,7 +8,7 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 <a class="pilot-skip" href="#conteudo">Pular para o conteúdo</a>
-<?php if (!function_exists('elementor_theme_do_location') || !elementor_theme_do_location('header')) : ?>
+<?php if (!onze_elementor_shell('header')) : ?>
     <header class="pilot-shell pilot-header">
         <?php if (has_custom_logo()) : ?>
             <?php the_custom_logo(); ?>
@@ -28,11 +28,11 @@
 <?php endif; ?>
 <main class="pilot-shell pilot-main" id="conteudo">
     <?php while (have_posts()) : the_post(); ?>
-        <?php if (!is_front_page()) : ?><h1><?php the_title(); ?></h1><?php endif; ?>
+        <?php if (!is_front_page() && get_post_meta(get_the_ID(), '_elementor_edit_mode', true) !== 'builder') : ?><h1><?php the_title(); ?></h1><?php endif; ?>
         <?php the_content(); ?>
     <?php endwhile; ?>
 </main>
-<?php if (!function_exists('elementor_theme_do_location') || !elementor_theme_do_location('footer')) : ?>
+<?php if (!onze_elementor_shell('footer')) : ?>
     <footer class="pilot-shell pilot-footer">
         <span>11RUN Brazil</span>
         <nav aria-label="Links institucionais">

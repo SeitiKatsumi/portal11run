@@ -15,3 +15,19 @@ add_action('wp_enqueue_scripts', function () {
 add_action('elementor/theme/register_locations', function ($manager) {
     $manager->register_all_core_location();
 });
+
+function onze_elementor_shell(string $part): bool {
+    if (function_exists('elementor_theme_do_location') && elementor_theme_do_location($part)) {
+        return true;
+    }
+    $id = (int) get_option('_onze_elementor_' . $part);
+    if (!$id || get_post_status($id) !== 'publish' || !did_action('elementor/loaded')) {
+        return false;
+    }
+    $html = \Elementor\Plugin::$instance->frontend->get_builder_content_for_display($id, true);
+    if (!$html) {
+        return false;
+    }
+    echo $part === 'header' ? '<header>' . $html . '</header>' : '<footer>' . $html . '</footer>';
+    return true;
+}

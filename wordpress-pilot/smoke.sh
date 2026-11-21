@@ -57,4 +57,15 @@ stage=headers
 headers="$(curl -fsSI "${auth[@]}" "$site/")"
 grep -qi '^x-robots-tag: noindex' <<< "$headers"
 grep -qi '^cache-control: private, no-store' <<< "$headers"
+
+stage=editorial-import
+wp --user=pilot eval 'echo wp_json_encode(onze_migration_batch(0));' | grep -q '"created":2'
+wp --user=pilot eval 'echo wp_json_encode(onze_migration_batch(0));' | grep -q '"created":0'
+editorial="$(curl -fsS "${auth[@]}" "$site/institucional/missao/")"
+[[ "$editorial" == *"Valores 11RUN"* && "$editorial" == *onze-primary-links* && "$editorial" == *onze-footer-links* ]]
+registration="$(curl -fsS "${auth[@]}" "$site/cadastros/")"
+[[ "$registration" == *data-onze-registration* && "$registration" == *portal.js* ]]
+stage=registration-privacy
+[[ "$(status "${auth[@]}" "$site/wp-json/wp/v2/onze_cadastro")" == 404 ]]
+[[ "$(status "${auth[@]}" -d 'action=onze_register' "$site/wp-admin/admin-post.php")" == 403 ]]
 printf 'WordPress, Elementor, home, mídia, autenticação e rota /global validados.\n'

@@ -8,9 +8,10 @@ A instalação de teste atende em **https://11run.com.br/global/**. WordPress e 
 2. Envie a imagem customizada **ao app do piloto**, nunca ao app do portal. Para upload manual, empacote o commit da branch do piloto com o seguinte comando na raiz. O arquivo raiz `captain-definition` do portal é substituído no pacote pela definição do piloto; não é modificado no repositório.
 
    ```powershell
+   node wordpress-pilot/export-public.mjs
    $pilotArchive = Join-Path ([IO.Path]::GetTempPath()) '11run-wordpress-global.tar'
    tar -cf $pilotArchive -C wordpress-pilot captain-definition
-   tar -rf $pilotArchive wordpress-pilot/Dockerfile wordpress-pilot/Dockerfile.dockerignore wordpress-pilot/entrypoint.sh wordpress-pilot/global.conf wordpress-pilot/php.ini wordpress-pilot/seed-home.php wordpress-pilot/theme public/assets/home/time-2027.webp public/assets/logos/onzerun-menu.png
+   tar -rf $pilotArchive wordpress-pilot/Dockerfile wordpress-pilot/Dockerfile.dockerignore wordpress-pilot/entrypoint.sh wordpress-pilot/global.conf wordpress-pilot/php.ini wordpress-pilot/seed-home.php wordpress-pilot/theme wordpress-pilot/migration wordpress-pilot/generated public/assets/home/time-2027.webp public/assets/logos/onzerun-menu.png
    tar -tf $pilotArchive
    ```
 
@@ -23,4 +24,11 @@ Para reverter a exposição, remova apenas as duas locations adicionadas ao Ngin
 
 ## Testes
 
-`bash wordpress-pilot/smoke.sh` roda build e teste de integração com WordPress e MariaDB descartáveis, apenas na porta 80 de loopback. A mesma validação roda no GitHub Actions na branch do piloto. Para revisão visual, confira a home, o editor e a abertura do menu nos tamanhos desktop, tablet e celular, sem alterar a home pública. Teste o upload do Pro com sua conta.
+`bash wordpress-pilot/smoke.sh` roda build e teste de integração com WordPress e MariaDB descartáveis, apenas na porta 80 de loopback. O GitHub Actions usa a fixture editorial fora de produção. Para teste local, gere o pacote com `node wordpress-pilot/export-public.mjs` antes de subir a imagem.
+
+## Migração editorial
+
+- **Ferramentas → Migração 11RUN** cria as páginas em lotes sem sobrescrever páginas existentes. HTML editorial fica dentro de contêineres e widgets HTML do Elementor. Cabeçalho e rodapé são dois documentos Elementor compartilhados; o tema usa a localização do Theme Builder ou o mesmo documento como fallback.
+- **Cadastros 11RUN** mostra somente envios de teste de `/global/cadastros/`. O painel oficial e os dados existentes permanecem no portal atual.
+- **Biblioteca JavaScript** guarda snippets administráveis. Um snippet publicado por usuário com as permissões de administrador e HTML não filtrado é carregado apenas nas páginas públicas do WordPress, depois de `portal.js`. Não replique scripts dentro dos widgets HTML.
+- Rankings, calculadoras, cronômetro, inscrições oficiais, pagamentos, sorteio e área de membros continuam no portal, sem copiar cadastros ou habilitar escrita dupla. Imagens do conteúdo importado ainda apontam para os assets públicos do portal; mantenha essas URLs quando fizer a troca da home.

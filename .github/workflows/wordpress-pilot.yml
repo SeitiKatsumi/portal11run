@@ -17,5 +17,9 @@ jobs:
         working-directory: wordpress-pilot
     steps:
       - uses: actions/checkout@v4
+      - name: Prepare isolated editorial fixture
+        run: |
+          mkdir -p generated
+          cp migration/fixture/* generated/
       - name: Build and exercise WordPress in isolation
         run: bash smoke.sh

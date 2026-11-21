@@ -3,6 +3,11 @@
 !wordpress-pilot/theme/
 !wordpress-pilot/theme/**
 !wordpress-pilot/seed-home.php
+!wordpress-pilot/migration/
+!wordpress-pilot/migration/**
+!wordpress-pilot/generated/
+!wordpress-pilot/generated/content.json
+!wordpress-pilot/generated/legacy.css
 !wordpress-pilot/entrypoint.sh
 !wordpress-pilot/global.conf
 !wordpress-pilot/php.ini

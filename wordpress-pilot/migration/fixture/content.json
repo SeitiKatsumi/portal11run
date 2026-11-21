@@ -1,0 +1,5 @@
+[
+  {"path":"/institucional","title":"Institucional","blocks":["<section><h1>Institucional 11RUN</h1></section>"]},
+  {"path":"/institucional/missao","title":"Missão e valores","blocks":["<section><h1>Missão e valores</h1></section>","<section><h2>Valores 11RUN</h2></section>"]},
+  {"path":"/sorteio","external":"https://11run.com.br/sorteio"}
+]
