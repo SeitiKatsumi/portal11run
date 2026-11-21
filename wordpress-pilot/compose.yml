@@ -1,0 +1,40 @@
+services:
+  wordpress:
+    build:
+      context: ..
+      dockerfile: wordpress-pilot/Dockerfile
+    ports:
+      - "127.0.0.1:80:80"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: ${PILOT_DB_PASSWORD:?Defina PILOT_DB_PASSWORD no .env local}
+      PILOT_ACCESS_PASSWORD: ${PILOT_ACCESS_PASSWORD:?Defina PILOT_ACCESS_PASSWORD no .env local}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_ENVIRONMENT_TYPE', 'staging');
+        define('DISALLOW_FILE_EDIT', true);
+        define('WP_HOME', 'http://127.0.0.1/global');
+        define('WP_SITEURL', WP_HOME);
+    volumes:
+      - wordpress:/var/www/html
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: mariadb:11.4
+    environment:
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wordpress
+      MARIADB_PASSWORD: ${PILOT_DB_PASSWORD:?Defina PILOT_DB_PASSWORD no .env local}
+      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+    volumes:
+      - database:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+volumes:
+  wordpress:
+  database:

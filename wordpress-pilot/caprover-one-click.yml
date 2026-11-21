@@ -1,0 +1,51 @@
+captainVersion: 4
+services:
+  $$cap_appname:
+    # Instale em modo privado; depois envie a imagem do piloto conforme o README.
+    image: wordpress:php8.3-apache
+    depends_on:
+      - $$cap_appname-db
+    environment:
+      WORDPRESS_DB_HOST: srv-captain--$$cap_appname-db
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: $$cap_db_password
+      PILOT_ACCESS_PASSWORD: $$cap_access_password
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_ENVIRONMENT_TYPE', 'staging');
+        define('DISALLOW_FILE_EDIT', true);
+        define('WP_HOME', 'https://11run.com.br/global');
+        define('WP_SITEURL', WP_HOME);
+    volumes:
+      - $$cap_appname-wp:/var/www/html
+    caproverExtra:
+      containerHttpPort: '80'
+      notExposeAsWebApp: 'true'
+  $$cap_appname-db:
+    image: mariadb:11.4
+    environment:
+      MARIADB_DATABASE: wordpress
+      MARIADB_USER: wordpress
+      MARIADB_PASSWORD: $$cap_db_password
+      MARIADB_RANDOM_ROOT_PASSWORD: '1'
+    volumes:
+      - $$cap_appname-database:/var/lib/mysql
+    caproverExtra:
+      notExposeAsWebApp: 'true'
+caproverOneClickApp:
+  variables:
+    - id: $$cap_db_password
+      label: Senha do banco (gerada automaticamente)
+      defaultValue: $$cap_gen_random_hex(32)
+      validRegex: /^[A-Za-z0-9]{32,64}$/
+    - id: $$cap_access_password
+      label: Senha da prévia (usuário previa)
+      defaultValue: $$cap_gen_random_hex(32)
+      validRegex: /^[A-Za-z0-9]{24,64}$/
+  instructions:
+    start: Cria um WordPress isolado e um MariaDB privado. Use 11run-wordpress-global como nome do app.
+    end: Mantenha os dois apps privados. Só a imagem customizada deve receber tráfego, via /global no portal.
+  displayName: Piloto WordPress 11RUN
+  isOfficial: false
+  description: WordPress e MariaDB separados do Portal 11RUN.
+  documentation: https://caprover.com/docs/one-click-apps.html

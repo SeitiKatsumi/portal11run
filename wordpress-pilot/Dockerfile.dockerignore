@@ -1,0 +1,14 @@
+*
+!wordpress-pilot/
+!wordpress-pilot/theme/
+!wordpress-pilot/theme/**
+!wordpress-pilot/seed-home.php
+!wordpress-pilot/entrypoint.sh
+!wordpress-pilot/global.conf
+!wordpress-pilot/php.ini
+!public/
+!public/assets/
+!public/assets/home/
+!public/assets/home/time-2027.webp
+!public/assets/logos/
+!public/assets/logos/onzerun-menu.png

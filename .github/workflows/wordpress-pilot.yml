@@ -1,0 +1,21 @@
+name: WordPress pilot
+
+on:
+  push:
+    branches: [codex/wordpress-pilot]
+    paths: [wordpress-pilot/**, .github/workflows/wordpress-pilot.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    defaults:
+      run:
+        working-directory: wordpress-pilot
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and exercise WordPress in isolation
+        run: bash smoke.sh

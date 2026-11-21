@@ -1,0 +1,51 @@
+/*
+Theme Name: Onze Piloto
+Description: Estrutura editorial do piloto WordPress da 11RUN.
+Version: 1.0.0
+*/
+
+:root {
+    --max: 1280px;
+    --pilot-ink: #262626;
+    --pilot-bg: #f5f5f3;
+    --pilot-line: #deded9;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; background: var(--pilot-bg); color: var(--pilot-ink); font: 16px/1.55 Arial, sans-serif; }
+a { color: inherit; }
+a:focus-visible, summary:focus-visible { outline: 2px solid #ac4200; outline-offset: 4px; }
+.pilot-shell { width: min(calc(100% - 48px), var(--max)); margin-inline: auto; }
+.pilot-skip { position: fixed; z-index: 100; left: 16px; top: 0; padding: 12px; background: white; transform: translateY(-110%); }
+.pilot-skip:focus { transform: none; }
+.pilot-header { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 24px; min-height: 90px; padding: 16px 0; }
+.pilot-header img { display: block; width: 108px; height: auto; }
+.pilot-header ul, .pilot-footer ul { list-style: none; margin: 0; padding: 0; }
+.pilot-header a, .pilot-footer a { text-decoration: none; }
+.pilot-header a:hover, .pilot-footer a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.pilot-nav-desktop > ul { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.pilot-header li { position: relative; }
+.pilot-header li a { display: block; padding: 7px 0; font-size: .875rem; }
+.pilot-nav-desktop .sub-menu { display: none; position: absolute; top: 100%; right: 0; min-width: 210px; padding: 8px 14px; border: 1px solid var(--pilot-line); border-radius: 12px; background: #fff; }
+.pilot-nav-desktop li:hover > .sub-menu, .pilot-nav-desktop li:focus-within > .sub-menu { display: block; }
+.pilot-nav-mobile { display: none; }
+.pilot-main { padding-block: 8px 38px; }
+.pilot-hero { overflow: hidden; border-radius: 20px; }
+.pilot-visually-hidden { position: absolute !important; width: 1px !important; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.pilot-footer { padding: 20px 0 28px; color: #525252; border-top: 1px solid var(--pilot-line); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.pilot-footer ul { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+
+@media (max-width: 960px) {
+    .pilot-nav-desktop { display: none; }
+    .pilot-nav-mobile { display: block; }
+    .pilot-nav-mobile summary { cursor: pointer; border: 1px solid var(--pilot-line); border-radius: 32px; padding: 8px 16px; }
+    .pilot-nav-mobile nav { position: absolute; inset-inline: 0; top: 100%; max-height: 65vh; overflow-y: auto; padding: 12px 20px; border: 1px solid var(--pilot-line); border-radius: 16px; background: #fff; }
+    .pilot-nav-mobile .sub-menu { padding-left: 16px; }
+}
+
+@media (max-width: 767px) {
+    .pilot-shell { width: min(calc(100% - 28px), var(--max)); }
+    .pilot-header { min-height: 72px; }
+    .pilot-header img { width: 90px; }
+    .pilot-hero { border-radius: 16px; }
+}
